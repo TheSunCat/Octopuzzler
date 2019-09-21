@@ -40,6 +40,8 @@ int main() {
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // add on Mac bc Apple is big dumb :(
 #endif
 
+	std::cout << "essen" << '\n';
+
 	// Window init
 	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Outrospection", NULL, NULL);
 	if (window == NULL) {
