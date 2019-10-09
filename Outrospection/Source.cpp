@@ -67,9 +67,9 @@ int main() {
 	}
 
 	// GL Settings
-	//glEnable(GL_BLEND);
+	glEnable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
-	//glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 	
 	// ****************
 	// Shaders and init
@@ -154,6 +154,21 @@ int main() {
 
 		// activate shader
 		shader.use();
+
+		shader.setVec3("viewPos", camera.Position);
+		shader.setFloat("material.shininess", 32.0f);
+
+		// spotLight
+		shader.setVec3("spotLight.position", camera.Position);
+		shader.setVec3("spotLight.direction", camera.Front);
+		shader.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
+		shader.setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
+		shader.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
+		shader.setFloat("spotLight.constant", 1.0f);
+		shader.setFloat("spotLight.linear", 0.09);
+		shader.setFloat("spotLight.quadratic", 0.032);
+		shader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+		shader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
 
 		// view/projection transformations
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
