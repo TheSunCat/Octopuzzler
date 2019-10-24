@@ -17,8 +17,8 @@ void processInput(GLFWwindow *window);
 unsigned int loadTexture(char const* path);
 
 // settings
-const unsigned int SCR_WIDTH = 1600;
-const unsigned int SCR_HEIGHT = 900;
+const unsigned int SCR_WIDTH = 1152;
+const unsigned int SCR_HEIGHT = 648;
 
 // timing
 float deltaTime = 0.0f;	// Time between current frame and last frame
@@ -39,8 +39,6 @@ int main() {
 #ifdef __APPLE__
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // add on Mac bc Apple is big dumb :(
 #endif
-
-	std::cout << "essen" << '\n';
 
 	// Window init
 	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Outrospection", NULL, NULL);
@@ -80,7 +78,7 @@ int main() {
 	
 	// load models
 	// -----------
-	Model ourModel("res/brella/brella.obj");
+	Model ourModel("res/TestLevelGround000/TestLevelGround000.dae");
 
 	// framebuffer configuration
 	// -------------------------
@@ -156,7 +154,7 @@ int main() {
 		shader.use();
 
 		shader.setVec3("viewPos", camera.Position);
-		shader.setFloat("material.shininess", 32.0f);
+		shader.setFloat("shininess", 32.0f);
 
 		// spotLight
 		shader.setVec3("spotLight.position", camera.Position);
