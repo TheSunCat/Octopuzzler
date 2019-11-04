@@ -2,6 +2,7 @@
 #include <GLAD/glad.h>
 #include <GLFW/glfw3.h>
 #include "Shader.h"
+#include "ObjectGeneral.h"
 #include "stb_image.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -29,7 +30,10 @@ Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 float lastX = SCR_HEIGHT / 2, lastY = SCR_WIDTH / 2;
 bool firstMouse = true;
 
-int main() {
+std::vector<ObjectGeneral> objects;
+
+int main()
+{
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -73,12 +77,10 @@ int main() {
 	// Shaders and init
 	// ****************
 
-	Shader shader("res/obj.vert", "res/obj.frag");
+	Shader objectShader("res/obj.vert", "res/obj.frag");
 	Shader screenShader("res/screen.vert", "res/screen.frag");
 	
-	// load models
-	// -----------
-	Model ourModel("res/TestLevelGround000/TestLevelGround000.dae");
+	objects.push_back(ObjectGeneral("TestLevelGround000", glm::vec3(0.0), glm::vec3(0.0), glm::vec3(1.0)));
 
 	// framebuffer configuration
 	// -------------------------
@@ -151,34 +153,31 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// activate shader
-		shader.use();
+		objectShader.use();
 
-		shader.setVec3("viewPos", camera.Position);
-		shader.setFloat("shininess", 32.0f);
+		objectShader.setVec3("viewPos", camera.Position);
+		objectShader.setFloat("shininess", 32.0f);
 
 		// spotLight
-		shader.setVec3("spotLight.position", camera.Position);
-		shader.setVec3("spotLight.direction", camera.Front);
-		shader.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
-		shader.setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
-		shader.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
-		shader.setFloat("spotLight.constant", 1.0f);
-		shader.setFloat("spotLight.linear", 0.09);
-		shader.setFloat("spotLight.quadratic", 0.032);
-		shader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
-		shader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
+		objectShader.setVec3("spotLight.position", camera.Position);
+		objectShader.setVec3("spotLight.direction", camera.Front);
+		objectShader.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
+		objectShader.setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
+		objectShader.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
+		objectShader.setFloat("spotLight.constant", 1.0f);
+		objectShader.setFloat("spotLight.linear", 0.09);
+		objectShader.setFloat("spotLight.quadratic", 0.032);
+		objectShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+		objectShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
 
 		// view/projection transformations
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 		glm::mat4 view = camera.GetViewMatrix();
-		shader.setMat4("projection", projection);
-		shader.setMat4("view", view);
+		objectShader.setMat4("projection", projection);
+		objectShader.setMat4("view", view);
 
-		// render the loaded model
-		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f)); // translate it down so it's at the center of the scene
-		shader.setMat4("model", model);
-		ourModel.Draw(shader);
+		for(ObjectGeneral o : objects)
+			o.draw(objectShader);
 
 		// now bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
