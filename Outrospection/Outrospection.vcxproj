@@ -173,7 +173,10 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
     <ClCompile Include="glad.c" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="ObjectGeneral.cpp" />
     <ClCompile Include="Source.cpp" />
+    <ClCompile Include="ObjectGeneral.h" />
+    <ClCompile Include="Source1.cpp" />
     <ClCompile Include="stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
