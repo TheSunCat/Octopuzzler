@@ -9,6 +9,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "Camera.h"
 #include "Model.h"
+#include "Scene.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -29,8 +30,6 @@ float lastFrame = 0.0f; // Time of last frame
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 float lastX = SCR_HEIGHT / 2, lastY = SCR_WIDTH / 2;
 bool firstMouse = true;
-
-std::vector<ObjectGeneral> objects;
 
 int main()
 {
@@ -79,8 +78,6 @@ int main()
 
 	Shader objectShader("res/obj.vert", "res/obj.frag");
 	Shader screenShader("res/screen.vert", "res/screen.frag");
-	
-	objects.push_back(ObjectGeneral("TestLevelGround000", glm::vec3(0.0), glm::vec3(0.0), glm::vec3(1.0)));
 
 	// framebuffer configuration
 	// -------------------------
@@ -133,6 +130,8 @@ int main()
 	screenShader.use();
 	screenShader.setInt("screenTexture", 0);
 
+	Scene scene("TestLevel000");
+
 	// Main render loop
 	while (!glfwWindowShouldClose(window)) {
 		// calculate delta time
@@ -159,7 +158,7 @@ int main()
 		objectShader.setFloat("shininess", 32.0f);
 
 		// spotLight
-		objectShader.setVec3("spotLight.position", camera.Position);
+		/*objectShader.setVec3("spotLight.position", camera.Position);
 		objectShader.setVec3("spotLight.direction", camera.Front);
 		objectShader.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
 		objectShader.setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
@@ -168,7 +167,7 @@ int main()
 		objectShader.setFloat("spotLight.linear", 0.09);
 		objectShader.setFloat("spotLight.quadratic", 0.032);
 		objectShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
-		objectShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
+		objectShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));*/
 
 		// view/projection transformations
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
@@ -176,8 +175,7 @@ int main()
 		objectShader.setMat4("projection", projection);
 		objectShader.setMat4("view", view);
 
-		for(ObjectGeneral o : objects)
-			o.draw(objectShader);
+		scene.draw(objectShader);
 
 		// now bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
