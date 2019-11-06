@@ -34,6 +34,7 @@ public:
 	// constructor, expects a filepath to a 3D model.
 	Model(string const& path, bool gamma = false) : gammaCorrection(gamma)
 	{
+		cout << path << endl;
 		loadModel(path);
 	}
 

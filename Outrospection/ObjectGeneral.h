@@ -5,7 +5,6 @@
 #include "Model.h"
 #include <glm/glm.hpp>
 
-#include "windows.h"
 using namespace std;
 
 class ObjectGeneral {

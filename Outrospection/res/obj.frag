@@ -12,6 +12,8 @@ uniform sampler2D diffuseTex;
 uniform sampler2D specularTex;
 uniform float shininess;
 
+uniform vec3 delta;
+
 void main()
 {
 	lightColor = vec3(1.0);
@@ -33,5 +35,5 @@ void main()
     vec3 specular = specularStrength * spec * lightColor;  
         
     vec3 result = (ambient + diffuse + specular) * vec3(texture(diffuseTex, TexCoords).xyz);
-    FragColor = vec4(result, 1.0);
+    FragColor = vec4(result + delta, 1.0);
 } 
