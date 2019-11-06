@@ -157,6 +157,8 @@ int main()
 		objectShader.setVec3("viewPos", camera.Position);
 		objectShader.setFloat("shininess", 32.0f);
 
+		objectShader.setVec3("lightPos", camera.Position);
+
 		// spotLight
 		/*objectShader.setVec3("spotLight.position", camera.Position);
 		objectShader.setVec3("spotLight.direction", camera.Front);
