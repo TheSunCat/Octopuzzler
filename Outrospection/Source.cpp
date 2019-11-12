@@ -159,18 +159,6 @@ int main()
 
 		objectShader.setVec3("lightPos", camera.Position);
 
-		// spotLight
-		/*objectShader.setVec3("spotLight.position", camera.Position);
-		objectShader.setVec3("spotLight.direction", camera.Front);
-		objectShader.setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
-		objectShader.setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
-		objectShader.setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
-		objectShader.setFloat("spotLight.constant", 1.0f);
-		objectShader.setFloat("spotLight.linear", 0.09);
-		objectShader.setFloat("spotLight.quadratic", 0.032);
-		objectShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
-		objectShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));*/
-
 		// view/projection transformations
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 		glm::mat4 view = camera.GetViewMatrix();
