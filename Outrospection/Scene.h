@@ -8,6 +8,7 @@
 #include <sstream>
 #include "Shader.h"
 #include "util.h"
+#include "ObjectRail.h"
 
 using namespace std;
 class Scene {
@@ -29,32 +30,38 @@ public:
 			if (line.compare("Object") == 0) {
 				currentState = Object;
 			}
+			else if (line.compare("RailObject") == 0) {
+				currentState = RailObject;
+			}
 			else if (line.compare("Light") == 0) {
 				currentState = Light;
 			}
 			else {
 				switch (currentState) {
-					case Object: {
-						//Split string
-						vector<string> splittedLine = split(line, " | ");
-						cout << splittedLine.size() << endl;
-						cout << splittedLine[0] << endl;
-						//Split position
-						vector<string> positions = split(splittedLine[1], " ");
-						//Split rotations
-						vector<string> rotations = split(splittedLine[2], " ");
-						//Split scales
-						vector<string> scales = split(splittedLine[3], " ");
-						objects.push_back(ObjectGeneral(splittedLine[0], glm::vec3(stoi(positions[0]), stoi(positions[1]), stoi(positions[2])), glm::vec3(stoi(rotations[0]), stoi(rotations[1]), stoi(rotations[2])), glm::vec3(stoi(scales[0]), stoi(scales[1]), stoi(scales[2]))));
-					}
-					case Light: {
-						//Split string
-						vector<string> splittedLine = split(line, " | ");
-						//Split position
-						vector<string> positions = split(splittedLine[1], " ");
-						//Split rotations
-						vector<string> color = split(splittedLine[2], " ");
-					}
+				case Object: {
+					//Split string
+					vector<string> splittedLine = split(line, " | ");
+					cout << splittedLine.size() << endl;
+					cout << splittedLine[0] << endl;
+					//Split position
+					vector<string> positions = split(splittedLine[1], " ");
+					//Split rotations
+					vector<string> rotations = split(splittedLine[2], " ");
+					//Split scales
+					vector<string> scales = split(splittedLine[3], " ");
+					objects.push_back(ObjectRail(ObjectGeneral(splittedLine[0], glm::vec3(stof(positions[0]), stof(positions[1]), stof(positions[2])), glm::vec3(stof(rotations[0]), stof(rotations[1]), stof(rotations[2])), glm::vec3(stof(scales[0]), stof(scales[1]), stof(scales[2])))));
+				}
+				case RailObject: {
+					
+				}
+				case Light: {
+					//Split string
+					vector<string> splittedLine = split(line, " | ");
+					//Split position
+					vector<string> positions = split(splittedLine[1], " ");
+					//Split rotations
+					vector<string> color = split(splittedLine[2], " ");
+				}
 
 				}
 			}
@@ -68,11 +75,17 @@ public:
 	}
 
 private:
-	enum State {Object, Light};
+	enum State {Object, RailObject, Light};
 
 	string name;
 
 	vector<ObjectGeneral> objects;
+
+	vector<string> parseLine(string line) {
+		vector<string> ret();
+
+		return ret;
+	}
 };
 
 #endif
