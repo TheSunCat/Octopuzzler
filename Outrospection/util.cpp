@@ -3,6 +3,7 @@
 #include "util.h"
 
 using namespace std;
+
 vector<string> split(string input, string delimiter) {
 	vector<string>* toReturn = new vector<string>();
 	bool finished = false;
@@ -20,4 +21,12 @@ vector<string> split(string input, string delimiter) {
 		}
 	}
 	return *toReturn;
+}
+
+template <typename T>
+void push_all(vector<T> input, vector<T> add) {
+	vector<T> ret;
+
+	for (T o : add)
+		ret.push_back(o);
 }
