@@ -6,7 +6,7 @@
 
 class Outrospection {
 public:
-	Outrospection(GLFWwindow* _window);
+	Outrospection();
 
 	void run();
 
@@ -24,4 +24,34 @@ private:
 	GLFWwindow* gameWindow;
 	Shader objectShader;
 	Shader screenShader;
+
+	unsigned int framebuffer;
+	unsigned int textureColorbuffer;
+	unsigned int quadVAO;
+
+	// Set proper Viewport size when window is resized
+	void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+		glViewport(0, 0, width, height);
+	}
+
+	void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+		if (firstMouse) {
+			lastX = xpos;
+			lastY = ypos;
+			firstMouse = false;
+		}
+
+		float xoffset = xpos - lastX;
+		float yoffset = lastY - ypos;
+
+		lastX = xpos;
+		lastY = ypos;
+
+		camera.ProcessMouseMovement(xoffset, yoffset);
+	}
+
+	void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+	{
+		camera.ProcessMouseScroll(yoffset);
+	}
 };
