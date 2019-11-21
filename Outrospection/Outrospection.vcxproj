@@ -171,10 +171,14 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="glad.c" />
+    <ClCompile Include="KeyBindings.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ObjectGeneral.cpp" />
     <ClCompile Include="ObjectRail.cpp" />
+    <ClCompile Include="Outrospection.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayerController.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="ObjectGeneral.h" />
     <ClCompile Include="Scene.cpp" />
@@ -183,9 +187,13 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="KeyBindings.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ObjectRail.h" />
+    <ClInclude Include="Outrospection.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerController.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="stb_image.h" />
