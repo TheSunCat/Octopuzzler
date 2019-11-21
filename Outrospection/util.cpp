@@ -1,6 +1,6 @@
 #include <string>
 #include <vector>
-#include "util.h"
+#include "Util.h"
 
 using namespace std;
 
@@ -25,8 +25,17 @@ vector<string> split(string input, string delimiter) {
 
 template <typename T>
 void push_all(vector<T> input, vector<T> add) {
-	vector<T> ret;
-
 	for (T o : add)
-		ret.push_back(o);
+		input.push_back(o);
+}
+
+glm::vec3 vecFromYaw(float yawDeg)
+{
+	glm::vec3 front;
+	front.x = cos(glm::radians(yawDeg));
+	front.y = 0;
+	front.z = sin(glm::radians(yawDeg));
+	front = glm::normalize(front);
+
+	return front;
 }
