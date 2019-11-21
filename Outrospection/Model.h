@@ -207,7 +207,7 @@ inline unsigned int TextureFromFile(const char* path, const string& directory, b
 	unsigned int textureID;
 	glGenTextures(1, &textureID);
 
-	int width, height, nrComponents;
+	int width = 0, height = 0, nrComponents = 0;
 	unsigned char* data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
 	if (data)
 	{

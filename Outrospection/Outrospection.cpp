@@ -1,43 +1,10 @@
 #include "Outrospection.h"
-#include "Source.cpp"
 
 Outrospection::Outrospection() :
-	scene("TestLevel000"), player(glm::vec3(0.0f), glm::vec3(0.0f)),
+	scene("TestLevel000"), player(glm::vec3(0.0f), glm::vec3(0.0f)), gameWindow(SCR_WIDTH, SCR_HEIGHT),
 	objectShader("res/obj.vert", "res/obj.frag"), screenShader("res/screen.vert", "res/screen.frag")
 {
-	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-
-#ifdef __APPLE__
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // add on Mac bc Apple is big dumb :(
-#endif
-
-	// Window init
-	gameWindow = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Outrospection", NULL, NULL);
-	if (gameWindow == NULL) {
-		std::cout << "Failed to create GLFW window" << std::endl;
-		glfwTerminate();
-		return;
-	}
-
-	glfwMakeContextCurrent(gameWindow);
-
-	// Register OpenGL events
-	glfwSetFramebufferSizeCallback(gameWindow, framebuffer_size_callback);
-	glfwSetCursorPosCallback(gameWindow, mouse_callback);
-	glfwSetScrollCallback(gameWindow, scroll_callback);
-
-	// Capture mouse
-	glfwSetInputMode(gameWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-	// Load OGL function pointers
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-		std::cout << "Failed to initialize GLAD" << std::endl;
-		return;
-	}
+	registerCallbacks();
 
 	// GL Settings
 	glEnable(GL_BLEND);
@@ -105,7 +72,7 @@ void Outrospection::runGameLoop() {
 	deltaTime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
 
-	updateKeys(gameWindow);
+	updateKeys(gameWindow.window);
 
 	playerController.updatePlayer(player);
 
@@ -146,7 +113,7 @@ void Outrospection::runGameLoop() {
 
 	// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 	// -------------------------------------------------------------------------------
-	glfwSwapBuffers(gameWindow);
+	glfwSwapBuffers(gameWindow.window);
 	glfwPollEvents();
 
 	// TODO execute scheduled tasks
@@ -154,4 +121,41 @@ void Outrospection::runGameLoop() {
 	// draw stuff
 	scene.draw(objectShader);
 	//player.draw(objectShader);
+}
+
+void Outrospection::registerCallbacks()
+{
+	// Register OpenGL events
+	glfwSetFramebufferSizeCallback(gameWindow.window, framebuffer_size_callback);
+	glfwSetCursorPosCallback(gameWindow.window, mouse_callback);
+	glfwSetScrollCallback(gameWindow.window, scroll_callback);
+}
+
+// Set proper Viewport size when window is resized
+void Outrospection::framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+	glViewport(0, 0, width, height);
+}
+
+void Outrospection::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+	Outrospection* orig = (Outrospection*)glfwGetWindowUserPointer(window);
+
+	if (orig->firstMouse) {
+		orig->lastX = xpos;
+		orig->lastY = ypos;
+		orig->firstMouse = false;
+	}
+
+	float xoffset = xpos - orig->lastX;
+	float yoffset = orig->lastY - ypos;
+
+	orig->lastX = xpos;
+	orig->lastY = ypos;
+
+	orig->camera.ProcessMouseMovement(xoffset, yoffset);
+}
+
+void Outrospection::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+	Outrospection* orig = (Outrospection*)glfwGetWindowUserPointer(window);
+	orig->camera.ProcessMouseScroll(yoffset);
 }

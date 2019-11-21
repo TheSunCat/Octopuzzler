@@ -3,6 +3,8 @@
 #include "Scene.h"
 #include "Player.h"
 #include "PlayerController.h"
+#include "Window.h"
+#include "Camera.h"
 
 class Outrospection {
 public:
@@ -21,7 +23,11 @@ private:
 	// set to false when the game loop shouldn't run
 	volatile bool running = false;
 
-	GLFWwindow* gameWindow;
+	// timing
+	float deltaTime = 0.0f;	// Time between current frame and last frame
+	float lastFrame = 0.0f; // Time of last frame
+
+	Window gameWindow;
 	Shader objectShader;
 	Shader screenShader;
 
@@ -29,29 +35,17 @@ private:
 	unsigned int textureColorbuffer;
 	unsigned int quadVAO;
 
-	// Set proper Viewport size when window is resized
-	void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
-		glViewport(0, 0, width, height);
-	}
+	const unsigned int SCR_WIDTH = 1152;
+	const unsigned int SCR_HEIGHT = 648;
 
-	void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
-		if (firstMouse) {
-			lastX = xpos;
-			lastY = ypos;
-			firstMouse = false;
-		}
+	// camera stuff
+	Camera camera = Camera(glm::vec3(0.0f, 0.0f, 3.0f));
+	float lastX = SCR_HEIGHT / 2, lastY = SCR_WIDTH / 2;
+	bool firstMouse = true;
 
-		float xoffset = xpos - lastX;
-		float yoffset = lastY - ypos;
+	static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+	static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+	static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
-		lastX = xpos;
-		lastY = ypos;
-
-		camera.ProcessMouseMovement(xoffset, yoffset);
-	}
-
-	void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
-	{
-		camera.ProcessMouseScroll(yoffset);
-	}
+	void registerCallbacks();
 };
