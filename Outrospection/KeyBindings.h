@@ -5,5 +5,6 @@ extern bool keyForward;
 extern bool keyBackward;
 extern bool keyLeft;
 extern bool keyRight;
+extern bool keyExit;
 
 void updateKeys(GLFWwindow* window);

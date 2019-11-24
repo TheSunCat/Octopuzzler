@@ -1,5 +1,4 @@
-#ifndef SCENE_H
-#define SCENE_H
+#pragma once
 
 #include <string>
 #include "ObjectGeneral.h"
@@ -13,6 +12,9 @@
 using namespace std;
 class Scene {
 public:
+	// default ctor
+	Scene() = default;
+
 	Scene(string _name);
 
 	void loadScene();
@@ -29,5 +31,3 @@ public:
 
 	ObjectGeneral parseObj(vector<string> line);
 };
-
-#endif

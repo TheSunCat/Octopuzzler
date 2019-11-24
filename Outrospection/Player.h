@@ -1,10 +1,11 @@
-#ifndef PLAYER_H
-#define PLAYER_H
+#pragma once
 
 #include <glm/glm.hpp>
 
 class Player {
 public:
+	Player() = default;
+
 	Player(glm::vec3 _startPos, glm::vec3 _startRot) : position(_startPos), rotation(_startRot)
 	{
 
@@ -17,5 +18,3 @@ public:
 	glm::vec3 position;
 	glm::vec3 rotation;
 };
-
-#endif
