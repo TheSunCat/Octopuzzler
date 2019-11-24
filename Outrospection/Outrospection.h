@@ -3,7 +3,6 @@
 #include "Scene.h"
 #include "Player.h"
 #include "PlayerController.h"
-#include "Window.h"
 #include "Camera.h"
 
 class Outrospection {
@@ -20,6 +19,8 @@ public:
 private:
 	void runGameLoop();
 
+	bool glError();
+
 	// set to false when the game loop shouldn't run
 	volatile bool running = false;
 
@@ -27,7 +28,7 @@ private:
 	float deltaTime = 0.0f;	// Time between current frame and last frame
 	float lastFrame = 0.0f; // Time of last frame
 
-	Window gameWindow;
+	GLFWwindow* gameWindow;
 	Shader objectShader;
 	Shader screenShader;
 

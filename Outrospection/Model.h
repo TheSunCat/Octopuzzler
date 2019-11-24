@@ -187,6 +187,7 @@ private:
 			if (!skip)
 			{   // if texture hasn't been loaded already, load it
 				Texture texture;
+
 				texture.id = TextureFromFile(str.C_Str(), this->directory, true);
 				texture.type = typeName;
 				texture.path = str.C_Str();
@@ -204,10 +205,12 @@ inline unsigned int TextureFromFile(const char* path, const string& directory, b
 	string filename = string(path);
 	filename = directory + '/' + filename;
 
-	unsigned int textureID;
-	glGenTextures(1, &textureID);
+	GLuint tex;
+	glGenTextures(1, &tex);
 
-	int width = 0, height = 0, nrComponents = 0;
+	int width = 0;
+	int height = 0;
+	int nrComponents = 0;
 	unsigned char* data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
 	if (data)
 	{
@@ -218,8 +221,10 @@ inline unsigned int TextureFromFile(const char* path, const string& directory, b
 			format = GL_RGB;
 		else if (nrComponents == 4)
 			format = GL_RGBA;
+		else // TODO error reporting
+			return -1;
 
-		glBindTexture(GL_TEXTURE_2D, textureID);
+		glBindTexture(GL_TEXTURE_2D, tex);
 		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 
@@ -236,6 +241,6 @@ inline unsigned int TextureFromFile(const char* path, const string& directory, b
 		stbi_image_free(data);
 	}
 
-	return textureID;
+	return tex;
 }
 #endif

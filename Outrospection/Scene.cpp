@@ -70,14 +70,9 @@ vector<string> Scene::parseLine(string line) {
 	vector<string> scales = split(splittedLine[3], " ");
 
 	ret.push_back(splittedLine[0]);
-	for (string s : positions)
-		ret.push_back(s);
-
-	for (string s : rotations)
-		ret.push_back(s);
-
-	for (string s : scales)
-		ret.push_back(s);
+	push_all(ret, positions);
+	push_all(ret, rotations);
+	push_all(ret, scales);
 
 	return ret;
 }

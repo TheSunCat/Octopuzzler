@@ -188,7 +188,6 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="Util.cpp" />
-    <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -203,7 +202,6 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
     <ClInclude Include="Shader.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Util.h" />
-    <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
