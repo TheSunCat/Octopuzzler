@@ -7,7 +7,7 @@ Scene::Scene(string _name) {
 }
 
 void Scene::loadScene() {
-	// following parser code by Keon Sanavandi
+	// following parser code by MarkCangila
 
 	ifstream sceneFile("./res/StageData/" + name + "/" + name + ".lvl");
 	State currentState = Object;

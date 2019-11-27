@@ -35,6 +35,8 @@ struct Texture {
 
 class Mesh {
 public:
+	Mesh() = default;
+
 	/*  Mesh Data  */
 	vector<Vertex> vertices;
 	vector<unsigned int> indices;
@@ -54,7 +56,7 @@ public:
 	}
 
 	// render the mesh
-	void Draw(Shader shader)
+	void Draw(const Shader& shader)
 	{
 		// bind appropriate textures
 		unsigned int diffuseNr = 1;

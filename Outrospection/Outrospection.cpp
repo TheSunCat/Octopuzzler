@@ -116,7 +116,7 @@ void Outrospection::runGameLoop() {
 	if (keyExit)
 		running = false;
 
-	playerController.updatePlayer(player);
+	playerController.updatePlayer(&player);
 
 	// bind to framebuffer and draw scene as we normally would to color texture 
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
@@ -161,7 +161,7 @@ void Outrospection::runGameLoop() {
 
 	// draw stuff
 	scene.draw(objectShader);
-	//player.draw(objectShader);
+	player.draw(objectShader);
 }
 
 bool Outrospection::glError()

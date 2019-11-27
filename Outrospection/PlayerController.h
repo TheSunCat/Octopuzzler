@@ -7,9 +7,13 @@
 
 class PlayerController {
 public:
-	void updatePlayer(Player playerIn);
+	void updatePlayer(Player* playerIn);
 
-	void moveForward(Player playerIn);
+	void moveForward(Player* playerIn);
 
-	void moveBackward(Player playerIn);
+	void moveBackward(Player* playerIn);
+
+	void moveLeft(Player* playerIn);
+
+	void moveRight(Player* playerIn);
 };

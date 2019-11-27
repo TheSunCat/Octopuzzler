@@ -174,6 +174,7 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Character.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="KeyBindings.cpp" />
     <ClCompile Include="Mesh.cpp" />
@@ -191,6 +192,7 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Character.h" />
     <ClInclude Include="KeyBindings.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
