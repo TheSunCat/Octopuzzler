@@ -17,7 +17,7 @@ public:
 		scale = _scale;
 	}
 
-	void draw(Shader shader) {
+	void draw(const Shader& shader) {
 		glm::mat4 modelMat = glm::mat4(1.0f);
 
 		// Scale model
