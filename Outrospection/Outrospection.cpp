@@ -2,6 +2,120 @@
 
 Outrospection::Outrospection()
 {
+	initOpenGL();
+	registerCallbacks();
+	initializeFramebuffer();
+	createShaders();
+
+	scene = Scene("TestLevel000");
+	player = Player(glm::vec3(0.0f), glm::vec3(0.0f));
+}
+
+void Outrospection::run() {
+	running = true;
+
+	while (running)
+	{
+		runGameLoop();
+	}
+
+	glfwTerminate();
+}
+
+void Outrospection::runGameLoop() {
+	float currentFrame = glfwGetTime();
+	deltaTime = currentFrame - lastFrame;
+	lastFrame = currentFrame;
+
+
+	// process keys
+	// ------------
+
+	updateKeys(gameWindow);
+
+	// exit game on next loop iteration
+	if (keyExit)
+		running = false;
+
+	playerController.updatePlayer(&player);
+
+	// player always faces forward, so W goes away from camera
+	player.playerRotation.y = camera.Yaw - 180;
+
+
+	// Bind to framebuffer and draw scene to color texture
+	// ---------------------------------------------------
+
+	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
+	glClearColor(0.2f, 0.3f, 0.3f, 1.0f); // background color
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+	// Set shader info
+	objectShader.use();
+	objectShader.setVec3("viewPos", camera.Position);
+	objectShader.setFloat("shininess", 32.0f);
+	objectShader.setVec3("lightPos", camera.Position);
+	objectShader.doProjView(camera, SCR_WIDTH, SCR_HEIGHT, true);
+
+	billboardShader.use();
+	billboardShader.doProjView(camera, SCR_WIDTH, SCR_HEIGHT, true);
+
+	skyShader.use();
+	skyShader.doProjView(camera, SCR_WIDTH, SCR_HEIGHT, false);
+
+
+	// draw stuff
+	scene.draw(objectShader, billboardShader, skyShader);
+	player.draw(billboardShader);
+
+
+	// TODO execute scheduled tasks
+	// ----------------------------
+
+
+	// Bind to default framebuffer and draw ours
+	// -----------------------------------------
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
+	// clear all relevant buffers
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessery actually, since we won't be able to see behind the quad anyways)
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	screenShader.use();
+	glBindVertexArray(quadVAO);
+	glBindTexture(GL_TEXTURE_2D, textureColorbuffer);	// use the color attachment texture as the texture of the quad plane
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glEnable(GL_DEPTH_TEST); // re-enable depth testing
+
+	// Check for errors
+	// ----------------
+	glError();
+
+	// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
+	glfwSwapBuffers(gameWindow);
+	glfwPollEvents();
+}
+
+bool Outrospection::glError()
+{
+	bool ret = false;
+	GLenum err;
+	while ((err = glGetError()) != GL_NO_ERROR)
+	{
+		ret = true;
+
+		cout << err << endl;
+	}
+
+	return ret;
+}
+
+void Outrospection::initOpenGL()
+{
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -33,13 +147,22 @@ Outrospection::Outrospection()
 		return;
 	}
 
-	registerCallbacks();
-
 	// GL Settings
 	glEnable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE); TODO uncomment, testing billboards
+}
 
+void Outrospection::registerCallbacks()
+{
+	// Register OpenGL events
+	glfwSetFramebufferSizeCallback(gameWindow, framebuffer_size_callback);
+	glfwSetCursorPosCallback(gameWindow, mouse_callback);
+	glfwSetScrollCallback(gameWindow, scroll_callback);
+}
+
+void Outrospection::initializeFramebuffer()
+{
 	float quadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
 		// positions   // texCoords
 		-1.0f,  1.0f,  0.0f, 1.0f,
@@ -82,108 +205,17 @@ Outrospection::Outrospection()
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << endl;
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
 
+void Outrospection::createShaders()
+{
 	objectShader = Shader("res/obj.vert", "res/obj.frag");
+	billboardShader = Shader("res/obj.vert", "res/lightless.frag"); // TODO change obj.vert to billboard.vert, testing
+	skyShader = Shader("res/sky.vert", "res/lightless.frag");
 	screenShader = Shader("res/screen.vert", "res/screen.frag");
 
 	screenShader.use();
 	screenShader.setInt("screenTexture", 0);
-
-	scene = Scene("TestLevel000");
-
-	player = Player(glm::vec3(0.0f), glm::vec3(0.0f));
-}
-
-void Outrospection::run() {
-	running = true;
-
-	while (running)
-	{
-		runGameLoop();
-	}
-
-	glfwTerminate();
-}
-
-void Outrospection::runGameLoop() {
-	float currentFrame = glfwGetTime();
-	deltaTime = currentFrame - lastFrame;
-	lastFrame = currentFrame;
-
-	updateKeys(gameWindow);
-
-	// exit game
-	if (keyExit)
-		running = false;
-
-	playerController.updatePlayer(&player);
-
-	// bind to framebuffer and draw scene as we normally would to color texture 
-	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-	glEnable(GL_DEPTH_TEST); // enable depth testing (is disabled for rendering screen-space quad)
-
-	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// activate shader
-	objectShader.use();
-
-	objectShader.setVec3("viewPos", camera.Position);
-	objectShader.setFloat("shininess", 32.0f);
-
-	objectShader.setVec3("lightPos", camera.Position);
-
-	// view/projection transformations
-	glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-	glm::mat4 view = camera.GetViewMatrix();
-	objectShader.setMat4("projection", projection);
-	objectShader.setMat4("view", view);
-
-	scene.draw(objectShader);
-
-	// now bind back to default framebuffer and draw a quad plane with the attached framebuffer color texture
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
-	// clear all relevant buffers
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessery actually, since we won't be able to see behind the quad anyways)
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	screenShader.use();
-	glBindVertexArray(quadVAO);
-	glBindTexture(GL_TEXTURE_2D, textureColorbuffer);	// use the color attachment texture as the texture of the quad plane
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-
-	// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-	glfwSwapBuffers(gameWindow);
-	glfwPollEvents();
-
-	// TODO execute scheduled tasks
-
-	// draw stuff
-	scene.draw(objectShader);
-	player.draw(objectShader);
-}
-
-bool Outrospection::glError()
-{
-	bool ret = false;
-	GLenum err;
-	while ((err = glGetError()) != GL_NO_ERROR)
-	{
-		ret = true;
-
-		cout << err << endl;
-	}
-
-	return ret;
-}
-
-void Outrospection::registerCallbacks()
-{
-	// Register OpenGL events
-	glfwSetFramebufferSizeCallback(gameWindow, framebuffer_size_callback);
-	glfwSetCursorPosCallback(gameWindow, mouse_callback);
-	glfwSetScrollCallback(gameWindow, scroll_callback);
 }
 
 // Set proper Viewport size when window is resized

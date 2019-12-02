@@ -19,13 +19,15 @@ public:
 
 	void loadScene();
 
-	void draw(Shader shader);
+	void draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShader);
 
-	enum State {Object, RailObject, Light};
+	enum State {Object, RailObject, Light, Sky};
 
 	string name;
 
-	vector<ObjectRail> objects;
+	vector<ObjectGeneral> objects;
+	vector<ObjectGeneral> railObjs;
+	vector<ObjectGeneral> skies;
 
 	vector<string> parseLine(string line);
 

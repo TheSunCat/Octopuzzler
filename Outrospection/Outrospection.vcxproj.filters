@@ -103,7 +103,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\light.frag" />
     <None Include="res\obj.frag" />
     <None Include="res\obj.vert" />
     <None Include="res\light.vert">
@@ -112,5 +111,8 @@
     <None Include="packages.config" />
     <None Include="res\screen.frag" />
     <None Include="res\screen.vert" />
+    <None Include="res\billboard.vert" />
+    <None Include="res\lightless.frag" />
+    <None Include="res\sky.vert" />
   </ItemGroup>
 </Project>
