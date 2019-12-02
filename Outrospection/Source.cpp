@@ -1,10 +1,3 @@
-#include <iostream>
-#include "Shader.h"
-#include "ObjectGeneral.h"
-#include "stb_image.h"
-#include "Camera.h"
-#include "Model.h"
-#include "Scene.h"
 #include "Outrospection.h"
 
 // instance of the game

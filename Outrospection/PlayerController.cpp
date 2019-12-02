@@ -14,20 +14,20 @@ void PlayerController::updatePlayer(Player* playerIn)
 
 void PlayerController::moveForward(Player* playerIn)
 {
-	playerIn->move(vecFromYaw(playerIn->rotation.y));
+	playerIn->move(vecFromYaw(playerIn->playerRotation.y));
 }
 
 void PlayerController::moveBackward(Player* playerIn)
 {
-	playerIn->move(-vecFromYaw(playerIn->rotation.y));
+	playerIn->move(-vecFromYaw(playerIn->playerRotation.y));
 }
 
 void PlayerController::moveLeft(Player* playerIn)
 {
-	playerIn->move(vecFromYaw(playerIn->rotation.y - 90));
+	playerIn->move(vecFromYaw(playerIn->playerRotation.y - 90));
 }
 
 void PlayerController::moveRight(Player* playerIn)
 {
-	playerIn->move(vecFromYaw(playerIn->rotation.y + 90));
+	playerIn->move(vecFromYaw(playerIn->playerRotation.y + 90));
 }

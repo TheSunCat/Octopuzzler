@@ -4,6 +4,7 @@
 #include "Shader.h"
 
 class Character {
+public:
 	Character() = default;
 
 	Character(const std::string& _charId);

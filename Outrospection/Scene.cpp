@@ -23,6 +23,9 @@ void Scene::loadScene() {
 		else if (line.compare("Light") == 0) {
 			currentState = Light;
 		}
+		else if (line.compare("Sky") == 0) {
+			currentState = Sky;
+		}
 		else {
 			switch (currentState) {
 			case Object: {
@@ -31,10 +34,12 @@ void Scene::loadScene() {
 
 				ObjectGeneral obj = parseObj(objLines);
 
-				objects.push_back(ObjectRail(obj));
+				objects.push_back(obj);
+				break;
 			}
 			case RailObject: {
 
+				break;
 			}
 			case Light: {
 				//Split string
@@ -43,6 +48,19 @@ void Scene::loadScene() {
 				vector<string> positions = split(splittedLine[1], " ");
 				//Split rotations
 				vector<string> color = split(splittedLine[2], " ");
+
+				// TODO light support lol
+				//lights.push_back
+				break;
+			}
+			case Sky: {
+				// parse object
+				vector<string> objLines = parseLine(line);
+
+				ObjectGeneral obj = parseObj(objLines);
+
+				skies.push_back(obj);
+				break;
 			}
 
 			}
@@ -50,9 +68,19 @@ void Scene::loadScene() {
 	}
 }
 
-void Scene::draw(Shader shader) {
-	for (ObjectRail object : objects) {
-		object.draw(shader);
+void Scene::draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShader) {
+	glDisable(GL_DEPTH_TEST);
+	// TODO make skies be behind everything. how? don't ask me!
+	_skyShader.use();
+	for (ObjectGeneral object : skies) {
+		object.draw(_skyShader);
+	}
+
+	glEnable(GL_DEPTH_TEST);
+	
+	_objShader.use();
+	for (ObjectGeneral object : objects) {
+		object.draw(_objShader);
 	}
 }
 

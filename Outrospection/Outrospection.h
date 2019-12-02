@@ -30,6 +30,8 @@ private:
 
 	GLFWwindow* gameWindow;
 	Shader objectShader;
+	Shader billboardShader;
+	Shader skyShader;
 	Shader screenShader;
 
 	unsigned int framebuffer;
@@ -48,5 +50,8 @@ private:
 	static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 	static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
+	void initOpenGL();
 	void registerCallbacks();
+	void initializeFramebuffer();
+	void createShaders();
 };
