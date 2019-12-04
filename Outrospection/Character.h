@@ -18,5 +18,5 @@ private:
 	std::string charId;
 
 	unsigned int charTexture;
-	unsigned int quadVAO;
+	unsigned int quadVAO, quadVBO;
 };

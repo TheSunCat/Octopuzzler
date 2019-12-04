@@ -24,6 +24,8 @@ void Player::rotate(float yaw)
 
 void Player::draw(Shader& _shader)
 {
+	_shader.use();
+
 	glm::mat4 modelMat = glm::mat4(1.0f);
 
 	// rotate each axis individually bc ogl dum

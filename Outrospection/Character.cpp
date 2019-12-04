@@ -5,17 +5,14 @@ Character::Character(const std::string& _charId)
 {
 	charId = _charId;
 
-	float quadVertices[] = { 
-		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+	float quadVertices[] = {  // tex coords = (x + 0.5, y)
+		-0.5f,  0.0f,  0.0f,
+		 0.5f,  0.0f,  0.0f,
+		 0.5f,  1.0f,  0.0f,
+		-0.5f,  1.0f,  0.0f
 	};
 
 	// screen quad VAO
-	unsigned int quadVBO;
 	glGenVertexArrays(1, &quadVAO);
 	glGenBuffers(1, &quadVBO);
 	glBindVertexArray(quadVAO);
@@ -25,11 +22,7 @@ Character::Character(const std::string& _charId)
 
 	// vertex coordinates
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-
-	// texture coordinates
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
 	charTexture = TextureFromFile((charId + ".png").c_str(), "./res/ObjectData/Characters", false);
 }
@@ -37,10 +30,8 @@ Character::Character(const std::string& _charId)
 void Character::draw(Shader& _shader)
 {
 	_shader.use();
-
-	glBindTexture(GL_TEXTURE_2D, charTexture);
-
 	glBindVertexArray(quadVAO);
-
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, charTexture);
+	glDrawArrays(GL_TRIANGLES, 6, 4);
 }
