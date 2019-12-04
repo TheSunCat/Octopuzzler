@@ -38,9 +38,10 @@ void Outrospection::runGameLoop() {
 		running = false;
 
 	playerController.updatePlayer(&player);
+	camera.Position = player.playerPosition - (vecFromYaw(player.playerRotation.y) * glm::vec3(2.0));
 
 	// player always faces forward, so W goes away from camera
-	player.playerRotation.y = camera.Yaw - 180;
+	player.playerRotation.y = camera.Yaw;
 
 
 	// Bind to framebuffer and draw scene to color texture
@@ -68,7 +69,7 @@ void Outrospection::runGameLoop() {
 
 	// draw stuff
 	scene.draw(objectShader, billboardShader, skyShader);
-	player.draw(billboardShader);
+	player.draw(objectShader);
 
 
 	// TODO execute scheduled tasks
@@ -201,7 +202,7 @@ void Outrospection::initializeFramebuffer()
 	glBindRenderbuffer(GL_RENDERBUFFER, rbo);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, SCR_WIDTH, SCR_HEIGHT); // use a single renderbuffer object for both a depth AND stencil buffer.
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo); // now actually attach it
-	// now that we actually created the framebuffer and added all attachments we want to check if it is actually complete now
+	// now that we actually created the framebuffer and added all attachments we want to check if it is complete
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << endl;
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

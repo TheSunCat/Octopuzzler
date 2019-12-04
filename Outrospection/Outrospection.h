@@ -34,7 +34,7 @@ private:
 	Shader skyShader;
 	Shader screenShader;
 
-	unsigned int framebuffer;
+	unsigned int framebuffer, intermediateFBO;
 	unsigned int textureColorbuffer;
 	unsigned int quadVAO;
 

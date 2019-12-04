@@ -69,14 +69,14 @@ void Scene::loadScene() {
 }
 
 void Scene::draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShader) {
-	glDisable(GL_DEPTH_TEST);
 	// TODO make skies be behind everything. how? don't ask me!
 	_skyShader.use();
+
+	glDepthFunc(GL_GEQUAL);
 	for (ObjectGeneral object : skies) {
 		object.draw(_skyShader);
 	}
-
-	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
 	
 	_objShader.use();
 	for (ObjectGeneral object : objects) {
