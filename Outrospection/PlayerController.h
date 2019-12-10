@@ -7,13 +7,21 @@
 
 class PlayerController {
 public:
-	void updatePlayer(Player* playerIn);
+	void updatePlayer(Player* playerIn, float deltaTime);
 
-	void moveForward(Player* playerIn);
+	void updatePhysics(Player* playerIn, float deltaTime);
 
-	void moveBackward(Player* playerIn);
+	void moveForward(Player* playerIn, float deltaTime);
 
-	void moveLeft(Player* playerIn);
+	void moveBackward(Player* playerIn, float deltaTime);
 
-	void moveRight(Player* playerIn);
+	void moveLeft(Player* playerIn, float deltaTime);
+
+	void moveRight(Player* playerIn, float deltaTime);
+
+private:
+	glm::vec3 playerVelocity;
+
+	bool canJump = false;
+	bool jumping = false;
 };

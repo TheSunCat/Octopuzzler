@@ -37,11 +37,17 @@ void Outrospection::runGameLoop() {
 	if (keyExit)
 		running = false;
 
-	playerController.updatePlayer(&player);
-	camera.Position = player.playerPosition - (vecFromYaw(player.playerRotation.y) * glm::vec3(2.0));
-
-	// player always faces forward, so W goes away from camera
+	// player always "faces" forward, so W goes away from camera
 	player.playerRotation.y = camera.Yaw;
+
+	playerController.updatePlayer(&player, deltaTime);
+	camera.Position = player.playerPosition - (vecFromYaw(camera.Yaw) * glm::vec3(4.0)) + glm::vec3(0.0, 1.0, 0.0);
+
+	playerController.updatePhysics(&player, deltaTime);
+	//scene.updatePhysics();
+
+	// TODO execute scheduled tasks
+	// ----------------------------
 
 
 	// Bind to framebuffer and draw scene to color texture
@@ -69,11 +75,7 @@ void Outrospection::runGameLoop() {
 
 	// draw stuff
 	scene.draw(objectShader, billboardShader, skyShader);
-	player.draw(objectShader);
-
-
-	// TODO execute scheduled tasks
-	// ----------------------------
+	player.draw(billboardShader);
 
 
 	// Bind to default framebuffer and draw ours
@@ -96,7 +98,8 @@ void Outrospection::runGameLoop() {
 	// ----------------
 	glError();
 
-	// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
+	// swap buffers and poll IO events
+	// -------------------------------
 	glfwSwapBuffers(gameWindow);
 	glfwPollEvents();
 }
@@ -151,7 +154,7 @@ void Outrospection::initOpenGL()
 	// GL Settings
 	glEnable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
-	//glEnable(GL_CULL_FACE); TODO uncomment, testing billboards
+	glEnable(GL_CULL_FACE);
 }
 
 void Outrospection::registerCallbacks()
@@ -211,12 +214,9 @@ void Outrospection::initializeFramebuffer()
 void Outrospection::createShaders()
 {
 	objectShader = Shader("res/obj.vert", "res/obj.frag");
-	billboardShader = Shader("res/obj.vert", "res/lightless.frag"); // TODO change obj.vert to billboard.vert, testing
-	skyShader = Shader("res/sky.vert", "res/lightless.frag");
+	billboardShader = Shader("res/billboard.vert", "res/lightless.frag");
+	skyShader = Shader("res/sky.vert", "res/sky.frag");
 	screenShader = Shader("res/screen.vert", "res/screen.frag");
-
-	screenShader.use();
-	screenShader.setInt("screenTexture", 0);
 }
 
 // Set proper Viewport size when window is resized

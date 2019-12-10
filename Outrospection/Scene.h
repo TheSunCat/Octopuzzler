@@ -6,10 +6,10 @@
 #include <fstream>
 #include <sstream>
 #include "Shader.h"
-#include "Util.h"
+#include "util.h"
 #include "ObjectRail.h"
+#include "Character.h"
 
-using namespace std;
 class Scene {
 public:
 	// default ctor
@@ -21,15 +21,22 @@ public:
 
 	void draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShader);
 
-	enum State {Object, RailObject, Light, Sky};
+	enum State {Obj, RailObj, Light, Sky, Chara};
 
 	string name;
 
 	vector<ObjectGeneral> objects;
-	vector<ObjectGeneral> railObjs;
+	vector<ObjectRail> railObjs;
 	vector<ObjectGeneral> skies;
-
+	vector<Character> characters;
+private:
 	vector<string> parseLine(string line);
 
-	ObjectGeneral parseObj(vector<string> line);
+	ObjectGeneral parseObj(string line);
+	Character parseChar(string line);
+
+	// skybox
+	unsigned int loadCubemap(std::string name);
+	unsigned int cubemapTexture;
+	unsigned int skyboxVAO;
 };

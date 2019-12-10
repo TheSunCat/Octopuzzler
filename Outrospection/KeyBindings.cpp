@@ -5,6 +5,7 @@ bool keyBackward;
 bool keyLeft;
 bool keyRight;
 bool keyExit;
+bool keyJump;
 
 void updateKeys(GLFWwindow* window)
 {
@@ -17,4 +18,6 @@ void updateKeys(GLFWwindow* window)
 	keyRight = (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS);
 
 	keyExit = (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS);
+
+	keyJump = (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS);
 }

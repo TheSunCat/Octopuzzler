@@ -1,11 +1,12 @@
 #pragma once
 
-#include <string>
-#include <vector>
 #include <glm/glm.hpp>
+#include <GLAD\glad.h>
+#include "stb_image.h"
+#include <vector>
+#include <string>
 
-using namespace std;
-vector<string> split(string input, string delimiter);
+std::vector<std::string> split(std::string input, std::string delimiter);
 
 template <typename T>
 void push_all(vector<T> &input, vector<T> &add) {
@@ -14,3 +15,7 @@ void push_all(vector<T> &input, vector<T> &add) {
 }
 
 glm::vec3 vecFromYaw(float yawDeg);
+
+unsigned int TextureFromFile(const char* path, const std::string& directory);
+
+void subTextureFromFile(const char* path, const std::string& directory, unsigned int parentTexture);
