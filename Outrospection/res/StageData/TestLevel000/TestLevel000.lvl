@@ -1,5 +1,7 @@
-Object
-TestLevelGround000 | 0 0 0 | -90 0 0 | 1 1 1
-Brella | 0 10 0 | -90 0 0 | 1 1 1
+Obj
+TestLevelGround000|0 0 0|-90 0 0|1 1 1
+Brella|0 10 0|-90 0 0|1 1 1
+Chara
+fishlady|0 0 0
 Sky
-TestLevelSky000 | 0 0 0 | 0 0 0 | 10 10 10
+TestLevelSky000

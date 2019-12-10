@@ -19,4 +19,6 @@ public:
 	glm::vec3 playerPosition;
 	glm::vec3 playerRotation;
 	Character playerCharacter;
+
+	float playerSpeed = 2;
 };

@@ -76,7 +76,9 @@ public:
 													 // now set the sampler to the correct texture unit
 			string s = "diffuse";
 
-			glUniform1i(glGetUniformLocation(shader.ID, s.c_str()), i);
+			unsigned int id = glGetUniformLocation(shader.ID, s.c_str());
+
+			glUniform1i(id, i);
 			// and finally bind the texture
 			glBindTexture(GL_TEXTURE_2D, textures[i].id);
 		}

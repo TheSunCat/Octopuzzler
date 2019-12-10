@@ -1,37 +1,50 @@
 #include "Character.h"
-#include "Model.h"
 
-Character::Character(const std::string& _charId)
+Character::Character(const std::string& _charId, const glm::vec3& _pos, std::vector<Animation> anims) : charPosition(_pos)
 {
 	charId = _charId;
 
-	float quadVertices[] = {  // tex coords = (x + 0.5, y)
-		-0.5f,  0.0f,  0.0f,
-		 0.5f,  0.0f,  0.0f,
-		 0.5f,  1.0f,  0.0f,
-		-0.5f,  1.0f,  0.0f
-	};
+	for (Animation a : anims) {
 
-	// screen quad VAO
-	glGenVertexArrays(1, &quadVAO);
-	glGenBuffers(1, &quadVBO);
-	glBindVertexArray(quadVAO);
+		std::string aType;
 
-	glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+		switch (a.animType) {
+		case idle: {
+			aType = "idle";
+			break;
+		}
+		case walk: {
+			aType = "walk";
+			break;
+		}
+		case jump: {
+			aType = "jump";
+			break;
+		}
+		default: {
+			std::cerr << "invalid anim type :(" << std::endl;
+		}
+		}
 
-	// vertex coordinates
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		unsigned int firstTexture = TextureFromFile((aType.append("0")).c_str(), "./res/ObjectData/Characters/" + charId + "/");
+		a.texId = firstTexture;
 
-	charTexture = TextureFromFile((charId + ".png").c_str(), "./res/ObjectData/Characters", false);
+		for (int i = 1; i < a.frameCount; i++)
+		{
+			subTextureFromFile((aType.append(std::to_string(i))).c_str(), "./res/ObjectData/Characters/" + charId + "/", firstTexture);
+		}
+
+		std::pair<AnimType, Animation> insert(a.animType, a);
+
+		animations.insert(insert);
+	}
+
+	
 }
 
 void Character::draw(Shader& _shader)
 {
-	_shader.use();
-	glBindVertexArray(quadVAO);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, charTexture);
-	glDrawArrays(GL_TRIANGLES, 6, 4);
+	unsigned int curTexture = animations.at(AnimType::walk).texId;
+
+	charBillboard.draw(_shader, curTexture, charPosition);
 }
