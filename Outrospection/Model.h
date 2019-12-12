@@ -17,9 +17,8 @@
 #include <vector>
 #include "Mesh.h"
 #include "stb_image.h"
+#include "Util.h"
 using namespace std;
-
-inline unsigned int TextureFromFile(const char* path, const string& directory, bool gamma);
 
 class Model
 {
@@ -188,7 +187,7 @@ private:
 			{   // if texture hasn't been loaded already, load it
 				Texture texture;
 
-				texture.id = TextureFromFile(str.C_Str(), this->directory, true);
+				texture.id = TextureFromFile(str.C_Str(), this->directory);
 				texture.type = typeName;
 				texture.path = str.C_Str();
 				textures.push_back(texture);

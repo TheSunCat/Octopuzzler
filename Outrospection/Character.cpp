@@ -26,25 +26,29 @@ Character::Character(const std::string& _charId, const glm::vec3& _pos, std::vec
 		}
 		}
 
-		unsigned int firstTexture = TextureFromFile((aType.append("0")).c_str(), "./res/ObjectData/Characters/" + charId + "/");
-		a.texId = firstTexture;
-
-		for (int i = 1; i < a.frameCount; i++)
+		for (int i = 0; i < a.frameCount; i++)
 		{
-			subTextureFromFile((aType.append(std::to_string(i))).c_str(), "./res/ObjectData/Characters/" + charId + "/", firstTexture);
+			unsigned int tex = TextureFromFile((aType + std::to_string(i) + ".png").c_str(), "./res/ObjectData/Characters/" + charId + "/");
+			a.frames.push_back(tex);
 		}
 
-		std::pair<AnimType, Animation> insert(a.animType, a);
-
-		animations.insert(insert);
+		animations.push_back(a);
 	}
-
-	
 }
 
 void Character::draw(Shader& _shader)
 {
-	unsigned int curTexture = animations.at(AnimType::walk).texId;
+	Animation& a = animations[0];
 
-	charBillboard.draw(_shader, curTexture, charPosition);
+	charBillboard.draw(_shader, charPosition, a);
+	
+	a.frameTally++;
+
+	if (a.frameTally > a.frameLength) {
+		a.frameTally = 0;
+		if (a.curFrame < (a.frameCount - 1))
+			a.curFrame++;
+		else
+			a.curFrame = 0;
+	}
 }

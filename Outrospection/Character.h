@@ -5,7 +5,7 @@
 #include "Billboard.h"
 #include <unordered_map>
 #include "Types.h"
-#include "util.h"
+#include "Util.h"
 
 class Character {
 public:
@@ -20,7 +20,7 @@ public:
 private:
 	std::string charId;
 
-	std::unordered_map<AnimType, Animation> animations;
+	std::vector<Animation> animations;
 
 	Billboard charBillboard;
 };

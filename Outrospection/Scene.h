@@ -6,7 +6,6 @@
 #include <fstream>
 #include <sstream>
 #include "Shader.h"
-#include "util.h"
 #include "ObjectRail.h"
 #include "Character.h"
 
