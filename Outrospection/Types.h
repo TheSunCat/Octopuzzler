@@ -9,6 +9,11 @@ enum AnimType {
 
 struct Animation {
 	AnimType animType;
-	unsigned int texId;
 	unsigned int frameCount;
+
+	unsigned int frameLength;
+	unsigned int frameTally;
+
+	unsigned int curFrame;
+	std::vector<unsigned int> frames;
 };

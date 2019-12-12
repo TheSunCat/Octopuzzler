@@ -200,6 +200,7 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="ObjectRail.h" />
+    <ClInclude Include="OpenGL.h" />
     <ClInclude Include="Outrospection.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerController.h" />

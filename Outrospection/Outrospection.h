@@ -4,10 +4,14 @@
 #include "Player.h"
 #include "PlayerController.h"
 #include "Camera.h"
+#include "OpenGL.h"
+#include "Constants.h"
 
 class Outrospection {
 public:
 	Outrospection();
+
+	OpenGL opengl;
 
 	void run();
 
@@ -38,9 +42,6 @@ private:
 	unsigned int textureColorbuffer;
 	unsigned int quadVAO;
 
-	const unsigned int SCR_WIDTH = 1152;
-	const unsigned int SCR_HEIGHT = 648;
-
 	// camera stuff
 	Camera camera = Camera(glm::vec3(0.0f, 0.0f, 3.0f));
 	float lastX = SCR_HEIGHT / 2, lastY = SCR_WIDTH / 2;
@@ -50,8 +51,6 @@ private:
 	static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 	static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
-	void initOpenGL();
 	void registerCallbacks();
-	void initializeFramebuffer();
 	void createShaders();
 };

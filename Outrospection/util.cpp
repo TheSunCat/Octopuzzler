@@ -36,11 +36,10 @@ unsigned int TextureFromFile(const char* path, const std::string& directory)
 	std::string filename = std::string(path);
 	filename = directory + '/' + filename;
 
-	GLuint tex;
+	unsigned int tex;
+	int width, height;
 	glGenTextures(1, &tex);
 
-	int width = 0;
-	int height = 0;
 	int nrComponents = 0;
 	unsigned char* data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
 	if (data)
@@ -53,7 +52,7 @@ unsigned int TextureFromFile(const char* path, const std::string& directory)
 		else if (nrComponents == 4)
 			format = GL_RGBA;
 		else // TODO error reporting
-			return -1;
+			return NULL;
 
 		glBindTexture(GL_TEXTURE_2D, tex);
 		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
@@ -75,42 +74,22 @@ unsigned int TextureFromFile(const char* path, const std::string& directory)
 	return tex;
 }
 
-void subTextureFromFile(const char* path, const std::string& directory, unsigned int parentTexture)
+unsigned char* DataFromFile(const char* path, const std::string& directory, int* widthOut, int* heightOut)
 {
 	std::string filename = std::string(path);
 	filename = directory + '/' + filename;
 
-	glBindTexture(GL_TEXTURE_2D, parentTexture);
-
-	int width = 0;
-	int height = 0;
 	int nrComponents = 0;
-	unsigned char* data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
+	unsigned char* data = stbi_load(filename.c_str(), widthOut, heightOut, &nrComponents, 0);
 	if (data)
 	{
-		GLenum format;
-		if (nrComponents == 1)
-			format = GL_RED;
-		else if (nrComponents == 3)
-			format = GL_RGB;
-		else if (nrComponents == 4)
-			format = GL_RGBA;
-		else
-			return; // ERROR BEEP BOOP
-
-		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, format, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
 		stbi_image_free(data);
 	}
 	else
 	{
-		std::cout << "Texture failed to load at path: " << filename << std::endl;
+		std::cout << "Texture anim failed to load at path: " << filename << std::endl;
 		stbi_image_free(data);
 	}
+
+	return data;
 }
