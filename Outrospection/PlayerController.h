@@ -9,7 +9,7 @@ class PlayerController {
 public:
 	void updatePlayer(Player* playerIn, float deltaTime);
 
-	void updatePhysics(Player* playerIn, float deltaTime);
+	void updatePhysics(Player* playerIn, const std::vector<Triangle>& collisionData, float deltaTime);
 
 	void moveForward(Player* playerIn, float deltaTime);
 
@@ -22,6 +22,6 @@ public:
 private:
 	glm::vec3 playerVelocity;
 
-	bool canJump = false;
+	bool isGrounded = false;
 	bool jumping = false;
 };

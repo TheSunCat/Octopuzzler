@@ -5,6 +5,8 @@
 #include "stb_image.h"
 #include <vector>
 #include <string>
+#include <iostream>
+#include "Types.h"
 
 std::vector<std::string> split(std::string input, std::string delimiter);
 
@@ -18,5 +20,8 @@ glm::vec3 vecFromYaw(float yawDeg);
 
 unsigned int TextureFromFile(const char* path, const std::string& directory);
 
-
 unsigned char* DataFromFile(const char* path, const std::string& directory, int* widthOut, int* heightOut);
+
+float rayCast(
+	const Ray& ray,
+	const Triangle& tri);

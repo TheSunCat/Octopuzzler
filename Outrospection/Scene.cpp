@@ -89,6 +89,9 @@ void Scene::loadScene() {
 		else if (line.compare("Chara") == 0) {
 			currentState = Chara;
 		}
+		else if (line.compare("Col") == 0) {
+			currentState = Col;
+		}
 		else {
 			switch (currentState) {
 			case Obj: {
@@ -121,6 +124,11 @@ void Scene::loadScene() {
 			case Chara: {
 				Character character = parseChar(line);
 				characters.push_back(character);
+			}
+			case Col: {
+				vector<Triangle> tris = parseCollision(line);
+
+				push_all(collision, tris);
 			}
 			}
 		}
@@ -194,6 +202,34 @@ Character Scene::parseChar(string line)
 	Character chara(lines[0], pos, { Animation{ AnimType::idle, 0, 1 } });
 
 	return chara;
+}
+
+vector<Triangle> Scene::parseCollision(string name)
+{
+	vector<Triangle> ret;
+
+	ifstream sceneFile("./res/ObjectData/" + name + "/" + name + ".ocl");
+	for (std::string line; getline(sceneFile, line); )
+	{
+		vector<string> verticesStr = split(line, " | ");
+
+		vector<glm::vec3> vertices;
+
+		for (string s : verticesStr) {
+			vector<string> sStr = split(s, " ");
+
+			vertices.push_back(glm::vec3(stof(sStr[0]), stof(sStr[1]), stof(sStr[2])));
+		}
+
+		glm::vec3 v0v1 = vertices[1]- vertices[0];
+		glm::vec3 v0v2 = vertices[2]- vertices[0];
+
+		glm::vec3 normal = glm::cross(v0v1, v0v2);
+
+		ret.push_back(Triangle{ vertices[0], vertices[1], vertices[2], normal });
+	}
+
+	return ret;
 }
 
 unsigned int Scene::loadCubemap(std::string name)
