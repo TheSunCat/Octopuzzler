@@ -32,7 +32,6 @@ void Outrospection::runGameLoop() {
 
 
 	// process keys
-
 	updateKeys(gameWindow);
 
 	// exit game on next loop iteration
@@ -43,10 +42,10 @@ void Outrospection::runGameLoop() {
 	player.playerRotation.y = camera.Yaw;
 
 	playerController.updatePlayer(&player, deltaTime);
-	camera.Position = player.playerPosition - (vecFromYaw(camera.Yaw) * glm::vec3(4.0)) + glm::vec3(0.0, 1.0, 0.0);
-
-	playerController.updatePhysics(&player, deltaTime);
+	playerController.updatePhysics(&player, scene.collision, deltaTime);
 	//scene.updatePhysics();
+
+	camera.Position = player.playerPosition - (vecFromYaw(camera.Yaw) * glm::vec3(4.0)) + glm::vec3(0.0, 1.0, 0.0);
 
 	// TODO execute scheduled tasks
 	// ----------------------------
@@ -130,10 +129,10 @@ void Outrospection::registerCallbacks()
 
 void Outrospection::createShaders()
 {
-	objectShader = Shader("res/obj.vert", "res/obj.frag");
-	billboardShader = Shader("res/billboard.vert", "res/lightless.frag");
-	skyShader = Shader("res/sky.vert", "res/sky.frag");
-	screenShader = Shader("res/screen.vert", "res/screen.frag");
+	objectShader    = Shader("obj"      , "obj"      );
+	billboardShader = Shader("billboard", "lightless");
+	skyShader       = Shader("sky"      , "sky"      );
+	screenShader    = Shader("screen"   , "screen"   );
 }
 
 // Set proper Viewport size when window is resized

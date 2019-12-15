@@ -30,9 +30,6 @@
     <ClCompile Include="Model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ObjectGeneral.h">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ObjectGeneral.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -63,14 +60,11 @@
     <ClCompile Include="Util.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ObjectGeneral.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Shader.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="stb_image.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -116,19 +110,14 @@
     <ClInclude Include="OpenGL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\obj.frag" />
-    <None Include="res\obj.vert" />
-    <None Include="res\light.vert">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="packages.config" />
-    <None Include="res\screen.frag" />
-    <None Include="res\screen.vert" />
-    <None Include="res\billboard.vert" />
-    <None Include="res\lightless.frag" />
-    <None Include="res\sky.vert" />
-    <None Include="res\sky.frag" />
   </ItemGroup>
 </Project>

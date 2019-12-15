@@ -17,3 +17,14 @@ struct Animation {
 	unsigned int curFrame;
 	std::vector<unsigned int> frames;
 };
+
+struct Triangle {
+	glm::vec3 v0;
+	glm::vec3 v1;
+	glm::vec3 v2;
+};
+
+struct Ray {
+	glm::vec3 origin; // where the ray starts
+	glm::vec3 direction; // direction the ray is going in
+};

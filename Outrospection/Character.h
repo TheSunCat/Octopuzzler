@@ -13,6 +13,8 @@ public:
 
 	Character(const std::string& _charId, const glm::vec3& _pos, std::vector<Animation> anims);
 
+	void setAnimation(int _index);
+
 	void draw(Shader& _shader);
 
 	glm::vec3 charPosition;
@@ -20,6 +22,7 @@ public:
 private:
 	std::string charId;
 
+	int curAnimIndex = 0;
 	std::vector<Animation> animations;
 
 	Billboard charBillboard;

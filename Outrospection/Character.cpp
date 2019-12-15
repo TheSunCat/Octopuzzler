@@ -36,9 +36,14 @@ Character::Character(const std::string& _charId, const glm::vec3& _pos, std::vec
 	}
 }
 
+void Character::setAnimation(int _index)
+{
+	curAnimIndex = _index;
+}
+
 void Character::draw(Shader& _shader)
 {
-	Animation& a = animations[0];
+	Animation& a = animations[curAnimIndex];
 
 	charBillboard.draw(_shader, charPosition, a);
 	

@@ -212,15 +212,6 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="res\billboard.vert" />
-    <None Include="res\light.vert" />
-    <None Include="res\obj.frag" />
-    <None Include="res\obj.vert" />
-    <None Include="res\screen.frag" />
-    <None Include="res\screen.vert" />
-    <None Include="res\lightless.frag" />
-    <None Include="res\sky.frag" />
-    <None Include="res\sky.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -14,6 +14,8 @@ public:
 
 	void rotate(float yaw);
 
+	void setAnimation(int _index);
+
 	void draw(Shader& objShader);
 
 	glm::vec3 playerPosition;

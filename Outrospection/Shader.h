@@ -19,7 +19,13 @@ public:
 	Shader() = default;
 
 	// constructor reads and builds the shader
-	Shader(const GLchar* vertexPath, const GLchar* fragmentPath) {
+	Shader(const GLchar* vertexName, const GLchar* fragmentName) {
+		std::string vName(vertexName);
+		std::string veName(("res/ShaderData/" + vName + ".vert"));
+		const GLchar* vertexPath = veName.c_str();
+		std::string fName(fragmentName);
+		std::string frName("res/ShaderData/" + fName + ".frag");
+		const GLchar* fragmentPath = (frName).c_str();
 
 		// 1. retrieve the vertex/fragment source code from filePath
 		std::string vertexCode;
