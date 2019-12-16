@@ -41,15 +41,7 @@ void PlayerController::updatePhysics(Player* playerIn, const std::vector<Triangl
 	// get the player's down-facing ray
 	Ray downRay = Ray{ playerIn->playerPosition, glm::vec3(0.0, 1.0, 0.0) };
 
-	//float cast = std::numeric_limits<float>::max();
-
-	//for (Triangle curTri : collisionData) {
-	//	float curCast = rayCast(downRay, curTri);
-	//	if (curCast > 0 && curCast < cast)
-	//		cast = curCast;
-	//}
-
-	float cast = rayCast(downRay, Triangle { glm::vec3(-1.0, 1.0, -1.0), glm::vec3(-1.0, 1.0, 1.0), glm::vec3(1.0, 0.0, 1.0) } );
+	float cast = rayCast(downRay, Triangle { glm::vec3(-1.0, 2.0, -1.0), glm::vec3(-1.0, 2.0, 1.0), glm::vec3(1.0, 2.0, 1.0) } );
 
 	std::cout << "col height: " << cast << ", player height: " << playerIn->playerPosition.y << std::endl;
 

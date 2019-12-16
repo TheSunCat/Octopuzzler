@@ -221,12 +221,7 @@ vector<Triangle> Scene::parseCollision(string name)
 			vertices.push_back(glm::vec3(stof(sStr[0]), stof(sStr[1]), stof(sStr[2])));
 		}
 
-		glm::vec3 v0v1 = vertices[1]- vertices[0];
-		glm::vec3 v0v2 = vertices[2]- vertices[0];
-
-		glm::vec3 normal = glm::cross(v0v1, v0v2);
-
-		ret.push_back(Triangle{ vertices[0], vertices[1], vertices[2], normal });
+		ret.push_back(Triangle{ vertices[0], vertices[1], vertices[2] });
 	}
 
 	return ret;
