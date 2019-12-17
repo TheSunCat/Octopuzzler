@@ -17,6 +17,8 @@ Outrospection::Outrospection() : opengl() // init ogl
 void Outrospection::run() {
 	running = true;
 
+	cout << "The test was successful! Peck yeah!" << endl;
+
 	while (running)
 	{
 		runGameLoop();
