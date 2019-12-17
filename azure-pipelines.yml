@@ -34,8 +34,8 @@ steps:
 
 - task: ArchiveFiles@2
   inputs:
-    rootFolderOrFile: 'd:\a\1\s\x64\'
+    rootFolderOrFile: '$(Build.ArtifactStagingDirectory)'
     includeRootFolder: false
     archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/Release.zip'
+    archiveFile: 'Release.zip'
     replaceExistingArchive: true
