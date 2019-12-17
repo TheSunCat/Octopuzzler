@@ -6,3 +6,5 @@ The game works in OpenGL, using modern style and should be compatible with any W
 can run OpenGL 3.0+.
 
 Please open an Issue if you encounter an issue, or reach me on Discord.
+
+Or ya know just code it yourself.
