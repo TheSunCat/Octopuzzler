@@ -37,5 +37,5 @@ steps:
     rootFolderOrFile: '$(Build.ArtifactStagingDirectory)'
     includeRootFolder: false
     archiveType: 'zip'
-    archiveFile: 'Release-latest.zip'
+    archiveFile: 'Release-latest-x64.zip'
     replaceExistingArchive: true
