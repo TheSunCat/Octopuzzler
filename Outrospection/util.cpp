@@ -103,56 +103,36 @@ float rayCast(
 	glm::vec3 v1 = tri.v1;
 	glm::vec3 v2 = tri.v2;
 
-	// compute plane's normal
 	glm::vec3 v0v1 = v1 - v0;
 	glm::vec3 v0v2 = v2 - v0;
-	// no need to normalize
-	glm::vec3 N = glm::cross(v0v1, v0v2); // N
 
-	// get info from ray
-	glm::vec3 orig = ray.origin;
-	glm::vec3 dir = ray.direction;
+	glm::vec3 pvec = cross(ray.direction, v0v2);
 
-	float t; // distance of ray from triangle, if no hit = -1
+	float det = dot(v0v1, pvec);
 
-	// find intersection point with the tri's plane
+	if (abs(det) < 0.000001)
+		return -INFINITY;
 
-	// check if ray and plane are parallel, thus avoiding divide by 0
-	float NdotDir = glm::dot(N, dir);
-	if (fabs(NdotDir) < std::numeric_limits<float>::epsilon()) // epsilon = almost 0 
-		return -1; // ray and plane are parallel, return no hit 
+	float invDet = 1.0 / det;
 
-	// compute d parameter using equation 2
-	float d = glm::dot(N, v0);
+	glm::vec3 tvec = ray.origin - v0;
 
-	// compute t (equation 3)
-	t = -(glm::dot(N, orig) + d) / NdotDir;
-	// check if the triangle is behind the ray
-	if (t < 0) return t; // the triangle is behind 
+	float u = dot(tvec, pvec) * invDet;
 
-	// compute the intersection point using equation 1
-	glm::vec3 P = orig + t * dir;
+	if (u < 0 || u > 1)
+		return -INFINITY;
 
-	// Step 2: inside-outside test
-	glm::vec3 C; // vector perpendicular to triangle's plane 
+	glm::vec3 qvec = cross(tvec, v0v1);
 
-	// edge 0
-	glm::vec3 edge0 = v1 - v0;
-	glm::vec3 vp0 = P - v0;
-	C = glm::cross(edge0, vp0);
-	if (glm::dot(N, C) < 0) return -1; // P is on the right side 
+	float v = dot(ray.direction, qvec) * invDet;
 
-	// edge 1
-	glm::vec3 edge1 = v2 - v1;
-	glm::vec3 vp1 = P - v1;
-	C = glm::cross(edge1, vp1);
-	if (glm::dot(N, C) < 0)  return -1; // P is on the right side 
+	if (v < 0 || u + v > 1)
+		return -INFINITY;
 
-	// edge 2
-	glm::vec3 edge2 = v0 - v2;
-	glm::vec3 vp2 = P - v2;
-	C = glm::cross(edge2, vp2);
-	if (glm::dot(N, C) < 0) return -1; // P is on the right side; 
+	float ret = dot(v0v2, qvec) * invDet;
 
-	return t; // this ray hits the triangle
+	if(ret < 0)
+		return -INFINITY;
+
+	return ret;
 }
