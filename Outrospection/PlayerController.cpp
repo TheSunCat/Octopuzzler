@@ -1,5 +1,6 @@
 #include "PlayerController.h"
 #include "Constants.h"
+#include <glm\gtx\string_cast.hpp>
 
 void PlayerController::updatePlayer(Player* playerIn, float deltaTime)
 {
@@ -41,16 +42,36 @@ void PlayerController::updatePhysics(Player* playerIn, const std::vector<Triangl
 	// get the player's down-facing ray
 	Ray downRay = Ray{ playerIn->playerPosition, glm::vec3(0.0, 1.0, 0.0) };
 
-	float cast = rayCast(downRay, Triangle { glm::vec3(-1.0, 2.0, -1.0), glm::vec3(-1.0, 2.0, 1.0), glm::vec3(1.0, 2.0, 1.0) } );
+	float cast = rayCast(downRay, Triangle { glm::vec3(10.0, 0.0, 10.0), glm::vec3(10.0, 0.0, -10.0), glm::vec3(-10.0, 0.0, 0.0) } );
 
-	std::cout << "col height: " << cast << ", player height: " << playerIn->playerPosition.y << std::endl;
+	//std::cout << "col height: " << cast << ", player height: " << playerIn->playerPosition.y << std::endl;
 
-	if (cast >= 0 && cast < 0.5) {
-		//playerVelocity = glm::vec3(0.0);
-		//std::cout << "colliding " << glfwGetTime() << std::endl;
+	//if (cast >= 0 && cast < 0.05) {
+	//	std::cout << "colliding " << glfwGetTime() << std::endl;
+	//}
+
+	playerVelocity *= deltaTime;
+
+	Ray frontRay = Ray{ playerIn->playerPosition, glm::normalize(playerVelocity) };
+
+	cast = rayCast(frontRay, Triangle{ glm::vec3(10.0, 0.0, 10.0), glm::vec3(10.0, 0.0, -10.0), glm::vec3(0.0, 10.0, 0.0) });
+
+	std::cout << "col dist: " << cast << ", player pos: " << glm::to_string(playerIn->playerPosition) << std::endl;
+
+	if (glm::length(playerVelocity) != 0 && cast != -INFINITY) {
+
+		cast *= deltaTime;
+
+		if (cast <= glm::length(playerVelocity)) {
+			std::cout << "colliding " << glfwGetTime() << std::endl;
+
+			playerVelocity *= cast / glm::length(playerVelocity);
+		}
 	}
 
-	playerIn->move(playerVelocity * deltaTime);
+	playerIn->move(playerVelocity);
+
+	playerVelocity /= deltaTime;
 
 	// slow player down
 	playerVelocity.x /= FRICTION;
