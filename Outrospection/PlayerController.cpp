@@ -1,11 +1,10 @@
 #include "PlayerController.h"
 #include "Constants.h"
-#include <glm\gtx\string_cast.hpp>
 
 void PlayerController::updatePlayer(Player* playerIn, float deltaTime)
 {
 	if (keyJump && isGrounded) {
-		playerIn->move(glm::vec3(0, -GRAVITY / 4, 0));
+		playerVelocity.y = -GRAVITY * 30;
 		//playerIn->setAnimation(1);
 	}
 
@@ -32,42 +31,44 @@ void PlayerController::updatePlayer(Player* playerIn, float deltaTime)
 
 void PlayerController::updatePhysics(Player* playerIn, const std::vector<Triangle>& collisionData, float deltaTime)
 {
-	isGrounded = true;
 	// gravity
-	//playerVelocity += glm::vec3(0, GRAVITY, 0);
+	if(playerVelocity.y > GRAVITY * 8) // terminal velocity is GRAVITY * 8
+		playerVelocity += glm::vec3(0, GRAVITY, 0);
 
-	// collision calculations
-	// ----------------------
+	// get the player's down-facing ray, for gravity
+	Ray downRay = Ray{ playerIn->playerPosition, glm::vec3(0.0, -1.0, 0.0) };
 
-	// get the player's down-facing ray
-	Ray downRay = Ray{ playerIn->playerPosition, glm::vec3(0.0, 1.0, 0.0) };
+	// temp hardcoded collision data because filetype is buggy
+	std::vector<Triangle> colData = {
+		Triangle { glm::vec3(10.0, 0.0, 10.0), glm::vec3(10.0, 0.0, -10.0), glm::vec3(-10.0, 0.0, 0.0) }
+	};
 
-	float cast = rayCast(downRay, Triangle { glm::vec3(10.0, 0.0, 10.0), glm::vec3(10.0, 0.0, -10.0), glm::vec3(-10.0, 0.0, 0.0) } );
+	isGrounded = false; // always assume player isn't grounded until we know.
 
-	//std::cout << "col height: " << cast << ", player height: " << playerIn->playerPosition.y << std::endl;
+	for (Triangle curTri : colData) {
+		float cast = rayCast(downRay, curTri);
 
-	//if (cast >= 0 && cast < 0.05) {
-	//	std::cout << "colliding " << glfwGetTime() << std::endl;
-	//}
+		if (!isGrounded)
+			isGrounded = cast != -INFINITY && cast <= 0.05; // if cast is -INFINITY, it means the ray doesn't collide with the tri ever
+															// if cast is close to zero, however, it means we're pretty much touching it
 
-	playerVelocity *= deltaTime;
+		if (cast == -INFINITY)
+			continue;
 
-	Ray frontRay = Ray{ playerIn->playerPosition, glm::normalize(playerVelocity) };
 
-	cast = rayCast(frontRay, Triangle{ glm::vec3(10.0, 0.0, 10.0), glm::vec3(10.0, 0.0, -10.0), glm::vec3(0.0, 10.0, 0.0) });
+		// this is so we don't fall thru floors
+		// castGravSum will be negative if applying gravity will cause us to phase thru the floor like a ghost, spooky
+		float castGravSum = cast + GRAVITY;
 
-	std::cout << "col dist: " << cast << ", player pos: " << glm::to_string(playerIn->playerPosition) << std::endl;
+		if (castGravSum < 0 && playerVelocity.y < 0) { // if we'd go thru the floor *and* we're moving down
 
-	if (glm::length(playerVelocity) != 0 && cast != -INFINITY) {
-
-		cast *= deltaTime;
-
-		if (cast <= glm::length(playerVelocity)) {
-			std::cout << "colliding " << glfwGetTime() << std::endl;
-
-			playerVelocity *= cast / glm::length(playerVelocity);
+			playerVelocity.y = -cast * 10;
 		}
 	}
+
+	std::cout << " grounded: " << isGrounded << std::endl;
+
+	playerVelocity *= deltaTime;
 
 	playerIn->move(playerVelocity);
 

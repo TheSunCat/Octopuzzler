@@ -10,8 +10,8 @@ enum AnimType {
 struct Animation {
 	AnimType animType;
 	unsigned int frameCount;
-
 	unsigned int frameLength;
+
 	unsigned int frameTally;
 
 	unsigned int curFrame;
