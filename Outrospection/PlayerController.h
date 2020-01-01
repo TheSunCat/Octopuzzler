@@ -7,17 +7,11 @@
 
 class PlayerController {
 public:
-	void updatePlayer(Player* playerIn, float deltaTime);
+	void acceleratePlayer(Player* playerIn);
 
-	void updatePhysics(Player* playerIn, const std::vector<Triangle>& collisionData, float deltaTime);
-
-	void moveForward(Player* playerIn, float deltaTime);
-
-	void moveBackward(Player* playerIn, float deltaTime);
-
-	void moveLeft(Player* playerIn, float deltaTime);
-
-	void moveRight(Player* playerIn, float deltaTime);
+	void collidePlayer(Player* playerIn, const std::vector<Triangle>& collisionData, float deltaTime);
+	
+	void movePlayer(Player* playerIn);
 
 private:
 	glm::vec3 playerVelocity;
