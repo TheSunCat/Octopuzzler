@@ -1,77 +1,26 @@
 #include "PlayerController.h"
 #include "Constants.h"
-#include <glm\gtx\string_cast.hpp>
 
-void PlayerController::updatePlayer(Player* playerIn, float deltaTime)
+void PlayerController::acceleratePlayer(Player* playerIn)
 {
-	if (keyJump && isGrounded) {
-		playerIn->move(glm::vec3(0, -GRAVITY / 4, 0));
-		//playerIn->setAnimation(1);
-	}
-
 	if (keyForward) {
-		moveForward(playerIn, deltaTime);
+		playerVelocity += (vecFromYaw(playerIn->playerRotation.y));
 	}
 
 	if (keyBackward) {
-		moveBackward(playerIn, deltaTime);
+		playerVelocity += -(vecFromYaw(playerIn->playerRotation.y));
 	}
 
 	if (keyLeft) {
-		moveLeft(playerIn, deltaTime);
+		playerVelocity += vecFromYaw(playerIn->playerRotation.y - 90);
 	}
 
 	if (keyRight) {
-		moveRight(playerIn, deltaTime);
+		playerVelocity += vecFromYaw(playerIn->playerRotation.y + 90);
 	}
 
-	if (keyAttack) {
-		playerIn->move(glm::vec3(0,  GRAVITY / 4, 0));
-	}
-}
-
-void PlayerController::updatePhysics(Player* playerIn, const std::vector<Triangle>& collisionData, float deltaTime)
-{
-	isGrounded = true;
-	// gravity
-	//playerVelocity += glm::vec3(0, GRAVITY, 0);
-
-	// collision calculations
-	// ----------------------
-
-	// get the player's down-facing ray
-	Ray downRay = Ray{ playerIn->playerPosition, glm::vec3(0.0, 1.0, 0.0) };
-
-	float cast = rayCast(downRay, Triangle { glm::vec3(10.0, 0.0, 10.0), glm::vec3(10.0, 0.0, -10.0), glm::vec3(-10.0, 0.0, 0.0) } );
-
-	//std::cout << "col height: " << cast << ", player height: " << playerIn->playerPosition.y << std::endl;
-
-	//if (cast >= 0 && cast < 0.05) {
-	//	std::cout << "colliding " << glfwGetTime() << std::endl;
-	//}
-
-	playerVelocity *= deltaTime;
-
-	Ray frontRay = Ray{ playerIn->playerPosition, glm::normalize(playerVelocity) };
-
-	cast = rayCast(frontRay, Triangle{ glm::vec3(10.0, 0.0, 10.0), glm::vec3(10.0, 0.0, -10.0), glm::vec3(0.0, 10.0, 0.0) });
-
-	std::cout << "col dist: " << cast << ", player pos: " << glm::to_string(playerIn->playerPosition) << std::endl;
-
-	if (glm::length(playerVelocity) != 0 && cast != -INFINITY) {
-
-		cast *= deltaTime;
-
-		if (cast <= glm::length(playerVelocity)) {
-			std::cout << "colliding " << glfwGetTime() << std::endl;
-
-			playerVelocity *= cast / glm::length(playerVelocity);
-		}
-	}
-
-	playerIn->move(playerVelocity);
-
-	playerVelocity /= deltaTime;
+	//if(playerVelocity.y > GRAVITY * 8) // GRAVITY * 8 is terminal velocity
+	//	playerVelocity.y += GRAVITY;
 
 	// slow player down
 	playerVelocity.x /= FRICTION;
@@ -82,32 +31,75 @@ void PlayerController::updatePhysics(Player* playerIn, const std::vector<Triangl
 		playerVelocity.x = 0;
 	if (abs(playerVelocity.z) < 0.001)
 		playerVelocity.z = 0;
+
+	playerVelocity /= 10; // slow down bc no deltatime
+	
+	// DEBUG move up and down
+	if (keyAttack) {
+		playerIn->move(glm::vec3(0,  GRAVITY / 4, 0));
+	}
+
+	if (keyJump) {
+		playerIn->move(glm::vec3(0, -GRAVITY / 4, 0));
+	}
 }
 
-void PlayerController::moveForward(Player* playerIn, float deltaTime)
+void PlayerController::collidePlayer(Player* playerIn, const std::vector<Triangle>& collisionData, float deltaTime)
 {
-	glm::vec3 vel = (vecFromYaw(playerIn->playerRotation.y));
-	playerVelocity.x += vel.x;
-	playerVelocity.z += vel.z;
+	if (playerVelocity == glm::vec3(0.0))
+		return;
+
+	// debug hardcoded collision data
+	Triangle t = Triangle{ glm::vec3(5, 0, 10), glm::vec3(5, 0, -10), glm::vec3(5, 10, 0) };
+	t.n = getNormal(t);
+
+	Triangle t1 = Triangle{ glm::vec3(5.5, 0, 10), glm::vec3(5.5, 0, -10), glm::vec3(5.5, 10, 0) };
+	t1.n = getNormal(t1);
+
+	Triangle t2 = Triangle{ glm::vec3(10, 0, 10), glm::vec3(10, 0, -10), glm::vec3(-10, 0, 0) };
+	t2.n = getNormal(t2);
+
+	std::vector<Triangle> colData = {
+		t, t1, t2
+	};
+
+	Ray playerRay = Ray{ playerIn->playerPosition, normalize(playerVelocity) };
+	Ray downRay = Ray{ playerIn->playerPosition, glm::vec3(0, -1, 0) };
+
+	RayHit closest;
+
+	float playerVelMagnitude = glm::length(playerVelocity);
+
+	for (Triangle curTri : colData)
+	{
+		// wall collision
+		RayHit curHit = rayCast(playerRay, curTri);
+
+		if (curHit.dist != -INFINITY) {
+			if (curHit.dist < playerVelMagnitude) {
+				glm::vec3 ghostPosition = playerIn->playerPosition + playerVelocity;
+
+				Ray ghostRay = { ghostPosition, curTri.n };
+
+				glm::vec3 notGhostPosition = rayCastPlane(ghostRay, curTri);
+
+				playerVelocity = (notGhostPosition - playerIn->playerPosition) + (curTri.n * 0.01f);
+			}
+		}
+
+		// ground collision
+		RayHit downHit = rayCast(downRay, curTri);
+
+		if (downHit.dist != -INFINITY) {
+			if (downHit.dist < -playerVelocity.y) {
+				std::cout << "grounded ";
+			}
+		}
+	}
 }
 
-void PlayerController::moveBackward(Player* playerIn, float deltaTime)
+void PlayerController::movePlayer(Player* playerIn)
 {
-	glm::vec3 vel = -(vecFromYaw(playerIn->playerRotation.y));
-	playerVelocity.x += vel.x;
-	playerVelocity.z += vel.z;
-}
-
-void PlayerController::moveLeft(Player* playerIn, float deltaTime)
-{
-	glm::vec3 vel = vecFromYaw(playerIn->playerRotation.y - 90);
-	playerVelocity.x += vel.x;
-	playerVelocity.z += vel.z;
-}
-
-void PlayerController::moveRight(Player* playerIn, float deltaTime)
-{
-	glm::vec3 vel = vecFromYaw(playerIn->playerRotation.y + 90);
-	playerVelocity.x += vel.x;
-	playerVelocity.z += vel.z;
+	playerIn->move(playerVelocity);
+	std::cout << vecToStr(playerIn->playerPosition) << std::endl;
 }

@@ -30,6 +30,13 @@ glm::vec3 vecFromYaw(float yawDeg)
 	return front;
 }
 
+std::string vecToStr(glm::vec3 vec)
+{
+	std::stringstream ss;
+	ss << vec.x << ", " << vec.y << ", " << vec.z;
+	return ss.str();
+}
+
 unsigned int TextureFromFile(const char* path, const std::string& directory)
 {
 	std::string filename = std::string(path);
@@ -93,8 +100,11 @@ unsigned char* DataFromFile(const char* path, const std::string& directory, int*
 	return data;
 }
 
-// thanks to https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/ray-triangle-intersection-geometric-solution
-float rayCast(
+// partly based on https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/ray-triangle-intersection-geometric-solution
+
+const RayHit noHit = RayHit{ -INFINITY, glm::vec3(0.0) };
+
+RayHit rayCast(
 	const Ray& ray,
 	const Triangle& tri)
 {
@@ -110,8 +120,9 @@ float rayCast(
 
 	float det = dot(v0v1, pvec);
 
-	if (abs(det) < 0.000001)
-		return -INFINITY;
+	// abs so that backfacing tris also get collided
+	if (abs(det) < 0.000001) // parallel
+		return noHit;
 
 	float invDet = 1.0 / det;
 
@@ -120,19 +131,37 @@ float rayCast(
 	float u = dot(tvec, pvec) * invDet;
 
 	if (u < 0 || u > 1)
-		return -INFINITY;
+		return noHit;
 
 	glm::vec3 qvec = cross(tvec, v0v1);
 
 	float v = dot(ray.direction, qvec) * invDet;
 
 	if (v < 0 || u + v > 1)
-		return -INFINITY;
+		return noHit;
 
 	float ret = dot(v0v2, qvec) * invDet;
 
 	if(ret < 0)
-		return -INFINITY;
+		return noHit;
 
-	return ret;
+	glm::vec3 hitPos = glm::normalize(ray.direction) * ret;
+
+	return RayHit{ ret, hitPos };
+}
+
+glm::vec3 rayCastPlane(Ray r, Triangle plane) {
+	glm::vec3 diff = r.origin - plane.v0;
+	float prod1 = glm::dot(diff, plane.n);
+	float prod2 = glm::dot(r.direction, plane.n);
+	float prod3 = prod1 / prod2;
+	return r.origin - r.direction * prod3;
+}
+
+glm::vec3 getNormal(Triangle t) {
+	glm::vec3 v0v1 = t.v1 - t.v0;
+	glm::vec3 v0v2 = t.v2 - t.v0;
+	glm::vec3 normal = glm::cross(v0v1, v0v2);
+
+	return normalize(normal);
 }

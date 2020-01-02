@@ -221,7 +221,11 @@ vector<Triangle> Scene::parseCollision(string name)
 			vertices.push_back(glm::vec3(stof(sStr[0]), stof(sStr[1]), stof(sStr[2])));
 		}
 
-		ret.push_back(Triangle{ vertices[0], vertices[1], vertices[2] });
+		Triangle tri = Triangle{ vertices[0], vertices[1], vertices[2] };
+
+		tri.n = getNormal(tri);
+
+		ret.push_back(tri);
 	}
 
 	return ret;
