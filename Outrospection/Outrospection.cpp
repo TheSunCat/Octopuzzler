@@ -11,7 +11,7 @@ Outrospection::Outrospection() : opengl() // init ogl
 	createShaders();
 
 	scene = Scene("TestLevel000");
-	player = Player(glm::vec3(0.0f), glm::vec3(0.0f));
+	player = Player(glm::vec3(0.0, 3.0, 0.0), glm::vec3(0.0f));
 }
 
 void Outrospection::run() {
@@ -41,8 +41,9 @@ void Outrospection::runGameLoop() {
 	// player always "faces" forward, so W goes away from camera
 	player.playerRotation.y = camera.Yaw;
 
-	playerController.updatePlayer(&player, deltaTime);
-	playerController.updatePhysics(&player, scene.collision, deltaTime);
+	playerController.acceleratePlayer(&player);
+	playerController.collidePlayer(&player, scene.collision, deltaTime);
+	playerController.movePlayer(&player);
 	//scene.updatePhysics();
 
 	camera.Position = player.playerPosition - (vecFromYaw(camera.Yaw) * glm::vec3(4.0)) + glm::vec3(0.0, 1.0, 0.0);

@@ -4,7 +4,7 @@
 #include <GLAD\glad.h>
 #include "stb_image.h"
 #include <vector>
-#include <string>
+#include <sstream>
 #include <iostream>
 #include "Types.h"
 
@@ -18,10 +18,16 @@ void push_all(std::vector<T> &input, std::vector<T> &add) {
 
 glm::vec3 vecFromYaw(float yawDeg);
 
+std::string vecToStr(glm::vec3 vec);
+
 unsigned int TextureFromFile(const char* path, const std::string& directory);
 
 unsigned char* DataFromFile(const char* path, const std::string& directory, int* widthOut, int* heightOut);
 
-float rayCast(
+RayHit rayCast(
 	const Ray& ray,
 	const Triangle& tri);
+
+glm::vec3 rayCastPlane(Ray r, Triangle plane);
+
+glm::vec3 getNormal(Triangle t);
