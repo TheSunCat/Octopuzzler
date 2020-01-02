@@ -28,8 +28,6 @@ RayHit rayCast(
 	const Ray& ray,
 	const Triangle& tri);
 
-inline bool hits(
-	const Ray& ray,
-	const Triangle& tri);
+glm::vec3 rayCastPlane(Ray r, Triangle plane);
 
 glm::vec3 getNormal(Triangle t);

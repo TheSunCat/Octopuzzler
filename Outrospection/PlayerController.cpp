@@ -49,40 +49,57 @@ void PlayerController::collidePlayer(Player* playerIn, const std::vector<Triangl
 	if (playerVelocity == glm::vec3(0.0))
 		return;
 
+	// debug hardcoded collision data
+	Triangle t = Triangle{ glm::vec3(5, 0, 10), glm::vec3(5, 0, -10), glm::vec3(5, 10, 0) };
+	t.n = getNormal(t);
+
+	Triangle t1 = Triangle{ glm::vec3(5.5, 0, 10), glm::vec3(5.5, 0, -10), glm::vec3(5.5, 10, 0) };
+	t1.n = getNormal(t1);
+
+	Triangle t2 = Triangle{ glm::vec3(10, 0, 10), glm::vec3(10, 0, -10), glm::vec3(-10, 0, 0) };
+	t2.n = getNormal(t2);
+
+	std::vector<Triangle> colData = {
+		t, t1, t2
+	};
+
 	Ray playerRay = Ray{ playerIn->playerPosition, normalize(playerVelocity) };
+	Ray downRay = Ray{ playerIn->playerPosition, glm::vec3(0, -1, 0) };
 
 	RayHit closest;
 
 	float playerVelMagnitude = glm::length(playerVelocity);
 
-	//Triangle t = Triangle{ glm::vec3(10, 0, 10), glm::vec3(10, 0, -10), glm::vec3(10, 10, 0) };
-	//t.n = getNormal(t);
-
-	//std::vector<Triangle> colData = {
-	//	t
-	//};
-
-	for (Triangle curTri : collisionData)
+	for (Triangle curTri : colData)
 	{
+		// wall collision
 		RayHit curHit = rayCast(playerRay, curTri);
 
-		if (curHit.dist == -INFINITY)
-			continue; // not hitting tri
+		if (curHit.dist != -INFINITY) {
+			if (curHit.dist < playerVelMagnitude) {
+				glm::vec3 ghostPosition = playerIn->playerPosition + playerVelocity;
 
-		if (curHit.dist < playerVelMagnitude) {
-			glm::vec3 normalizedPlayerVel = normalize(playerVelocity);
-			playerVelMagnitude = glm::length(playerVelocity);
+				Ray ghostRay = { ghostPosition, curTri.n };
 
-			glm::vec3 normalizedSlideVel = normalizedPlayerVel + curTri.n;
+				glm::vec3 notGhostPosition = rayCastPlane(ghostRay, curTri);
 
-			playerVelocity = normalizedSlideVel * playerVelMagnitude;
+				playerVelocity = (notGhostPosition - playerIn->playerPosition) + (curTri.n * 0.01f);
+			}
+		}
+
+		// ground collision
+		RayHit downHit = rayCast(downRay, curTri);
+
+		if (downHit.dist != -INFINITY) {
+			if (downHit.dist < -playerVelocity.y) {
+				std::cout << "grounded ";
+			}
 		}
 	}
 }
 
 void PlayerController::movePlayer(Player* playerIn)
 {
-	std::cout << vecToStr(playerIn->playerPosition) << std::endl;
-
 	playerIn->move(playerVelocity);
+	std::cout << vecToStr(playerIn->playerPosition) << std::endl;
 }
