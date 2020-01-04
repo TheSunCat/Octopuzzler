@@ -34,8 +34,8 @@ steps:
 
 - task: ArchiveFiles@2
   inputs:
-    rootFolderOrFile: '$(Build.ArtifactStagingDirectory)'
+    rootFolderOrFile: '$(Build.BinariesDirectory)'
     includeRootFolder: false
     archiveType: 'zip'
-    archiveFile: 'Release-Winx64.zip'
+    archiveFile: '$(System.DefaultWorkingDirectory)/Release-Winx64.zip'
     replaceExistingArchive: true
