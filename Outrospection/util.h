@@ -26,7 +26,7 @@ unsigned char* DataFromFile(const char* path, const std::string& directory, int*
 
 RayHit rayCast(
 	const Ray& ray,
-	const Triangle& tri);
+	const Triangle& tri, bool bothSides);
 
 glm::vec3 rayCastPlane(Ray r, Triangle plane);
 

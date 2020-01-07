@@ -18,7 +18,7 @@ public:
 
 	void loadScene();
 
-	void draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShader);
+	void draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShader, Shader& _simpleShader);
 
 	enum State {Obj, RailObj, Light, Sky, Chara, Col};
 
@@ -41,4 +41,8 @@ private:
 	unsigned int loadCubemap(std::string name);
 	unsigned int cubemapTexture;
 	unsigned int skyboxVAO;
+
+	// DEBUG
+	unsigned int colVAO;
+	unsigned int colVertCount;
 };

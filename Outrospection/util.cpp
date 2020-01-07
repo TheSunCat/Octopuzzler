@@ -106,7 +106,7 @@ const RayHit noHit = RayHit{ -INFINITY, glm::vec3(0.0) };
 
 RayHit rayCast(
 	const Ray& ray,
-	const Triangle& tri)
+	const Triangle& tri, bool bothSides)
 {
 	// get vertices from triangle
 	glm::vec3 v0 = tri.v0;
@@ -120,8 +120,8 @@ RayHit rayCast(
 
 	float det = dot(v0v1, pvec);
 
-	// abs so that backfacing tris also get collided
-	if (abs(det) < 0.000001) // parallel
+	// add abs if tri can be touched from both sides
+	if (bothSides ? abs(det) : det < 0.000001) // parallel
 		return noHit;
 
 	float invDet = 1.0 / det;
