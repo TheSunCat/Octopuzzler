@@ -3,20 +3,28 @@
 
 void PlayerController::acceleratePlayer(Player* playerIn)
 {
+	glm::vec3 playerInputAcceleration(0.0f);
+
 	if (keyForward) {
-		playerVelocity += (vecFromYaw(playerIn->playerRotation.y));
+		playerInputAcceleration += (vecFromYaw(playerIn->playerRotation.y));
 	}
 
 	if (keyBackward) {
-		playerVelocity += -(vecFromYaw(playerIn->playerRotation.y));
+		playerInputAcceleration += -(vecFromYaw(playerIn->playerRotation.y));
 	}
 
 	if (keyLeft) {
-		playerVelocity += vecFromYaw(playerIn->playerRotation.y - 90);
+		playerInputAcceleration += vecFromYaw(playerIn->playerRotation.y - 90);
 	}
 
 	if (keyRight) {
-		playerVelocity += vecFromYaw(playerIn->playerRotation.y + 90);
+		playerInputAcceleration += vecFromYaw(playerIn->playerRotation.y + 90);
+	}
+
+	if (playerInputAcceleration != glm::vec3(0.0f)) { // avoid NaN normalization if no input is given
+		glm::normalize(playerInputAcceleration);
+
+		playerVelocity += playerInputAcceleration;
 	}
 
 	if(playerVelocity.y > GRAVITY * 8) // GRAVITY * 8 is the terminal velocity
@@ -26,13 +34,13 @@ void PlayerController::acceleratePlayer(Player* playerIn)
 	playerVelocity.x /= FRICTION;
 	playerVelocity.z /= FRICTION;
 
-	// round velocity to 0
+	// round low velocity to 0
 	if (abs(playerVelocity.x) < 0.001)
 		playerVelocity.x = 0;
 	if (abs(playerVelocity.z) < 0.001)
 		playerVelocity.z = 0;
 
-	playerVelocity /= 10; // slow down bc no deltatime
+	playerVelocity /= 10; // slow down bc no deltatime TODO remove this
 	
 	// DEBUG move up and down
 	if (keyAttack) {
@@ -40,13 +48,15 @@ void PlayerController::acceleratePlayer(Player* playerIn)
 	}
 
 	if (keyJump) {
-		playerIn->move(glm::vec3(0, -GRAVITY / 4, 0));
+		playerVelocity.y = -GRAVITY;
+		
+		//playerIn->move(glm::vec3(0, -GRAVITY / 4, 0));
 	}
 }
 
 void PlayerController::collidePlayer(Player* playerIn, const std::vector<Triangle>& collisionData, float deltaTime)
 {
-	if (playerVelocity == glm::vec3(0.0))
+	if (playerVelocity == glm::vec3(0.0f, 0.0f, 0.0f))
 		return;
 
 	// debug hardcoded collision data
@@ -73,49 +83,43 @@ void PlayerController::collidePlayer(Player* playerIn, const std::vector<Triangl
 	for (Triangle curTri : collisionData)
 	{
 		// wall collision
-		RayHit curHit = rayCast(playerRay, curTri);
+		RayHit curHit = rayCast(playerRay, curTri, false);
+		if (curHit.dist != -INFINITY && curHit.dist < playerVelMagnitude) {
+			glm::vec3 ghostPosition = playerIn->playerPosition + playerVelocity;
 
-		if (curHit.dist != -INFINITY) {
-			if (curHit.dist < playerVelMagnitude) {
-				glm::vec3 ghostPosition = playerIn->playerPosition + playerVelocity;
+			Ray ghostRay = { ghostPosition, curTri.n };
 
-				Ray ghostRay = { ghostPosition, curTri.n };
+			glm::vec3 notGhostPosition = rayCastPlane(ghostRay, curTri);
 
-				glm::vec3 notGhostPosition = rayCastPlane(ghostRay, curTri);
-
+			if (std::isnan(notGhostPosition.x))
+				playerVelocity = ghostPosition - playerIn->playerPosition;
+			else
 				playerVelocity = (notGhostPosition - playerIn->playerPosition) + (curTri.n * 0.01f);
 
-				if (playerVelocity != glm::vec3(0)) {
-					// update values and re-check collision for new velocity
-					playerVelMagnitude = glm::length(playerVelocity);
-					playerRay.direction = normalize(playerVelocity);
+			if (playerVelocity != glm::vec3(0.0f, 0.0f, 0.0f)) {
+				// update values and re-check collision for new velocity
+				playerVelMagnitude = glm::length(playerVelocity);
+				playerRay.direction = normalize(playerVelocity);
 
-					for (Triangle t : collisionData) {
-						RayHit newHit = rayCast(playerRay, t);
+				for (Triangle t : collisionData) {
+					RayHit newHit = rayCast(playerRay, t, false);
 
-						if (newHit.dist != -INFINITY) {
-							if (newHit.dist < playerVelMagnitude) {
-								playerVelocity = normalize(playerVelocity) * newHit.dist;
-							}
+					if (newHit.dist != -INFINITY) {
+						if (newHit.dist < playerVelMagnitude) {
+							playerVelocity = normalize(playerVelocity) * newHit.dist - (curTri.n * 0.01f);
 						}
 					}
 				}
 			}
 		}
-
-		//// ground collision
-		//RayHit downHit = rayCast(downRay, curTri);
-
-		//if (downHit.dist != -INFINITY) {
-		//	if (downHit.dist < -playerVelocity.y) {
-		//		std::cout << "grounded ";
-		//	}
-		//}
 	}
 }
 
 void PlayerController::movePlayer(Player* playerIn)
 {
+	if (std::isnan(playerVelocity.x) || std::isnan(playerVelocity.y) || std::isnan(playerVelocity.z))
+		std::cout << "ERROR: playerVelocity is " << vecToStr(playerVelocity) << std::endl;
+
 	playerIn->move(playerVelocity);
 	std::cout << vecToStr(playerIn->playerPosition) << std::endl;
 }

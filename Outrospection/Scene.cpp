@@ -1,4 +1,5 @@
 #include "Scene.h"
+#include "Constants.h"
 
 Scene::Scene(string _name) {
 	name = _name;
@@ -129,13 +130,49 @@ void Scene::loadScene() {
 				vector<Triangle> tris = parseCollision(line);
 
 				push_all(collision, tris);
+
+				if (DEBUG) {
+					std::vector<float> colVerticesVector;
+					for (Triangle t : collision) {
+						colVerticesVector.push_back(t.v0.x);
+						colVerticesVector.push_back(t.v0.y);
+						colVerticesVector.push_back(t.v0.z);
+
+						colVerticesVector.push_back(t.v1.x);
+						colVerticesVector.push_back(t.v1.y);
+						colVerticesVector.push_back(t.v1.z);
+
+						colVerticesVector.push_back(t.v2.x);
+						colVerticesVector.push_back(t.v2.y);
+						colVerticesVector.push_back(t.v2.z);
+					}
+
+					colVertCount = colVerticesVector.size();
+
+					float* colVertices = new float[colVertCount];
+
+					std::copy(colVerticesVector.begin(), colVerticesVector.end(), colVertices);
+
+					// collision VAO
+					unsigned int colVBO;
+					glGenVertexArrays(1, &colVAO);
+					glGenBuffers(1, &colVBO);
+					glBindVertexArray(colVAO);
+					glBindBuffer(GL_ARRAY_BUFFER, colVBO);
+					glBufferData(GL_ARRAY_BUFFER, sizeof(float) * colVertCount, &colVertices, GL_STATIC_DRAW);
+					glEnableVertexAttribArray(0);
+					glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
+					delete[] colVertices;
+				}
+
 			}
 			}
 		}
 	}
 }
 
-void Scene::draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShader) {
+void Scene::draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShader, Shader& _simpleShader) {
 	// render sky
 	_skyShader.use();
 	glDepthMask(GL_FALSE);
@@ -153,6 +190,10 @@ void Scene::draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShade
 	for (Character chara : characters) {
 		chara.draw(_billboardShader);
 	}
+
+	_simpleShader.use();
+	glBindVertexArray(colVAO);
+	glDrawArrays(GL_TRIANGLES, 0, colVertCount);
 }
 
 vector<string> Scene::parseLine(string line) { // TODO do not hardcode number of elements CHECK
@@ -209,7 +250,7 @@ vector<Triangle> Scene::parseCollision(string name)
 	vector<Triangle> ret;
 
 	ifstream sceneFile("./res/ObjectData/" + name + "/" + name + ".ocl");
-	for (std::string line; getline(sceneFile, line); )
+	for (std::string line; getline(sceneFile, line);)
 	{
 		vector<string> verticesStr = split(line, " | ");
 

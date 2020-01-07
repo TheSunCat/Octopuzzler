@@ -37,6 +37,7 @@ private:
 	Shader billboardShader;
 	Shader skyShader;
 	Shader screenShader;
+	Shader simpleShader;
 
 	unsigned int framebuffer, intermediateFBO;
 	unsigned int textureColorbuffer;

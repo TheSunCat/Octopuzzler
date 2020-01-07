@@ -8,3 +8,5 @@
 
 #define SCR_WIDTH 1152
 #define SCR_HEIGHT 648
+
+#define DEBUG true
