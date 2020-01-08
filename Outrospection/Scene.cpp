@@ -191,9 +191,11 @@ void Scene::draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShade
 		chara.draw(_billboardShader);
 	}
 
-	_simpleShader.use();
-	glBindVertexArray(colVAO);
-	glDrawArrays(GL_TRIANGLES, 0, colVertCount);
+	if (DEBUG) {
+		_simpleShader.use();
+		glBindVertexArray(colVAO);
+		glDrawArrays(GL_TRIANGLES, 0, colVertCount);
+	}
 }
 
 vector<string> Scene::parseLine(string line) { // TODO do not hardcode number of elements CHECK
@@ -259,7 +261,7 @@ vector<Triangle> Scene::parseCollision(string name)
 		for (string s : verticesStr) {
 			vector<string> sStr = split(s, " ");
 
-			vertices.push_back(glm::vec3(stof(sStr[0]), stof(sStr[1]), stof(sStr[2])));
+			vertices.push_back(glm::vec3(stof(sStr[0]), stof(sStr[2]), -stof(sStr[1])));
 		}
 
 		Triangle tri = Triangle{ vertices[0], vertices[1], vertices[2] };

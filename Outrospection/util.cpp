@@ -152,8 +152,8 @@ RayHit rayCast(
 
 glm::vec3 rayCastPlane(Ray r, Triangle plane) {
 	glm::vec3 diff = r.origin - plane.v0;
-	float prod1 = glm::dot(diff, plane.n);
-	float prod2 = glm::dot(r.direction, plane.n);
+	float prod1 = glm::dot(diff, -plane.n);
+	float prod2 = glm::dot(r.direction, -plane.n);
 	float prod3 = prod1 / prod2;
 	return r.origin - r.direction * prod3;
 }
