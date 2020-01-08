@@ -27,8 +27,16 @@ void PlayerController::acceleratePlayer(Player* playerIn)
 		playerVelocity += playerInputAcceleration;
 	}
 
-	if(playerVelocity.y > GRAVITY * 8) // GRAVITY * 8 is the terminal velocity
+	if (keyJump) {
+		if (isGrounded) {
+			playerVelocity.y = 0.1;
+		}
+	}
+
+	if(playerVelocity.y > GRAVITY * 200) // GRAVITY * 2 is the terminal velocity
 		playerVelocity.y += GRAVITY;
+
+	//playerVelocity /= 10; // slow down bc no deltatime TODO remove this
 
 	// slow player down
 	playerVelocity.x /= FRICTION;
@@ -39,18 +47,10 @@ void PlayerController::acceleratePlayer(Player* playerIn)
 		playerVelocity.x = 0;
 	if (abs(playerVelocity.z) < 0.001)
 		playerVelocity.z = 0;
-
-	playerVelocity /= 10; // slow down bc no deltatime TODO remove this
 	
 	// DEBUG move up and down
 	if (keyAttack) {
-		playerIn->move(glm::vec3(0,  GRAVITY / 4, 0));
-	}
-
-	if (keyJump) {
-		playerVelocity.y = -GRAVITY;
-		
-		//playerIn->move(glm::vec3(0, -GRAVITY / 4, 0));
+		playerIn->move(glm::vec3(0, GRAVITY / 4, 0));
 	}
 }
 
@@ -76,15 +76,28 @@ void PlayerController::collidePlayer(Player* playerIn, const std::vector<Triangl
 	Ray playerRay = Ray{ playerIn->playerPosition, normalize(playerVelocity) };
 	Ray downRay = Ray{ playerIn->playerPosition, glm::vec3(0, -1, 0) };
 
-	RayHit closest;
-
 	float playerVelMagnitude = glm::length(playerVelocity);
+
+	bool groundChecked = false;
 
 	for (Triangle curTri : collisionData)
 	{
+		// ground collision
+		if (!groundChecked) {
+			RayHit groundHit = rayCast(downRay, curTri, false);
+			if (groundHit.dist != -INFINITY && groundHit.dist < 0.05) {
+				isGrounded = true;
+ 				groundChecked = true;
+			}
+			else {
+				isGrounded = false;
+			}
+		}
 		// wall collision
 		RayHit curHit = rayCast(playerRay, curTri, false);
 		if (curHit.dist != -INFINITY && curHit.dist < playerVelMagnitude) {
+			std::cout << "col" << std::endl;
+
 			glm::vec3 ghostPosition = playerIn->playerPosition + playerVelocity;
 
 			Ray ghostRay = { ghostPosition, curTri.n };
@@ -106,10 +119,14 @@ void PlayerController::collidePlayer(Player* playerIn, const std::vector<Triangl
 
 					if (newHit.dist != -INFINITY) {
 						if (newHit.dist < playerVelMagnitude) {
-							playerVelocity = normalize(playerVelocity) * newHit.dist - (curTri.n * 0.01f);
+							std::cout << "correcting for ghosting through wall when sliding..." << std::endl;
+							playerVelocity = normalize(playerVelocity) * (newHit.dist * 0.9f);// - (curTri.n * 0.01f);
 						}
 					}
 				}
+			}
+			else {
+				break; // nothing else to check if we're not moving anymore
 			}
 		}
 	}
