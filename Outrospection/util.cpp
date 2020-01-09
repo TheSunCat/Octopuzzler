@@ -165,3 +165,13 @@ glm::vec3 getNormal(Triangle t) {
 
 	return normalize(normal);
 }
+
+float length2(glm::vec3 v)
+{
+	return pow(v.x, 2) + pow(v.y, 2) + pow(v.z, 2);
+}
+
+float sumV3(glm::vec3 v)
+{
+	return v.x + v.y + v.z;
+}

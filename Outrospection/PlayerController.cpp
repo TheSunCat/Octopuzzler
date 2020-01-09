@@ -27,24 +27,14 @@ void PlayerController::acceleratePlayer(Player* playerIn)
 		playerInputAcceleration /= 40;
 
 		playerVelocity += playerInputAcceleration;
-
-		if (isGrounded) {
-			playerIn->setAnimation(AnimType::walk);
-		}
 	}
 
-	bool jumping = false;
 	if (keyJump) {
 		if (isGrounded) {
 			playerVelocity.y = 0.1;
-
-			jumping = true;
-			playerIn->setAnimation(AnimType::jump); // set animation to jumping
 		}
 	}
 
-	if (!jumping && isGrounded)
-		playerIn->setAnimation(AnimType::walk);
 	if(playerVelocity.y > GRAVITY * 200) // GRAVITY * 2 is the terminal velocity
 		playerVelocity.y += GRAVITY;
 
@@ -60,7 +50,7 @@ void PlayerController::acceleratePlayer(Player* playerIn)
 
 	// DEBUG move up and down
 	if (keyAttack) {
-		playerIn->move(glm::vec3(0, GRAVITY / 4, 0));
+		playerIn->move(glm::vec3(0, GRAVITY / 2, 0));
 	}
 }
 
@@ -117,9 +107,9 @@ void PlayerController::collidePlayer(Player* playerIn, const std::vector<Triangl
 			if (std::isnan(notGhostPosition.x))
 				playerVelocity = ghostPosition - playerIn->playerPosition;
 			else
-				playerVelocity = (notGhostPosition - playerIn->playerPosition) + (curTri.n * 0.01f);
+				playerVelocity = (notGhostPosition - playerIn->playerPosition) + (curTri.n * 0.001f);
 
-			if (playerVelocity != glm::vec3(0.0f, 0.0f, 0.0f)) {
+			if (!zeroV3(playerVelocity)) {
 				// update values and re-check collision for new velocity
 				playerVelMagnitude = glm::length(playerVelocity);
 				playerRay.direction = normalize(playerVelocity);
@@ -140,6 +130,31 @@ void PlayerController::collidePlayer(Player* playerIn, const std::vector<Triangl
 			}
 		}
 	}
+}
+
+void PlayerController::animatePlayer(Player* playerIn)
+{
+	AnimType newAnim;
+
+	if (playerVelocity == glm::vec3(0.0)) {
+		newAnim = AnimType::idle;
+	}
+	else if (!isGrounded) {
+		if (playerVelocity.y > -0.01) {
+			newAnim = AnimType::jump;
+		}
+		else {
+			newAnim = AnimType::fall;
+		}
+	}
+	else {
+		newAnim = AnimType::walk;
+	}
+
+	if (newAnim != pastAnim)
+		playerIn->setAnimation(newAnim);
+
+	pastAnim = newAnim;
 }
 
 void PlayerController::movePlayer(Player* playerIn)

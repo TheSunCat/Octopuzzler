@@ -40,26 +40,26 @@ Character::Character(const std::string& _charId, const glm::vec3& _pos, std::vec
 
 		animations.insert(pair);
 	}
+
+	setAnimation(AnimType::idle);
 }
 
 void Character::setAnimation(AnimType _animType)
 {
-	curAnimType = _animType;
+	curAnim = animations.at(_animType);
 }
 
 void Character::draw(Shader& _shader)
 {
-	Animation& a = animations.at(curAnimType);
-
-	charBillboard.draw(_shader, charPosition, a);
+	charBillboard.draw(_shader, charPosition, curAnim);
 	
-	a.frameTally++;
+	curAnim.frameTally++;
 
-	if (a.frameTally > a.frameLength) {
-		a.frameTally = 0;
-		if (a.curFrame < (a.frameCount - 1))
-			a.curFrame++;
+	if (curAnim.frameTally > curAnim.frameLength) {
+		curAnim.frameTally = 0;
+		if (curAnim.curFrame < (curAnim.frameCount - 1))
+			curAnim.curFrame++;
 		else
-			a.curFrame = 0;
+			curAnim.curFrame = 0;
 	}
 }

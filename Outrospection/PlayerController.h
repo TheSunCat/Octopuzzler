@@ -10,6 +10,8 @@ public:
 	void acceleratePlayer(Player* playerIn);
 
 	void collidePlayer(Player* playerIn, const std::vector<Triangle>& collisionData, float deltaTime);
+
+	void animatePlayer(Player* playerIn);
 	
 	void movePlayer(Player* playerIn);
 
@@ -17,5 +19,6 @@ private:
 	glm::vec3 playerVelocity;
 
 	bool isGrounded = false;
-	bool jumping = false;
+	
+	AnimType pastAnim;
 };
