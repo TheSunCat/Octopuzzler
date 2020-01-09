@@ -24,19 +24,29 @@ void PlayerController::acceleratePlayer(Player* playerIn)
 	if (playerInputAcceleration != glm::vec3(0.0f)) { // avoid NaN normalization if no input is given
 		glm::normalize(playerInputAcceleration);
 
-		playerVelocity += playerInputAcceleration;
-	}
+		playerInputAcceleration /= 40;
 
-	if (keyJump) {
+		playerVelocity += playerInputAcceleration;
+
 		if (isGrounded) {
-			playerVelocity.y = 0.1;
+			playerIn->setAnimation(AnimType::walk);
 		}
 	}
 
+	bool jumping = false;
+	if (keyJump) {
+		if (isGrounded) {
+			playerVelocity.y = 0.1;
+
+			jumping = true;
+			playerIn->setAnimation(AnimType::jump); // set animation to jumping
+		}
+	}
+
+	if (!jumping && isGrounded)
+		playerIn->setAnimation(AnimType::walk);
 	if(playerVelocity.y > GRAVITY * 200) // GRAVITY * 2 is the terminal velocity
 		playerVelocity.y += GRAVITY;
-
-	//playerVelocity /= 10; // slow down bc no deltatime TODO remove this
 
 	// slow player down
 	playerVelocity.x /= FRICTION;
@@ -47,7 +57,7 @@ void PlayerController::acceleratePlayer(Player* playerIn)
 		playerVelocity.x = 0;
 	if (abs(playerVelocity.z) < 0.001)
 		playerVelocity.z = 0;
-	
+
 	// DEBUG move up and down
 	if (keyAttack) {
 		playerIn->move(glm::vec3(0, GRAVITY / 4, 0));
@@ -62,7 +72,7 @@ void PlayerController::collidePlayer(Player* playerIn, const std::vector<Triangl
 	// debug hardcoded collision data
 	Triangle t = Triangle{ glm::vec3(5, 0, 10), glm::vec3(5, 0, -10), glm::vec3(10, 5, 0) };
 	t.n = -getNormal(t);
-
+	
 	Triangle t1 = Triangle{ glm::vec3(10, 0, 10), glm::vec3(10, 0, -10), glm::vec3(-10, 0, 0) };
 	t1.n = getNormal(t1);
 
