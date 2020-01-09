@@ -21,6 +21,10 @@ Character::Character(const std::string& _charId, const glm::vec3& _pos, std::vec
 			aType = "jump";
 			break;
 		}
+		case fall: {
+			aType = "fall";
+			break;
+		}
 		default: {
 			std::cerr << "invalid anim type :(" << std::endl;
 		}
@@ -32,18 +36,20 @@ Character::Character(const std::string& _charId, const glm::vec3& _pos, std::vec
 			a.frames.push_back(tex);
 		}
 
-		animations.push_back(a);
+		std::pair<AnimType, Animation> pair(a.animType, a);
+
+		animations.insert(pair);
 	}
 }
 
-void Character::setAnimation(int _index)
+void Character::setAnimation(AnimType _animType)
 {
-	curAnimIndex = _index;
+	curAnimType = _animType;
 }
 
 void Character::draw(Shader& _shader)
 {
-	Animation& a = animations[curAnimIndex];
+	Animation& a = animations.at(curAnimType);
 
 	charBillboard.draw(_shader, charPosition, a);
 	

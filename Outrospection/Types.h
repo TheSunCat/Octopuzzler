@@ -4,7 +4,8 @@
 enum AnimType {
 	walk,
 	idle,
-	jump
+	jump, 
+	fall
 };
 
 struct Animation {
