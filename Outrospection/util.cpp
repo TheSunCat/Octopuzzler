@@ -106,7 +106,7 @@ const RayHit noHit = RayHit{ -INFINITY, glm::vec3(0.0) };
 
 RayHit rayCast(
 	const Ray& ray,
-	const Triangle& tri)
+	const Triangle& tri, bool bothSides)
 {
 	// get vertices from triangle
 	glm::vec3 v0 = tri.v0;
@@ -120,8 +120,8 @@ RayHit rayCast(
 
 	float det = dot(v0v1, pvec);
 
-	// abs so that backfacing tris also get collided
-	if (abs(det) < 0.000001) // parallel
+	// add abs if tri can be touched from both sides
+	if (bothSides ? abs(det) : det < 0.000001) // parallel
 		return noHit;
 
 	float invDet = 1.0 / det;
@@ -152,8 +152,8 @@ RayHit rayCast(
 
 glm::vec3 rayCastPlane(Ray r, Triangle plane) {
 	glm::vec3 diff = r.origin - plane.v0;
-	float prod1 = glm::dot(diff, plane.n);
-	float prod2 = glm::dot(r.direction, plane.n);
+	float prod1 = glm::dot(diff, -plane.n);
+	float prod2 = glm::dot(r.direction, -plane.n);
 	float prod3 = prod1 / prod2;
 	return r.origin - r.direction * prod3;
 }
@@ -164,4 +164,14 @@ glm::vec3 getNormal(Triangle t) {
 	glm::vec3 normal = glm::cross(v0v1, v0v2);
 
 	return normalize(normal);
+}
+
+float length2(glm::vec3 v)
+{
+	return pow(v.x, 2) + pow(v.y, 2) + pow(v.z, 2);
+}
+
+float sumV3(glm::vec3 v)
+{
+	return v.x + v.y + v.z;
 }
