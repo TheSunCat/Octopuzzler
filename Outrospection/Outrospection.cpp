@@ -43,6 +43,7 @@ void Outrospection::runGameLoop() {
 
 	playerController.acceleratePlayer(&player);
 	playerController.collidePlayer(&player, scene.collision, deltaTime);
+	playerController.animatePlayer(&player);
 	playerController.movePlayer(&player);
 	//scene.updatePhysics();
 
@@ -74,9 +75,11 @@ void Outrospection::runGameLoop() {
 	skyShader.use();
 	skyShader.doProjView(camera, SCR_WIDTH, SCR_HEIGHT, false);
 
+	simpleShader.use();
+	simpleShader.doProjView(camera, SCR_WIDTH, SCR_HEIGHT, true);
 
 	// draw stuff
-	scene.draw(objectShader, billboardShader, skyShader);
+	scene.draw(objectShader, billboardShader, skyShader, simpleShader);
 	player.draw(billboardShader);
 
 
@@ -134,6 +137,7 @@ void Outrospection::createShaders()
 	billboardShader = Shader("billboard", "lightless");
 	skyShader       = Shader("sky"      , "sky"      );
 	screenShader    = Shader("screen"   , "screen"   );
+	simpleShader    = Shader("simple"   , "simple"   );
 }
 
 // Set proper Viewport size when window is resized

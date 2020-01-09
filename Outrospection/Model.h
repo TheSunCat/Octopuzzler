@@ -1,5 +1,4 @@
-#ifndef MODEL_H
-#define MODEL_H
+#pragma once
 
 #include <glad/glad.h> 
 
@@ -197,4 +196,3 @@ private:
 		return textures;
 	}
 };
-#endif

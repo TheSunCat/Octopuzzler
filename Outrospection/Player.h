@@ -14,7 +14,7 @@ public:
 
 	void rotate(float yaw);
 
-	void setAnimation(int _index);
+	void setAnimation(AnimType _animType);
 
 	void draw(Shader& objShader);
 
