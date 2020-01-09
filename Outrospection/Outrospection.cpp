@@ -43,6 +43,7 @@ void Outrospection::runGameLoop() {
 
 	playerController.acceleratePlayer(&player);
 	playerController.collidePlayer(&player, scene.collision, deltaTime);
+	playerController.animatePlayer(&player);
 	playerController.movePlayer(&player);
 	//scene.updatePhysics();
 

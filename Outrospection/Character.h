@@ -22,7 +22,7 @@ public:
 private:
 	std::string charId;
 
-	AnimType curAnimType = idle;
+	Animation curAnim;
 	std::unordered_map<AnimType, Animation> animations;
 
 	Billboard charBillboard;
