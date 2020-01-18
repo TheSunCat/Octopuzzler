@@ -16,6 +16,10 @@ public:
 	void movePlayer(Player* playerIn);
 
 private:
+	RayHit cast(Ray r, const std::vector<Triangle>& collisionData);
+	
+	bool resolveCollision(Player* playerIn, const std::vector<Triangle>& collisionData);
+
 	glm::vec3 playerVelocity;
 
 	bool isGrounded = false;

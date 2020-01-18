@@ -35,7 +35,7 @@ void PlayerController::acceleratePlayer(Player* playerIn)
 		}
 	}
 
-	if(playerVelocity.y > GRAVITY * 200) // GRAVITY * 2 is the terminal velocity
+	if(playerVelocity.y > GRAVITY * 200) // GRAVITY * 200 is the terminal velocity
 		playerVelocity.y += GRAVITY;
 
 	// slow player down
@@ -56,80 +56,91 @@ void PlayerController::acceleratePlayer(Player* playerIn)
 
 void PlayerController::collidePlayer(Player* playerIn, const std::vector<Triangle>& collisionData, float deltaTime)
 {
-	if (playerVelocity == glm::vec3(0.0f, 0.0f, 0.0f))
+	if (isZero3(playerVelocity))
 		return;
 
-	// debug hardcoded collision data
-	Triangle t = Triangle{ glm::vec3(5, 0, 10), glm::vec3(5, 0, -10), glm::vec3(10, 5, 0) };
-	t.n = -getNormal(t);
-	
-	Triangle t1 = Triangle{ glm::vec3(10, 0, 10), glm::vec3(10, 0, -10), glm::vec3(-10, 0, 0) };
-	t1.n = getNormal(t1);
-
-	//Triangle t2 = Triangle{ glm::vec3(10, 0, 10), glm::vec3(10, 0, -10), glm::vec3(-10, 0, 0) };
-	//t2.n = getNormal(t2);
-
-	std::vector<Triangle> colData = {
-		t, t1//, t2
-	};
-
-	Ray playerRay = Ray{ playerIn->playerPosition, normalize(playerVelocity) };
 	Ray downRay = Ray{ playerIn->playerPosition, glm::vec3(0, -1, 0) };
 
-	float playerVelMagnitude = glm::length(playerVelocity);
+	// detect if player is on ground
+	// -----------------------------
 
-	bool groundChecked = false;
+	isGrounded = false; // assume player isn't on ground until we know
 
-	for (Triangle curTri : collisionData)
-	{
-		// ground collision
-		if (!groundChecked) {
-			RayHit groundHit = rayCast(downRay, curTri, false);
-			if (groundHit.dist != -INFINITY && groundHit.dist < 0.05) {
-				isGrounded = true;
- 				groundChecked = true;
-			}
-			else {
-				isGrounded = false;
-			}
-		}
-		// wall collision
-		RayHit curHit = rayCast(playerRay, curTri, false);
-		if (curHit.dist != -INFINITY && curHit.dist < playerVelMagnitude) {
-			std::cout << "col" << std::endl;
-
-			glm::vec3 ghostPosition = playerIn->playerPosition + playerVelocity;
-
-			Ray ghostRay = { ghostPosition, curTri.n };
-
-			glm::vec3 notGhostPosition = rayCastPlane(ghostRay, curTri);
-
-			if (std::isnan(notGhostPosition.x))
-				playerVelocity = ghostPosition - playerIn->playerPosition;
-			else
-				playerVelocity = (notGhostPosition - playerIn->playerPosition) + (curTri.n * 0.001f);
-
-			if (!zeroV3(playerVelocity)) {
-				// update values and re-check collision for new velocity
-				playerVelMagnitude = glm::length(playerVelocity);
-				playerRay.direction = normalize(playerVelocity);
-
-				for (Triangle t : collisionData) {
-					RayHit newHit = rayCast(playerRay, t, false);
-
-					if (newHit.dist != -INFINITY) {
-						if (newHit.dist < playerVelMagnitude) {
-							std::cout << "correcting for ghosting through wall when sliding..." << std::endl;
-							playerVelocity = normalize(playerVelocity) * (newHit.dist * 0.9f);// - (curTri.n * 0.01f);
-						}
-					}
-				}
-			}
-			else {
-				break; // nothing else to check if we're not moving anymore
-			}
+	for (Triangle curTri : collisionData) {
+		RayHit groundHit = rayCast(downRay, curTri, false);
+		if (!std::isnan(groundHit.dist) && groundHit.dist < 0.05) { // if the ground exists under player, and is close to player's feet (0.05)
+			isGrounded = true;
+			break; // only need to check *if* we're on ground, only once
 		}
 	}
+
+	// collide with walls
+	// ------------------
+
+	while (resolveCollision(playerIn, collisionData)) {
+		// Now that we've resolved collision, we need to check
+		// if we'd be going thru other tris with this newly set velocity.
+
+		//       \
+		//        \o
+		//         |\
+		//      ---+\\-------- <-- this wall would be skipped, we need to check
+		//         | \\
+		// orig -> V  \V <- new ray
+	}
+}
+
+bool PlayerController::resolveCollision(Player* playerIn, const std::vector<Triangle>& collisionData)
+{
+	Ray playerRay = Ray{ playerIn->playerPosition, normalize(playerVelocity) };
+	float playerVelMagnitude = glm::length(playerVelocity);
+
+	// get RayHit of closest wall
+	RayHit hit = cast(playerRay, collisionData);
+
+	// if there is a triangle within the dist we will move next frame
+	if (!std::isnan(hit.dist) && hit.dist < playerVelMagnitude) {
+		std::cout << "colliding!" << std::endl;
+
+		// position if player *were* a ghost and *could* go thru walls (warning: spooky)
+		glm::vec3 ghostPosition = playerIn->playerPosition + playerVelocity;
+
+		// ray starting from ghost pos back to tri
+		Ray ghostRay = { ghostPosition, hit.tri.n };
+
+		// where ghostRay intersects the tri's plane would be where the player would end up since she's not a ghost
+		glm::vec3 notGhostPosition = rayCastPlane(ghostRay, hit.tri);
+
+		// if the ray does not collide with the plane, something's wrong
+		if (std::isnan(notGhostPosition.x))
+			playerVelocity = ghostPosition - playerIn->playerPosition;
+		else
+			playerVelocity = (notGhostPosition - playerIn->playerPosition + (hit.tri.n * 0.001f)); // adding normal "skin offset" so player can go up slopes
+
+		return true;
+	}
+
+	// nothing was hit
+	return false;
+}
+
+RayHit PlayerController::cast(Ray r, const std::vector<Triangle>& collisionData)
+{
+	RayHit closestHit = RayHit { INFINITY };
+
+	for (Triangle tri : collisionData) {
+		RayHit hit = rayCast(r, tri, false);
+
+		if (hit.dist < closestHit.dist) {
+			closestHit = hit;
+			closestHit.tri = tri;
+		}
+	}
+
+	if (closestHit.dist == INFINITY)
+		closestHit.dist = NAN;
+
+	return closestHit;
 }
 
 void PlayerController::animatePlayer(Player* playerIn)

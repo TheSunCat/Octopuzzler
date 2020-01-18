@@ -34,7 +34,6 @@ glm::vec3 getNormal(Triangle t);
 
 float length2(glm::vec3 v);
 
-inline bool zeroV3(glm::vec3 v)
-{
-	return (v.x == 0 && v.y == 0 && v.z == 0);
-}
+bool isZero3(glm::vec3 v);
+
+float sumAbs3(glm::vec3 v);

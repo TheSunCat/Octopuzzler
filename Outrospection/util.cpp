@@ -102,8 +102,9 @@ unsigned char* DataFromFile(const char* path, const std::string& directory, int*
 
 // partly based on https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/ray-triangle-intersection-geometric-solution
 
-const RayHit noHit = RayHit{ -INFINITY, glm::vec3(0.0) };
+const RayHit noHit = RayHit{ -NAN, glm::vec3(0.0) };
 
+// Cast a ray against finite triangle tri, and return the distance from the ray to the tri.
 RayHit rayCast(
 	const Ray& ray,
 	const Triangle& tri, bool bothSides)
@@ -150,6 +151,7 @@ RayHit rayCast(
 	return RayHit{ ret, hitPos };
 }
 
+// Cast a ray against an infinite plane with the triangle's normal, return where ray hits plane or NaN if ray never hits
 glm::vec3 rayCastPlane(Ray r, Triangle plane) {
 	glm::vec3 diff = r.origin - plane.v0;
 	float prod1 = glm::dot(diff, -plane.n);
@@ -168,10 +170,15 @@ glm::vec3 getNormal(Triangle t) {
 
 float length2(glm::vec3 v)
 {
-	return pow(v.x, 2) + pow(v.y, 2) + pow(v.z, 2);
+	return (v.x * v.x) + (v.y * v.y) + (v.z * v.z);
 }
 
-float sumV3(glm::vec3 v)
+bool isZero3(glm::vec3 v)
 {
-	return v.x + v.y + v.z;
+	return (v.x == 0 && v.y == 0 && v.z == 0);
+}
+
+float sumAbsV3(glm::vec3 v)
+{
+	return abs(v.x) + abs(v.y) + abs(v.z);
 }
