@@ -33,5 +33,6 @@ struct Ray {
 
 struct RayHit {
 	float dist;
-	glm::vec3 hitPoint;
+	glm::vec3 point;
+	Triangle tri;
 };
