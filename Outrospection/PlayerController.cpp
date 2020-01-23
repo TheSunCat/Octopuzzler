@@ -22,9 +22,9 @@ void PlayerController::acceleratePlayer(Player* playerIn)
 	}
 
 	if (playerInputAcceleration != glm::vec3(0.0f)) { // avoid NaN normalization if no input is given
-		glm::normalize(playerInputAcceleration);
+		playerInputAcceleration = glm::normalize(playerInputAcceleration);
 
-		playerInputAcceleration /= 40;
+		playerInputAcceleration /= 50;
 
 		playerVelocity += playerInputAcceleration;
 	}
@@ -56,6 +56,10 @@ void PlayerController::acceleratePlayer(Player* playerIn)
 
 void PlayerController::collidePlayer(Player* playerIn, const std::vector<Triangle>& collisionData, float deltaTime)
 {
+	deltaTime *= 10;
+
+	
+
 	if (isZero3(playerVelocity))
 		return;
 
@@ -77,6 +81,8 @@ void PlayerController::collidePlayer(Player* playerIn, const std::vector<Triangl
 	// collide with walls
 	// ------------------
 
+	unsigned int collisionCount = 0;
+
 	while (resolveCollision(playerIn, collisionData)) {
 		// Now that we've resolved collision, we need to check
 		// if we'd be going thru other tris with this newly set velocity.
@@ -87,23 +93,52 @@ void PlayerController::collidePlayer(Player* playerIn, const std::vector<Triangl
 		//      ---+\\-------- <-- this wall would be skipped, we need to check
 		//         | \\
 		// orig -> V  \V <- new ray
+
+		collisionCount++;
+
+		if (collisionCount > 10)
+			return; // prevent infinite loops (?)
 	}
+
+	//playerVelocity /= deltaTime;
 }
 
 bool PlayerController::resolveCollision(Player* playerIn, const std::vector<Triangle>& collisionData)
 {
 	Ray playerRay = Ray{ playerIn->playerPosition, normalize(playerVelocity) };
+	Ray playerHeadRay = Ray{ playerIn->playerPosition + glm::vec3(0, 0.5, 0), normalize(playerVelocity) };
 	float playerVelMagnitude = glm::length(playerVelocity);
 
 	// get RayHit of closest wall
 	RayHit hit = cast(playerRay, collisionData);
+	RayHit topHit = cast(playerHeadRay, collisionData);
+
+	glm::vec3 colCalcOffset = glm::vec3(0.0);
+	if (topHit.dist < hit.dist || (std::isnan(hit.dist) && !std::isnan(topHit.dist))) {
+		colCalcOffset.y = 0.5;
+
+
+		if (topHit.dist < playerVelMagnitude) {
+			// raycast down from head to toes and see if there's any impaling tris. if so, BAD.
+			Ray checkRay = Ray{ topHit.point, glm::vec3(0, -1, 0) };
+			RayHit checkHit = cast(checkRay, collisionData);
+
+			if (checkHit.dist < colCalcOffset.y) {
+				playerVelocity = glm::vec3(0.0);
+				return false;
+			}
+		}
+
+		hit = topHit;
+	}
 
 	// if there is a triangle within the dist we will move next frame
 	if (!std::isnan(hit.dist) && hit.dist < playerVelMagnitude) {
-		std::cout << "colliding!" << std::endl;
+
+		glm::vec3 calcPos = playerIn->playerPosition + colCalcOffset;
 
 		// position if player *were* a ghost and *could* go thru walls (warning: spooky)
-		glm::vec3 ghostPosition = playerIn->playerPosition + playerVelocity;
+		glm::vec3 ghostPosition = calcPos + playerVelocity;
 
 		// ray starting from ghost pos back to tri
 		Ray ghostRay = { ghostPosition, hit.tri.n };
@@ -113,9 +148,9 @@ bool PlayerController::resolveCollision(Player* playerIn, const std::vector<Tria
 
 		// if the ray does not collide with the plane, something's wrong
 		if (std::isnan(notGhostPosition.x))
-			playerVelocity = ghostPosition - playerIn->playerPosition;
+			playerVelocity = ghostPosition - calcPos;
 		else
-			playerVelocity = (notGhostPosition - playerIn->playerPosition + (hit.tri.n * 0.001f)); // adding normal "skin offset" so player can go up slopes
+			playerVelocity = (notGhostPosition - calcPos + (hit.tri.n * 0.001f)); // adding normal "skin offset" so player can go up slopes
 
 		return true;
 	}
