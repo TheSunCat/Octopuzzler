@@ -24,14 +24,14 @@ void PlayerController::acceleratePlayer(Player* playerIn)
 	if (playerInputAcceleration != glm::vec3(0.0f)) { // avoid NaN normalization if no input is given
 		playerInputAcceleration = glm::normalize(playerInputAcceleration);
 
-		playerInputAcceleration /= 50;
+		playerInputAcceleration /= 75;
 
 		playerVelocity += playerInputAcceleration;
 	}
 
 	if (keyJump) {
 		if (isGrounded) {
-			playerVelocity.y = 0.1;
+			playerVelocity.y = 0.05;
 		}
 	}
 
@@ -49,19 +49,21 @@ void PlayerController::acceleratePlayer(Player* playerIn)
 		playerVelocity.z = 0;
 
 	// DEBUG move up and down
-	if (keyAttack) {
-		playerIn->move(glm::vec3(0, GRAVITY / 2, 0));
+	if (DEBUG) {
+		if (keyAttack) {
+			playerIn->move(glm::vec3(0, GRAVITY / 2, 0));
+		}
 	}
 }
 
 void PlayerController::collidePlayer(Player* playerIn, const std::vector<Triangle>& collisionData, float deltaTime)
 {
-	deltaTime *= 10;
-
-	
+	deltaTime *= 100;
 
 	if (isZero3(playerVelocity))
 		return;
+
+	playerVelocity *= deltaTime;
 
 	Ray downRay = Ray{ playerIn->playerPosition, glm::vec3(0, -1, 0) };
 
@@ -100,11 +102,14 @@ void PlayerController::collidePlayer(Player* playerIn, const std::vector<Triangl
 			return; // prevent infinite loops (?)
 	}
 
-	//playerVelocity /= deltaTime;
+	playerVelocity /= deltaTime;
 }
 
 bool PlayerController::resolveCollision(Player* playerIn, const std::vector<Triangle>& collisionData)
 {
+	if (playerVelocity == glm::vec3(0.0))
+		return false;
+
 	Ray playerRay = Ray{ playerIn->playerPosition, normalize(playerVelocity) };
 	Ray playerHeadRay = Ray{ playerIn->playerPosition + glm::vec3(0, 0.5, 0), normalize(playerVelocity) };
 	float playerVelMagnitude = glm::length(playerVelocity);
@@ -123,7 +128,7 @@ bool PlayerController::resolveCollision(Player* playerIn, const std::vector<Tria
 			Ray checkRay = Ray{ topHit.point, glm::vec3(0, -1, 0) };
 			RayHit checkHit = cast(checkRay, collisionData);
 
-			if (checkHit.dist < colCalcOffset.y) {
+			if (checkHit.dist < colCalcOffset.y) { // cancel all movement if player would be impaled. TODO maybe slide? keeping it simple.
 				playerVelocity = glm::vec3(0.0);
 				return false;
 			}
@@ -145,6 +150,8 @@ bool PlayerController::resolveCollision(Player* playerIn, const std::vector<Tria
 
 		// where ghostRay intersects the tri's plane would be where the player would end up since she's not a ghost
 		glm::vec3 notGhostPosition = rayCastPlane(ghostRay, hit.tri);
+
+		notGhostPosition += ghostRay.direction * 0.001f;
 
 		// if the ray does not collide with the plane, something's wrong
 		if (std::isnan(notGhostPosition.x))
@@ -203,11 +210,18 @@ void PlayerController::animatePlayer(Player* playerIn)
 	pastAnim = newAnim;
 }
 
-void PlayerController::movePlayer(Player* playerIn)
+void PlayerController::movePlayer(Player* playerIn, float deltaTime)
 {
+	deltaTime *= 100;
+
+	playerVelocity *= deltaTime;
+
 	if (std::isnan(playerVelocity.x) || std::isnan(playerVelocity.y) || std::isnan(playerVelocity.z))
 		std::cout << "ERROR: playerVelocity is " << vecToStr(playerVelocity) << std::endl;
 
 	playerIn->move(playerVelocity);
+
+	playerVelocity /= deltaTime;
+
 	std::cout << vecToStr(playerIn->playerPosition) << std::endl;
 }

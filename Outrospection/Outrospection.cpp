@@ -44,10 +44,33 @@ void Outrospection::runGameLoop() {
 	playerController.acceleratePlayer(&player);
 	playerController.collidePlayer(&player, scene.collision, deltaTime);
 	playerController.animatePlayer(&player);
-	playerController.movePlayer(&player);
+	playerController.movePlayer(&player, deltaTime);
 	//scene.updatePhysics();
 
-	camera.Position = player.playerPosition - (vecFromYaw(camera.Yaw) * glm::vec3(4.0)) + glm::vec3(0.0, 1.0, 0.0);
+
+	// Calculate camera position w/ collision
+	glm::vec3 cameraCastDir = glm::normalize(-vecFromYaw(camera.Yaw));// + glm::vec3(0.0, 0.25, 0.0));
+	Ray cameraRay = Ray{player.playerPosition + glm::vec3(0.0, 1.0, 0.0), cameraCastDir};
+	
+	RayHit closestHit = RayHit{INFINITY};
+	for (Triangle t : scene.collision) {
+		t.n = -t.n;
+
+		RayHit hit = rayCast(cameraRay, t, false);
+		if (hit.dist < closestHit.dist)
+			closestHit = hit;
+
+		t.n = -t.n;
+	}
+
+	closestHit.dist -= 0.2;
+
+	if (closestHit.dist != INFINITY && closestHit.dist < 4.0f) {
+		camera.Position = player.playerPosition + glm::vec3(0.0, 1.0, 0.0) + cameraCastDir * closestHit.dist - (closestHit.tri.n * 0.1f);
+	}
+	else {
+		camera.Position = player.playerPosition + glm::vec3(0.0, 1.0, 0.0) + cameraCastDir * 4.0f;
+	}
 
 	// TODO execute scheduled tasks
 	// ----------------------------
