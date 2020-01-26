@@ -148,7 +148,7 @@ RayHit rayCast(
 
 	glm::vec3 hitPos = glm::normalize(ray.direction) * ret;
 
-	return RayHit{ ret, hitPos };
+	return RayHit{ ret, hitPos, tri };
 }
 
 // Cast a ray against an infinite plane with the triangle's normal, return where ray hits plane or NaN if ray never hits

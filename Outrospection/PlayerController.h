@@ -13,11 +13,12 @@ public:
 
 	void animatePlayer(Player* playerIn);
 	
-	void movePlayer(Player* playerIn);
+	void movePlayer(Player* playerIn, float deltaTime);
 
 private:
 	RayHit cast(Ray r, const std::vector<Triangle>& collisionData);
 	
+	// Return true if a triangle was hit.
 	bool resolveCollision(Player* playerIn, const std::vector<Triangle>& collisionData);
 
 	glm::vec3 playerVelocity;
