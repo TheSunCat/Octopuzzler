@@ -98,19 +98,23 @@ void PlayerController::collidePlayer(Player* playerIn, const std::vector<Triangl
 
 		collisionCount++;
 
-		if (collisionCount > 10)
+		if (collisionCount > 10) {
+			playerVelocity = glm::vec3(0.0);
 			return; // prevent infinite loops (?)
+		}
 	}
 
 	playerVelocity /= deltaTime;
 }
 
+// return true when another iteration must be run to resolve all collision
 bool PlayerController::resolveCollision(Player* playerIn, const std::vector<Triangle>& collisionData)
 {
 	if (playerVelocity == glm::vec3(0.0))
 		return false;
 
-	Ray playerRay = Ray{ playerIn->playerPosition, normalize(playerVelocity) };
+	glm::vec3 colCalcOffset = glm::vec3(0.0, 0.0, 0.0);
+	Ray playerRay = Ray{ playerIn->playerPosition + colCalcOffset, normalize(playerVelocity) };
 	Ray playerHeadRay = Ray{ playerIn->playerPosition + glm::vec3(0, 0.5, 0), normalize(playerVelocity) };
 	float playerVelMagnitude = glm::length(playerVelocity);
 
@@ -118,14 +122,14 @@ bool PlayerController::resolveCollision(Player* playerIn, const std::vector<Tria
 	RayHit hit = cast(playerRay, collisionData);
 	RayHit topHit = cast(playerHeadRay, collisionData);
 
-	glm::vec3 colCalcOffset = glm::vec3(0.0);
+	
 	if (topHit.dist < hit.dist || (std::isnan(hit.dist) && !std::isnan(topHit.dist))) {
 		colCalcOffset.y = 0.5;
 
 
 		if (topHit.dist < playerVelMagnitude) {
 			// raycast down from head to toes and see if there's any impaling tris. if so, BAD.
-			Ray checkRay = Ray{ topHit.point, glm::vec3(0, -1, 0) };
+			Ray checkRay = Ray{ playerIn->playerPosition + colCalcOffset + playerVelocity, glm::vec3(0, -1, 0) };
 			RayHit checkHit = cast(checkRay, collisionData);
 
 			if (checkHit.dist < colCalcOffset.y) { // cancel all movement if player would be impaled. TODO maybe slide? keeping it simple.
@@ -189,7 +193,7 @@ void PlayerController::animatePlayer(Player* playerIn)
 {
 	AnimType newAnim;
 
-	if (playerVelocity == glm::vec3(0.0)) {
+	if (isGrounded && length2(playerVelocity) < 0.0000002) {
 		newAnim = AnimType::idle;
 	}
 	else if (!isGrounded) {
