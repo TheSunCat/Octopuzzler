@@ -2,7 +2,7 @@
 #include <iostream>
 
 Player::Player(const glm::vec3& _startPos, const glm::vec3& _startRot) : playerPosition(_startPos),
-playerRotation(_startRot), playerCharacter("deborah", _startPos, { Animation {AnimType::idle, 1, 0}, Animation {AnimType::walk, 8, 6}, Animation {AnimType::jump, 5, 12} , Animation {AnimType::fall, 6, 12} })
+playerRotation(_startRot), playerCharacter("deborah", _startPos, { Animation {AnimType::idle, 32, 7}, Animation {AnimType::walk, 8, 6}, Animation {AnimType::jump, 5, 12} , Animation {AnimType::fall, 6, 12} })
 {
 
 }
