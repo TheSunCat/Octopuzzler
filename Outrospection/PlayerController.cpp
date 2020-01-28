@@ -51,7 +51,8 @@ void PlayerController::acceleratePlayer(Player* playerIn)
 	// DEBUG move up and down
 	if (DEBUG) {
 		if (keyAttack) {
-			playerIn->move(glm::vec3(0, GRAVITY / 2, 0));
+			playerIn->playerPosition = glm::vec3(0, 0, 0);
+			playerVelocity = glm::vec3(0.0f);
 		}
 	}
 }
@@ -122,25 +123,6 @@ bool PlayerController::resolveCollision(Player* playerIn, const std::vector<Tria
 	RayHit hit = cast(playerRay, collisionData);
 	RayHit topHit = cast(playerHeadRay, collisionData);
 
-	
-	if (topHit.dist < hit.dist || (std::isnan(hit.dist) && !std::isnan(topHit.dist))) {
-		colCalcOffset.y = 0.5;
-
-
-		if (topHit.dist < playerVelMagnitude) {
-			// raycast down from head to toes and see if there's any impaling tris. if so, BAD.
-			Ray checkRay = Ray{ playerIn->playerPosition + colCalcOffset + playerVelocity, glm::vec3(0, -1, 0) };
-			RayHit checkHit = cast(checkRay, collisionData);
-
-			if (checkHit.dist < colCalcOffset.y) { // cancel all movement if player would be impaled. TODO maybe slide? keeping it simple.
-				playerVelocity = glm::vec3(0.0);
-				return false;
-			}
-		}
-
-		hit = topHit;
-	}
-
 	// if there is a triangle within the dist we will move next frame
 	if (!std::isnan(hit.dist) && hit.dist < playerVelMagnitude) {
 
@@ -163,7 +145,47 @@ bool PlayerController::resolveCollision(Player* playerIn, const std::vector<Tria
 		else
 			playerVelocity = (notGhostPosition - calcPos + (hit.tri.n * 0.001f)); // adding normal "skin offset" so player can go up slopes
 
+		// e
+		if (topHit.dist < hit.dist || (std::isnan(hit.dist) && !std::isnan(topHit.dist))) {
+			colCalcOffset.y = 0.5;
+
+
+			if (topHit.dist < playerVelMagnitude) {
+				// raycast down from head to toes and see if there's any impaling tris. if so, BAD.
+				Ray checkRay = Ray{ playerIn->playerPosition + colCalcOffset /*+ playerVelocity*/, glm::vec3(0, -1, 0) };
+				RayHit checkHit = cast(checkRay, collisionData);
+
+				if (checkHit.dist < colCalcOffset.y) { // cancel all movement if player would be impaled. TODO maybe slide? keeping it simple.
+					//playerIn->move(-glm::vec3(playerVelocity.x, 0.0f, playerVelocity.z) * 1.0f);
+					playerVelocity = glm::vec3(0.0);
+					playerIn->playerPosition = lastGoodPlayerPosition;
+					return false;
+				}
+			}
+
+			hit = topHit;
+		}
 		return true;
+	}
+
+	if (topHit.dist < hit.dist || (std::isnan(hit.dist) && !std::isnan(topHit.dist))) {
+		colCalcOffset.y = 0.5;
+
+
+		if (topHit.dist < playerVelMagnitude) {
+			// raycast down from head to toes and see if there's any impaling tris. if so, BAD.
+			Ray checkRay = Ray{ playerIn->playerPosition + colCalcOffset /*+ playerVelocity*/, glm::vec3(0, -1, 0) };
+			RayHit checkHit = cast(checkRay, collisionData);
+
+			if (checkHit.dist < colCalcOffset.y) { // cancel all movement if player would be impaled. TODO maybe slide? keeping it simple.
+				//playerIn->move(-playerVelocity * 1.0f);
+				playerVelocity = glm::vec3(0.0);
+				playerIn->playerPosition = lastGoodPlayerPosition;
+				return false;
+			}
+		}
+
+		hit = topHit;
 	}
 
 	// nothing was hit
@@ -222,6 +244,8 @@ void PlayerController::movePlayer(Player* playerIn, float deltaTime)
 
 	if (std::isnan(playerVelocity.x) || std::isnan(playerVelocity.y) || std::isnan(playerVelocity.z))
 		std::cout << "ERROR: playerVelocity is " << vecToStr(playerVelocity) << std::endl;
+
+	lastGoodPlayerPosition = playerIn->playerPosition;
 
 	playerIn->move(playerVelocity);
 
