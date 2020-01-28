@@ -23,6 +23,8 @@ private:
 
 	glm::vec3 playerVelocity;
 
+	glm::vec3 lastGoodPlayerPosition;
+
 	bool isGrounded = false;
 	
 	AnimType pastAnim;
