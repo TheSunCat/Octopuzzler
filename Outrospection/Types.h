@@ -1,5 +1,5 @@
 #pragma once
-#include <string>
+#include <unordered_map>
 
 enum AnimType {
 	walk,
@@ -7,6 +7,13 @@ enum AnimType {
 	jump, 
 	fall
 };
+
+const std::unordered_map<AnimType, std::string> animTypeMap ({
+	{AnimType::idle, "idle"},
+	{AnimType::walk, "walk"},
+	{AnimType::jump, "jump"},
+	{AnimType::fall, "fall"}
+});
 
 struct Animation {
 	AnimType animType;
@@ -18,6 +25,7 @@ struct Animation {
 	unsigned int curFrame;
 	std::vector<unsigned int> frames;
 };
+
 
 struct Triangle {
 	glm::vec3 v0;

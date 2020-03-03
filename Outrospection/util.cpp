@@ -33,7 +33,7 @@ glm::vec3 vecFromYaw(float yawDeg)
 std::string vecToStr(glm::vec3 vec)
 {
 	std::stringstream ss;
-	ss << vec.x << ", " << vec.y << ", " << vec.z;
+	ss << "vec3(" << vec.x << ", " << vec.y << ", " << vec.z << ")";
 	return ss.str();
 }
 

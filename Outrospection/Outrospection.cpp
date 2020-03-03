@@ -25,13 +25,21 @@ void Outrospection::run() {
 	glfwTerminate();
 }
 
+void Outrospection::pauseGame()
+{
+	isGamePaused = true;
+}
+
+void Outrospection::unpauseGame()
+{
+	isGamePaused = false;
+}
+
 void Outrospection::runGameLoop() {
 	float currentFrame = glfwGetTime();
 	deltaTime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
 
-
-	// process keys
 	updateKeys(gameWindow);
 
 	// exit game on next loop iteration
@@ -41,35 +49,10 @@ void Outrospection::runGameLoop() {
 	// player always "faces" forward, so W goes away from camera
 	player.playerRotation.y = camera.Yaw;
 
-	playerController.acceleratePlayer(&player);
-	playerController.collidePlayer(&player, scene.collision, deltaTime);
-	playerController.animatePlayer(&player);
-	playerController.movePlayer(&player, deltaTime);
-	//scene.updatePhysics();
 
-
-	// Calculate camera position w/ collision
-	glm::vec3 cameraCastDir = glm::normalize(-vecFromYaw(camera.Yaw));// + glm::vec3(0.0, 0.25, 0.0));
-	Ray cameraRay = Ray{player.playerPosition + glm::vec3(0.0, 1.0, 0.0), cameraCastDir};
-	
-	RayHit closestHit = RayHit{INFINITY};
-	for (Triangle t : scene.collision) {
-		t.n = -t.n;
-
-		RayHit hit = rayCast(cameraRay, t, false);
-		if (hit.dist < closestHit.dist)
-			closestHit = hit;
-
-		t.n = -t.n;
-	}
-
-	closestHit.dist -= 0.2;
-
-	if (closestHit.dist != INFINITY && closestHit.dist < 4.0f) {
-		camera.Position = player.playerPosition + glm::vec3(0.0, 1.0, 0.0) + cameraCastDir * closestHit.dist - (closestHit.tri.n * 0.1f);
-	}
-	else {
-		camera.Position = player.playerPosition + glm::vec3(0.0, 1.0, 0.0) + cameraCastDir * 4.0f;
+	if (!isGamePaused) {
+		// Run one "tick" of the game physics
+		runTick();
 	}
 
 	// TODO execute scheduled tasks
@@ -124,7 +107,7 @@ void Outrospection::runGameLoop() {
 
 	// Check for errors
 	// ----------------
-	glError();
+	glError(DEBUG);
 
 	// swap buffers and poll IO events
 	// -------------------------------
@@ -132,7 +115,44 @@ void Outrospection::runGameLoop() {
 	glfwPollEvents();
 }
 
-bool Outrospection::glError()
+void Outrospection::runTick()
+{
+	playerController.acceleratePlayer(&player);
+	playerController.collidePlayer(&player, scene.collision, deltaTime);
+	playerController.animatePlayer(&player);
+	playerController.movePlayer(&player, deltaTime);
+
+	updateCamera();
+}
+
+void Outrospection::updateCamera()
+{
+	// Calculate camera position w/ collision
+	glm::vec3 cameraCastDir = glm::normalize(-vecFromYaw(camera.Yaw));// + glm::vec3(0.0, 0.25, 0.0));
+	Ray cameraRay = Ray{ player.playerPosition + glm::vec3(0.0, 1.0, 0.0), cameraCastDir };
+
+	RayHit closestHit = RayHit{ INFINITY };
+	for (Triangle t : scene.collision) {
+		t.n = -t.n;
+
+		RayHit hit = rayCast(cameraRay, t, false);
+		if (hit.dist < closestHit.dist)
+			closestHit = hit;
+
+		t.n = -t.n;
+	}
+
+	closestHit.dist -= 0.2;
+
+	if (closestHit.dist != INFINITY && closestHit.dist < 4.0f) {
+		camera.Position = player.playerPosition + glm::vec3(0.0, 1.0, 0.0) + cameraCastDir * closestHit.dist - (closestHit.tri.n * 0.1f);
+	}
+	else {
+		camera.Position = player.playerPosition + glm::vec3(0.0, 1.0, 0.0) + cameraCastDir * 4.0f;
+	}
+}
+
+bool Outrospection::glError(bool print)
 {
 	bool ret = false;
 	GLenum err;
@@ -140,7 +160,8 @@ bool Outrospection::glError()
 	{
 		ret = true;
 
-		cout << err << endl;
+		if(print)
+			cout << err << endl;
 	}
 
 	return ret;
