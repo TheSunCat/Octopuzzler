@@ -1,5 +1,7 @@
 #include "Scene.h"
 #include "Constants.h"
+#include "Outrospection.h"
+#include "Source.h"
 
 Scene::Scene(string _name) {
 	name = _name;
@@ -69,9 +71,9 @@ void Scene::loadScene() {
 
 	ifstream sceneFile("./res/StageData/" + name + "/" + name + ".lvl");
 	State currentState = Obj;
+
 	for (std::string line; getline(sceneFile, line); )
 	{
-		cout << line + "\n";
 		if (line.compare("") == 0) { // skip empty lines
 			continue;
 		}
@@ -131,41 +133,40 @@ void Scene::loadScene() {
 
 				push_all(collision, tris);
 
-				if (DEBUG) {
-					std::vector<float> colVerticesVector;
-					for (Triangle t : collision) {
-						colVerticesVector.push_back(t.v0.x);
-						colVerticesVector.push_back(t.v0.y);
-						colVerticesVector.push_back(t.v0.z);
+				//if (DEBUG) {
+				//	std::vector<float> colVerticesVector;
+				//	for (Triangle t : collision) {
+				//		colVerticesVector.push_back(t.v0.x);
+				//		colVerticesVector.push_back(t.v0.y);
+				//		colVerticesVector.push_back(t.v0.z);
 
-						colVerticesVector.push_back(t.v1.x);
-						colVerticesVector.push_back(t.v1.y);
-						colVerticesVector.push_back(t.v1.z);
+				//		colVerticesVector.push_back(t.v1.x);
+				//		colVerticesVector.push_back(t.v1.y);
+				//		colVerticesVector.push_back(t.v1.z);
 
-						colVerticesVector.push_back(t.v2.x);
-						colVerticesVector.push_back(t.v2.y);
-						colVerticesVector.push_back(t.v2.z);
-					}
+				//		colVerticesVector.push_back(t.v2.x);
+				//		colVerticesVector.push_back(t.v2.y);
+				//		colVerticesVector.push_back(t.v2.z);
+				//	}
 
-					colVertCount = colVerticesVector.size();
+				//	colVertCount = colVerticesVector.size();
 
-					float* colVertices = new float[colVertCount];
+				//	float* colVertices = new float[colVertCount];
 
-					std::copy(colVerticesVector.begin(), colVerticesVector.end(), colVertices);
+				//	std::copy(colVerticesVector.begin(), colVerticesVector.end(), colVertices);
 
-					// collision VAO
-					unsigned int colVBO;
-					glGenVertexArrays(1, &colVAO);
-					glGenBuffers(1, &colVBO);
-					glBindVertexArray(colVAO);
-					glBindBuffer(GL_ARRAY_BUFFER, colVBO);
-					glBufferData(GL_ARRAY_BUFFER, sizeof(float) * colVertCount, &colVertices, GL_STATIC_DRAW);
-					glEnableVertexAttribArray(0);
-					glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+				//	// collision VAO
+				//	unsigned int colVBO;
+				//	glGenVertexArrays(1, &colVAO);
+				//	glGenBuffers(1, &colVBO);
+				//	glBindVertexArray(colVAO);
+				//	glBindBuffer(GL_ARRAY_BUFFER, colVBO);
+				//	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * colVertCount, &colVertices, GL_STATIC_DRAW);
+				//	glEnableVertexAttribArray(0);
+				//	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
-					delete[] colVertices;
-				}
-
+				//	delete[] colVertices;
+				//}
 			}
 			}
 		}
@@ -191,11 +192,11 @@ void Scene::draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShade
 		chara.draw(_billboardShader);
 	}
 
-	if (DEBUG) {
-		_simpleShader.use();
-		glBindVertexArray(colVAO);
-		glDrawArrays(GL_TRIANGLES, 0, colVertCount);
-	}
+	//if (DEBUG) {
+	//	_simpleShader.use();
+	//	glBindVertexArray(colVAO);
+	//	glDrawArrays(GL_TRIANGLES, 0, colVertCount);
+	//}
 }
 
 vector<string> Scene::parseLine(string line) { // TODO do not hardcode number of elements CHECK
@@ -279,12 +280,12 @@ unsigned int Scene::loadCubemap(std::string name)
 	name = "./res/ObjectData/" + name + "/";
 
 	vector<std::string> faces = {
-		name + "right.jpg",
-		name + "left.jpg",
-		name + "top.jpg",
-		name + "bottom.jpg",
-		name + "front.jpg",
-		name + "back.jpg"
+		name + "right.png",
+		name + "left.png",
+		name + "top.png",
+		name + "bottom.png",
+		name + "front.png",
+		name + "back.png"
 	};
 
 	unsigned int textureID;

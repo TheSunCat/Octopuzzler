@@ -243,6 +243,4 @@ void PlayerController::movePlayer(Player* playerIn, float deltaTime)
 	playerIn->move(playerVelocity);
 
 	playerVelocity /= deltaTime;
-
-	std::cout << vecToStr(playerIn->playerPosition) << std::endl;
 }

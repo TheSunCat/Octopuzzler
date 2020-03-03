@@ -1,4 +1,4 @@
-#include "Outrospection.h"
+#include "Source.h"
 
 // instance of the game
 Outrospection instance = Outrospection();

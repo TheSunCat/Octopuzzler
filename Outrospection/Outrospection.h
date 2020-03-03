@@ -20,10 +20,19 @@ public:
 	Player player;
 
 	PlayerController playerController;
+
+	void pauseGame();
+
+	void unpauseGame();
+
+	// Check for OpenGL errors and print them
+	bool glError(bool print);
 private:
 	void runGameLoop();
 
-	bool glError();
+	void runTick();
+
+	void updateCamera();
 
 	// set to false when the game loop shouldn't run
 	volatile bool running = false;
@@ -54,4 +63,6 @@ private:
 
 	void registerCallbacks();
 	void createShaders();
+
+	bool isGamePaused;
 };
