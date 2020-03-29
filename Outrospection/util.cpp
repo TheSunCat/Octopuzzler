@@ -30,7 +30,7 @@ glm::vec3 vecFromYaw(float yawDeg)
 	return front;
 }
 
-std::string vecToStr(glm::vec3 vec)
+std::string vecToStr(const glm::vec3& vec)
 {
 	std::stringstream ss("vec3(");
 
@@ -111,7 +111,7 @@ RayHit rayCast(
 }
 
 // Cast a ray against an infinite plane with the triangle's normal, return where ray hits plane or NaN if ray never hits
-glm::vec3 rayCastPlane(Ray r, Triangle plane) {
+glm::vec3 rayCastPlane(const Ray& r, const Triangle& plane) {
 	glm::vec3 diff = r.origin - plane.v0;
 	float prod1 = glm::dot(diff, -plane.n);
 	float prod2 = glm::dot(r.direction, -plane.n);
@@ -119,7 +119,7 @@ glm::vec3 rayCastPlane(Ray r, Triangle plane) {
 	return r.origin - r.direction * prod3;
 }
 
-glm::vec3 getNormal(Triangle t) {
+glm::vec3 getNormal(const Triangle& t) {
 	glm::vec3 v0v1 = t.v1 - t.v0;
 	glm::vec3 v0v2 = t.v2 - t.v0;
 	glm::vec3 normal = glm::cross(v0v1, v0v2);
@@ -127,17 +127,17 @@ glm::vec3 getNormal(Triangle t) {
 	return normalize(normal);
 }
 
-float length2(glm::vec3 v)
+float length2V3(const glm::vec3& v)
 {
 	return (v.x * v.x) + (v.y * v.y) + (v.z * v.z);
 }
 
-bool isZero3(glm::vec3 v)
+bool isZeroV3(const glm::vec3& v)
 {
 	return (v.x == 0 && v.y == 0 && v.z == 0);
 }
 
-float sumAbsV3(glm::vec3 v)
+float sumAbsV3(const glm::vec3& v)
 {
 	return abs(v.x) + abs(v.y) + abs(v.z);
 }

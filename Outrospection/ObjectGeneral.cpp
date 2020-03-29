@@ -41,4 +41,3 @@ glm::vec3 ObjectGeneral::getRot() {
 glm::vec3 ObjectGeneral::getScale() {
 	return scale;
 }
-
