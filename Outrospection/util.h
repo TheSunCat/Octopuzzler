@@ -18,7 +18,7 @@ void push_all(std::vector<T> &input, std::vector<T> &add) {
 
 glm::vec3 vecFromYaw(float yawDeg);
 
-std::string vecToStr(glm::vec3 vec);
+std::string vecToStr(const glm::vec3& vec);
 
 unsigned char* DataFromFile(const char* path, const std::string& directory, int* widthOut, int* heightOut);
 
@@ -26,15 +26,15 @@ RayHit rayCast(
 	const Ray& ray,
 	const Triangle& tri, bool bothSides);
 
-glm::vec3 rayCastPlane(Ray r, Triangle plane);
+glm::vec3 rayCastPlane(const Ray& r, const Triangle& plane);
 
-glm::vec3 getNormal(Triangle t);
+glm::vec3 getNormal(const Triangle& t);
 
-float length2(glm::vec3 v);
+float length2V3(const glm::vec3& v);
 
-bool isZero3(glm::vec3 v);
+bool isZeroV3(const glm::vec3& v);
 
-//float sumAbs3(glm::vec3 v);
+float sumAbsV3(const glm::vec3& v);
 
 float angleBetweenV3(const glm::vec3 a, const glm::vec3 b);
 
