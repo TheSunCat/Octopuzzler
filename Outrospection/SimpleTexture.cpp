@@ -2,7 +2,7 @@
 #include <GLAD\glad.h>
 #include <string>
 
-SimpleTexture::SimpleTexture(unsigned int _texId, std::string _texPath)
+SimpleTexture::SimpleTexture(const unsigned int& _texId, const std::string& _texPath)
 {
 	texId = _texId;
 	texPath = _texPath;

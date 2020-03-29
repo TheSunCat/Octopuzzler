@@ -171,6 +171,8 @@ void Scene::loadScene() {
 			}
 		}
 	}
+
+	sceneFile.close();
 }
 
 void Scene::draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShader, Shader& _simpleShader) {
@@ -271,6 +273,8 @@ vector<Triangle> Scene::parseCollision(string name)
 
 		ret.push_back(tri);
 	}
+
+	sceneFile.close();
 
 	return ret;
 }

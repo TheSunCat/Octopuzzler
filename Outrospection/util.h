@@ -20,8 +20,6 @@ glm::vec3 vecFromYaw(float yawDeg);
 
 std::string vecToStr(glm::vec3 vec);
 
-unsigned int TextureFromFile(const char* path, const std::string& directory);
-
 unsigned char* DataFromFile(const char* path, const std::string& directory, int* widthOut, int* heightOut);
 
 RayHit rayCast(
@@ -36,4 +34,8 @@ float length2(glm::vec3 v);
 
 bool isZero3(glm::vec3 v);
 
-float sumAbs3(glm::vec3 v);
+//float sumAbs3(glm::vec3 v);
+
+float angleBetweenV3(const glm::vec3 a, const glm::vec3 b);
+
+glm::vec3 projectV3(const glm::vec3 a, const glm::vec3 b);

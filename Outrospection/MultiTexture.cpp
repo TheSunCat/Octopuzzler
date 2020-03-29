@@ -41,4 +41,6 @@ MultiTexture::MultiTexture(std::string multiTextureFileName) {
 		std::cout << "Read date for " << line.substr(0, separatorIndex) << ": bot = " << bottom << " leg = " << legs << " arm = " << arms << " torso = " << torso << " underface = " << underface << " face = " << face << " top = " << top;
 
 	}
+
+	multiTexFile.close();
 }
