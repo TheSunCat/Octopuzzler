@@ -1,10 +1,12 @@
 #pragma once
+#include <string>
+
 class SimpleTexture
 {
 public:
 	SimpleTexture() = default;
 
-	SimpleTexture(unsigned int _texId, std::string _texPath);
+	SimpleTexture(const unsigned int& _texId, const std::string& _texPath);
 
 	void bindTexture();
 
