@@ -21,12 +21,12 @@ SimpleTexture TextureManager::loadTexture(Resource& r)
 	std::string path = r.getResourcePath();
 	path += ".png";
 
-	unsigned int texId = TextureFromFile(path);
+	unsigned int texId = textureFromFile(path);
 
 	if (texId != -1) {
 		SimpleTexture texObj(texId, path);
 
-		textures.insert(std::pair<Resource, SimpleTexture*>(r, &texObj));
+		textures.insert(std::pair<Resource, SimpleTexture>(r, texObj));
 
 		return texObj;
 	}
@@ -49,7 +49,7 @@ AnimatedTexture TextureManager::loadAnimatedTexture(Resource& r, unsigned int te
 		ss << i << ".png";
 		std::string currentPath = ss.str();
 
-		unsigned int currentTextureId = TextureFromFile(currentPath);
+		unsigned int currentTextureId = textureFromFile(currentPath);
 
 
 		if (currentTextureId != -1) {
@@ -64,25 +64,25 @@ AnimatedTexture TextureManager::loadAnimatedTexture(Resource& r, unsigned int te
 
 	AnimatedTexture tex(textureIds, path, textureTickLength);
 
-	textures.insert(std::pair<Resource, AnimatedTexture*>(r, &tex));
+	textures.insert(std::pair<Resource, AnimatedTexture>(r, tex));
 
-	tickableTextures.push_back(&tex);
+	tickableTextures.push_back(tex);
 }
 
 void TextureManager::bindTexture(Resource& r)
 {
-	std::unordered_map<Resource, SimpleTexture*>::const_iterator f = textures.find(r);
+	std::unordered_map<Resource, SimpleTexture>::const_iterator f = textures.find(r);
 
-	SimpleTexture* tex;
+	SimpleTexture tex;
 
 	if (f == textures.end()) { // resource not found in already existing storage, needs to be loaded
-		tex = &loadTexture(r);
+		tex = loadTexture(r);
 	}
 	else {
 		tex = (*f).second;
 	}
 
-	tex->bindTexture();
+	tex.bindTexture();
 }
 
 // Called every game tick, calls step on every tickable texture.
@@ -90,7 +90,7 @@ void TextureManager::tickAllTextures()
 {
 	for (int i = 0; i < tickableTextures.size(); i++)
 	{
-		tickableTextures[i]->step();
+		tickableTextures[i].step();
 	}
 }
 
@@ -110,7 +110,7 @@ unsigned int TextureManager::createTexture(const unsigned char* data, const GLen
 	return tex;
 }
 
-unsigned int TextureManager::TextureFromFile(const std::string& filename)
+unsigned int TextureManager::textureFromFile(const std::string& filename)
 {
 	unsigned int tex;
 	int width, height;

@@ -61,7 +61,7 @@ void PlayerController::collidePlayer(Player* playerIn, const std::vector<Triangl
 {
 	deltaTime *= 100;
 
-	if (isZero3(playerVelocity))
+	if (isZeroV3(playerVelocity))
 		return;
 
 	playerVelocity *= deltaTime;
@@ -208,7 +208,7 @@ void PlayerController::animatePlayer(Player* playerIn)
 {
 	AnimType newAnim;
 
-	if (isGrounded && length2(playerVelocity) < 0.0000002) {
+	if (isGrounded && length2V3(playerVelocity) < 0.0000002) {
 		newAnim = AnimType::idle;
 	}
 	else if (!isGrounded) {
