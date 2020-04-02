@@ -7,8 +7,8 @@
 
 class TextureManager {
 private:
-	std::unordered_map<Resource, SimpleTexture*> textures;
-	std::vector<AnimatedTexture*> tickableTextures;
+	std::unordered_map<Resource, SimpleTexture> textures;
+	std::vector<AnimatedTexture> tickableTextures;
 
 	SimpleTexture missingTexture;
 public:
@@ -22,6 +22,6 @@ public:
 
 	void tickAllTextures();
 private:
-	unsigned int TextureFromFile(const std::string& filename);
+	unsigned int textureFromFile(const std::string& filename);
 	unsigned int createTexture(const unsigned char* data, const GLenum& format, const unsigned int& width, const unsigned int& height);
 };

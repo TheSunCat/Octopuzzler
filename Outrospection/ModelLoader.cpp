@@ -8,13 +8,13 @@
 struct Vertex
 {
 	// Position Vector
-	glm::vec3 Position;
+	glm::vec3 pos;
 
 	// Normal Vector
-	glm::vec3 Normal;
+	glm::vec3 normal;
 
 	// Texture Coordinate Vector
-	glm::vec2 TextureCoordinate;
+	glm::vec2 texCoord;
 };
 
 struct Material
@@ -22,71 +22,50 @@ struct Material
 	Material()
 	{
 		name;
-		Ns = 0.0f;
-		Ni = 0.0f;
-		d = 0.0f;
-		illum = 0;
+		specularExponent = 0.0f;
 	}
 
 	// Material Name
 	std::string name;
 	// Ambient Color
-	glm::vec3 Ka;
+	glm::vec3 colAmbient;
 	// Diffuse Color
-	glm::vec3 Kd;
+	glm::vec3 colDiffuse;
 	// Specular Color
-	glm::vec3 Ks;
+	glm::vec3 colSpecular;
 	// Specular Exponent
-	float Ns;
-	// Optical Density
-	float Ni;
-	// Dissolve
-	float d;
-	// Illumination
-	int illum;
+	float specularExponent;
 	// Ambient Texture Map
-	std::string map_Ka;
+	std::string mapAmbient;
 	// Diffuse Texture Map
-	std::string map_Kd;
+	std::string mapDiffuse;
 	// Specular Texture Map
-	std::string map_Ks;
-	// Specular Hightlight Map
-	std::string map_Ns;
-	// Alpha Texture Map
-	std::string map_d;
-	// Bump Map
-	std::string map_bump;
+	std::string mapSpecular;
 };
 
 struct Mesh
 {
 	Mesh() = default;
 
-	Mesh(std::vector<Vertex>& _Vertices, std::vector<unsigned int>& _Indices)
+	Mesh(std::vector<Vertex>& _vertices, std::vector<unsigned int>& _indices)
 	{
-		Vertices = _Vertices;
-		Indices = _Indices;
+		vertices = _vertices;
+		indices = _indices;
 	}
 
 	// Mesh Name
-	std::string MeshName;
+	std::string meshName;
 	// Vertex List
-	std::vector<Vertex> Vertices;
+	std::vector<Vertex> vertices;
 	// Index List
-	std::vector<unsigned int> Indices;
+	std::vector<unsigned int> indices;
 
 	// Material
-	Material MeshMaterial;
+	Material meshMaterial;
 };
 
 namespace algorithm
 {
-	// glm::vec3 Multiplication Opertor Overload
-	glm::vec3 operator*(const float& left, const glm::vec3& right)
-	{
-		return glm::vec3(right.x * left, right.y * left, right.z * left);
-	}
-
 	// A test to see if P1 is on the same side as P2 of a line segment ab
 	bool SameSide(glm::vec3 p1, glm::vec3 p2, glm::vec3 a, glm::vec3 b)
 	{
@@ -136,15 +115,13 @@ namespace algorithm
 	}
 
 	// Split a String into a string array at a given token
-	inline void split(const std::string& in,
-		std::vector<std::string>& out,
-		std::string token)
+	inline void split(const std::string& in, std::vector<std::string>& out, std::string token)
 	{
 		out.clear();
 
 		std::string temp;
 
-		for (int i = 0; i < int(in.size()); i++)
+		for (int i = 0; i < in.size(); i++)
 		{
 			std::string test = in.substr(i, token.size());
 
@@ -177,18 +154,18 @@ namespace algorithm
 	// Get tail of string after first token and possibly following spaces
 	inline std::string tail(const std::string& in)
 	{
-		size_t token_start = in.find_first_not_of(" \t");
-		size_t space_start = in.find_first_of(" \t", token_start);
-		size_t tail_start = in.find_first_not_of(" \t", space_start);
-		size_t tail_end = in.find_last_not_of(" \t");
-		if (tail_start != std::string::npos && tail_end != std::string::npos)
-		{
-			return in.substr(tail_start, tail_end - tail_start + 1);
+		unsigned int token_start = in.find_first_not_of(" \t");
+		unsigned int space_start = in.find_first_of(" \t", token_start);
+		unsigned int tail_start = in.find_first_not_of(" \t", space_start);
+		unsigned int tail_end = in.find_last_not_of(" \t");
+
+		if (tail_start != std::string::npos) {
+			if (tail_end != std::string::npos)
+				return in.substr(tail_start, tail_end - tail_start + 1);
+			else
+				return in.substr(tail_start);
 		}
-		else if (tail_start != std::string::npos)
-		{
-			return in.substr(tail_start);
-		}
+
 		return "";
 	}
 
@@ -197,8 +174,8 @@ namespace algorithm
 	{
 		if (!in.empty())
 		{
-			size_t token_start = in.find_first_not_of(" \t");
-			size_t token_end = in.find_first_of(" \t", token_start);
+			unsigned int token_start = in.find_first_not_of(" \t");
+			unsigned int token_end = in.find_first_of(" \t", token_start);
 			if (token_start != std::string::npos && token_end != std::string::npos)
 			{
 				return in.substr(token_start, token_end - token_start);
@@ -213,20 +190,22 @@ namespace algorithm
 
 	// Get element at given index position
 	template <class T>
-	inline const T& getElement(const std::vector<T>& elements, std::string& index)
+	inline const T& getElement(const std::vector<T>& elements, std::string& indexStr)
 	{
-		int idx = std::stoi(index);
-		if (idx < 0)
-			idx = int(elements.size()) + idx;
+		int index = std::stoi(indexStr);
+
+		if (index < 0)
+			index = elements.size() + index;
 		else
-			idx--;
-		return elements[idx];
+			index--;
+
+		return elements[index];
 	}
 }
 
 class ModelLoader {
 public:
-	bool LoadFile(std::string filePath)
+	bool loadFile(std::string filePath)
 	{
 		// If the file is not an .obj file return false
 		if (filePath.substr(filePath.size() - 4, 4) != ".obj")
@@ -238,341 +217,342 @@ public:
 		if (!file.is_open())
 			return false;
 
-		LoadedMeshes.clear();
-		LoadedVertices.clear();
-		LoadedIndices.clear();
+		loadedMeshes.clear();
+		loadedVertices.clear();
+		loadedIndices.clear();
 
-		std::vector<glm::vec3> Positions;
-		std::vector<glm::vec2> TCoords;
-		std::vector<glm::vec3> Normals;
+		std::vector<glm::vec3> positions;
+		std::vector<glm::vec2> texCoords;
+		std::vector<glm::vec3> normals;
 
-		std::vector<Vertex> Vertices;
-		std::vector<unsigned int> Indices;
+		std::vector<Vertex> vertices;
+		std::vector<unsigned int> indices;
 
-		std::vector<std::string> MeshMatNames;
+		std::vector<std::string> meshMatNames;
 
+		// controls whether the mesh has been named or not. name should be first 'o' or 'g'
 		bool listening = false;
-		std::string meshname;
+		std::string meshName;
 
 		Mesh tempMesh;
 
-		std::string curline;
-		while (std::getline(file, curline)) {
+		std::string curLine;
+		while (std::getline(file, curLine)) {
+			if (curLine == "")
+				continue;
 
 			// Generate a Mesh Object or Prepare for an object to be created
-			if (algorithm::firstToken(curline) == "o" || algorithm::firstToken(curline) == "g" || curline[0] == 'g')
+			if (algorithm::firstToken(curLine) == "o" || algorithm::firstToken(curLine) == "g" || curLine[0] == 'g')
 			{
 				if (!listening)
 				{
 					listening = true;
 
-					if (algorithm::firstToken(curline) == "o" || algorithm::firstToken(curline) == "g")
+					// name the mesh
+					if (algorithm::firstToken(curLine) == "o" || algorithm::firstToken(curLine) == "g")
 					{
-						meshname = algorithm::tail(curline);
+						meshName = algorithm::tail(curLine);
 					}
 					else
 					{
-						meshname = "unnamed";
+						meshName = "unnamed";
 					}
 				}
 				else
 				{
 					// Generate the mesh to put into the array
-
-					if (!Indices.empty() && !Vertices.empty())
+					if (!indices.empty() && !vertices.empty()) // if there are verts and indices
 					{
 						// Create Mesh
-						tempMesh = Mesh(Vertices, Indices);
-						tempMesh.MeshName = meshname;
+						tempMesh = Mesh(vertices, indices);
+						tempMesh.meshName = meshName;
 
 						// Insert Mesh
-						LoadedMeshes.push_back(tempMesh);
+						loadedMeshes.push_back(tempMesh);
 
 						// Cleanup
-						Vertices.clear();
-						Indices.clear();
-						meshname.clear();
+						vertices.clear();
+						indices.clear();
+						meshName.clear();
 
-						meshname = algorithm::tail(curline);
+						meshName = algorithm::tail(curLine);
 					}
 					else
 					{
-						if (algorithm::firstToken(curline) == "o" || algorithm::firstToken(curline) == "g")
+						// name the mesh
+						if (algorithm::firstToken(curLine) == "o" || algorithm::firstToken(curLine) == "g")
 						{
-							meshname = algorithm::tail(curline);
+							meshName = algorithm::tail(curLine);
 						}
 						else
 						{
-							meshname = "unnamed";
+							meshName = "unnamed";
 						}
 					}
 				}
 			}
 
 			// Generate a Vertex Position
-			if (algorithm::firstToken(curline) == "v")
+			if (algorithm::firstToken(curLine) == "v")
 			{
-				std::vector<std::string> spos;
-				glm::vec3 vpos;
-				algorithm::split(algorithm::tail(curline), spos, " ");
+				std::vector<std::string> vertPosStr;
+				glm::vec3 vertPos;
 
-				vpos.x = std::stof(spos[0]);
-				vpos.y = std::stof(spos[1]);
-				vpos.z = std::stof(spos[2]);
+				algorithm::split(algorithm::tail(curLine), vertPosStr, " ");
 
-				Positions.push_back(vpos);
+				vertPos.x = std::stof(vertPosStr[0]);
+				vertPos.y = std::stof(vertPosStr[1]);
+				vertPos.z = std::stof(vertPosStr[2]);
+
+				positions.push_back(vertPos);
 			}
 
 			// Generate a Vertex Texture Coordinate
-			if (algorithm::firstToken(curline) == "vt")
+			if (algorithm::firstToken(curLine) == "vt")
 			{
-				std::vector<std::string> stex;
-				glm::vec2 vtex;
-				algorithm::split(algorithm::tail(curline), stex, " ");
+				std::vector<std::string> texCoordStr;
+				glm::vec2 texCoord;
 
-				vtex.x = std::stof(stex[0]);
-				vtex.y = std::stof(stex[1]);
+				algorithm::split(algorithm::tail(curLine), texCoordStr, " ");
 
-				TCoords.push_back(vtex);
+				texCoord.x = std::stof(texCoordStr[0]);
+				texCoord.y = std::stof(texCoordStr[1]);
+
+				texCoords.push_back(texCoord);
 			}
 
 			// Generate a Vertex Normal;
-			if (algorithm::firstToken(curline) == "vn")
+			if (algorithm::firstToken(curLine) == "vn")
 			{
-				std::vector<std::string> snor;
-				glm::vec3 vnor;
-				algorithm::split(algorithm::tail(curline), snor, " ");
+				std::vector<std::string> vertNormStr;
+				glm::vec3 vertNorm;
 
-				vnor.x = std::stof(snor[0]);
-				vnor.y = std::stof(snor[1]);
-				vnor.z = std::stof(snor[2]);
+				algorithm::split(algorithm::tail(curLine), vertNormStr, " ");
 
-				Normals.push_back(vnor);
+				vertNorm.x = std::stof(vertNormStr[0]);
+				vertNorm.y = std::stof(vertNormStr[1]);
+				vertNorm.z = std::stof(vertNormStr[2]);
+
+				normals.push_back(vertNorm);
 			}
 
 			// Generate a Face (vertices & indices)
-			if (algorithm::firstToken(curline) == "f")
+			if (algorithm::firstToken(curLine) == "f")
 			{
 				// Generate the vertices
-				std::vector<Vertex> vVerts;
-				GenVerticesFromRawOBJ(vVerts, Positions, TCoords, Normals, curline);
+				std::vector<Vertex> loadedVerticesVector;
+				verticesFromFaceString(loadedVerticesVector, positions, texCoords, normals, curLine);
 
 				// Add Vertices
-				for (int i = 0; i < int(vVerts.size()); i++)
+				for (int i = 0; i < loadedVerticesVector.size(); i++)
 				{
-					Vertices.push_back(vVerts[i]);
+					Vertex curVert = loadedVerticesVector[i];
 
-					LoadedVertices.push_back(vVerts[i]);
+					vertices.push_back(curVert);
+
+					loadedVertices.push_back(curVert);
 				}
 
-				std::vector<unsigned int> iIndices;
+				std::vector<unsigned int> indicesVector;
 
-				VertexTriangluation(iIndices, vVerts);
+				verticesToIndicesTriangulated(indicesVector, loadedVerticesVector);
 
 				// Add Indices
-				for (int i = 0; i < int(iIndices.size()); i++)
+				for (int i = 0; i < indicesVector.size(); i++)
 				{
-					unsigned int indnum = (unsigned int)((Vertices.size()) - vVerts.size()) + iIndices[i];
-					Indices.push_back(indnum);
+					unsigned int curIndex = (unsigned int) ((vertices.size()) - loadedVerticesVector.size()) + indicesVector[i];
+					indices.push_back(curIndex);
 
-					indnum = (unsigned int)((LoadedVertices.size()) - vVerts.size()) + iIndices[i];
-					LoadedIndices.push_back(indnum);
-
+					curIndex = (unsigned int) ((loadedVertices.size()) - loadedVerticesVector.size()) + indicesVector[i];
+					loadedIndices.push_back(curIndex);
 				}
 			}
 
 			// Get Mesh Material Name
-			if (algorithm::firstToken(curline) == "usemtl")
+			if (algorithm::firstToken(curLine) == "usemtl")
 			{
-				MeshMatNames.push_back(algorithm::tail(curline));
+				meshMatNames.push_back(algorithm::tail(curLine));
 
 				// Create new Mesh, if Material changes within a group
-				if (!Indices.empty() && !Vertices.empty())
+				if (!indices.empty() && !vertices.empty())
 				{
 					// Create Mesh
-					tempMesh = Mesh(Vertices, Indices);
-					tempMesh.MeshName = meshname;
-					int i = 2;
-					while (1) {
-						tempMesh.MeshName = meshname + "_" + std::to_string(i);
+					tempMesh = Mesh(vertices, indices);
+					tempMesh.meshName = meshName;
 
-						for (auto& m : LoadedMeshes)
-							if (m.MeshName == tempMesh.MeshName)
+					// rename new mesh
+					int i = 2;
+					while (true) {
+						tempMesh.meshName = meshName + "_" + std::to_string(i);
+
+						// check for duplicate names
+						for (Mesh& m : loadedMeshes)
+							if (m.meshName == tempMesh.meshName)
 								continue;
+
 						break;
 					}
 
-					// Insert Mesh
-					LoadedMeshes.push_back(tempMesh);
+					// insert mesh
+					loadedMeshes.push_back(tempMesh);
 
-					// Cleanup
-					Vertices.clear();
-					Indices.clear();
+					// cleanup
+					vertices.clear();
+					indices.clear();
 				}
 			}
 
 			// Load Materials
-			if (algorithm::firstToken(curline) == "mtllib")
+			if (algorithm::firstToken(curLine) == "mtllib")
 			{
-				// Generate LoadedMaterial
-
 				// Generate a path to the material file
-				std::vector<std::string> temp;
-				algorithm::split(filePath, temp, "/");
+				std::vector<std::string> splitFilePath;
+				algorithm::split(filePath, splitFilePath, "/");
 
 				std::string pathtomat = "";
 
-				if (temp.size() != 1)
+				if (splitFilePath.size() != 1)
 				{
-					for (int i = 0; i < temp.size() - 1; i++)
+					for (int i = 0; i < splitFilePath.size() - 1; i++)
 					{
-						pathtomat += temp[i] + "/";
+						pathtomat += splitFilePath[i] + "/";
 					}
 				}
 
-
-				pathtomat += algorithm::tail(curline);
+				pathtomat += algorithm::tail(curLine);
 
 				// Load Materials
-				LoadMaterials(pathtomat);
+				loadMats(pathtomat);
 			}
 		}
 
 		// Deal with last mesh
-		if (!Indices.empty() && !Vertices.empty())
+		if (!indices.empty() && !vertices.empty())
 		{
 			// Create Mesh
-			tempMesh = Mesh(Vertices, Indices);
-			tempMesh.MeshName = meshname;
+			tempMesh = Mesh(vertices, indices);
+			tempMesh.meshName = meshName;
 
 			// Insert Mesh
-			LoadedMeshes.push_back(tempMesh);
+			loadedMeshes.push_back(tempMesh);
 		}
 
 		file.close();
 
 		// Set Materials for each Mesh
-		for (int i = 0; i < MeshMatNames.size(); i++)
+		for (int i = 0; i < meshMatNames.size(); i++)
 		{
-			std::string matname = MeshMatNames[i];
+			std::string matname = meshMatNames[i];
 
 			// Find corresponding material name in loaded materials
 			// when found copy material variables into mesh material
-			for (int j = 0; j < LoadedMaterials.size(); j++)
+			for (int j = 0; j < loadedMaterials.size(); j++)
 			{
-				if (LoadedMaterials[j].name == matname)
+				if (loadedMaterials[j].name == matname)
 				{
-					LoadedMeshes[i].MeshMaterial = LoadedMaterials[j];
+					loadedMeshes[i].meshMaterial = loadedMaterials[j];
 					break;
 				}
 			}
 		}
 
-		if (LoadedMeshes.empty() && LoadedVertices.empty() && LoadedIndices.empty())
-		{
+		if (loadedMeshes.empty() && loadedVertices.empty() && loadedIndices.empty())
 			return false;
-		}
 		else
-		{
 			return true;
-		}
 	}
 
 	// Loaded Mesh Objects
-	std::vector<Mesh> LoadedMeshes;
+	std::vector<Mesh> loadedMeshes;
 	// Loaded Vertex Objects
-	std::vector<Vertex> LoadedVertices;
+	std::vector<Vertex> loadedVertices;
 	// Loaded Index Positions
-	std::vector<unsigned int> LoadedIndices;
+	std::vector<unsigned int> loadedIndices;
 	// Loaded Material Objects
-	std::vector<Material> LoadedMaterials;
+	std::vector<Material> loadedMaterials;
 
 private:
-	// Generate vertices from a list of positions, 
-	//	tcoords, normals and a face line
-	void GenVerticesFromRawOBJ(std::vector<Vertex>& oVerts,
-		const std::vector<glm::vec3>& iPositions,
-		const std::vector<glm::vec2>& iTCoords,
-		const std::vector<glm::vec3>& iNormals,
-		std::string icurline)
+	// Generate vertices from a list of positions, tcoords, normals and a face line
+	void verticesFromFaceString(std::vector<Vertex>& outputVertices, const std::vector<glm::vec3>& _positions, const std::vector<glm::vec2>& _texCoords, const std::vector<glm::vec3>& _normals, std::string _curLine)
 	{
-		std::vector<std::string> sface, svert;
-		Vertex vVert;
-		algorithm::split(algorithm::tail(icurline), sface, " ");
+		std::vector<std::string> splitFaceStr;
+		Vertex vertex;
+		algorithm::split(algorithm::tail(_curLine), splitFaceStr, " ");
 
 		bool noNormal = false;
 
 		// For every given vertex do this
-		for (int i = 0; i < int(sface.size()); i++)
+		for (int i = 0; i < splitFaceStr.size(); i++)
 		{
-			// See What type the vertex is.
-			int vtype;
+			std::vector<std::string> splitVertexStr;
+			algorithm::split(splitFaceStr[i], splitVertexStr, "/");
 
-			algorithm::split(sface[i], svert, "/");
+			// 1 = pos, 2 = pos/tex, 3 = pos/norm,, 4 = pos/tex/norm
+			int vertexType;
 
 			// Check for just position - v1
-			if (svert.size() == 1)
+			if (splitVertexStr.size() == 1)
 			{
 				// Only position
-				vtype = 1;
+				vertexType = 1;
 			}
 
 			// Check for position & texture - v1/vt1
-			if (svert.size() == 2)
+			if (splitVertexStr.size() == 2)
 			{
 				// Position & Texture
-				vtype = 2;
+				vertexType = 2;
 			}
 
 			// Check for Position, Texture and Normal - v1/vt1/vn1
 			// or if Position and Normal - v1//vn1
-			if (svert.size() == 3)
+			if (splitVertexStr.size() == 3)
 			{
-				if (svert[1] != "")
+				if (splitVertexStr[1] != "")
 				{
 					// Position, Texture, and Normal
-					vtype = 4;
+					vertexType = 4;
 				}
 				else
 				{
 					// Position & Normal
-					vtype = 3;
+					vertexType = 3;
 				}
 			}
 
 			// Calculate and store the vertex
-			switch (vtype)
+			switch (vertexType)
 			{
 			case 1: // P
 			{
-				vVert.Position = algorithm::getElement(iPositions, svert[0]);
-				vVert.TextureCoordinate = glm::vec2(0, 0);
+				vertex.pos = algorithm::getElement(_positions, splitVertexStr[0]);
+				vertex.texCoord = glm::vec2(0, 0);
 				noNormal = true;
-				oVerts.push_back(vVert);
+				outputVertices.push_back(vertex);
 				break;
 			}
 			case 2: // P/T
 			{
-				vVert.Position = algorithm::getElement(iPositions, svert[0]);
-				vVert.TextureCoordinate = algorithm::getElement(iTCoords, svert[1]);
+				vertex.pos = algorithm::getElement(_positions, splitVertexStr[0]);
+				vertex.texCoord = algorithm::getElement(_texCoords, splitVertexStr[1]);
 				noNormal = true;
-				oVerts.push_back(vVert);
+				outputVertices.push_back(vertex);
 				break;
 			}
 			case 3: // P//N
 			{
-				vVert.Position = algorithm::getElement(iPositions, svert[0]);
-				vVert.TextureCoordinate = glm::vec2(0, 0);
-				vVert.Normal = algorithm::getElement(iNormals, svert[2]);
-				oVerts.push_back(vVert);
+				vertex.pos = algorithm::getElement(_positions, splitVertexStr[0]);
+				vertex.texCoord = glm::vec2(0, 0);
+				vertex.normal = algorithm::getElement(_normals, splitVertexStr[2]);
+				outputVertices.push_back(vertex);
 				break;
 			}
 			case 4: // P/T/N
 			{
-				vVert.Position = algorithm::getElement(iPositions, svert[0]);
-				vVert.TextureCoordinate = algorithm::getElement(iTCoords, svert[1]);
-				vVert.Normal = algorithm::getElement(iNormals, svert[2]);
-				oVerts.push_back(vVert);
+				vertex.pos = algorithm::getElement(_positions, splitVertexStr[0]);
+				vertex.texCoord = algorithm::getElement(_texCoords, splitVertexStr[1]);
+				vertex.normal = algorithm::getElement(_normals, splitVertexStr[2]);
+				outputVertices.push_back(vertex);
 				break;
 			}
 			default:
@@ -583,202 +563,188 @@ private:
 		}
 
 		// take care of missing normals
-		// these may not be truly accurate but it is the 
-		// best they get for not compiling a mesh with normals	
 		if (noNormal)
 		{
-			glm::vec3 A = oVerts[0].Position - oVerts[1].Position;
-			glm::vec3 B = oVerts[2].Position - oVerts[1].Position;
+			glm::vec3 A = outputVertices[0].pos - outputVertices[1].pos;
+			glm::vec3 B = outputVertices[2].pos - outputVertices[1].pos;
 
 			glm::vec3 normal = glm::cross(A, B);
 
-			for (int i = 0; i < int(oVerts.size()); i++)
+			for (int i = 0; i < outputVertices.size(); i++)
 			{
-				oVerts[i].Normal = normal;
+				outputVertices[i].normal = normal;
 			}
 		}
 	}
 
 	// Triangulate a list of vertices into a face by printing
 	// indicies corresponding with triangles within it
-	void VertexTriangluation(std::vector<unsigned int>& oIndices,
-		const std::vector<Vertex>& iVerts)
+	void verticesToIndicesTriangulated(std::vector<unsigned int>& indicesOut, const std::vector<Vertex>& _vertices)
 	{
-		// If there are 2 or less verts,
-		// no triangle can be created,
-		// so exit
-		if (iVerts.size() < 3)
-		{
+		// less than 3 verts means no tris, so exit
+		if (_vertices.size() < 3)
 			return;
-		}
-		// If it is a triangle no need to calculate it
-		if (iVerts.size() == 3)
+
+		// it's just one tri, sweet
+		if (_vertices.size() == 3)
 		{
-			oIndices.push_back(0);
-			oIndices.push_back(1);
-			oIndices.push_back(2);
+			indicesOut.push_back(0);
+			indicesOut.push_back(1);
+			indicesOut.push_back(2);
 			return;
 		}
 
 		// Create a list of vertices
-		std::vector<Vertex> tVerts = iVerts;
+		std::vector<Vertex> verticesVector = _vertices;
 
 		while (true)
 		{
 			// For every vertex
-			for (int i = 0; i < int(tVerts.size()); i++)
+			for (int index = 0; index < verticesVector.size(); index++)
 			{
-				// pPrev = the previous vertex in the list
-				Vertex pPrev;
-				if (i == 0)
-				{
-					pPrev = tVerts[tVerts.size() - 1];
-				}
+				Vertex prevVertex;
+
+				if (index == 0)
+					prevVertex = verticesVector[verticesVector.size() - 1];
 				else
-				{
-					pPrev = tVerts[i - 1];
-				}
+					prevVertex = verticesVector[index - 1];
 
-				// pCur = the current vertex;
-				Vertex pCur = tVerts[i];
+				Vertex curVertex = verticesVector[index];
 
-				// pNext = the next vertex in the list
-				Vertex pNext;
-				if (i == tVerts.size() - 1)
-				{
-					pNext = tVerts[0];
-				}
+				Vertex nextVertex;
+				if (index == verticesVector.size() - 1)
+					nextVertex = verticesVector[0];
 				else
-				{
-					pNext = tVerts[i + 1];
-				}
+					nextVertex = verticesVector[index + 1];
 
-				// Check to see if there are only 3 verts left
-				// if so this is the last triangle
-				if (tVerts.size() == 3)
+				// 3 verts left means this is the last tri
+				if (verticesVector.size() == 3)
 				{
-					// Create a triangle from pCur, pPrev, pNext
-					for (int j = 0; j < int(tVerts.size()); j++)
+					// create tri from current, previous, and next vert
+					for (int j = 0; j < verticesVector.size(); j++)
 					{
-						if (iVerts[j].Position == pCur.Position)
-							oIndices.push_back(j);
-						if (iVerts[j].Position == pPrev.Position)
-							oIndices.push_back(j);
-						if (iVerts[j].Position == pNext.Position)
-							oIndices.push_back(j);
+						if (_vertices[j].pos == curVertex.pos)
+							indicesOut.push_back(j);
+						if (_vertices[j].pos == prevVertex.pos)
+							indicesOut.push_back(j);
+						if (_vertices[j].pos == nextVertex.pos)
+							indicesOut.push_back(j);
 					}
 
-					tVerts.clear();
+					// we're done!
+					verticesVector.clear();
 					break;
 				}
-				if (tVerts.size() == 4)
+
+				if (verticesVector.size() == 4)
 				{
-					// Create a triangle from pCur, pPrev, pNext
-					for (int j = 0; j < int(iVerts.size()); j++)
+					// create tri from current, previous, and next vert
+					for (int j = 0; j < _vertices.size(); j++)
 					{
-						if (iVerts[j].Position == pCur.Position)
-							oIndices.push_back(j);
-						if (iVerts[j].Position == pPrev.Position)
-							oIndices.push_back(j);
-						if (iVerts[j].Position == pNext.Position)
-							oIndices.push_back(j);
+						if (_vertices[j].pos == curVertex.pos)
+							indicesOut.push_back(j);
+						if (_vertices[j].pos == prevVertex.pos)
+							indicesOut.push_back(j);
+						if (_vertices[j].pos == nextVertex.pos)
+							indicesOut.push_back(j);
 					}
 
 					glm::vec3 tempVec;
-					for (int j = 0; j < int(tVerts.size()); j++)
+					for (int j = 0; j < verticesVector.size(); j++)
 					{
-						if (tVerts[j].Position != pCur.Position
-							&& tVerts[j].Position != pPrev.Position
-							&& tVerts[j].Position != pNext.Position)
+						if (verticesVector[j].pos != curVertex.pos
+							&& verticesVector[j].pos != prevVertex.pos
+							&& verticesVector[j].pos != nextVertex.pos)
 						{
-							tempVec = tVerts[j].Position;
+							tempVec = verticesVector[j].pos;
 							break;
 						}
 					}
 
-					// Create a triangle from pCur, pPrev, pNext
-					for (int j = 0; j < int(iVerts.size()); j++)
+					// create tri from current, previous, and next vert
+					for (int j = 0; j < _vertices.size(); j++)
 					{
-						if (iVerts[j].Position == pPrev.Position)
-							oIndices.push_back(j);
-						if (iVerts[j].Position == pNext.Position)
-							oIndices.push_back(j);
-						if (iVerts[j].Position == tempVec)
-							oIndices.push_back(j);
+						if (_vertices[j].pos == prevVertex.pos)
+							indicesOut.push_back(j);
+						if (_vertices[j].pos == nextVertex.pos)
+							indicesOut.push_back(j);
+						if (_vertices[j].pos == tempVec)
+							indicesOut.push_back(j);
 					}
 
-					tVerts.clear();
+					// we're done!
+					verticesVector.clear();
 					break;
 				}
 
 				// If Vertex is not an interior vertex
-				float angle = angleBetweenV3(pPrev.Position - pCur.Position, pNext.Position - pCur.Position) * (180 / 3.14159265359);
+				float angle = angleBetweenV3(prevVertex.pos - curVertex.pos, nextVertex.pos - curVertex.pos) * (180 / 3.14159265359);
 				if (angle <= 0 && angle >= 180)
 					continue;
 
 				// If any vertices are within this triangle
 				bool inTri = false;
-				for (int j = 0; j < int(iVerts.size()); j++)
+				for (int j = 0; j < _vertices.size(); j++)
 				{
-					if (algorithm::inTriangle(iVerts[j].Position, pPrev.Position, pCur.Position, pNext.Position)
-						&& iVerts[j].Position != pPrev.Position
-						&& iVerts[j].Position != pCur.Position
-						&& iVerts[j].Position != pNext.Position)
+					if (algorithm::inTriangle(_vertices[j].pos, prevVertex.pos, curVertex.pos, nextVertex.pos)
+						&& _vertices[j].pos != prevVertex.pos
+						&& _vertices[j].pos != curVertex.pos
+						&& _vertices[j].pos != nextVertex.pos)
 					{
 						inTri = true;
 						break;
 					}
 				}
+
 				if (inTri)
 					continue;
 
-				// Create a triangle from pCur, pPrev, pNext
-				for (int j = 0; j < int(iVerts.size()); j++)
+				// create tri from current, previous, and next vert
+				for (int j = 0; j < _vertices.size(); j++)
 				{
-					if (iVerts[j].Position == pCur.Position)
-						oIndices.push_back(j);
-					if (iVerts[j].Position == pPrev.Position)
-						oIndices.push_back(j);
-					if (iVerts[j].Position == pNext.Position)
-						oIndices.push_back(j);
+					if (_vertices[j].pos == curVertex.pos)
+						indicesOut.push_back(j);
+					if (_vertices[j].pos == prevVertex.pos)
+						indicesOut.push_back(j);
+					if (_vertices[j].pos == nextVertex.pos)
+						indicesOut.push_back(j);
 				}
 
-				// Delete pCur from the list
-				for (int j = 0; j < int(tVerts.size()); j++)
+				// remove curVertex from the working list
+				for (int j = 0; j < verticesVector.size(); j++)
 				{
-					if (tVerts[j].Position == pCur.Position)
+					if (verticesVector[j].pos == curVertex.pos)
 					{
-						tVerts.erase(tVerts.begin() + j);
+						verticesVector.erase(verticesVector.begin() + j);
 						break;
 					}
 				}
 
-				// reset i to the start
-				// -1 since loop will add 1 to it
-				i = -1;
+				// reset index to the start (-1 since loop will add 1 to it)
+				index = -1;
 			}
 
-			// if no triangles were created
-			if (oIndices.size() == 0)
+			// no triangles were created
+			if (indicesOut.size() == 0)
 				break;
 
-			// if no more vertices
-			if (tVerts.size() == 0)
+			// no more vertices
+			if (verticesVector.size() == 0)
 				break;
 		}
 	}
 
-	// Load Materials from .mtl file
-	bool LoadMaterials(std::string path)
+	// load mats from .mtl file
+	bool loadMats(std::string path)
 	{
-		// If the file is not a material file return false
+		// return false if file is not mtl
 		if (path.substr(path.size() - 4, path.size()) != ".mtl")
 			return false;
 
-		std::ifstream file(path);
+		std::ifstream mtlFile(path);
 
-		// If the file is not found return false
-		if (!file.is_open())
+		// return false if file is not found
+		if (!mtlFile.is_open())
 			return false;
 
 		Material tempMaterial;
@@ -787,7 +753,7 @@ private:
 
 		// Go through each line looking for material variables
 		std::string curline;
-		while (std::getline(file, curline))
+		while (std::getline(mtlFile, curline))
 		{
 			// new material and material name
 			if (algorithm::firstToken(curline) == "newmtl")
@@ -796,35 +762,28 @@ private:
 				{
 					listening = true;
 
+					// name the mat
 					if (curline.size() > 7)
-					{
 						tempMaterial.name = algorithm::tail(curline);
-					}
 					else
-					{
 						tempMaterial.name = "none";
-					}
 				}
 				else
 				{
-					// Generate the material
+					// push the temp mat, to prepare for new mat
+					loadedMaterials.push_back(tempMaterial);
 
-					// Push Back loaded Material
-					LoadedMaterials.push_back(tempMaterial);
-
-					// Clear Loaded Material
+					// reset temp mat
 					tempMaterial = Material();
 
+					// name the mat
 					if (curline.size() > 7)
-					{
 						tempMaterial.name = algorithm::tail(curline);
-					}
 					else
-					{
 						tempMaterial.name = "none";
-					}
 				}
 			}
+
 			// Ambient Color
 			if (algorithm::firstToken(curline) == "Ka")
 			{
@@ -834,10 +793,11 @@ private:
 				if (temp.size() != 3)
 					continue;
 
-				tempMaterial.Ka.x = std::stof(temp[0]);
-				tempMaterial.Ka.y = std::stof(temp[1]);
-				tempMaterial.Ka.z = std::stof(temp[2]);
+				tempMaterial.colAmbient.x = std::stof(temp[0]);
+				tempMaterial.colAmbient.y = std::stof(temp[1]);
+				tempMaterial.colAmbient.z = std::stof(temp[2]);
 			}
+
 			// Diffuse Color
 			if (algorithm::firstToken(curline) == "Kd")
 			{
@@ -847,10 +807,11 @@ private:
 				if (temp.size() != 3)
 					continue;
 
-				tempMaterial.Kd.x = std::stof(temp[0]);
-				tempMaterial.Kd.y = std::stof(temp[1]);
-				tempMaterial.Kd.z = std::stof(temp[2]);
+				tempMaterial.colDiffuse.x = std::stof(temp[0]);
+				tempMaterial.colDiffuse.y = std::stof(temp[1]);
+				tempMaterial.colDiffuse.z = std::stof(temp[2]);
 			}
+
 			// Specular Color
 			if (algorithm::firstToken(curline) == "Ks")
 			{
@@ -860,73 +821,40 @@ private:
 				if (temp.size() != 3)
 					continue;
 
-				tempMaterial.Ks.x = std::stof(temp[0]);
-				tempMaterial.Ks.y = std::stof(temp[1]);
-				tempMaterial.Ks.z = std::stof(temp[2]);
+				tempMaterial.colSpecular.x = std::stof(temp[0]);
+				tempMaterial.colSpecular.y = std::stof(temp[1]);
+				tempMaterial.colSpecular.z = std::stof(temp[2]);
 			}
+
 			// Specular Exponent
 			if (algorithm::firstToken(curline) == "Ns")
 			{
-				tempMaterial.Ns = std::stof(algorithm::tail(curline));
+				tempMaterial.specularExponent = std::stof(algorithm::tail(curline));
 			}
-			// Optical Density
-			if (algorithm::firstToken(curline) == "Ni")
-			{
-				tempMaterial.Ni = std::stof(algorithm::tail(curline));
-			}
-			// Dissolve
-			if (algorithm::firstToken(curline) == "d")
-			{
-				tempMaterial.d = std::stof(algorithm::tail(curline));
-			}
-			// Illumination
-			if (algorithm::firstToken(curline) == "illum")
-			{
-				tempMaterial.illum = std::stoi(algorithm::tail(curline));
-			}
+
 			// Ambient Texture Map
 			if (algorithm::firstToken(curline) == "map_Ka")
 			{
-				tempMaterial.map_Ka = algorithm::tail(curline);
+				tempMaterial.mapAmbient = algorithm::tail(curline);
 			}
+
 			// Diffuse Texture Map
 			if (algorithm::firstToken(curline) == "map_Kd")
 			{
-				tempMaterial.map_Kd = algorithm::tail(curline);
+				tempMaterial.mapDiffuse = algorithm::tail(curline);
 			}
+
 			// Specular Texture Map
 			if (algorithm::firstToken(curline) == "map_Ks")
 			{
-				tempMaterial.map_Ks = algorithm::tail(curline);
-			}
-			// Specular Hightlight Map
-			if (algorithm::firstToken(curline) == "map_Ns")
-			{
-				tempMaterial.map_Ns = algorithm::tail(curline);
-			}
-			// Alpha Texture Map
-			if (algorithm::firstToken(curline) == "map_d")
-			{
-				tempMaterial.map_d = algorithm::tail(curline);
-			}
-			// Bump Map
-			if (algorithm::firstToken(curline) == "map_Bump" || algorithm::firstToken(curline) == "map_bump" || algorithm::firstToken(curline) == "bump")
-			{
-				tempMaterial.map_bump = algorithm::tail(curline);
+				tempMaterial.mapSpecular = algorithm::tail(curline);
 			}
 		}
 
-		// Deal with last material
+		// take care of the last material
+		loadedMaterials.push_back(tempMaterial);
 
-		// Push Back loaded Material
-		LoadedMaterials.push_back(tempMaterial);
-
-		// Test to see if anything was loaded
-		// If not return false
-		if (LoadedMaterials.empty())
-			return false;
-		// If so return true
-		else
-			return true;
+		// return whether something was loaded
+		return !(loadedMaterials.empty());
 	}
 };
