@@ -1,5 +1,8 @@
 #include "Outrospection.h"
 
+#include "KeyBindings.h"
+#include "Util.h"
+
 Outrospection::Outrospection() : opengl() // init ogl
 {
 	gameWindow = opengl.gameWindow;
@@ -161,7 +164,7 @@ bool Outrospection::glError(bool print)
 		ret = true;
 
 		if(print)
-			cout << err << endl;
+			std::cout << err << std::endl;
 	}
 
 	return ret;
