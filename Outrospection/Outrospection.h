@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Scene.h"
-#include "Player.h"
-#include "PlayerController.h"
-#include "Camera.h"
-#include "OpenGL.h"
 #include "Constants.h"
+#include "Core/Rendering/OpenGL.h"
+#include "Core/Scene.h"
+#include "Core/Player.h"
+#include "Core/PlayerController.h"
+#include "Core/Rendering/TextureManager.h"
 
 class Outrospection {
 public:
@@ -27,6 +27,8 @@ public:
 
 	// Check for OpenGL errors and print them
 	bool glError(bool print);
+
+	TextureManager textureManager;
 private:
 	void runGameLoop();
 

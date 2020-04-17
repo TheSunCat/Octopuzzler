@@ -1,11 +1,8 @@
 #pragma once
 
+#include <GLAD/glad.h>
 #include <glm/glm.hpp>
-#include <GLAD\glad.h>
-#include "stb_image.h"
-#include <vector>
-#include <sstream>
-#include <iostream>
+
 #include "Types.h"
 
 std::vector<std::string> split(std::string input, std::string delimiter);

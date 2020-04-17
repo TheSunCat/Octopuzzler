@@ -1,7 +1,13 @@
 #pragma once
+
 #include <unordered_map>
 
-enum AnimType {
+#include <glm/glm.hpp>
+
+#include "Core/Rendering/SimpleTexture.h"
+#include "Core/Rendering/Resource.h"
+
+enum class AnimType {
 	walk,
 	idle,
 	jump, 
@@ -15,17 +21,26 @@ const std::unordered_map<AnimType, std::string> animTypeMap ({
 	{AnimType::fall, "fall"}
 });
 
-struct Animation {
-	AnimType animType;
-	unsigned int frameCount;
-	unsigned int frameLength;
+//struct Animation {
+//	AnimType animType;
+//	unsigned int frameCount;
+//	unsigned int frameLength;
+//
+//	unsigned int frameTally;
+//
+//	unsigned int curFrame;
+//	std::vector<unsigned int> frames;
+//};
 
-	unsigned int frameTally;
+struct Vertex {
+	glm::vec3 pos;
+	glm::vec3 normal;
 
-	unsigned int curFrame;
-	std::vector<unsigned int> frames;
+	glm::vec2 texCoord;
+
+	glm::vec3 tangent;
+	glm::vec3 bitangent;
 };
-
 
 struct Triangle {
 	glm::vec3 v0;
@@ -43,4 +58,20 @@ struct RayHit {
 	float dist;
 	glm::vec3 point;
 	Triangle tri;
+};
+
+class Hashes
+{
+public:
+	size_t operator() (const SimpleTexture& st) const
+	{
+		return st.texId;
+	}
+
+	size_t operator() (const Resource& r) const
+	{
+		std::hash<std::string> strhash;
+
+		return strhash(r.resourcePath) + strhash(r.resourceName);
+	}
 };

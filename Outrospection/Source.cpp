@@ -1,14 +1,13 @@
 #include "Source.h"
 
-// instance of the game
-Outrospection instance = Outrospection();
+Outrospection oinstance;
 
-Outrospection getOutrospection() {
-	return instance;
+Outrospection* getOutrospection() {
+	return &oinstance;
 }
 
 int main()
 {
-	instance.run();
+	oinstance.run();
 	return 0;
 }

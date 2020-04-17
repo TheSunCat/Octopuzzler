@@ -1,5 +1,10 @@
 #include "Util.h"
 
+#include <sstream>
+#include <iostream>
+
+#include "External/stb_image.h"
+
 std::vector<std::string> split(std::string input, std::string delimiter) {
 	std::vector<std::string>* toReturn = new std::vector<std::string>();
 	bool finished = false;
