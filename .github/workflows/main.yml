@@ -16,10 +16,11 @@ jobs:
         uses: actions/checkout@master
       - uses: microsoft/setup-msbuild@v1
       - name: msbuild
-        run: msbuild Outrospection.sln /property:Configuration=Release /property:Platform=x64
+        run: |
+          msbuild $Env:GITHUB_WORKSPACE/OutrospectioGamen/OutrospectionGame.sln /property:Configuration=Release /property:Platform=x64
       - name: Create ZIP
         run: |
-          zip --junk-paths Outrospection-release ./x64/Release
+          zip --junk-paths Outrospection-release $Env:GITHUB_WORKSPACE/OutrospectionGame/x64/Release
       - name: Create Release
         id: create_release
         uses: actions/create-release@latest
