@@ -21,13 +21,9 @@ jobs:
         run: |
           nuget restore $Env:GITHUB_WORKSPACE/OutrospectionGame.sln
           msbuild $Env:GITHUB_WORKSPACE/OutrospectionGame.sln /property:Configuration=Release /property:Platform=x64
-      - name: create-7z-action
-        uses: DuckSoft/create-7z-action@v1.0
-        with:
-          # file/folder path to compress
-          pathSource: $Env:GITHUB_WORKSPACE/x64/Release
-          # 7z archive path to write
-          pathTarget: $Env:GITHUB_WORKSPACE/Outrospection-release.7z
+      - name: create ZIP
+        run: |
+          powershell "Compress-Archive $Env:GITHUB_WORKSPACE/x64/Release $Env:GITHUB_WORKSPACE/Outrospection-release.zip"
       - name: Create Release
         id: create_release
         uses: actions/create-release@latest
