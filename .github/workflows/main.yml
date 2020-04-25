@@ -30,7 +30,7 @@ jobs:
         with:
           allowUpdates: true
           replacesArtifacts: true
-          artifacts: $Env:GITHUB_WORKSPACE/Outrospection-release.zip
+          artifacts: "$Env:GITHUB_WORKSPACE/Outrospection-release.zip"
           token: ${{ secrets.GITHUB_TOKEN }}
           name: Release ${{ github.ref }}
           body: |
