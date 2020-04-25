@@ -21,10 +21,13 @@ jobs:
         run: |
           nuget restore $Env:GITHUB_WORKSPACE/OutrospectionGame.sln
           msbuild $Env:GITHUB_WORKSPACE/OutrospectionGame.sln /property:Configuration=Release /property:Platform=x64
-      - name: Create ZIP
-        uses: montudor/action-zip@v0.1.0
+      - name: Zip Release
+        uses: TheDoctor0/zip-release@v0.3.0
         with:
-            args: zip -qq -r ./Outrospection-release.zip $Env:GITHUB_WORKSPACE/x64/Release
+          # Filename for archive
+          filename: Outrospection-release.zip
+          # Base path for archive files
+          path: $Env:GITHUB_WORKSPACE/x64/Release
       - name: Create Release
         id: create_release
         uses: actions/create-release@latest
