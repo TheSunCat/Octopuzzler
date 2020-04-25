@@ -30,10 +30,11 @@ jobs:
         with:
           allowUpdates: true
           replacesArtifacts: true
-          artifact: $Env:GITHUB_WORKSPACE/Outrospection-release.zip
+          artifacts: $Env:GITHUB_WORKSPACE/Outrospection-release.zip
           token: ${{ secrets.GITHUB_TOKEN }}
           name: Release ${{ github.ref }}
           body: |
             Latest release built from latest push to master.
           draft: false
           prerelease: true
+          tag: Latest Release
