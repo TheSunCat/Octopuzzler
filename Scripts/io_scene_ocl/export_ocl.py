@@ -81,6 +81,7 @@ def write_file(filepath, objects, scene,
     face_vert_index = 1
 
     globalNormals = {}
+    
     copy_set = set()
 
     # Get all meshes
@@ -110,7 +111,6 @@ def write_file(filepath, objects, scene,
                 depsgraph = bpy.context.evaluated_depsgraph_get()
                 me = ob.evaluated_get(depsgraph).to_mesh()
 			
-                # me = ob.to_mesh(scene, EXPORT_APPLY_MODIFIERS, 'PREVIEW', calc_tessface=False)
             except RuntimeError:
                 me = None
 
@@ -119,9 +119,7 @@ def write_file(filepath, objects, scene,
 
             me.transform(EXPORT_GLOBAL_MATRIX @ ob_mat)
 
-            if EXPORT_TRI:
-                # _must_ do this first since it re-allocs arrays
-                mesh_triangulate(me)
+            mesh_triangulate(me)
 
             me_verts = me.vertices[:]
 
@@ -130,10 +128,20 @@ def write_file(filepath, objects, scene,
 
             if not (len(face_index_pairs) + len(me.vertices)):  # Make sure there is something to write
                 # clean up
+                bpy.data.meshes.remove(me)
+                
                 continue  # don't bother with this mesh.
 
             if EXPORT_NORMALS and face_index_pairs:
                 me.calc_normals()
+
+            materials = me.materials[:]
+            material_names = [m.name if m else None for m in materials]
+
+            # avoid bad index errors
+            if not materials:
+                materials = [None]
+                material_names = [name_compat(None)]
 
             # NORMAL, Smooth/Non smoothed.
             if EXPORT_NORMALS:
@@ -156,13 +164,13 @@ def write_file(filepath, objects, scene,
 
 
             for f, f_index in face_index_pairs:
-                f_v = [(vi, me_verts[v_idx]) for vi, v_idx in enumerate(f.vertices)]
+                #f_v = [(vi, me_verts[v_idx]) for vi, v_idx in enumerate(f.vertices)]
 
                 if EXPORT_NORMALS and not f_smooth:
                     no = globalNormals[veckey3d(f.normal)]
 
-                for vi, v in f_v:
-                    fw("%.6f %.6f %.6f" % me_verts[(v.index)].co[:]) # + totverts?
+                for v in f.vertices:
+                    fw("%.6f %.6f %.6f|" % me_verts[v].co[:]) # + totverts?
                     if EXPORT_NORMALS:
                         fw('/')
                         fw('/%d' % no)

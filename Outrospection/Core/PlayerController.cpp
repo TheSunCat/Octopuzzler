@@ -222,14 +222,12 @@ void PlayerController::animatePlayer(Player* playerIn)
 
 void PlayerController::movePlayer(Player* playerIn, float deltaTime)
 {
-	playerVelocity *= deltaTime;
-
 	if (std::isnan(playerVelocity.x) || std::isnan(playerVelocity.y) || std::isnan(playerVelocity.z))
 		std::cout << "ERROR: playerVelocity is " << Util::vecToStr(playerVelocity) << std::endl;
 
 	lastGoodPlayerPosition = playerIn->playerPosition - playerVelocity;
 
-	playerIn->move(playerVelocity);
+	playerIn->move(playerVelocity * deltaTime);
 
-	playerVelocity /= deltaTime;
+	std::cout << Util::vecToStr(playerIn->playerPosition) << ", " << Util::vecToStr(playerIn->playerCharacter.charPosition) << std::endl;
 }
