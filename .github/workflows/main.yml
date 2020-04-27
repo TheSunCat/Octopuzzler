@@ -1,0 +1,40 @@
+name: Main
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@master
+      - uses: microsoft/setup-msbuild@v1
+      - name: Setup Nuget.exe
+        uses: warrenbuckley/Setup-Nuget@v1
+      - name: Build the game!
+        run: |
+          nuget restore $Env:GITHUB_WORKSPACE/OutrospectionGame.sln
+          msbuild $Env:GITHUB_WORKSPACE/OutrospectionGame.sln /property:Configuration=Release /property:Platform=x64
+      - name: create ZIP
+        run: |
+          powershell "Compress-Archive $Env:GITHUB_WORKSPACE/x64/Release $Env:GITHUB_WORKSPACE/Outrospection-release.zip"
+      - name: Create Release
+        id: create_release
+        uses: ncipollo/release-action@v1.6.1
+        with:
+          allowUpdates: true
+          replacesArtifacts: true
+          artifacts: "$Env:GITHUB_WORKSPACE/Outrospection-release.zip"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: Release ${{ github.ref }}
+          body: |
+            Latest release built from latest push to master.
+          draft: false
+          prerelease: true
+          tag: refs/heads/master
