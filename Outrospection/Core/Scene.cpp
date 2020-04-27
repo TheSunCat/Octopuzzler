@@ -168,6 +168,8 @@ void Scene::draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShade
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glDepthMask(GL_TRUE);
 
+	Util::glError(true);
+
 	_objShader.use();
 	
 
@@ -183,10 +185,14 @@ void Scene::draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShade
 		}
 	}
 
+	Util::glError(true);
+
 	_billboardShader.use();
 	for (const Character& chara : characters) {
 		chara.draw(_billboardShader);
 	}
+
+	Util::glError(true);
 }
 
 std::vector<std::string> Scene::parseLine(std::string line) { // TODO do not hardcode number of elements CHECK
@@ -249,7 +255,7 @@ void Scene::parseCollision(std::string name)
 			continue;
 
 		std::vector<std::string> verticesStr;
-		Util::split(line, '|', verticesStr);
+		Util::split(line.substr(0, line.length() - 1), '|', verticesStr); // cut out extra '|' until I fix exporter lol
 
 		std::vector<glm::vec3> vertices;
 
@@ -257,7 +263,7 @@ void Scene::parseCollision(std::string name)
 			std::vector<std::string> sStr;
 			Util::split(s.substr(1, s.length() - 2), ' ', sStr);
 
-			vertices.emplace_back(stof(sStr[0]), stof(sStr[2]), -stof(sStr[1]));
+			vertices.emplace_back(stof(sStr[0]), stof(sStr[1]), stof(sStr[2]));
 		}
 
 		collision.emplace_back(Triangle{ vertices[0], vertices[1], vertices[2] });

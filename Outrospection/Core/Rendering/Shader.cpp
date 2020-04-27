@@ -167,14 +167,14 @@ void Shader::setMat4(const std::string& name, const glm::mat4& mat) const
 
 GLint Shader::getUniformLocation(const char* uniformName) const
 {
-	std::unordered_map<const char*, GLint>::const_iterator f = uniform_cache.find(uniformName);
+	std::unordered_map<std::string, GLint>::const_iterator f = uniform_cache.find(uniformName);
 
 	GLint loc;
 
 	if (f == uniform_cache.end()) {// get uniform location
 		loc = glGetUniformLocation(ID, uniformName);
 
-		std::pair<const char*, GLuint> newLoc(uniformName, loc);
+		std::pair<std::string, GLuint> newLoc(std::string(uniformName), loc);
 
 		uniform_cache.insert(newLoc);
 	}

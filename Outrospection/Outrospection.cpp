@@ -90,6 +90,8 @@ void Outrospection::runGameLoop() {
 
 	player.draw(billboardShader);
 
+	Util::glError(true);
+
 	// Bind to default framebuffer and draw ours
 	// -----------------------------------------
 
@@ -159,7 +161,7 @@ void Outrospection::updateCamera()
 	}
 
 	// lerp
-	camera.Position = glm::mix(camera.Position, target, 0.12);
+	camera.Position = target;// glm::mix(camera.Position, target, .25);
 }
 
 void Outrospection::registerCallbacks()
