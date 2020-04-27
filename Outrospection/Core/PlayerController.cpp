@@ -1,13 +1,21 @@
 #include "PlayerController.h"
 
-#include "../KeyBindings.h"
 #include "../Util.h"
 #include "../Constants.h"
 
-void PlayerController::acceleratePlayer(Player* playerIn)
+void PlayerController::acceleratePlayer(Player* playerIn, const Controller& controller)
 {
-	glm::vec3 playerInputAcceleration(0.0f);
+	glm::vec3 inputMoveVector(0.0f);
 
+<<<<<<< HEAD
+	if (abs(controller.forward) > 0.1)
+		inputMoveVector += Util::vecFromYaw(playerIn->playerRotation.y) * controller.forward;
+	if (abs(controller.right) > 0.1)
+		inputMoveVector += Util::vecFromYaw(playerIn->playerRotation.y + 90) * controller.right;
+
+	if (!Util::isZeroV3(inputMoveVector)) { // avoid NaN normalization if no input is given
+		inputMoveVector = glm::normalize(inputMoveVector);
+=======
 	if (keyForward) {
 		playerInputAcceleration += (vecFromYaw(playerIn->playerRotation.y));
 	}
@@ -28,17 +36,19 @@ void PlayerController::acceleratePlayer(Player* playerIn)
 		playerInputAcceleration = glm::normalize(playerInputAcceleration);
 
 		playerInputAcceleration /= 75;
+>>>>>>> parent of 41e6fde... Implement proper 3D format and optimize rendering
 
-		playerVelocity += playerInputAcceleration;
+		playerVelocity += inputMoveVector;
 	}
 
-	if (keyJump) {
-		if (isGrounded) {
-			playerVelocity.y = 0.05;
+	if (controller.jump) {
+		if (grounded) {
+			jumping = true;
+			playerVelocity.y = 5;
 		}
 	}
 
-	if(playerVelocity.y > GRAVITY * 200) // GRAVITY * 200 is the terminal velocity
+	if(playerVelocity.y > GRAVITY * 20) // GRAVITY * 20 is the terminal velocity
 		playerVelocity.y += GRAVITY;
 
 	// slow player down
@@ -53,22 +63,28 @@ void PlayerController::acceleratePlayer(Player* playerIn)
 
 	// DEBUG move up and down
 	if (DEBUG) {
-		if (keyAttack) {
-			playerIn->playerPosition = glm::vec3(0, 0, 0);
-			playerVelocity = glm::vec3(0.0f);
-		}
+		//if (keyAttack) {
+		//	playerIn->playerPosition = glm::vec3(0, 0, 0);
+		//	playerVelocity = glm::vec3(0.0f);
+		//}
 	}
 }
 
 void PlayerController::collidePlayer(Player* playerIn, const std::vector<Triangle>& collisionData, float deltaTime)
 {
+<<<<<<< HEAD
+	if (Util::isZeroV3(playerVelocity))
+=======
 	deltaTime *= 100;
 
 	if (isZeroV3(playerVelocity))
+>>>>>>> parent of 41e6fde... Implement proper 3D format and optimize rendering
 		return;
 
 	playerVelocity *= deltaTime;
 
+<<<<<<< HEAD
+=======
 	Ray downRay = Ray{ playerIn->playerPosition, glm::vec3(0, -1, 0) };
 
 	// detect if player is on ground
@@ -84,6 +100,7 @@ void PlayerController::collidePlayer(Player* playerIn, const std::vector<Triangl
 		}
 	}
 
+>>>>>>> parent of 41e6fde... Implement proper 3D format and optimize rendering
 	// collide with walls
 	// ------------------
 
@@ -107,6 +124,22 @@ void PlayerController::collidePlayer(Player* playerIn, const std::vector<Triangl
 			return; // prevent infinite loops (?)
 		}
 	}
+
+	Ray downRay = Ray{ playerIn->playerPosition, glm::vec3(0, -1, 0) };
+
+	// detect if player is on ground
+	// -----------------------------
+
+	grounded = false; // assume player isn't on ground until we know
+
+	for (const Triangle& curTri : collisionData) {
+		RayHit groundHit = Util::rayCast(downRay, curTri, false);
+		if (!std::isnan(groundHit.dist) && groundHit.dist < 0.05) { // if the ground exists under player, and is close to player's feet (0.05)
+			grounded = true;
+			break; // only need to check *if* we're on ground, only once
+		}
+	}
+
 
 	playerVelocity /= deltaTime;
 }
@@ -236,8 +269,6 @@ void PlayerController::animatePlayer(Player* playerIn)
 
 void PlayerController::movePlayer(Player* playerIn, float deltaTime)
 {
-	deltaTime *= 100;
-
 	playerVelocity *= deltaTime;
 
 	if (std::isnan(playerVelocity.x) || std::isnan(playerVelocity.y) || std::isnan(playerVelocity.z))

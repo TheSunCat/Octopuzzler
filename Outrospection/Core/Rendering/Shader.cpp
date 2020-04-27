@@ -165,8 +165,33 @@ void Shader::setMat4(const std::string& name, const glm::mat4& mat) const
 	glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
 }
 
+<<<<<<< HEAD
+GLint Shader::getUniformLocation(const char* uniformName) const
+{
+	std::unordered_map<const char*, GLint>::const_iterator f = uniform_cache.find(uniformName);
+
+	GLint loc;
+
+	if (f == uniform_cache.end()) {// get uniform location
+		loc = glGetUniformLocation(ID, uniformName);
+
+		std::pair<const char*, GLuint> newLoc(uniformName, loc);
+
+		uniform_cache.insert(newLoc);
+	}
+	else
+	{
+		loc = (*f).second;
+	}
+
+	return loc;
+}
+
+// utility function for checking shader compilation/linking errors
+=======
 // utility function for checking shader compilation/linking errors.
 // ------------------------------------------------------------------------
+>>>>>>> parent of 41e6fde... Implement proper 3D format and optimize rendering
 void Shader::checkCompileErrors(GLuint shader, std::string type)
 {
 	GLint success;

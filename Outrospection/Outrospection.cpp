@@ -1,7 +1,7 @@
 #include "Outrospection.h"
 
-#include "KeyBindings.h"
 #include "Util.h"
+#include "Source.h"
 
 Outrospection::Outrospection() : opengl() // init ogl
 {
@@ -42,11 +42,9 @@ void Outrospection::runGameLoop() {
 	float currentFrame = glfwGetTime();
 	deltaTime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
-
-	updateKeys(gameWindow);
-
+	updateInput();
 	// exit game on next loop iteration
-	if (keyExit)
+	if (controller.exit)
 		running = false;
 
 	// player always "faces" forward, so W goes away from camera
@@ -110,7 +108,11 @@ void Outrospection::runGameLoop() {
 
 	// Check for errors
 	// ----------------
+<<<<<<< HEAD
+	Util::glError(DEBUG);
+=======
 	glError(DEBUG);
+>>>>>>> parent of 41e6fde... Implement proper 3D format and optimize rendering
 
 	// swap buffers and poll IO events
 	// -------------------------------
@@ -120,7 +122,7 @@ void Outrospection::runGameLoop() {
 
 void Outrospection::runTick()
 {
-	playerController.acceleratePlayer(&player);
+	playerController.acceleratePlayer(&player, controller);
 	playerController.collidePlayer(&player, scene.collision, deltaTime);
 	playerController.animatePlayer(&player);
 	playerController.movePlayer(&player, deltaTime);
@@ -131,28 +133,45 @@ void Outrospection::runTick()
 void Outrospection::updateCamera()
 {
 	// Calculate camera position w/ collision
+<<<<<<< HEAD
+	glm::vec3 playerHeadPos = player.playerPosition + glm::vec3(0.0, 0.7, 0.0);
+
+	glm::vec3 cameraCastDir = glm::normalize(-Util::vecFromYaw(camera.Yaw));
+	Ray cameraRay = Ray{playerHeadPos, cameraCastDir };
+
+	RayHit closestHit = RayHit{ INFINITY };
+	for (Triangle& t : scene.collision) {
+		// invert normal bc we're looking backwards
+=======
 	glm::vec3 cameraCastDir = glm::normalize(-vecFromYaw(camera.Yaw));// + glm::vec3(0.0, 0.25, 0.0));
 	Ray cameraRay = Ray{ player.playerPosition + glm::vec3(0.0, 1.0, 0.0), cameraCastDir };
 
 	RayHit closestHit = RayHit{ INFINITY };
 	for (Triangle t : scene.collision) {
+>>>>>>> parent of 41e6fde... Implement proper 3D format and optimize rendering
 		t.n = -t.n;
 
 		RayHit hit = rayCast(cameraRay, t, false);
 		if (hit.dist < closestHit.dist)
 			closestHit = hit;
 
+		// reset normal so it doesn't affect our collision
 		t.n = -t.n;
 	}
 
 	closestHit.dist -= 0.2;
 
+	glm::vec3 target;
+
 	if (closestHit.dist != INFINITY && closestHit.dist < 4.0f) {
-		camera.Position = player.playerPosition + glm::vec3(0.0, 1.0, 0.0) + cameraCastDir * closestHit.dist - (closestHit.tri.n * 0.1f);
+		target = playerHeadPos + cameraCastDir * closestHit.dist - (closestHit.tri.n * 0.1f);
 	}
 	else {
-		camera.Position = player.playerPosition + glm::vec3(0.0, 1.0, 0.0) + cameraCastDir * 4.0f;
+		target = playerHeadPos + cameraCastDir * 4.0f;
 	}
+
+	// lerp
+	camera.Position = glm::mix(camera.Position, target, 0.12);
 }
 
 bool Outrospection::glError(bool print)
@@ -176,6 +195,7 @@ void Outrospection::registerCallbacks()
 	glfwSetFramebufferSizeCallback(gameWindow, framebuffer_size_callback);
 	glfwSetCursorPosCallback(gameWindow, mouse_callback);
 	glfwSetScrollCallback(gameWindow, scroll_callback);
+	glfwSetKeyCallback(gameWindow, key_callback);
 }
 
 void Outrospection::createShaders()
@@ -214,4 +234,61 @@ void Outrospection::scroll_callback(GLFWwindow* window, double xoffset, double y
 {
 	Outrospection* orig = (Outrospection*)glfwGetWindowUserPointer(window);
 	orig->camera.ProcessMouseScroll(yoffset);
+}
+
+void Outrospection::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	const GameSettings& gameSettings = getOutrospection()->gameSettings;
+	Controller& controller = getOutrospection()->controller;
+
+	if (action == GLFW_PRESS || action == GLFW_REPEAT) // press or repeat
+	{
+		if (key == gameSettings.keyBindExit.keyCode)
+		{
+			controller.exit = true;
+		}
+	}
+	else // GLFW_RELEASE
+	{
+		if (key == gameSettings.keyBindForward.keyCode || key == gameSettings.keyBindBackward.keyCode)
+		{
+			controller.forward = 0.0;
+		}
+		if (key == gameSettings.keyBindRight.keyCode || key == gameSettings.keyBindLeft.keyCode)
+		{
+			controller.right = 0.0;
+		}
+		if (key == gameSettings.keyBindJump.keyCode)
+		{
+			controller.jump = false;
+		}
+		if (key == gameSettings.keyBindExit.keyCode)
+		{
+			controller.exit = false;
+		}
+	}
+}
+
+void Outrospection::updateInput()
+{
+	if (glfwGetKey(gameWindow, gameSettings.keyBindForward.keyCode) == GLFW_PRESS)
+	{
+		controller.forward = 1.0;
+	}
+	if (glfwGetKey(gameWindow, gameSettings.keyBindBackward.keyCode) == GLFW_PRESS)
+	{
+		controller.forward = -1.0;
+	}
+	if (glfwGetKey(gameWindow, gameSettings.keyBindRight.keyCode) == GLFW_PRESS)
+	{
+		controller.right = 1.0;
+	}
+	if (glfwGetKey(gameWindow, gameSettings.keyBindLeft.keyCode) == GLFW_PRESS)
+	{
+		controller.right = -1.0;
+	}
+	if (glfwGetKey(gameWindow, gameSettings.keyBindJump.keyCode) == GLFW_PRESS)
+	{
+		controller.jump = true;
+	}
 }

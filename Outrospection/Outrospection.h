@@ -6,6 +6,8 @@
 #include "Core/Player.h"
 #include "Core/PlayerController.h"
 #include "Core/Rendering/TextureManager.h"
+#include "GameSettings.h"
+#include "Controller.h"
 
 class Outrospection {
 public:
@@ -29,6 +31,10 @@ public:
 	bool glError(bool print);
 
 	TextureManager textureManager;
+
+	GameSettings gameSettings;
+
+	Controller controller;
 private:
 	void runGameLoop();
 
@@ -62,9 +68,11 @@ private:
 	static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 	static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 	static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 	void registerCallbacks();
 	void createShaders();
+	void updateInput();
 
 	bool isGamePaused;
 };

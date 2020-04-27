@@ -4,10 +4,11 @@
 
 #include "Player.h"
 #include "../Types.h"
+#include "../Controller.h"
 
 class PlayerController {
 public:
-	void acceleratePlayer(Player* playerIn);
+	void acceleratePlayer(Player* playerIn, const Controller& controller);
 
 	void collidePlayer(Player* playerIn, const std::vector<Triangle>& collisionData, float deltaTime);
 
@@ -25,7 +26,8 @@ private:
 
 	glm::vec3 lastGoodPlayerPosition;
 
-	bool isGrounded = false;
+	bool grounded = false;
+	bool jumping = false;
 	
 	AnimType pastAnim;
 };

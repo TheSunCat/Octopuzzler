@@ -234,7 +234,11 @@ bool ModelLoader::loadFile(std::string filePath)
 		if (algorithm::firstToken(curLine) == "v")
 		{
 			std::vector<std::string> vertPosStr;
+<<<<<<< HEAD
+			Util::split(curLine.substr(2), ' ', vertPosStr);
+=======
 			glm::vec3 vertPos;
+>>>>>>> parent of 41e6fde... Implement proper 3D format and optimize rendering
 
 			algorithm::split(algorithm::tail(curLine), vertPosStr, " ");
 
@@ -249,7 +253,11 @@ bool ModelLoader::loadFile(std::string filePath)
 		if (algorithm::firstToken(curLine) == "vt")
 		{
 			std::vector<std::string> texCoordStr;
+<<<<<<< HEAD
+			Util::split(curLine.substr(2), ' ', texCoordStr);
+=======
 			glm::vec2 texCoord;
+>>>>>>> parent of 41e6fde... Implement proper 3D format and optimize rendering
 
 			algorithm::split(algorithm::tail(curLine), texCoordStr, " ");
 
@@ -263,6 +271,13 @@ bool ModelLoader::loadFile(std::string filePath)
 		if (algorithm::firstToken(curLine) == "vn")
 		{
 			std::vector<std::string> vertNormStr;
+<<<<<<< HEAD
+			Util::split(curLine.substr(2), ' ', vertNormStr);
+
+			normals.emplace_back(std::stof(vertNormStr[0]), std::stof(vertNormStr[1]), std::stof(vertNormStr[2]));
+			vertNormStr.clear();
+			break;
+=======
 			glm::vec3 vertNorm;
 
 			algorithm::split(algorithm::tail(curLine), vertNormStr, " ");
@@ -272,6 +287,7 @@ bool ModelLoader::loadFile(std::string filePath)
 			vertNorm.z = std::stof(vertNormStr[2]);
 
 			normals.push_back(vertNorm);
+>>>>>>> parent of 41e6fde... Implement proper 3D format and optimize rendering
 		}
 
 		// Generate a Face (vertices & indices)
@@ -309,14 +325,30 @@ bool ModelLoader::loadFile(std::string filePath)
 		// Get Mesh Material Name
 		if (algorithm::firstToken(curLine) == "usemtl")
 		{
+<<<<<<< HEAD
+			switch (curLine[1]) {
+			case 'd': // Kd, Diffuse Color
+			{
+				std::vector<std::string> temp;
+				Util::split(curLine.substr(3), ' ', temp);
+
+				if (temp.size() != 3)
+					continue;
+=======
 			meshMatNames.push_back(algorithm::tail(curLine));
+>>>>>>> parent of 41e6fde... Implement proper 3D format and optimize rendering
 
 			// Create new Mesh, if Material changes within a group
 			if (!indices.empty() && !vertices.empty())
 			{
+<<<<<<< HEAD
+				std::vector<std::string> temp;
+				Util::split(curLine.substr(3), ' ', temp);
+=======
 				// Create Mesh
 				tempMesh = MeshData(vertices, indices);
 				tempMesh.meshName = meshName;
+>>>>>>> parent of 41e6fde... Implement proper 3D format and optimize rendering
 
 				// rename new mesh
 				int i = 2;
@@ -328,8 +360,19 @@ bool ModelLoader::loadFile(std::string filePath)
 						if (m.meshName == tempMesh.meshName)
 							continue;
 
+<<<<<<< HEAD
+			// Ambient Color
+			case 'a':
+			{
+				std::vector<std::string> temp;
+				Util::split(curLine.substr(3), ' ', temp);
+
+				if (temp.size() != 3)
+					continue;
+=======
 					break;
 				}
+>>>>>>> parent of 41e6fde... Implement proper 3D format and optimize rendering
 
 				// insert mesh
 				loadedMeshes.push_back(tempMesh);
@@ -404,7 +447,11 @@ void ModelLoader::verticesFromFaceString(std::vector<Vertex>& outputVertices, co
 {
 	std::vector<std::string> splitFaceStr;
 	Vertex vertex;
+<<<<<<< HEAD
+	Util::split(_curLine.substr(2), ' ', splitFaceStr);
+=======
 	algorithm::split(algorithm::tail(_curLine), splitFaceStr, " ");
+>>>>>>> parent of 41e6fde... Implement proper 3D format and optimize rendering
 
 	bool noNormal = false;
 
@@ -412,7 +459,11 @@ void ModelLoader::verticesFromFaceString(std::vector<Vertex>& outputVertices, co
 	for (int i = 0; i < splitFaceStr.size(); i++)
 	{
 		std::vector<std::string> splitVertexStr;
+<<<<<<< HEAD
+		Util::split(splitFaceStr[i], '/', splitVertexStr);
+=======
 		algorithm::split(splitFaceStr[i], splitVertexStr, "/");
+>>>>>>> parent of 41e6fde... Implement proper 3D format and optimize rendering
 
 		// 1 = pos, 2 = pos/tex, 3 = pos/norm,, 4 = pos/tex/norm
 		int vertexType;
