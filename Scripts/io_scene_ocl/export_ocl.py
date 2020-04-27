@@ -27,7 +27,7 @@ def mesh_triangulate(me):
     bm.to_mesh(me)
     bm.free()
 
-
+# TODO remove option to include normals?
 def write_file(filepath, objects, scene,
                EXPORT_TRI=True,
                EXPORT_NORMALS=False,
@@ -71,9 +71,6 @@ def write_file(filepath, objects, scene,
 
     file = open(filepath, "w", encoding="utf8", newline="\n")
     fw = file.write
-
-    # Write Header
-    fw('# Outrospection Collision File: %r\n' % (os.path.basename(bpy.data.filepath)))
 
     # Initialize totals, these are updated each object
     totverts = totno = 1
