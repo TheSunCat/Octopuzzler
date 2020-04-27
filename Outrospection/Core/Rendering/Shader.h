@@ -8,6 +8,7 @@
 #include <glm/glm.hpp>
 
 #include "../Camera.h"
+#include <unordered_map>
 
 class Shader {
 public:
@@ -22,7 +23,7 @@ public:
 	void doProjView(Camera& _camera, int _width, int _height, bool doPos);
 
 	// activate the shader
-	void use();
+	void use() const;
 
 	// utility uniform functions
 	void setBool(const std::string& name, bool value) const;
@@ -48,13 +49,9 @@ public:
 
 private:
 	// utility function for checking shader compilation/linking errors.
-	// ------------------------------------------------------------------------
 	void checkCompileErrors(GLuint shader, std::string type);
-<<<<<<< HEAD
 
 	GLint getUniformLocation(const char* uniformName) const;
 
 	mutable std::unordered_map<const char*, GLint> uniform_cache;
-=======
->>>>>>> parent of 41e6fde... Implement proper 3D format and optimize rendering
 };

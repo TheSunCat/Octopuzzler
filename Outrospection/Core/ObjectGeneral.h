@@ -11,13 +11,13 @@ class ObjectGeneral {
 public:
 	ObjectGeneral(std::string _name, glm::vec3 _pos, glm::vec3 _rot, glm::vec3 _scale);
 
-	void draw(const Shader& shader);
+	void draw(const Shader& shader) const;
 
-	glm::vec3 getPos();
+	glm::vec3 getPos() const;
 
-	glm::vec3 getRot();
+	glm::vec3 getRot() const;
 
-	glm::vec3 getScale();
+	glm::vec3 getScale() const;
 
 private:
 	glm::vec3 pos, rot, scale;

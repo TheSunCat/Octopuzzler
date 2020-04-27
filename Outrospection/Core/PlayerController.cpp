@@ -7,7 +7,6 @@ void PlayerController::acceleratePlayer(Player* playerIn, const Controller& cont
 {
 	glm::vec3 inputMoveVector(0.0f);
 
-<<<<<<< HEAD
 	if (abs(controller.forward) > 0.1)
 		inputMoveVector += Util::vecFromYaw(playerIn->playerRotation.y) * controller.forward;
 	if (abs(controller.right) > 0.1)
@@ -15,28 +14,6 @@ void PlayerController::acceleratePlayer(Player* playerIn, const Controller& cont
 
 	if (!Util::isZeroV3(inputMoveVector)) { // avoid NaN normalization if no input is given
 		inputMoveVector = glm::normalize(inputMoveVector);
-=======
-	if (keyForward) {
-		playerInputAcceleration += (vecFromYaw(playerIn->playerRotation.y));
-	}
-
-	if (keyBackward) {
-		playerInputAcceleration += -(vecFromYaw(playerIn->playerRotation.y));
-	}
-
-	if (keyLeft) {
-		playerInputAcceleration += vecFromYaw(playerIn->playerRotation.y - 90);
-	}
-
-	if (keyRight) {
-		playerInputAcceleration += vecFromYaw(playerIn->playerRotation.y + 90);
-	}
-
-	if (playerInputAcceleration != glm::vec3(0.0f)) { // avoid NaN normalization if no input is given
-		playerInputAcceleration = glm::normalize(playerInputAcceleration);
-
-		playerInputAcceleration /= 75;
->>>>>>> parent of 41e6fde... Implement proper 3D format and optimize rendering
 
 		playerVelocity += inputMoveVector;
 	}
@@ -72,35 +49,11 @@ void PlayerController::acceleratePlayer(Player* playerIn, const Controller& cont
 
 void PlayerController::collidePlayer(Player* playerIn, const std::vector<Triangle>& collisionData, float deltaTime)
 {
-<<<<<<< HEAD
 	if (Util::isZeroV3(playerVelocity))
-=======
-	deltaTime *= 100;
-
-	if (isZeroV3(playerVelocity))
->>>>>>> parent of 41e6fde... Implement proper 3D format and optimize rendering
 		return;
 
 	playerVelocity *= deltaTime;
 
-<<<<<<< HEAD
-=======
-	Ray downRay = Ray{ playerIn->playerPosition, glm::vec3(0, -1, 0) };
-
-	// detect if player is on ground
-	// -----------------------------
-
-	isGrounded = false; // assume player isn't on ground until we know
-
-	for (Triangle curTri : collisionData) {
-		RayHit groundHit = rayCast(downRay, curTri, false);
-		if (!std::isnan(groundHit.dist) && groundHit.dist < 0.05) { // if the ground exists under player, and is close to player's feet (0.05)
-			isGrounded = true;
-			break; // only need to check *if* we're on ground, only once
-		}
-	}
-
->>>>>>> parent of 41e6fde... Implement proper 3D format and optimize rendering
 	// collide with walls
 	// ------------------
 
@@ -180,10 +133,10 @@ bool PlayerController::resolveCollision(Player* playerIn, const std::vector<Tria
 		Ray ghostRay = { ghostPosition, hit.tri.n };
 
 		// where ghostRay intersects the tri's plane would be where the player would end up since she's not a ghost
-		glm::vec3 notGhostPosition = rayCastPlane(ghostRay, hit.tri);
+		glm::vec3 notGhostPosition = Util::rayCastPlane(ghostRay, hit.tri);
 
 		if (std::isnan(notGhostPosition.x) || std::isnan(notGhostPosition.y) || std::isnan(notGhostPosition.z))
-			std::cout << "ERROR: playerVelocity is " << vecToStr(playerVelocity) << std::endl;
+			std::cout << "ERROR: playerVelocity is " << Util::vecToStr(playerVelocity) << std::endl;
 
 		notGhostPosition += hit.tri.n * 0.001f;
 
@@ -194,7 +147,7 @@ bool PlayerController::resolveCollision(Player* playerIn, const std::vector<Tria
 			playerVelocity = (notGhostPosition - calcPos + (hit.tri.n * 0.001f)); // adding normal "skin offset" so player can go up slopes
 
 		if (std::isnan(playerVelocity.x) || std::isnan(playerVelocity.y) || std::isnan(playerVelocity.z))
-			std::cout << "ERROR: playerVelocity is " << vecToStr(playerVelocity) << std::endl;
+			std::cout << "ERROR: playerVelocity is " << Util::vecToStr(playerVelocity) << std::endl;
 
 		// collision was detected, we need to check for MORE WALLS
 		needsMoreSolving = true;
@@ -213,7 +166,7 @@ bool PlayerController::resolveCollision(Player* playerIn, const std::vector<Tria
 		playerVelocity.z = 0.0f;
 
 		if (std::isnan(playerVelocity.x) || std::isnan(playerVelocity.y) || std::isnan(playerVelocity.z))
-			std::cout << "ERROR: playerVelocity is " << vecToStr(playerVelocity) << std::endl;
+			std::cout << "ERROR: playerVelocity is " << Util::vecToStr(playerVelocity) << std::endl;
 
 		return true;
 	}
@@ -225,8 +178,8 @@ RayHit PlayerController::cast(Ray r, const std::vector<Triangle>& collisionData)
 {
 	RayHit closestHit = RayHit { INFINITY };
 
-	for (Triangle tri : collisionData) {
-		RayHit hit = rayCast(r, tri, false);
+	for (const Triangle& tri : collisionData) {
+		RayHit hit = Util::rayCast(r, tri, false);
 
 		if (hit.dist < closestHit.dist) {
 			closestHit = hit;
@@ -272,7 +225,7 @@ void PlayerController::movePlayer(Player* playerIn, float deltaTime)
 	playerVelocity *= deltaTime;
 
 	if (std::isnan(playerVelocity.x) || std::isnan(playerVelocity.y) || std::isnan(playerVelocity.z))
-		std::cout << "ERROR: playerVelocity is " << vecToStr(playerVelocity) << std::endl;
+		std::cout << "ERROR: playerVelocity is " << Util::vecToStr(playerVelocity) << std::endl;
 
 	lastGoodPlayerPosition = playerIn->playerPosition - playerVelocity;
 

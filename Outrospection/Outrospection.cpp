@@ -87,8 +87,8 @@ void Outrospection::runGameLoop() {
 
 	// draw stuff
 	scene.draw(objectShader, billboardShader, skyShader, simpleShader);
-	player.draw(billboardShader);
 
+	player.draw(billboardShader);
 
 	// Bind to default framebuffer and draw ours
 	// -----------------------------------------
@@ -108,11 +108,7 @@ void Outrospection::runGameLoop() {
 
 	// Check for errors
 	// ----------------
-<<<<<<< HEAD
 	Util::glError(DEBUG);
-=======
-	glError(DEBUG);
->>>>>>> parent of 41e6fde... Implement proper 3D format and optimize rendering
 
 	// swap buffers and poll IO events
 	// -------------------------------
@@ -133,7 +129,6 @@ void Outrospection::runTick()
 void Outrospection::updateCamera()
 {
 	// Calculate camera position w/ collision
-<<<<<<< HEAD
 	glm::vec3 playerHeadPos = player.playerPosition + glm::vec3(0.0, 0.7, 0.0);
 
 	glm::vec3 cameraCastDir = glm::normalize(-Util::vecFromYaw(camera.Yaw));
@@ -142,16 +137,9 @@ void Outrospection::updateCamera()
 	RayHit closestHit = RayHit{ INFINITY };
 	for (Triangle& t : scene.collision) {
 		// invert normal bc we're looking backwards
-=======
-	glm::vec3 cameraCastDir = glm::normalize(-vecFromYaw(camera.Yaw));// + glm::vec3(0.0, 0.25, 0.0));
-	Ray cameraRay = Ray{ player.playerPosition + glm::vec3(0.0, 1.0, 0.0), cameraCastDir };
-
-	RayHit closestHit = RayHit{ INFINITY };
-	for (Triangle t : scene.collision) {
->>>>>>> parent of 41e6fde... Implement proper 3D format and optimize rendering
 		t.n = -t.n;
 
-		RayHit hit = rayCast(cameraRay, t, false);
+		RayHit hit = Util::rayCast(cameraRay, t, false);
 		if (hit.dist < closestHit.dist)
 			closestHit = hit;
 
@@ -172,21 +160,6 @@ void Outrospection::updateCamera()
 
 	// lerp
 	camera.Position = glm::mix(camera.Position, target, 0.12);
-}
-
-bool Outrospection::glError(bool print)
-{
-	bool ret = false;
-	GLenum err;
-	while ((err = glGetError()) != GL_NO_ERROR)
-	{
-		ret = true;
-
-		if(print)
-			std::cout << err << std::endl;
-	}
-
-	return ret;
 }
 
 void Outrospection::registerCallbacks()

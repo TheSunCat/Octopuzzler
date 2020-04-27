@@ -8,7 +8,7 @@ SimpleTexture::SimpleTexture(const unsigned int& _texId, const std::string& _tex
 	texPath = _texPath;
 }
 
-void SimpleTexture::bindTexture()
+void SimpleTexture::bindTexture() const
 {
 	glBindTexture(GL_TEXTURE_2D, texId);
 }

@@ -4,6 +4,8 @@
 
 #include "../../External/stb_image.h"
 
+SimpleTexture TextureManager::missingTexture(-1, "missing_texture");
+
 TextureManager::TextureManager()
 {
 	const unsigned char missingTexData[] = {
@@ -13,9 +15,11 @@ TextureManager::TextureManager()
 		255, 0, 220  // purple, bottom right
 	};
 
-	unsigned int missingTexId = createTexture(missingTexData, GL_RGB, 2, 2);
+	unsigned int missingTexId = -1;
+	glGenTextures(1, &missingTexId);
+	createTexture(missingTexId, missingTexData, GL_RGB, 2, 2);
 
-	missingTexture = SimpleTexture(missingTexId, "missing_texture");
+	missingTexture.texId = missingTexId;
 }
 
 SimpleTexture TextureManager::loadTexture(Resource& r)
@@ -63,13 +67,10 @@ AnimatedTexture TextureManager::loadAnimatedTexture(Resource& r, unsigned int te
 		}
 	}
 
-	AnimatedTexture tex(textureIds, path, textureTickLength);
+	tickableTextures.emplace_back(textureIds, path, textureTickLength);
+	textures.insert(std::pair<Resource, AnimatedTexture>(r, tickableTextures.back()));
 
-	textures.insert(std::pair<Resource, AnimatedTexture>(r, tex));
-
-	tickableTextures.push_back(tex);
-
-	return tex;
+	return tickableTextures.back();
 }
 
 void TextureManager::bindTexture(Resource& r)
@@ -104,11 +105,9 @@ void TextureManager::tickAllTextures()
 	}
 }
 
-unsigned int TextureManager::createTexture(const unsigned char* data, const GLenum& format, const unsigned int& width, const unsigned int& height)
+void TextureManager::createTexture(const unsigned int& texId, const unsigned char* data, const GLenum& format, const unsigned int& width, const unsigned int& height)
 {
-	unsigned int tex = -1;
-
-	glBindTexture(GL_TEXTURE_2D, tex);
+	glBindTexture(GL_TEXTURE_2D, texId);
 	glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
@@ -116,8 +115,6 @@ unsigned int TextureManager::createTexture(const unsigned char* data, const GLen
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	return tex;
 }
 
 unsigned int TextureManager::textureFromFile(const std::string& filename)
@@ -139,7 +136,7 @@ unsigned int TextureManager::textureFromFile(const std::string& filename)
 		else if (nrComponents == 4)
 			format = GL_RGBA;
 
-		tex = createTexture(data, format, width, height);
+		createTexture(tex, data, format, width, height);
 
 		stbi_image_free(data);
 

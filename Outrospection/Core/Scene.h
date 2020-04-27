@@ -14,7 +14,7 @@ public:
 
 	void draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShader, Shader& _simpleShader);
 
-	enum State {Obj, RailObj, Light, Sky, Chara, Col};
+	enum class State {Obj, RailObj, Light, Sky, Chara, Col};
 
 	std::string name;
 
@@ -28,7 +28,7 @@ private:
 	ObjectGeneral parseObj(std::string line);
 	Character parseChar(std::string line);
 
-	std::vector<Triangle> parseCollision(std::string name);
+	void parseCollision(std::string name);
 
 	// skybox
 	unsigned int loadCubemap(std::string name);

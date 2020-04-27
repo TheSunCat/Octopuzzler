@@ -27,9 +27,6 @@ public:
 
 	void unpauseGame();
 
-	// Check for OpenGL errors and print them
-	bool glError(bool print);
-
 	TextureManager textureManager;
 
 	GameSettings gameSettings;

@@ -1,7 +1,8 @@
 #include "Billboard.h"
 #include <glm\ext\matrix_transform.hpp>
+#include "../../util.h"
 
-Billboard::Billboard(const SimpleTexture& _tex)
+Billboard::Billboard(const SimpleTexture& _tex) : texture(_tex)
 {
 	float quadVertices[] = {  // tex coords = (x + 0.5, y)
 		-0.5f,  0.0f,
@@ -27,11 +28,12 @@ Billboard::Billboard(const SimpleTexture& _tex)
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
 }
 
-void Billboard::draw(Shader& _shader, const glm::vec3& _pos) {
+void Billboard::draw(const Shader& _shader, const glm::vec3& _pos) const
+{
 	draw(_shader, _pos, texture);
 }
 
-void Billboard::draw(Shader& _shader, const glm::vec3& _pos, SimpleTexture& _tex)
+void Billboard::draw(const Shader& _shader, const glm::vec3& _pos, const SimpleTexture& _tex) const
 {
 	_shader.use();
 
@@ -45,7 +47,6 @@ void Billboard::draw(Shader& _shader, const glm::vec3& _pos, SimpleTexture& _tex
 	_shader.setVec3("billboardCenter", _pos);
 
 	glBindVertexArray(quadVAO);
-
 	glm::mat4 modelMat = glm::translate(glm::mat4(1.0), _pos);
 	_shader.setMat4("model", modelMat);
 
