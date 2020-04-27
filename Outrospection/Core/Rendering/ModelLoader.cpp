@@ -2,7 +2,9 @@
 
 #include <fstream>
 
+#include "TextureManager.h"
 #include "../../Util.h"
+#include "../../Source.h"
 
 namespace algorithm
 {
@@ -44,7 +46,7 @@ namespace algorithm
 		glm::vec3 n = GenTriNormal(tri1, tri2, tri3);
 
 		// Project the point onto this normal
-		glm::vec3 proj = projectV3(point, n);
+		glm::vec3 proj = Util::projectV3(point, n);
 
 		// If the distance from the triangle to the point is 0
 		//	it lies on the triangle
@@ -52,80 +54,6 @@ namespace algorithm
 			return true;
 		else
 			return false;
-	}
-
-	// Split a String into a string array at a given token
-	inline void split(const std::string& in, std::vector<std::string>& out, std::string token)
-	{
-		out.clear();
-
-		std::string temp;
-
-		for (int i = 0; i < in.size(); i++)
-		{
-			std::string test = in.substr(i, token.size());
-
-			if (test == token)
-			{
-				if (!temp.empty())
-				{
-					out.push_back(temp);
-					temp.clear();
-					i += (int)token.size() - 1;
-				}
-				else
-				{
-					out.push_back("");
-				}
-			}
-			else if (i + token.size() >= in.size())
-			{
-				temp += in.substr(i, token.size());
-				out.push_back(temp);
-				break;
-			}
-			else
-			{
-				temp += in[i];
-			}
-		}
-	}
-
-	// Get tail of string after first token and possibly following spaces
-	inline std::string tail(const std::string& in)
-	{
-		unsigned int token_start = in.find_first_not_of(" \t");
-		unsigned int space_start = in.find_first_of(" \t", token_start);
-		unsigned int tail_start = in.find_first_not_of(" \t", space_start);
-		unsigned int tail_end = in.find_last_not_of(" \t");
-
-		if (tail_start != std::string::npos) {
-			if (tail_end != std::string::npos)
-				return in.substr(tail_start, tail_end - tail_start + 1);
-			else
-				return in.substr(tail_start);
-		}
-
-		return "";
-	}
-
-	// Get first token of string
-	inline std::string firstToken(const std::string& in)
-	{
-		if (!in.empty())
-		{
-			unsigned int token_start = in.find_first_not_of(" \t");
-			unsigned int token_end = in.find_first_of(" \t", token_start);
-			if (token_start != std::string::npos && token_end != std::string::npos)
-			{
-				return in.substr(token_start, token_end - token_start);
-			}
-			else if (token_start != std::string::npos)
-			{
-				return in.substr(token_start);
-			}
-		}
-		return "";
 	}
 
 	// Get element at given index position
@@ -146,7 +74,7 @@ namespace algorithm
 bool ModelLoader::loadFile(std::string filePath)
 {
 	// if the file is not an .obj file return false
-	if (filePath.substr(filePath.size() - 4, 4) != ".obj")
+	if (filePath.substr(filePath.size() - 4, 4) != ".omd")
 		return false;
 
 
@@ -156,8 +84,6 @@ bool ModelLoader::loadFile(std::string filePath)
 		return false;
 
 	loadedMeshes.clear();
-	loadedVertices.clear();
-	loadedIndices.clear();
 
 	std::vector<glm::vec3> positions;
 	std::vector<glm::vec2> texCoords;
@@ -172,211 +98,290 @@ bool ModelLoader::loadFile(std::string filePath)
 	bool listening = false;
 	std::string meshName;
 
-	MeshData tempMesh;
+	//MeshData tempMesh;
+
+	bool matListening = false;
+	Material tempMaterial;
 
 	std::string curLine;
 	while (std::getline(file, curLine)) {
-		if (curLine == "")
+		if (curLine == "" || curLine[0] == '#')
 			continue;
 
-		// Generate a Mesh Object or Prepare for an object to be created
-		if (algorithm::firstToken(curLine) == "o" || algorithm::firstToken(curLine) == "g" || curLine[0] == 'g')
+		
+		switch (curLine[0]) {
+		case 'o': // Generate a Mesh Object or Prepare for an object to be created
 		{
 			if (!listening)
 			{
 				listening = true;
 
 				// name the mesh
-				if (algorithm::firstToken(curLine) == "o" || algorithm::firstToken(curLine) == "g")
-				{
-					meshName = algorithm::tail(curLine);
-				}
-				else
-				{
-					meshName = "unnamed";
-				}
+				meshName = curLine.substr(2);
 			}
-			else
+			else // if(listening)
 			{
 				// Generate the mesh to put into the array
 				if (!indices.empty() && !vertices.empty()) // if there are verts and indices
 				{
-					// Create Mesh
-					tempMesh = MeshData(vertices, indices);
-					tempMesh.meshName = meshName;
-
-					// Insert Mesh
-					loadedMeshes.push_back(tempMesh);
+					// ceate and insert Mesh
+					loadedMeshes.emplace_back(meshName, vertices, indices);
 
 					// Cleanup
 					vertices.clear();
 					indices.clear();
 					meshName.clear();
 
-					meshName = algorithm::tail(curLine);
+					meshName = curLine.substr(2);
 				}
 				else
 				{
 					// name the mesh
-					if (algorithm::firstToken(curLine) == "o" || algorithm::firstToken(curLine) == "g")
-					{
-						meshName = algorithm::tail(curLine);
-					}
-					else
-					{
-						meshName = "unnamed";
-					}
+					meshName = curLine.substr(2);
 				}
 			}
+			break;
 		}
-
-		// Generate a Vertex Position
-		if (algorithm::firstToken(curLine) == "v")
+		case 'v': // Generate a Vertex Position
 		{
 			std::vector<std::string> vertPosStr;
-			glm::vec3 vertPos;
+			Util::split(curLine.substr(2), ' ', vertPosStr);
 
-			algorithm::split(algorithm::tail(curLine), vertPosStr, " ");
+			positions.emplace_back(std::stof(vertPosStr[0]), std::stof(vertPosStr[1]), std::stof(vertPosStr[2]));
 
-			vertPos.x = std::stof(vertPosStr[0]);
-			vertPos.y = std::stof(vertPosStr[1]);
-			vertPos.z = std::stof(vertPosStr[2]);
-
-			positions.push_back(vertPos);
+			vertPosStr.clear();
+			break;
 		}
-
-		// Generate a Vertex Texture Coordinate
-		if (algorithm::firstToken(curLine) == "vt")
+		
+		case 't': // Generate a Vertex Texture Coordinate
 		{
 			std::vector<std::string> texCoordStr;
-			glm::vec2 texCoord;
+			Util::split(curLine.substr(2), ' ', texCoordStr);
 
-			algorithm::split(algorithm::tail(curLine), texCoordStr, " ");
+			texCoords.emplace_back(std::stof(texCoordStr[0]), std::stof(texCoordStr[1]));
 
-			texCoord.x = std::stof(texCoordStr[0]);
-			texCoord.y = std::stof(texCoordStr[1]);
+			texCoordStr.clear();
 
-			texCoords.push_back(texCoord);
+			break;
 		}
-
 		// Generate a Vertex Normal;
-		if (algorithm::firstToken(curLine) == "vn")
+		case 'n':
 		{
 			std::vector<std::string> vertNormStr;
-			glm::vec3 vertNorm;
+			Util::split(curLine.substr(2), ' ', vertNormStr);
 
-			algorithm::split(algorithm::tail(curLine), vertNormStr, " ");
-
-			vertNorm.x = std::stof(vertNormStr[0]);
-			vertNorm.y = std::stof(vertNormStr[1]);
-			vertNorm.z = std::stof(vertNormStr[2]);
-
-			normals.push_back(vertNorm);
+			normals.emplace_back(std::stof(vertNormStr[0]), std::stof(vertNormStr[1]), std::stof(vertNormStr[2]));
+			vertNormStr.clear();
+			break;
 		}
-
 		// Generate a Face (vertices & indices)
-		if (algorithm::firstToken(curLine) == "f")
+		case 'f':
 		{
 			// Generate the vertices
-			std::vector<Vertex> loadedVerticesVector;
-			verticesFromFaceString(loadedVerticesVector, positions, texCoords, normals, curLine);
+			std::vector<Vertex> vertsFromFace;
+			verticesFromFaceString(vertsFromFace, positions, texCoords, normals, curLine);
 
 			// Add Vertices
-			for (int i = 0; i < loadedVerticesVector.size(); i++)
+			for (int i = 0; i < vertsFromFace.size(); i++)
 			{
-				Vertex curVert = loadedVerticesVector[i];
-
-				vertices.push_back(curVert);
-
-				loadedVertices.push_back(curVert);
+				vertices.emplace_back(vertsFromFace[i]);
 			}
 
 			std::vector<unsigned int> indicesVector;
 
-			verticesToIndicesTriangulated(indicesVector, loadedVerticesVector);
+			verticesToIndicesTriangulated(indicesVector, vertsFromFace);
 
 			// Add Indices
 			for (int i = 0; i < indicesVector.size(); i++)
 			{
-				unsigned int curIndex = (unsigned int) ((vertices.size()) - loadedVerticesVector.size()) + indicesVector[i];
+				unsigned int curIndex = (unsigned int)((vertices.size()) - vertsFromFace.size()) + indicesVector[i];
 				indices.push_back(curIndex);
-
-				curIndex = (unsigned int) ((loadedVertices.size()) - loadedVerticesVector.size()) + indicesVector[i];
-				loadedIndices.push_back(curIndex);
 			}
+
+			vertsFromFace.clear();
+			break;
 		}
 
-		// Get Mesh Material Name
-		if (algorithm::firstToken(curLine) == "usemtl")
+		// MATERIAL
+		// --------
+		case 'm':
 		{
-			meshMatNames.push_back(algorithm::tail(curLine));
-
-			// Create new Mesh, if Material changes within a group
-			if (!indices.empty() && !vertices.empty())
+			switch (curLine[1]) {
+			case 'u': // usemtl
 			{
-				// Create Mesh
-				tempMesh = MeshData(vertices, indices);
-				tempMesh.meshName = meshName;
+				meshMatNames.emplace_back(curLine.substr(3));
 
-				// rename new mesh
-				int i = 2;
-				while (true) {
-					tempMesh.meshName = meshName + "_" + std::to_string(i);
-
-					// check for duplicate names
-					for (MeshData& m : loadedMeshes)
-						if (m.meshName == tempMesh.meshName)
-							continue;
-
-					break;
-				}
-
-				// insert mesh
-				loadedMeshes.push_back(tempMesh);
-
-				// cleanup
-				vertices.clear();
-				indices.clear();
-			}
-		}
-
-		// Load Materials
-		if (algorithm::firstToken(curLine) == "mtllib")
-		{
-			// Generate a path to the material file
-			std::vector<std::string> splitFilePath;
-			algorithm::split(filePath, splitFilePath, "/");
-
-			std::string pathtomat = "";
-
-			if (splitFilePath.size() != 1)
-			{
-				for (int i = 0; i < splitFilePath.size() - 1; i++)
+				// Create new Mesh, if Material changes within a group
+				if (!indices.empty() && !vertices.empty())
 				{
-					pathtomat += splitFilePath[i] + "/";
+					// Create Mesh
+					loadedMeshes.emplace_back(meshName, vertices, indices);
+
+					// rename new mesh
+					int i = 2;
+					while (true) {
+						loadedMeshes.back().name = meshName + "_" + std::to_string(i);
+
+						// check for duplicate names
+						for (const Mesh& m : loadedMeshes)
+							if (m.name == loadedMeshes.back().name)
+								continue;
+
+						break;
+					}
+
+					// cleanup
+					vertices.clear();
+					indices.clear();
 				}
+				break;
 			}
 
-			pathtomat += algorithm::tail(curLine);
+			case 'n': // new material and material name
+			{
+				if (!matListening)
+				{
+					matListening = true;
 
-			// Load Materials
-			loadMats(pathtomat);
+					// name the mat
+					if (curLine.size() > 3)
+						tempMaterial.name = curLine.substr(3);
+					else
+						tempMaterial.name = "none";
+				}
+				else
+				{
+					// push the temp mat, to prepare for new mat
+					loadedMaterials.push_back(tempMaterial);
+
+					// reset temp mat
+					tempMaterial = Material();
+
+					// name the mat
+					if (curLine.size() > 3)
+						tempMaterial.name = curLine.substr(3);
+					else
+						tempMaterial.name = "none";
+				}
+				break;
+			}
+			}
+			break;
+		}
+
+		case 'K':
+		{
+			switch (curLine[1]) {
+			case 'd': // Kd, Diffuse Color
+			{
+				std::vector<std::string> temp;
+				Util::split(curLine.substr(3), ' ', temp);
+
+				if (temp.size() != 3)
+					continue;
+
+				tempMaterial.colDiffuse.x = std::stof(temp[0]);
+				tempMaterial.colDiffuse.y = std::stof(temp[1]);
+				tempMaterial.colDiffuse.z = std::stof(temp[2]);
+
+				temp.clear();
+				break;
+			}
+
+			// Specular Color
+			case 's': // Ks, Specular Color
+			{
+				std::vector<std::string> temp;
+				Util::split(curLine.substr(3), ' ', temp);
+
+				if (temp.size() != 3)
+					continue;
+
+				tempMaterial.colSpecular.x = std::stof(temp[0]);
+				tempMaterial.colSpecular.y = std::stof(temp[1]);
+				tempMaterial.colSpecular.z = std::stof(temp[2]);
+
+				temp.clear();
+				break;
+			}
+
+			// Ambient Color
+			case 'a':
+			{
+				std::vector<std::string> temp;
+				Util::split(curLine.substr(3), ' ', temp);
+
+				if (temp.size() != 3)
+					continue;
+
+				tempMaterial.colAmbient.x = std::stof(temp[0]);
+				tempMaterial.colAmbient.y = std::stof(temp[1]);
+				tempMaterial.colAmbient.z = std::stof(temp[2]);
+
+				temp.clear();
+				break;
+			}
+			}
+
+			break;
+		}
+
+		// Specular Exponent
+		case 's':
+		{
+			if (curLine[2] == 'o') // off
+				tempMaterial.specularExponent = 0;
+			else
+				tempMaterial.specularExponent = std::stof(curLine.substr(1));
+			break;
+		}
+
+
+		case 'M':
+		{
+			switch (curLine[1])
+			{
+				// Ambient Texture Map
+			case 'a': // map_Ka
+			{
+				tempMaterial.mapAmbient = curLine.substr(3);
+				break;
+			}
+
+			// Diffuse Texture Map
+			case 'd':
+			{
+				tempMaterial.mapDiffuse = curLine.substr(3);
+				break;
+			}
+
+			// Specular Texture Map
+			case 's':
+			{
+				tempMaterial.mapSpecular = curLine.substr(3);
+				break;
+			}
+			}
+		}
 		}
 	}
 
-	// Deal with last mesh
-	if (!indices.empty() && !vertices.empty())
+	// Deal with last Mesh
+	if (!vertices.empty() && !indices.empty())
 	{
-		// Create Mesh
-		tempMesh = MeshData(vertices, indices);
-		tempMesh.meshName = meshName;
+		// create and insert Mesh
+		loadedMeshes.emplace_back(meshName, vertices, indices);
 
-		// Insert Mesh
-		loadedMeshes.push_back(tempMesh);
+		vertices.clear();
+		indices.clear();
 	}
+
+	// take care of the last material
+	loadedMaterials.push_back(tempMaterial);
 
 	file.close();
 
+	TextureManager* _textureManager = &(getOutrospection()->textureManager);
 	// Set Materials for each Mesh
 	for (int i = 0; i < meshMatNames.size(); i++)
 	{
@@ -388,13 +393,17 @@ bool ModelLoader::loadFile(std::string filePath)
 		{
 			if (loadedMaterials[j].name == matname)
 			{
-				loadedMeshes[i].meshMaterial = loadedMaterials[j];
+				// TODO support more mat stuff (and write it to the Mesh obj)
+
+				Resource r("Textures/", loadedMaterials[j].mapDiffuse);
+
+				loadedMeshes[i].texture = _textureManager->loadTexture(r);
 				break;
 			}
 		}
 	}
 
-	if (loadedMeshes.empty() && loadedVertices.empty() && loadedIndices.empty())
+	if (loadedMeshes.empty())
 		return false;
 	else
 		return true;
@@ -402,9 +411,10 @@ bool ModelLoader::loadFile(std::string filePath)
 
 void ModelLoader::verticesFromFaceString(std::vector<Vertex>& outputVertices, const std::vector<glm::vec3>& _positions, const std::vector<glm::vec2>& _texCoords, const std::vector<glm::vec3>& _normals, std::string _curLine)
 {
+	// substr to remove "f "
 	std::vector<std::string> splitFaceStr;
 	Vertex vertex;
-	algorithm::split(algorithm::tail(_curLine), splitFaceStr, " ");
+	Util::split(_curLine.substr(2), ' ', splitFaceStr);
 
 	bool noNormal = false;
 
@@ -412,10 +422,10 @@ void ModelLoader::verticesFromFaceString(std::vector<Vertex>& outputVertices, co
 	for (int i = 0; i < splitFaceStr.size(); i++)
 	{
 		std::vector<std::string> splitVertexStr;
-		algorithm::split(splitFaceStr[i], splitVertexStr, "/");
+		Util::split(splitFaceStr[i], '/', splitVertexStr);
 
 		// 1 = pos, 2 = pos/tex, 3 = pos/norm,, 4 = pos/tex/norm
-		int vertexType;
+		int vertexType = 0;
 
 		// Check for just position - v1
 		if (splitVertexStr.size() == 1)
@@ -487,6 +497,8 @@ void ModelLoader::verticesFromFaceString(std::vector<Vertex>& outputVertices, co
 			break;
 		}
 		}
+
+		splitVertexStr.clear();
 	}
 
 	// take care of missing normals
@@ -502,6 +514,8 @@ void ModelLoader::verticesFromFaceString(std::vector<Vertex>& outputVertices, co
 			outputVertices[i].normal = normal;
 		}
 	}
+
+	splitFaceStr.clear();
 }
 
 void ModelLoader::verticesToIndicesTriangulated(std::vector<unsigned int>& indicesOut, const std::vector<Vertex>& _vertices)
@@ -603,7 +617,7 @@ void ModelLoader::verticesToIndicesTriangulated(std::vector<unsigned int>& indic
 			}
 
 			// If Vertex is not an interior vertex
-			float angle = angleBetweenV3(prevVertex.pos - curVertex.pos, nextVertex.pos - curVertex.pos) * (180 / 3.14159265359);
+			float angle = Util::angleBetweenV3(prevVertex.pos - curVertex.pos, nextVertex.pos - curVertex.pos) * (180 / 3.14159265359);
 			if (angle <= 0 && angle >= 180)
 				continue;
 
@@ -657,127 +671,6 @@ void ModelLoader::verticesToIndicesTriangulated(std::vector<unsigned int>& indic
 		if (verticesVector.size() == 0)
 			break;
 	}
-}
 
-bool ModelLoader::loadMats(std::string path)
-{
-	// return false if file is not mtl
-	if (path.substr(path.size() - 4, path.size()) != ".mtl")
-		return false;
-
-	std::ifstream mtlFile(path);
-
-	// return false if file is not found
-	if (!mtlFile.is_open())
-		return false;
-
-	Material tempMaterial;
-
-	bool listening = false;
-
-	// Go through each line looking for material variables
-	std::string curline;
-	while (std::getline(mtlFile, curline))
-	{
-		// new material and material name
-		if (algorithm::firstToken(curline) == "newmtl")
-		{
-			if (!listening)
-			{
-				listening = true;
-
-				// name the mat
-				if (curline.size() > 7)
-					tempMaterial.name = algorithm::tail(curline);
-				else
-					tempMaterial.name = "none";
-			}
-			else
-			{
-				// push the temp mat, to prepare for new mat
-				loadedMaterials.push_back(tempMaterial);
-
-				// reset temp mat
-				tempMaterial = Material();
-
-				// name the mat
-				if (curline.size() > 7)
-					tempMaterial.name = algorithm::tail(curline);
-				else
-					tempMaterial.name = "none";
-			}
-		}
-
-		// Ambient Color
-		if (algorithm::firstToken(curline) == "Ka")
-		{
-			std::vector<std::string> temp;
-			algorithm::split(algorithm::tail(curline), temp, " ");
-
-			if (temp.size() != 3)
-				continue;
-
-			tempMaterial.colAmbient.x = std::stof(temp[0]);
-			tempMaterial.colAmbient.y = std::stof(temp[1]);
-			tempMaterial.colAmbient.z = std::stof(temp[2]);
-		}
-
-		// Diffuse Color
-		if (algorithm::firstToken(curline) == "Kd")
-		{
-			std::vector<std::string> temp;
-			algorithm::split(algorithm::tail(curline), temp, " ");
-
-			if (temp.size() != 3)
-				continue;
-
-			tempMaterial.colDiffuse.x = std::stof(temp[0]);
-			tempMaterial.colDiffuse.y = std::stof(temp[1]);
-			tempMaterial.colDiffuse.z = std::stof(temp[2]);
-		}
-
-		// Specular Color
-		if (algorithm::firstToken(curline) == "Ks")
-		{
-			std::vector<std::string> temp;
-			algorithm::split(algorithm::tail(curline), temp, " ");
-
-			if (temp.size() != 3)
-				continue;
-
-			tempMaterial.colSpecular.x = std::stof(temp[0]);
-			tempMaterial.colSpecular.y = std::stof(temp[1]);
-			tempMaterial.colSpecular.z = std::stof(temp[2]);
-		}
-
-		// Specular Exponent
-		if (algorithm::firstToken(curline) == "Ns")
-		{
-			tempMaterial.specularExponent = std::stof(algorithm::tail(curline));
-		}
-
-		// Ambient Texture Map
-		if (algorithm::firstToken(curline) == "map_Ka")
-		{
-			tempMaterial.mapAmbient = algorithm::tail(curline);
-		}
-
-		// Diffuse Texture Map
-		if (algorithm::firstToken(curline) == "map_Kd")
-		{
-			tempMaterial.mapDiffuse = algorithm::tail(curline);
-		}
-
-		// Specular Texture Map
-		if (algorithm::firstToken(curline) == "map_Ks")
-		{
-			tempMaterial.mapSpecular = algorithm::tail(curline);
-		}
-	}
-
-	// take care of the last material
-	loadedMaterials.push_back(tempMaterial);
-
-	// return whether something was loaded
-	return !(loadedMaterials.empty());
+	verticesVector.clear();
 }

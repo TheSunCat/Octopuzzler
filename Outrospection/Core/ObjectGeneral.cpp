@@ -21,20 +21,20 @@ ObjectGeneral::ObjectGeneral(std::string _name, glm::vec3 _pos, glm::vec3 _rot, 
 		return;
 	}
 
-	TextureManager* _textureManager = &(getOutrospection()->textureManager);
+	meshes.reserve(modelLoader.loadedMeshes.size());
 
-	for (MeshData md : modelLoader.loadedMeshes) {
-		Resource r("Textures/", md.meshMaterial.mapDiffuse);
+	while (!modelLoader.loadedMeshes.empty())
+	{
+		const Mesh& md = modelLoader.loadedMeshes.front();
 
-		SimpleTexture meshTex = _textureManager->loadTexture(r);
+		meshes.emplace_back(md);
 
-		Mesh newMesh(md.meshName, md.vertices, md.indices, meshTex);
-
-		meshes.push_back(newMesh);
+		modelLoader.loadedMeshes.pop_front();
 	}
 }
 
-void ObjectGeneral::draw(const Shader& shader) {
+void ObjectGeneral::draw(const Shader& shader) const
+{
 	glm::mat4 modelMat = glm::mat4(1.0f);
 
 	// Scale model
@@ -50,20 +50,23 @@ void ObjectGeneral::draw(const Shader& shader) {
 
 	shader.setMat4("model", modelMat);
 
-	for (Mesh m : meshes)
+	for (const Mesh& m : meshes)
 	{
 		m.draw(shader);
 	}
 }
 
-glm::vec3 ObjectGeneral::getPos() {
+glm::vec3 ObjectGeneral::getPos() const
+{
 	return pos;
 }
 
-glm::vec3 ObjectGeneral::getRot() {
+glm::vec3 ObjectGeneral::getRot() const
+{
 	return rot;
 }
 
-glm::vec3 ObjectGeneral::getScale() {
+glm::vec3 ObjectGeneral::getScale() const
+{
 	return scale;
 }

@@ -14,7 +14,7 @@ Character::Character(const std::string& _charId, const glm::vec3& _pos) : charPo
 
 	charBillboard = Billboard(billboardTex);
 }
-void Character::draw(Shader& _shader)
+void Character::draw(Shader& _shader) const
 {
 	charBillboard.draw(_shader, charPosition);
 }

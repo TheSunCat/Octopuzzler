@@ -13,7 +13,7 @@
 //			isFile = true;
 //		}
 //		else if (!isFile) {
-//			std::cout << "ERROR: File " << "./res/ObjectData/Characters/" + multiTextureFileName + ".gfi" << " failed signature check!";
+//			std::cout << "ERROR: File " << "./res/ObjectData/Characters/" + multiTextureFileName + ".gfi" << " is not a GFI file!";
 //			return;
 //		}
 //

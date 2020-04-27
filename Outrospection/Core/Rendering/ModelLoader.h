@@ -6,6 +6,8 @@
 #include <glm/glm.hpp>
 
 #include "../../Types.h"
+#include <deque>
+#include "Mesh.h"
 
 struct Material
 {
@@ -33,40 +35,14 @@ struct Material
 	std::string mapSpecular;
 };
 
-struct MeshData
-{
-	MeshData() = default;
-
-	MeshData(std::vector<Vertex>& _vertices, std::vector<unsigned int>& _indices)
-	{
-		vertices = _vertices;
-		indices = _indices;
-	}
-
-	// Mesh Name
-	std::string meshName;
-	// Vertex List
-	std::vector<Vertex> vertices;
-	// Index List
-	std::vector<unsigned int> indices;
-
-	// Material
-	Material meshMaterial;
-};
-
 struct Vertex;
 
 class ModelLoader {
 public:
+	// load new file, replacing all fields
 	bool loadFile(std::string filePath);
 
-	// Loaded Mesh Objects
-	std::vector<MeshData> loadedMeshes;
-	// Loaded Vertex Objects
-	std::vector<Vertex> loadedVertices;
-	// Loaded Index Positions
-	std::vector<unsigned int> loadedIndices;
-	// Loaded Material Objects
+	std::deque<Mesh> loadedMeshes;
 	std::vector<Material> loadedMaterials;
 
 private:
@@ -76,7 +52,4 @@ private:
 	// Triangulate a list of vertices into a face by printing
 	// indicies corresponding with triangles within it
 	void verticesToIndicesTriangulated(std::vector<unsigned int>& indicesOut, const std::vector<Vertex>& _vertices);
-
-	// load mats from .mtl file
-	bool loadMats(std::string path);
 };
