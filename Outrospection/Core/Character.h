@@ -13,7 +13,7 @@ public:
 
 	Character(const std::string& _charId, const glm::vec3& _pos);
 
-	void draw(Shader& _shader);
+	void draw(Shader& _shader) const;
 
 	glm::vec3 charPosition;
 

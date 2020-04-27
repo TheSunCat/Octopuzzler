@@ -19,20 +19,19 @@
 class Mesh {
 public:
 	std::string name;
-	std::vector<Vertex> vertices;
-	std::vector<unsigned int> indices;
 	SimpleTexture texture;
-	unsigned int VAO;
 
 	Mesh() = default;
 
-	Mesh(std::string _name, std::vector<Vertex> _vertices, std::vector<unsigned int> _indices, SimpleTexture _texture);
+	// create a mesh with no texture
+	Mesh(const std::string& _name, const std::vector<Vertex>& _vertices, const std::vector<unsigned int>& _indices);
+
+	Mesh(const std::string& _name, const std::vector<Vertex>& _vertices, const std::vector<unsigned int>& _indices, const SimpleTexture& _texture);
 
 	// render the mesh
-	void draw(const Shader& shader);
+	void draw(const Shader& shader) const;
 
 private:
-	unsigned int VBO, EBO;
-
-	void setupMesh();
+	unsigned int indicesSize;
+	unsigned int VBO, VAO, EBO;
 };

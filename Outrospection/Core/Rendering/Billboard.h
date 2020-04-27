@@ -9,9 +9,9 @@ public:
 
 	Billboard(const SimpleTexture& _tex);
 
-	void draw(Shader& _shader, const glm::vec3& _pos);
+	void draw(const Shader& _shader, const glm::vec3& _pos) const;
 
-	void draw(Shader& _shader, const glm::vec3& _pos, SimpleTexture& _tex);
+	void draw(const Shader& _shader, const glm::vec3& _pos, const SimpleTexture& _tex) const;
 
 private:
 	unsigned int quadVAO = 0;

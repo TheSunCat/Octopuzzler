@@ -5,26 +5,38 @@
 
 #include "External/stb_image.h"
 
-std::vector<std::string> split(std::string input, std::string delimiter) {
-	std::vector<std::string>* toReturn = new std::vector<std::string>();
-	bool finished = false;
-	while (!finished) {
-		int location = input.find(delimiter);
-		if (location == std::string::npos)
-		{
-			finished = true;
-			toReturn->push_back(input);
-		}
-		else
-		{
-			toReturn->push_back(input.substr(0, location));
-			input = input.substr(location + delimiter.length());
-		}
+bool Util::glError(bool print)
+{
+	bool ret = false;
+	GLenum err;
+	while ((err = glGetError()) != GL_NO_ERROR)
+	{
+		ret = true;
+
+		if (print)
+			std::cout << err << std::endl;
 	}
-	return *toReturn;
+
+	return ret;
 }
 
-glm::vec3 vecFromYaw(float yawDeg)
+void Util::split(const std::string& input, const char& delimiter, std::vector<std::string>& out) {
+	std::string::const_iterator start = input.begin();
+	std::string::const_iterator end = input.end();
+	std::string::const_iterator next = std::find(start, end, delimiter);
+
+	while (next != end)
+	{
+		out.push_back(std::string(start, next));
+		start = next + 1;
+
+		next = std::find(start, end, delimiter);
+	}
+
+	out.push_back(std::string(start, next));
+}
+
+glm::vec3 Util::vecFromYaw(float yawDeg)
 {
 	glm::vec3 front;
 	front.x = cos(glm::radians(yawDeg));
@@ -35,7 +47,7 @@ glm::vec3 vecFromYaw(float yawDeg)
 	return front;
 }
 
-std::string vecToStr(const glm::vec3& vec)
+std::string Util::vecToStr(const glm::vec3& vec)
 {
 	std::stringstream ss("vec3(");
 
@@ -44,7 +56,7 @@ std::string vecToStr(const glm::vec3& vec)
 	return ss.str();
 }
 
-unsigned char* DataFromFile(const char* path, const std::string& directory, int* widthOut, int* heightOut)
+unsigned char* Util::DataFromFile(const char* path, const std::string& directory, int* widthOut, int* heightOut)
 {
 	std::string filename = std::string(path);
 	filename = directory + '/' + filename;
@@ -69,7 +81,7 @@ unsigned char* DataFromFile(const char* path, const std::string& directory, int*
 const RayHit noHit = RayHit{ -NAN, glm::vec3(0.0) };
 
 // Cast a ray against finite triangle tri, and return the distance from the ray to the tri.
-RayHit rayCast(
+RayHit Util::rayCast(
 	const Ray& ray,
 	const Triangle& tri, bool bothSides)
 {
@@ -116,7 +128,7 @@ RayHit rayCast(
 }
 
 // Cast a ray against an infinite plane with the triangle's normal, return where ray hits plane or NaN if ray never hits
-glm::vec3 rayCastPlane(const Ray& r, const Triangle& plane) {
+glm::vec3 Util::rayCastPlane(const Ray& r, const Triangle& plane) {
 	glm::vec3 diff = r.origin - plane.v0;
 	float prod1 = glm::dot(diff, -plane.n);
 	float prod2 = glm::dot(r.direction, -plane.n);
@@ -124,7 +136,7 @@ glm::vec3 rayCastPlane(const Ray& r, const Triangle& plane) {
 	return r.origin - r.direction * prod3;
 }
 
-glm::vec3 getNormal(const Triangle& t) {
+glm::vec3 Util::getNormal(const Triangle& t) {
 	glm::vec3 v0v1 = t.v1 - t.v0;
 	glm::vec3 v0v2 = t.v2 - t.v0;
 	glm::vec3 normal = glm::cross(v0v1, v0v2);
@@ -132,29 +144,29 @@ glm::vec3 getNormal(const Triangle& t) {
 	return normalize(normal);
 }
 
-float length2V3(const glm::vec3& v)
+float Util::length2V3(const glm::vec3& v)
 {
 	return (v.x * v.x) + (v.y * v.y) + (v.z * v.z);
 }
 
-bool isZeroV3(const glm::vec3& v)
+bool Util::isZeroV3(const glm::vec3& v)
 {
 	return (v.x == 0 && v.y == 0 && v.z == 0);
 }
 
-float sumAbsV3(const glm::vec3& v)
+float Util::sumAbsV3(const glm::vec3& v)
 {
 	return abs(v.x) + abs(v.y) + abs(v.z);
 }
 
-float angleBetweenV3(const glm::vec3 a, const glm::vec3 b)
+float Util::angleBetweenV3(const glm::vec3 a, const glm::vec3 b)
 {
 	float angle = glm::dot(a, b);
 	angle /= (glm::length(a) * glm::length(b));
 	return angle = acosf(angle);
 }
 
-glm::vec3 projectV3(const glm::vec3 a, const glm::vec3 b)
+glm::vec3 Util::projectV3(const glm::vec3 a, const glm::vec3 b)
 {
 	glm::vec3 bn = b / glm::length(b);
 	return bn * glm::dot(a, bn);

@@ -92,6 +92,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\Libraries\include;</AdditionalIncludeDirectories>
+      <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>opengl32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -112,6 +113,7 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\Libraries\include;</AdditionalIncludeDirectories>
+      <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>opengl32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -134,6 +136,7 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\Libraries\include;</AdditionalIncludeDirectories>
+      <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -158,6 +161,7 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\Libraries\include;</AdditionalIncludeDirectories>
+      <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -178,6 +182,7 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="Controller.h" />
     <ClInclude Include="Core\Camera.h" />
     <ClInclude Include="Core\Character.h" />
     <ClInclude Include="Core\ObjectGeneral.h" />
@@ -194,16 +199,17 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
     <ClInclude Include="Core\Rendering\Shader.h" />
     <ClInclude Include="Core\Rendering\SimpleTexture.h" />
     <ClInclude Include="Core\Rendering\TextureManager.h" />
-    <ClInclude Include="Core\Rendering\Window.h" />
     <ClInclude Include="Core\Scene.h" />
     <ClInclude Include="External\stb_image.h" />
-    <ClInclude Include="KeyBindings.h" />
+    <ClInclude Include="GameSettings.h" />
+    <ClInclude Include="KeyBinding.h" />
     <ClInclude Include="Outrospection.h" />
     <ClInclude Include="Source.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="Util.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Core\Camera.cpp" />
     <ClCompile Include="Core\Character.cpp" />
     <ClCompile Include="Core\ObjectGeneral.cpp" />
@@ -219,11 +225,11 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
     <ClCompile Include="Core\Rendering\Shader.cpp" />
     <ClCompile Include="Core\Rendering\SimpleTexture.cpp" />
     <ClCompile Include="Core\Rendering\TextureManager.cpp" />
-    <ClCompile Include="Core\Rendering\Window.cpp" />
     <ClCompile Include="Core\Scene.cpp" />
     <ClCompile Include="External\glad.c" />
     <ClCompile Include="External\stb_image.cpp" />
-    <ClCompile Include="KeyBindings.cpp" />
+    <ClCompile Include="GameSettings.cpp" />
+    <ClCompile Include="KeyBinding.cpp" />
     <ClCompile Include="Outrospection.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Util.cpp" />

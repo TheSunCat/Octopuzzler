@@ -2,6 +2,7 @@
 
 #include "../Util.h"
 #include "../External/stb_image.h"
+#include "../Constants.h"
 
 Scene::Scene(std::string _name) {
 	name = _name;
@@ -70,7 +71,7 @@ void Scene::loadScene() {
 	// parser code partly by MarkCangila
 
 	std::ifstream sceneFile("./res/StageData/" + name + "/" + name + ".lvl");
-	State currentState = Obj;
+	State currentState = Scene::State::Obj;
 
 	for (std::string line; getline(sceneFile, line); )
 	{
@@ -78,94 +79,78 @@ void Scene::loadScene() {
 			continue;
 		}
 		if (line.compare("Obj") == 0) {
-			currentState = Obj;
+			currentState = Scene::State::Obj;
 		}
 		/*else if (line.compare("RailObj") == 0) {
 			currentState = RailObj;
 		}*/
 		else if (line.compare("Light") == 0) {
-			currentState = Light;
+			currentState = Scene::State::Light;
 		}
 		else if (line.compare("Sky") == 0) {
-			currentState = Sky;
+			currentState = Scene::State::Sky;
 		}
 		else if (line.compare("Chara") == 0) {
-			currentState = Chara;
+			currentState = Scene::State::Chara;
 		}
 		else if (line.compare("Col") == 0) {
-			currentState = Col;
+			currentState = Scene::State::Col;
 		}
 		else {
 			switch (currentState) {
-			case Obj: {
+			case Scene::State::Obj: {
 				// parse object
-				ObjectGeneral obj = parseObj(line);
-
-				objects.push_back(obj);
+				objects.emplace_back(parseObj(line));
 				break;
 			}
-			case RailObj: {
+			case Scene::State::RailObj: {
 				break;
 			}
-			case Light: {
+			case Scene::State::Light: {
 				//Split string
-				std::vector<std::string> splittedLine = split(line, " | ");
+				std::vector<std::string> splittedLine;
+				Util::split(line, '|', splittedLine);
+
 				//Split position
-				std::vector<std::string> positions = split(splittedLine[1], " ");
-				//Split rotations
-				std::vector<std::string> color = split(splittedLine[2], " ");
+				std::vector<std::string> positions;
+				Util::split(splittedLine[1].substr(1, splittedLine[1].length() - 2), ' ', positions);
+
+				//Split color
+				std::vector<std::string> color;
+				Util::split(splittedLine[2].substr(1, splittedLine[2].length() - 2), ' ', color);
 
 				// TODO light support lol
 				//lights.push_back
 				break;
 			}
-			case Sky: {
+			case Scene::State::Sky: {
 				cubemapTexture = loadCubemap(line);
 				break;
 			}
-			case Chara: {
-				Character character = parseChar(line);
-				characters.push_back(character);
+			case Scene::State::Chara: {
+				characters.emplace_back(parseChar(line));
 			}
-			case Col: {
-				std::vector<Triangle> tris = parseCollision(line);
+			case Scene::State::Col: {
+				// TODO emplace_back?
 
-				push_all(collision, tris);
+				parseCollision(line);
 
-				//if (DEBUG) {
-				//	std::vector<float> colVerticesVector;
-				//	for (Triangle t : collision) {
-				//		colVerticesVector.push_back(t.v0.x);
-				//		colVerticesVector.push_back(t.v0.y);
-				//		colVerticesVector.push_back(t.v0.z);
+				if (DEBUG) {
+					std::vector<Vertex> colVerticesVector;
+					for (const Triangle& t : collision) {
+						colVerticesVector.push_back(Vertex{ t.v0, t.n });
+						colVerticesVector.push_back(Vertex{ t.v1, t.n });
+						colVerticesVector.push_back(Vertex{ t.v2, t.n });
+					}
 
-				//		colVerticesVector.push_back(t.v1.x);
-				//		colVerticesVector.push_back(t.v1.y);
-				//		colVerticesVector.push_back(t.v1.z);
+					std::vector<unsigned int> indices(colVerticesVector.size());
+					for (int i = 0; i < colVerticesVector.size(); i++)
+					{
+						indices[i] = i;
+					}
 
-				//		colVerticesVector.push_back(t.v2.x);
-				//		colVerticesVector.push_back(t.v2.y);
-				//		colVerticesVector.push_back(t.v2.z);
-				//	}
-
-				//	colVertCount = colVerticesVector.size();
-
-				//	float* colVertices = new float[colVertCount];
-
-				//	std::copy(colVerticesVector.begin(), colVerticesVector.end(), colVertices);
-
-				//	// collision VAO
-				//	unsigned int colVBO;
-				//	glGenVertexArrays(1, &colVAO);
-				//	glGenBuffers(1, &colVBO);
-				//	glBindVertexArray(colVAO);
-				//	glBindBuffer(GL_ARRAY_BUFFER, colVBO);
-				//	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * colVertCount, &colVertices, GL_STATIC_DRAW);
-				//	glEnableVertexAttribArray(0);
-				//	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-
-				//	delete[] colVertices;
-				//}
+					colMesh = Mesh("Collision model", colVerticesVector, indices);
+				}
 			}
 			}
 		}
@@ -184,20 +169,24 @@ void Scene::draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShade
 	glDepthMask(GL_TRUE);
 
 	_objShader.use();
-	for (ObjectGeneral object : objects) {
-		object.draw(_objShader);
+	
+
+	if (DEBUG) {
+		glm::mat4 modelMat = glm::mat4(1.0f);
+		_objShader.setMat4("model", modelMat);
+
+		colMesh.draw(_objShader);
+	}
+	else {
+		for (const ObjectGeneral& object : objects) {
+			object.draw(_objShader);
+		}
 	}
 
 	_billboardShader.use();
-	for (Character chara : characters) {
+	for (const Character& chara : characters) {
 		chara.draw(_billboardShader);
 	}
-
-	//if (DEBUG) {
-	//	_simpleShader.use();
-	//	glBindVertexArray(colVAO);
-	//	glDrawArrays(GL_TRIANGLES, 0, colVertCount);
-	//}
 }
 
 std::vector<std::string> Scene::parseLine(std::string line) { // TODO do not hardcode number of elements CHECK
@@ -209,16 +198,18 @@ std::vector<std::string> Scene::parseLine(std::string line) { // TODO do not har
 	std::vector<std::string> ret;
 
 	//Split string by property delimiter
-	std::vector<std::string> splittedLine = split(line, "|");
+	std::vector<std::string> splittedLine;
+	Util::split(line, '|', splittedLine);
 	
 	// Object name
 	ret.push_back(splittedLine[0]);
 
 	// Object properties
 	for (int i = 0; i < n; i++) {
-		std::vector<std::string> v = split(splittedLine[i + 1], " ");
+		std::vector<std::string> v;
+		Util::split(splittedLine[i + 1], ' ', v);
 
-		push_all(ret, v);
+		Util::push_all(ret, v);
 	}
 
 	return ret;
@@ -249,33 +240,31 @@ Character Scene::parseChar(std::string line)
 	return chara;
 }
 
-std::vector<Triangle> Scene::parseCollision(std::string name)
+void Scene::parseCollision(std::string name)
 {
-	std::vector<Triangle> ret;
-
-	std::ifstream sceneFile("./res/ObjectData/" + name + "/" + name + ".ocl");
-	for (std::string line; getline(sceneFile, line);)
+	std::ifstream collisionFile("./res/ObjectData/" + name + "/" + name + ".ocl");
+	for (std::string line; getline(collisionFile, line);)
 	{
-		std::vector<std::string> verticesStr = split(line, " | ");
+		if (line == "" || line[0] == '#')
+			continue;
+
+		std::vector<std::string> verticesStr;
+		Util::split(line, '|', verticesStr);
 
 		std::vector<glm::vec3> vertices;
 
-		for (std::string s : verticesStr) {
-			std::vector<std::string> sStr = split(s, " ");
+		for (const std::string& s : verticesStr) {
+			std::vector<std::string> sStr;
+			Util::split(s.substr(1, s.length() - 2), ' ', sStr);
 
-			vertices.push_back(glm::vec3(stof(sStr[0]), stof(sStr[2]), -stof(sStr[1])));
+			vertices.emplace_back(stof(sStr[0]), stof(sStr[2]), -stof(sStr[1]));
 		}
 
-		Triangle tri = Triangle{ vertices[0], vertices[1], vertices[2] };
-
-		tri.n = getNormal(tri);
-
-		ret.push_back(tri);
+		collision.emplace_back(Triangle{ vertices[0], vertices[1], vertices[2] });
+		collision.back().n = Util::getNormal(collision.back());
 	}
 
-	sceneFile.close();
-
-	return ret;
+	collisionFile.close();
 }
 
 unsigned int Scene::loadCubemap(std::string name)
