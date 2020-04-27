@@ -9,7 +9,7 @@ public:
 
 	SimpleTexture(const unsigned int& _texId, const std::string& _texPath);
 
-	void bindTexture();
+	void bindTexture() const;
 
 	unsigned int texId;
 

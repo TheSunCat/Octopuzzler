@@ -1,6 +1,5 @@
 Obj
-TestLevelGround000|0 0 0|-90 0 0|1 1 1
-Brella|0 10 0|-90 0 0|1 1 1
+TestCube000|0 0 0|0 0 0|1 1 1
 Col
 TestCube000
 Sky
