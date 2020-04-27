@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Scene.h"
-#include "Player.h"
-#include "PlayerController.h"
-#include "Camera.h"
-#include "OpenGL.h"
 #include "Constants.h"
+#include "Core/Rendering/OpenGL.h"
+#include "Core/Scene.h"
+#include "Core/Player.h"
+#include "Core/PlayerController.h"
+#include "Core/Rendering/TextureManager.h"
 
 class Outrospection {
 public:
@@ -20,10 +20,21 @@ public:
 	Player player;
 
 	PlayerController playerController;
+
+	void pauseGame();
+
+	void unpauseGame();
+
+	// Check for OpenGL errors and print them
+	bool glError(bool print);
+
+	TextureManager textureManager;
 private:
 	void runGameLoop();
 
-	bool glError();
+	void runTick();
+
+	void updateCamera();
 
 	// set to false when the game loop shouldn't run
 	volatile bool running = false;
@@ -54,4 +65,6 @@ private:
 
 	void registerCallbacks();
 	void createShaders();
+
+	bool isGamePaused;
 };

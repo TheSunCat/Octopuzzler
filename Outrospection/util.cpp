@@ -1,5 +1,10 @@
 #include "Util.h"
 
+#include <sstream>
+#include <iostream>
+
+#include "External/stb_image.h"
+
 std::vector<std::string> split(std::string input, std::string delimiter) {
 	std::vector<std::string>* toReturn = new std::vector<std::string>();
 	bool finished = false;
@@ -30,54 +35,13 @@ glm::vec3 vecFromYaw(float yawDeg)
 	return front;
 }
 
-std::string vecToStr(glm::vec3 vec)
+std::string vecToStr(const glm::vec3& vec)
 {
-	std::stringstream ss;
-	ss << vec.x << ", " << vec.y << ", " << vec.z;
+	std::stringstream ss("vec3(");
+
+	ss << vec.x << ", " << vec.y << ", " << vec.z << ")";
+
 	return ss.str();
-}
-
-unsigned int TextureFromFile(const char* path, const std::string& directory)
-{
-	std::string filename = std::string(path);
-	filename = directory + '/' + filename;
-
-	unsigned int tex;
-	int width, height;
-	glGenTextures(1, &tex);
-
-	int nrComponents = 0;
-	unsigned char* data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
-	if (data)
-	{
-		GLenum format;
-		if (nrComponents == 1)
-			format = GL_RED;
-		else if (nrComponents == 3)
-			format = GL_RGB;
-		else if (nrComponents == 4)
-			format = GL_RGBA;
-		else // TODO error reporting
-			return NULL;
-
-		glBindTexture(GL_TEXTURE_2D, tex);
-		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-		stbi_image_free(data);
-	}
-	else
-	{
-		std::cout << "Texture failed to load at path: " << filename << std::endl;
-		stbi_image_free(data);
-	}
-
-	return tex;
 }
 
 unsigned char* DataFromFile(const char* path, const std::string& directory, int* widthOut, int* heightOut)
@@ -93,7 +57,7 @@ unsigned char* DataFromFile(const char* path, const std::string& directory, int*
 	}
 	else
 	{
-		std::cout << "Texture anim failed to load at path: " << filename << std::endl;
+		std::cout << "Texture data failed to load at path: " << filename << std::endl;
 		stbi_image_free(data);
 	}
 
@@ -102,8 +66,9 @@ unsigned char* DataFromFile(const char* path, const std::string& directory, int*
 
 // partly based on https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/ray-triangle-intersection-geometric-solution
 
-const RayHit noHit = RayHit{ -INFINITY, glm::vec3(0.0) };
+const RayHit noHit = RayHit{ -NAN, glm::vec3(0.0) };
 
+// Cast a ray against finite triangle tri, and return the distance from the ray to the tri.
 RayHit rayCast(
 	const Ray& ray,
 	const Triangle& tri, bool bothSides)
@@ -147,10 +112,11 @@ RayHit rayCast(
 
 	glm::vec3 hitPos = glm::normalize(ray.direction) * ret;
 
-	return RayHit{ ret, hitPos };
+	return RayHit{ ret, hitPos, tri };
 }
 
-glm::vec3 rayCastPlane(Ray r, Triangle plane) {
+// Cast a ray against an infinite plane with the triangle's normal, return where ray hits plane or NaN if ray never hits
+glm::vec3 rayCastPlane(const Ray& r, const Triangle& plane) {
 	glm::vec3 diff = r.origin - plane.v0;
 	float prod1 = glm::dot(diff, -plane.n);
 	float prod2 = glm::dot(r.direction, -plane.n);
@@ -158,7 +124,7 @@ glm::vec3 rayCastPlane(Ray r, Triangle plane) {
 	return r.origin - r.direction * prod3;
 }
 
-glm::vec3 getNormal(Triangle t) {
+glm::vec3 getNormal(const Triangle& t) {
 	glm::vec3 v0v1 = t.v1 - t.v0;
 	glm::vec3 v0v2 = t.v2 - t.v0;
 	glm::vec3 normal = glm::cross(v0v1, v0v2);
@@ -166,12 +132,30 @@ glm::vec3 getNormal(Triangle t) {
 	return normalize(normal);
 }
 
-float length2(glm::vec3 v)
+float length2V3(const glm::vec3& v)
 {
-	return pow(v.x, 2) + pow(v.y, 2) + pow(v.z, 2);
+	return (v.x * v.x) + (v.y * v.y) + (v.z * v.z);
 }
 
-float sumV3(glm::vec3 v)
+bool isZeroV3(const glm::vec3& v)
 {
-	return v.x + v.y + v.z;
+	return (v.x == 0 && v.y == 0 && v.z == 0);
+}
+
+float sumAbsV3(const glm::vec3& v)
+{
+	return abs(v.x) + abs(v.y) + abs(v.z);
+}
+
+float angleBetweenV3(const glm::vec3 a, const glm::vec3 b)
+{
+	float angle = glm::dot(a, b);
+	angle /= (glm::length(a) * glm::length(b));
+	return angle = acosf(angle);
+}
+
+glm::vec3 projectV3(const glm::vec3 a, const glm::vec3 b)
+{
+	glm::vec3 bn = b / glm::length(b);
+	return bn * glm::dot(a, bn);
 }
