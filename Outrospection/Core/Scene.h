@@ -36,6 +36,5 @@ private:
 	unsigned int skyboxVAO;
 
 	// DEBUG
-	unsigned int colVAO;
-	unsigned int colVertCount;
+	Mesh colMesh;
 };

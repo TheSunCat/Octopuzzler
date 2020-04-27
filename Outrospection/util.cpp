@@ -5,6 +5,37 @@
 
 #include "External/stb_image.h"
 
+<<<<<<< HEAD
+bool Util::glError(bool print)
+{
+	bool ret = false;
+	GLenum err;
+	while ((err = glGetError()) != GL_NO_ERROR)
+	{
+		ret = true;
+
+		if (print)
+			std::cout << err << std::endl;
+	}
+
+	return ret;
+}
+
+void Util::split(const std::string& input, const char& delimiter, std::vector<std::string>& out) {
+	std::string::const_iterator start = input.begin();
+	std::string::const_iterator end = input.end();
+	std::string::const_iterator next = std::find(start, end, delimiter);
+
+	while (next != end)
+	{
+		out.push_back(std::string(start, next));
+		start = next + 1;
+
+		next = std::find(start, end, delimiter);
+	}
+
+	out.push_back(std::string(start, next));
+=======
 std::vector<std::string> split(std::string input, std::string delimiter) {
 	std::vector<std::string>* toReturn = new std::vector<std::string>();
 	bool finished = false;
@@ -22,6 +53,7 @@ std::vector<std::string> split(std::string input, std::string delimiter) {
 		}
 	}
 	return *toReturn;
+>>>>>>> parent of 41e6fde... Implement proper 3D format and optimize rendering
 }
 
 glm::vec3 vecFromYaw(float yawDeg)

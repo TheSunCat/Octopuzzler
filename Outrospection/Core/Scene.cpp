@@ -2,6 +2,7 @@
 
 #include "../Util.h"
 #include "../External/stb_image.h"
+#include "../Constants.h"
 
 Scene::Scene(std::string _name) {
 	name = _name;
@@ -109,11 +110,24 @@ void Scene::loadScene() {
 			}
 			case Light: {
 				//Split string
+<<<<<<< HEAD
+				std::vector<std::string> splittedLine;
+				Util::split(line, '|', splittedLine);
+
+				//Split position
+				std::vector<std::string> positions;
+				Util::split(splittedLine[1].substr(1, splittedLine[1].length() - 2), ' ', positions);
+
+				//Split color
+				std::vector<std::string> color;
+				Util::split(splittedLine[2].substr(1, splittedLine[2].length() - 2), ' ', color);
+=======
 				std::vector<std::string> splittedLine = split(line, " | ");
 				//Split position
 				std::vector<std::string> positions = split(splittedLine[1], " ");
 				//Split rotations
 				std::vector<std::string> color = split(splittedLine[2], " ");
+>>>>>>> parent of 41e6fde... Implement proper 3D format and optimize rendering
 
 				// TODO light support lol
 				//lights.push_back
@@ -132,6 +146,24 @@ void Scene::loadScene() {
 
 				push_all(collision, tris);
 
+<<<<<<< HEAD
+				if (DEBUG) {
+					std::vector<Vertex> colVerticesVector;
+					for (const Triangle& t : collision) {
+						colVerticesVector.push_back(Vertex{ t.v0, t.n });
+						colVerticesVector.push_back(Vertex{ t.v1, t.n });
+						colVerticesVector.push_back(Vertex{ t.v2, t.n });
+					}
+
+					std::vector<unsigned int> indices(colVerticesVector.size());
+					for (int i = 0; i < colVerticesVector.size(); i++)
+					{
+						indices[i] = i;
+					}
+
+					colMesh = Mesh("Collision model", colVerticesVector, indices);
+				}
+=======
 				//if (DEBUG) {
 				//	std::vector<float> colVerticesVector;
 				//	for (Triangle t : collision) {
@@ -166,6 +198,7 @@ void Scene::loadScene() {
 
 				//	delete[] colVertices;
 				//}
+>>>>>>> parent of 41e6fde... Implement proper 3D format and optimize rendering
 			}
 			}
 		}
@@ -184,20 +217,29 @@ void Scene::draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShade
 	glDepthMask(GL_TRUE);
 
 	_objShader.use();
+<<<<<<< HEAD
+	
+
+	if (DEBUG) {
+		glm::mat4 modelMat = glm::mat4(1.0f);
+		_objShader.setMat4("model", modelMat);
+
+		colMesh.draw(_objShader);
+	}
+	else {
+		for (const ObjectGeneral& object : objects) {
+			object.draw(_objShader);
+		}
+=======
 	for (ObjectGeneral object : objects) {
 		object.draw(_objShader);
+>>>>>>> parent of 41e6fde... Implement proper 3D format and optimize rendering
 	}
 
 	_billboardShader.use();
 	for (Character chara : characters) {
 		chara.draw(_billboardShader);
 	}
-
-	//if (DEBUG) {
-	//	_simpleShader.use();
-	//	glBindVertexArray(colVAO);
-	//	glDrawArrays(GL_TRIANGLES, 0, colVertCount);
-	//}
 }
 
 std::vector<std::string> Scene::parseLine(std::string line) { // TODO do not hardcode number of elements CHECK
@@ -209,14 +251,24 @@ std::vector<std::string> Scene::parseLine(std::string line) { // TODO do not har
 	std::vector<std::string> ret;
 
 	//Split string by property delimiter
+<<<<<<< HEAD
+	std::vector<std::string> splittedLine;
+	Util::split(line, '|', splittedLine);
+=======
 	std::vector<std::string> splittedLine = split(line, "|");
+>>>>>>> parent of 41e6fde... Implement proper 3D format and optimize rendering
 	
 	// Object name
 	ret.push_back(splittedLine[0]);
 
 	// Object properties
 	for (int i = 0; i < n; i++) {
+<<<<<<< HEAD
+		std::vector<std::string> v;
+		Util::split(splittedLine[i + 1], ' ', v);
+=======
 		std::vector<std::string> v = split(splittedLine[i + 1], " ");
+>>>>>>> parent of 41e6fde... Implement proper 3D format and optimize rendering
 
 		push_all(ret, v);
 	}
@@ -256,12 +308,26 @@ std::vector<Triangle> Scene::parseCollision(std::string name)
 	std::ifstream sceneFile("./res/ObjectData/" + name + "/" + name + ".ocl");
 	for (std::string line; getline(sceneFile, line);)
 	{
+<<<<<<< HEAD
+		if (line == "" || line[0] == '#')
+			continue;
+
+		std::vector<std::string> verticesStr;
+		Util::split(line, '|', verticesStr);
+
+		std::vector<glm::vec3> vertices;
+
+		for (const std::string& s : verticesStr) {
+			std::vector<std::string> sStr;
+			Util::split(s.substr(1, s.length() - 2), ' ', sStr);
+=======
 		std::vector<std::string> verticesStr = split(line, " | ");
 
 		std::vector<glm::vec3> vertices;
 
 		for (std::string s : verticesStr) {
 			std::vector<std::string> sStr = split(s, " ");
+>>>>>>> parent of 41e6fde... Implement proper 3D format and optimize rendering
 
 			vertices.push_back(glm::vec3(stof(sStr[0]), stof(sStr[2]), -stof(sStr[1])));
 		}

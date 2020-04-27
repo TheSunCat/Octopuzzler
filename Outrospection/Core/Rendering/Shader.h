@@ -50,4 +50,11 @@ private:
 	// utility function for checking shader compilation/linking errors.
 	// ------------------------------------------------------------------------
 	void checkCompileErrors(GLuint shader, std::string type);
+<<<<<<< HEAD
+
+	GLint getUniformLocation(const char* uniformName) const;
+
+	mutable std::unordered_map<const char*, GLint> uniform_cache;
+=======
+>>>>>>> parent of 41e6fde... Implement proper 3D format and optimize rendering
 };

@@ -7,11 +7,15 @@
 
 std::vector<std::string> split(std::string input, std::string delimiter);
 
+<<<<<<< HEAD
+	void split(const std::string& input, const char& delimiter, std::vector<std::string>& out);
+=======
 template <typename T>
 void push_all(std::vector<T> &input, std::vector<T> &add) {
 	for (T o : add)
 		input.push_back(o);
 }
+>>>>>>> parent of 41e6fde... Implement proper 3D format and optimize rendering
 
 glm::vec3 vecFromYaw(float yawDeg);
 
