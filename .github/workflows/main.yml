@@ -38,7 +38,10 @@ jobs:
           draft: false
           prerelease: true
           tag: refs/heads/master
-      - uses: actions/upload-artifact@v1.0.0
+      - uses: "marvinpinto/action-automatic-releases@latest"
         with:
-          name: Development ${{ github.event.pull_request.head.sha }}
-          path: Outrospection-latest.zip
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: true
+          title: "Development Build"
+          files: Outrospection-latest.zip
