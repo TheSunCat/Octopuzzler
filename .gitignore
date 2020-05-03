@@ -340,3 +340,6 @@ ASALocalRun/
 healthchecksdb
 /CMake
 /Outrospection/CMakeLists.txt
+
+# Zipped Blender Scripts (should be zipped by user)
+/Scripts/*.zip
