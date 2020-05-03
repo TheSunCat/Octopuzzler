@@ -199,7 +199,6 @@ def write_file(filepath, objects, scene,
                 depsgraph = bpy.context.evaluated_depsgraph_get()
                 me = ob.evaluated_get(depsgraph).to_mesh()
 			
-                # me = ob.to_mesh(scene, EXPORT_APPLY_MODIFIERS, 'PREVIEW', calc_tessface=False)
             except RuntimeError:
                 me = None
 
@@ -250,7 +249,7 @@ def write_file(filepath, objects, scene,
                 material_names = [name_compat(None)]
 
             # Sort by Material, then images
-            # so we dont over context switch in the obj file.
+            # so we don't over context switch in the obj file.
             if EXPORT_KEEP_VERT_ORDER:
                 pass
             else:

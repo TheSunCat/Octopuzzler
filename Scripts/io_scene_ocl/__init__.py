@@ -61,13 +61,6 @@ class ExportOCL(bpy.types.Operator, ExportHelper):
             options={'HIDDEN'},
             )
 
-    # context group
-    use_selection : BoolProperty(
-            name="Selection Only",
-            description="Export selected objects only",
-            default=False,
-            )
-
     # object group
     use_mesh_modifiers : BoolProperty(
             name="Apply Modifiers",
@@ -79,12 +72,8 @@ class ExportOCL(bpy.types.Operator, ExportHelper):
             description="",
             default=False,
             )
-    use_triangles : BoolProperty(
-            name="Triangulate Faces",
-            description="Convert all faces to triangles",
-            default=True,
-            )
-
+    
+    # Matrix
     axis_forward : EnumProperty(
             name="Forward",
             items=(('X', "X Forward", ""),
@@ -112,8 +101,6 @@ class ExportOCL(bpy.types.Operator, ExportHelper):
             min=0.01, max=1000.0,
             default=1.0,
             )
-
-    path_mode = path_reference_mode
 
     check_extension = True
 
