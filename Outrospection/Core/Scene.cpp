@@ -255,13 +255,13 @@ void Scene::parseCollision(std::string name)
 			continue;
 
 		std::vector<std::string> verticesStr;
-		Util::split(line.substr(0, line.length() - 1), '|', verticesStr); // cut out extra '|' until I fix exporter lol
+		Util::split(line.substr(0, line.length() - 1), '|', verticesStr); // cut out extra '|' at the end until I fix exporter lol
 
 		std::vector<glm::vec3> vertices;
 
 		for (const std::string& s : verticesStr) {
 			std::vector<std::string> sStr;
-			Util::split(s.substr(1, s.length() - 2), ' ', sStr);
+			Util::split(s, ' ', sStr);
 
 			vertices.emplace_back(stof(sStr[0]), stof(sStr[1]), stof(sStr[2]));
 		}
