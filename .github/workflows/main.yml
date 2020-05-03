@@ -23,14 +23,14 @@ jobs:
           msbuild $Env:GITHUB_WORKSPACE/OutrospectionGame.sln /property:Configuration=Release /property:Platform=x64
       - name: create ZIP
         run: |
-          powershell "Compress-Archive $Env:GITHUB_WORKSPACE/x64/Release $Env:GITHUB_WORKSPACE/Outrospection.zip"
+          powershell "Compress-Archive $Env:GITHUB_WORKSPACE/x64/Release $Env:GITHUB_WORKSPACE/Outrospection-latest.zip"
       - name: Create Release
         id: create_release
         uses: ncipollo/release-action@v1.6.1
         with:
           allowUpdates: true
           replacesArtifacts: true
-          artifacts: "$Env:GITHUB_WORKSPACE/Outrospection.zip"
+          artifacts: "$Env:GITHUB_WORKSPACE/Outrospection-latest.zip"
           token: ${{ secrets.GITHUB_TOKEN }}
           name: Development ${{ github.event.pull_request.head.sha }}
           body: |
@@ -41,4 +41,4 @@ jobs:
       - uses: actions/upload-artifact@v1.0.0
         with:
           name: Development ${{ github.event.pull_request.head.sha }}
-          path: $Env:GITHUB_WORKSPACE/Outrospection.zip
+          path: $Env:GITHUB_WORKSPACE/Outrospection-latest.zip
