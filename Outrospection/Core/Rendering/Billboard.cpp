@@ -35,6 +35,8 @@ void Billboard::draw(const Shader& _shader, const glm::vec3& _pos) const
 
 void Billboard::draw(const Shader& _shader, const glm::vec3& _pos, const SimpleTexture& _tex) const
 {
+	Util::glError(true);
+
 	_shader.use();
 
 	_shader.setInt("tex", 0);
@@ -43,12 +45,22 @@ void Billboard::draw(const Shader& _shader, const glm::vec3& _pos, const SimpleT
 	glActiveTexture(GL_TEXTURE0);
 	_tex.bindTexture();
 
+	Util::glError(true);
+
 	// Billboard rotation
-	_shader.setVec3("billboardCenter", _pos);
+	_shader.setVec3("billboard_Center", _pos);
+
+	Util::glError(true);
 
 	glBindVertexArray(quadVAO);
-	glm::mat4 modelMat = glm::translate(glm::mat4(1.0), _pos);
+
+	Util::glError(true);
+
+	glm::mat4 modelMat = glm::mat4(1.0);// glm::translate(glm::mat4(1.0), _pos);
 	_shader.setMat4("model", modelMat);
 
+	Util::glError(true);
+
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+	Util::glError(true);
 }
