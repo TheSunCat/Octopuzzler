@@ -239,10 +239,10 @@ void Outrospection::key_callback(GLFWwindow* window, int key, int scancode, int 
 
 void Outrospection::updateInput()
 {
-	unsigned int joystick = -1;
-	for (int i = GLFW_JOYSTICK_1; i < GLFW_JOYSTICK_LAST; i++)
+	unsigned int joystick = 4294967295;
+	for (unsigned int i = GLFW_JOYSTICK_1; i < GLFW_JOYSTICK_LAST; i++)
 	{
-		if (glfwJoystickPresent(i))
+		if (glfwJoystickPresent(i) == GLFW_TRUE)
 		{
 			joystick = i;
 
@@ -254,7 +254,7 @@ void Outrospection::updateInput()
 		}
 	}
 
-	if (joystick != -1) // there is a controller
+	if (joystick != 4294967295) // there is a controller
 	{
 		if (glfwJoystickIsGamepad(joystick)) // easy!
 		{
@@ -262,13 +262,8 @@ void Outrospection::updateInput()
 			glfwGetGamepadState(joystick, &gamepadState);
 
 
-			float leftForwardAxis = gamepadState.axes[GLFW_GAMEPAD_AXIS_LEFT_Y];
-			Util::valFromJoystickAxis(&leftForwardAxis); // TODO make this not a pointer func lol
-			controller.leftForward = leftForwardAxis;
-
-			float leftSideAxis = gamepadState.axes[GLFW_GAMEPAD_AXIS_LEFT_X];
-			Util::valFromJoystickAxis(&leftSideAxis);
-			controller.leftSide = leftSideAxis;
+			controller.leftForward = Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_LEFT_Y]);
+			controller.leftSide = Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_LEFT_X]);
 
 			controller.jump = gamepadState.buttons[GLFW_GAMEPAD_BUTTON_A];
 			controller.talk = gamepadState.buttons[GLFW_GAMEPAD_BUTTON_X];
@@ -282,37 +277,21 @@ void Outrospection::updateInput()
 
 			if (axesCount < 2) // no sticks, return for now?
 			{
-				joystick = -1;
+				joystick = 4294967295;
 			}
 			else if (axesCount == 2) // one stick! assumed to be left
 			{
-				float forwardAxis = rawAxes[STICK_LEFT_UP];
-				Util::valFromJoystickAxis(&forwardAxis);
-				controller.leftForward = forwardAxis;
-
-				float sideAxis = rawAxes[STICK_LEFT_SIDE];
-				Util::valFromJoystickAxis(&sideAxis);
-				controller.leftSide = sideAxis;
+				controller.leftForward = Util::valFromJoystickAxis(rawAxes[STICK_LEFT_UP]);
+				controller.leftSide = Util::valFromJoystickAxis(rawAxes[STICK_LEFT_SIDE]);
 
 			}
 			else if (axesCount >= 4) // two sticks or more
 			{
-				float forwardAxis = rawAxes[STICK_LEFT_UP];
-				Util::valFromJoystickAxis(&forwardAxis);
-				controller.rightForward = forwardAxis;
+				controller.rightForward = Util::valFromJoystickAxis(rawAxes[STICK_LEFT_UP]);
+				controller.rightSide = Util::valFromJoystickAxis(rawAxes[STICK_LEFT_SIDE]);
 
-				float rightAxis = rawAxes[STICK_LEFT_SIDE];
-				Util::valFromJoystickAxis(&rightAxis);
-				controller.rightSide = rightAxis;
-
-				float forwardAxis = rawAxes[STICK_LEFT_UP];
-				Util::valFromJoystickAxis(&forwardAxis);
-				controller.leftForward = forwardAxis;
-
-				float sideAxis = rawAxes[STICK_LEFT_SIDE];
-				Util::valFromJoystickAxis(&sideAxis);
-				controller.leftSide = sideAxis;
-
+				controller.leftForward = Util::valFromJoystickAxis(rawAxes[STICK_LEFT_UP]);
+				controller.leftSide = Util::valFromJoystickAxis(rawAxes[STICK_LEFT_SIDE]);
 			}
 
 
@@ -321,7 +300,7 @@ void Outrospection::updateInput()
 
 			if (buttonCount < 4) // not enough buttons
 			{
-				joystick = -1;
+				joystick = 4294967295;
 			}
 			else
 			{
@@ -333,32 +312,34 @@ void Outrospection::updateInput()
 		}
 	}
 	
-	if (joystick == -1) // no *usable* controllers are present
+	if (joystick == 4294967295) // no *usable* controllers are present
 	{
-
+		float leftForwardInput = 0.0f;
 		if (glfwGetKey(gameWindow, gameSettings.keyBindForward.keyCode) == GLFW_PRESS)
 		{
-			controller.leftForward = 1.0;
+			leftForwardInput += 1.0;
 		}
 		if (glfwGetKey(gameWindow, gameSettings.keyBindBackward.keyCode) == GLFW_PRESS)
 		{
-			controller.leftForward = -1.0;
+			leftForwardInput -= -1.0;
 		}
+		controller.leftForward = leftForwardInput;
+
+
+		float leftSideInput = 0.0f;
 		if (glfwGetKey(gameWindow, gameSettings.keyBindRight.keyCode) == GLFW_PRESS)
 		{
-			controller.leftSide = 1.0;
+			leftSideInput += 1.0;
 		}
 		if (glfwGetKey(gameWindow, gameSettings.keyBindLeft.keyCode) == GLFW_PRESS)
 		{
-			controller.leftSide = -1.0;
+			leftSideInput += -1.0;
 		}
-		if (glfwGetKey(gameWindow, gameSettings.keyBindJump.keyCode) == GLFW_PRESS)
-		{
-			controller.jump = true;
-		}
-		if (glfwGetKey(gameWindow, gameSettings.keyBindExit.keyCode) == GLFW_PRESS)
-		{
-			controller.pause = true;
-		}
+		controller.leftSide = leftSideInput;
+
+
+		controller.jump = glfwGetKey(gameWindow, gameSettings.keyBindJump.keyCode) == GLFW_PRESS;
+		//controller.talk = glfwGetKey(gameWindow, gameSettings.k.keyCode) == GLFW_PRESS;
+		controller.pause = glfwGetKey(gameWindow, gameSettings.keyBindExit.keyCode) == GLFW_PRESS;
 	}
 }

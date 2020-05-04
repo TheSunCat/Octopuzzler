@@ -7,10 +7,8 @@ void PlayerController::acceleratePlayer(Player* playerIn, const Controller& cont
 {
 	glm::vec3 inputMoveVector(0.0f);
 
-	if (abs(controller.forward) > 0.1)
-		inputMoveVector += Util::vecFromYaw(playerIn->playerRotation.y) * controller.forward;
-	if (abs(controller.right) > 0.1)
-		inputMoveVector += Util::vecFromYaw(playerIn->playerRotation.y + 90) * controller.right;
+	inputMoveVector += Util::vecFromYaw(playerIn->playerRotation.y) * controller.leftForward;
+	inputMoveVector += Util::vecFromYaw(playerIn->playerRotation.y + 90) * controller.leftSide;
 
 	if (!Util::isZeroV3(inputMoveVector)) { // avoid NaN normalization if no input is given
 		inputMoveVector = glm::normalize(inputMoveVector);
@@ -229,5 +227,5 @@ void PlayerController::movePlayer(Player* playerIn, float deltaTime)
 
 	playerIn->move(playerVelocity * deltaTime);
 
-	std::cout << Util::vecToStr(playerIn->playerPosition) << ", " << Util::vecToStr(playerIn->playerCharacter.charPosition) << std::endl;
+	//std::cout << Util::vecToStr(playerIn->playerPosition) << ", " << Util::vecToStr(playerIn->playerCharacter.charPosition) << std::endl;
 }
