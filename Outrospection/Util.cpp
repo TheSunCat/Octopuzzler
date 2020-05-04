@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "External/stb_image.h"
+#include <Constants.h>
 
 bool Util::glError(bool print)
 {
@@ -170,4 +171,15 @@ glm::vec3 Util::projectV3(const glm::vec3 a, const glm::vec3 b)
 {
 	glm::vec3 bn = b / glm::length(b);
 	return bn * glm::dot(a, bn);
+}
+
+float Util::valFromJoystickAxis(float axis)
+{
+	float absxis = std::fabs(axis);
+	if (absxis < STICK_DEADZONE)
+		axis = 0.0f;
+	else if (absxis > STICK_LIMITZONE)
+		axis = axis < 0 ? -1.0f : 1.0f;
+
+	return axis;
 }

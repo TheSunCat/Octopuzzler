@@ -2,9 +2,10 @@
 
 #include <glm/glm.hpp>
 
-#include "Player.h"
-#include "../Types.h"
-#include "../Controller.h"
+#include "Types.h"
+#include "Controller.h"
+
+#include "Core/Player.h"
 
 class PlayerController {
 public:

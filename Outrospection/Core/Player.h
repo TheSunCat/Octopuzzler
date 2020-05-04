@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-#include "Character.h"
+#include "Core/Character.h"
 
 class Player {
 public:

@@ -3,7 +3,7 @@
 #include <glm\ext\matrix_clip_space.hpp>
 #include <glm\ext\matrix_transform.hpp>
 
-#include "../Camera.h"
+#include "Core/Camera.h"
 
 Shader::Shader(const GLchar* vertexName, const GLchar* fragmentName) {
 	std::string vName(vertexName);

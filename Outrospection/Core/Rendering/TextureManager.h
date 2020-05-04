@@ -4,10 +4,10 @@
 
 #include "Resource.h"
 
-#include "SimpleTexture.h"
-#include "AnimatedTexture.h"
+#include "Core/Rendering/SimpleTexture.h"
+#include "Core/Rendering/AnimatedTexture.h"
 
-#include "../../Types.h"
+#include "Types.h"
 
 class TextureManager {
 private:

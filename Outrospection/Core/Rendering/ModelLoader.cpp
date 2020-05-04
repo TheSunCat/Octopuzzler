@@ -2,9 +2,10 @@
 
 #include <fstream>
 
-#include "TextureManager.h"
-#include "../../Util.h"
-#include "../../Source.h"
+#include "Util.h"
+#include "Source.h"
+
+#include "Core/Rendering/TextureManager.h"
 
 namespace algorithm
 {

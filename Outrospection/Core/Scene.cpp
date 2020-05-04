@@ -1,8 +1,8 @@
 #include "Scene.h"
 
-#include "../Util.h"
-#include "../External/stb_image.h"
-#include "../Constants.h"
+#include "Util.h"
+#include "External/stb_image.h"
+#include "Constants.h"
 
 Scene::Scene(std::string _name) {
 	name = _name;

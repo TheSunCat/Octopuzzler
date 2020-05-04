@@ -4,8 +4,8 @@
 
 #include <glm/glm.hpp>
 
-#include "Rendering/Shader.h"
-#include "Rendering/Mesh.h"
+#include "Core/Rendering/Shader.h"
+#include "Core/Rendering/Mesh.h"
 
 class ObjectGeneral {
 public:

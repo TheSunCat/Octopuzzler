@@ -5,7 +5,7 @@
 
 #include <glad/glad.h>
 
-#include "SimpleTexture.h"
+#include "Core/Rendering/SimpleTexture.h"
 
 class AnimatedTexture : public SimpleTexture
 {

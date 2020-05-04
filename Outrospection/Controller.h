@@ -4,8 +4,13 @@ class Controller
 public:
 	bool jump;
 	bool talk;
-	bool exit;
+	bool pause;
 
-	float forward;
-	float right;
+	// L stick
+	float leftForward;
+	float leftSide;
+
+	// R stick
+	float rightForward;
+	float rightSide;
 };

@@ -1,6 +1,10 @@
 #pragma once
+
+#include <GLAD/glad.h>
+#include <glfw/glfw3.h>
+
 #include "KeyBinding.h"
-#include <GLFW\glfw3.h>
+
 class GameSettings
 {
 public:
