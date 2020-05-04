@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Shader.h"
-#include "SimpleTexture.h"
+#include "Core/Rendering/Shader.h"
+#include "Core/Rendering/SimpleTexture.h"
 
 class Billboard {
 public:

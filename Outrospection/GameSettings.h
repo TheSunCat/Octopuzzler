@@ -1,6 +1,9 @@
 #pragma once
-#include "KeyBinding.h"
+
 #include <GLFW\glfw3.h>
+
+#include "KeyBinding.h"
+
 class GameSettings
 {
 public:

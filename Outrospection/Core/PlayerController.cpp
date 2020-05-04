@@ -1,7 +1,7 @@
 #include "PlayerController.h"
 
-#include "../Util.h"
-#include "../Constants.h"
+#include "Util.h"
+#include "Constants.h"
 
 void PlayerController::acceleratePlayer(Player* playerIn, const Controller& controller)
 {
