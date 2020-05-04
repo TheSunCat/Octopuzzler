@@ -10,11 +10,11 @@ void PlayerController::acceleratePlayer(Player* playerIn, const Controller& cont
 	inputMoveVector += Util::vecFromYaw(playerIn->playerRotation.y) * controller.leftForward;
 	inputMoveVector += Util::vecFromYaw(playerIn->playerRotation.y + 90) * controller.leftSide;
 
-	if (!Util::isZeroV3(inputMoveVector)) { // avoid NaN normalization if no input is given
+	if (Util::length2V3(inputMoveVector) > 1.0) { // normalize if we would move too fast
 		inputMoveVector = glm::normalize(inputMoveVector);
-
-		playerVelocity += inputMoveVector;
 	}
+
+	playerVelocity += inputMoveVector;
 
 	if (controller.jump) {
 		if (grounded) {

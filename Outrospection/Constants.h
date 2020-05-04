@@ -15,7 +15,7 @@
 // joystick value under this means 0
 #define STICK_DEADZONE 0.25
 // joystick value over this means 1.0
-#define STICK_LIMITZONE 0.75
+#define STICK_LIMITZONE 0.95
 
 // axes IDs
 #define STICK_LEFT_SIDE 0
@@ -42,3 +42,4 @@
 
 
 #define DEBUG true
+#define VERBOSE DEBUG && true

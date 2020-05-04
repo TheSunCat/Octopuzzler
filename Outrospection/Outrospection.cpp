@@ -246,9 +246,9 @@ void Outrospection::updateInput()
 		{
 			joystick = i;
 
-			if (DEBUG)
+			if (VERBOSE)
 				std::cout << "Joystick " << glfwGetJoystickName(joystick)
-					<< " detected with ID " << joystick << "!" << std::endl;
+					<< " detected with ID " << joystick << "! ";
 
 			break;
 		}
@@ -258,11 +258,14 @@ void Outrospection::updateInput()
 	{
 		if (glfwJoystickIsGamepad(joystick)) // easy!
 		{
+			if (VERBOSE)
+				std::cout << "It is a gamepad! Sweet! ";
+
 			GLFWgamepadstate gamepadState;
 			glfwGetGamepadState(joystick, &gamepadState);
 
-
-			controller.leftForward = Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_LEFT_Y]);
+			// make negative bc flipped!
+			controller.leftForward = -Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_LEFT_Y]);
 			controller.leftSide = Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_LEFT_X]);
 
 			controller.jump = gamepadState.buttons[GLFW_GAMEPAD_BUTTON_A];
@@ -271,6 +274,9 @@ void Outrospection::updateInput()
 		}
 		else // have to manually set everything :c
 		{
+			if (VERBOSE)
+				std::cout << "It is a non-mapped controller. Hrm. ";
+
 			int axesCount = -1;
 
 			const float* rawAxes = glfwGetJoystickAxes(joystick, &axesCount);
@@ -281,16 +287,16 @@ void Outrospection::updateInput()
 			}
 			else if (axesCount == 2) // one stick! assumed to be left
 			{
-				controller.leftForward = Util::valFromJoystickAxis(rawAxes[STICK_LEFT_UP]);
+				controller.leftForward = -Util::valFromJoystickAxis(rawAxes[STICK_LEFT_UP]);
 				controller.leftSide = Util::valFromJoystickAxis(rawAxes[STICK_LEFT_SIDE]);
 
 			}
 			else if (axesCount >= 4) // two sticks or more
 			{
-				controller.rightForward = Util::valFromJoystickAxis(rawAxes[STICK_LEFT_UP]);
+				controller.rightForward = -Util::valFromJoystickAxis(rawAxes[STICK_LEFT_UP]);
 				controller.rightSide = Util::valFromJoystickAxis(rawAxes[STICK_LEFT_SIDE]);
 
-				controller.leftForward = Util::valFromJoystickAxis(rawAxes[STICK_LEFT_UP]);
+				controller.leftForward = -Util::valFromJoystickAxis(rawAxes[STICK_LEFT_UP]);
 				controller.leftSide = Util::valFromJoystickAxis(rawAxes[STICK_LEFT_SIDE]);
 			}
 
@@ -314,6 +320,9 @@ void Outrospection::updateInput()
 	
 	if (joystick == 4294967295) // no *usable* controllers are present
 	{
+		if (VERBOSE)
+			std::cout << "No usable controller is present. ";
+
 		float leftForwardInput = 0.0f;
 		if (glfwGetKey(gameWindow, gameSettings.keyBindForward.keyCode) == GLFW_PRESS)
 		{
@@ -321,7 +330,7 @@ void Outrospection::updateInput()
 		}
 		if (glfwGetKey(gameWindow, gameSettings.keyBindBackward.keyCode) == GLFW_PRESS)
 		{
-			leftForwardInput -= -1.0;
+			leftForwardInput += -1.0;
 		}
 		controller.leftForward = leftForwardInput;
 
@@ -342,4 +351,7 @@ void Outrospection::updateInput()
 		//controller.talk = glfwGetKey(gameWindow, gameSettings.k.keyCode) == GLFW_PRESS;
 		controller.pause = glfwGetKey(gameWindow, gameSettings.keyBindExit.keyCode) == GLFW_PRESS;
 	}
+
+	if (VERBOSE)
+		std::cout << std::endl;
 }
