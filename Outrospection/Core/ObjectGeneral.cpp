@@ -1,9 +1,9 @@
 #include "ObjectGeneral.h"
 
-#include "Rendering/ModelLoader.h"
-#include "Rendering/TextureManager.h"
+#include "Source.h"
 
-#include "../Source.h"
+#include "Core/Rendering/ModelLoader.h"
+#include "Core/Rendering/TextureManager.h"
 
 ObjectGeneral::ObjectGeneral(std::string _name, glm::vec3 _pos, glm::vec3 _rot, glm::vec3 _scale)
 {

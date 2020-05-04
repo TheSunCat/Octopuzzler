@@ -1,8 +1,8 @@
 #include "Character.h"
 
-#include "Rendering/Resource.h"
+#include "Source.h"
 
-#include "../Source.h"
+#include "Core/Rendering/Resource.h"
 
 Character::Character(const std::string& _charId, const glm::vec3& _pos) : charPosition(_pos)
 {

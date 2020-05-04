@@ -44,7 +44,7 @@ void Outrospection::runGameLoop() {
 	lastFrame = currentFrame;
 	updateInput();
 	// exit game on next loop iteration
-	if (controller.exit)
+	if (controller.pause)
 		running = false;
 
 	// player always "faces" forward, so W goes away from camera
@@ -216,22 +216,15 @@ void Outrospection::key_callback(GLFWwindow* window, int key, int scancode, int 
 	const GameSettings& gameSettings = getOutrospection()->gameSettings;
 	Controller& controller = getOutrospection()->controller;
 
-	if (action == GLFW_PRESS || action == GLFW_REPEAT) // press or repeat
-	{
-		if (key == gameSettings.keyBindExit.keyCode)
-		{
-			controller.exit = true;
-		}
-	}
-	else // GLFW_RELEASE
+	if (GLFW_RELEASE)
 	{
 		if (key == gameSettings.keyBindForward.keyCode || key == gameSettings.keyBindBackward.keyCode)
 		{
-			controller.forward = 0.0;
+			controller.leftForward = 0.0;
 		}
 		if (key == gameSettings.keyBindRight.keyCode || key == gameSettings.keyBindLeft.keyCode)
 		{
-			controller.right = 0.0;
+			controller.leftSide = 0.0;
 		}
 		if (key == gameSettings.keyBindJump.keyCode)
 		{
@@ -239,31 +232,133 @@ void Outrospection::key_callback(GLFWwindow* window, int key, int scancode, int 
 		}
 		if (key == gameSettings.keyBindExit.keyCode)
 		{
-			controller.exit = false;
+			controller.pause = false;
 		}
 	}
 }
 
 void Outrospection::updateInput()
 {
-	if (glfwGetKey(gameWindow, gameSettings.keyBindForward.keyCode) == GLFW_PRESS)
+	unsigned int joystick = -1;
+	for (int i = GLFW_JOYSTICK_1; i < GLFW_JOYSTICK_LAST; i++)
 	{
-		controller.forward = 1.0;
+		if (glfwJoystickPresent(i))
+		{
+			joystick = i;
+
+			if (DEBUG)
+				std::cout << "Joystick " << glfwGetJoystickName(joystick)
+					<< " detected with ID " << joystick << "!" << std::endl;
+
+			break;
+		}
 	}
-	if (glfwGetKey(gameWindow, gameSettings.keyBindBackward.keyCode) == GLFW_PRESS)
+
+	if (joystick != -1) // there is a controller
 	{
-		controller.forward = -1.0;
+		if (glfwJoystickIsGamepad(joystick)) // easy!
+		{
+			GLFWgamepadstate gamepadState;
+			glfwGetGamepadState(joystick, &gamepadState);
+
+
+			float leftForwardAxis = gamepadState.axes[GLFW_GAMEPAD_AXIS_LEFT_Y];
+			Util::valFromJoystickAxis(&leftForwardAxis); // TODO make this not a pointer func lol
+			controller.leftForward = leftForwardAxis;
+
+			float leftSideAxis = gamepadState.axes[GLFW_GAMEPAD_AXIS_LEFT_X];
+			Util::valFromJoystickAxis(&leftSideAxis);
+			controller.leftSide = leftSideAxis;
+
+			controller.jump = gamepadState.buttons[GLFW_GAMEPAD_BUTTON_A];
+			controller.talk = gamepadState.buttons[GLFW_GAMEPAD_BUTTON_X];
+			controller.pause = gamepadState.buttons[GLFW_GAMEPAD_BUTTON_START];
+		}
+		else // have to manually set everything :c
+		{
+			int axesCount = -1;
+
+			const float* rawAxes = glfwGetJoystickAxes(joystick, &axesCount);
+
+			if (axesCount < 2) // no sticks, return for now?
+			{
+				joystick = -1;
+			}
+			else if (axesCount == 2) // one stick! assumed to be left
+			{
+				float forwardAxis = rawAxes[STICK_LEFT_UP];
+				Util::valFromJoystickAxis(&forwardAxis);
+				controller.leftForward = forwardAxis;
+
+				float sideAxis = rawAxes[STICK_LEFT_SIDE];
+				Util::valFromJoystickAxis(&sideAxis);
+				controller.leftSide = sideAxis;
+
+			}
+			else if (axesCount >= 4) // two sticks or more
+			{
+				float forwardAxis = rawAxes[STICK_LEFT_UP];
+				Util::valFromJoystickAxis(&forwardAxis);
+				controller.rightForward = forwardAxis;
+
+				float rightAxis = rawAxes[STICK_LEFT_SIDE];
+				Util::valFromJoystickAxis(&rightAxis);
+				controller.rightSide = rightAxis;
+
+				float forwardAxis = rawAxes[STICK_LEFT_UP];
+				Util::valFromJoystickAxis(&forwardAxis);
+				controller.leftForward = forwardAxis;
+
+				float sideAxis = rawAxes[STICK_LEFT_SIDE];
+				Util::valFromJoystickAxis(&sideAxis);
+				controller.leftSide = sideAxis;
+
+			}
+
+
+			int buttonCount = -1;
+			const unsigned char* rawButtons = glfwGetJoystickButtons(joystick, &buttonCount);
+
+			if (buttonCount < 4) // not enough buttons
+			{
+				joystick = -1;
+			}
+			else
+			{
+				controller.jump = rawButtons[BUTTON_A];
+				controller.talk = rawButtons[BUTTON_X];
+				controller.pause = rawButtons[BUTTON_START];
+				// TODO add more controls lol
+			}
+		}
 	}
-	if (glfwGetKey(gameWindow, gameSettings.keyBindRight.keyCode) == GLFW_PRESS)
+	
+	if (joystick == -1) // no *usable* controllers are present
 	{
-		controller.right = 1.0;
-	}
-	if (glfwGetKey(gameWindow, gameSettings.keyBindLeft.keyCode) == GLFW_PRESS)
-	{
-		controller.right = -1.0;
-	}
-	if (glfwGetKey(gameWindow, gameSettings.keyBindJump.keyCode) == GLFW_PRESS)
-	{
-		controller.jump = true;
+
+		if (glfwGetKey(gameWindow, gameSettings.keyBindForward.keyCode) == GLFW_PRESS)
+		{
+			controller.leftForward = 1.0;
+		}
+		if (glfwGetKey(gameWindow, gameSettings.keyBindBackward.keyCode) == GLFW_PRESS)
+		{
+			controller.leftForward = -1.0;
+		}
+		if (glfwGetKey(gameWindow, gameSettings.keyBindRight.keyCode) == GLFW_PRESS)
+		{
+			controller.leftSide = 1.0;
+		}
+		if (glfwGetKey(gameWindow, gameSettings.keyBindLeft.keyCode) == GLFW_PRESS)
+		{
+			controller.leftSide = -1.0;
+		}
+		if (glfwGetKey(gameWindow, gameSettings.keyBindJump.keyCode) == GLFW_PRESS)
+		{
+			controller.jump = true;
+		}
+		if (glfwGetKey(gameWindow, gameSettings.keyBindExit.keyCode) == GLFW_PRESS)
+		{
+			controller.pause = true;
+		}
 	}
 }

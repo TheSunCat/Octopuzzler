@@ -6,7 +6,7 @@
 #include <GLFW\glfw3.h>
 #include <glm/glm.hpp>
 
-#include "../../Constants.h"
+#include "Constants.h"
 
 class OpenGL {
 public:

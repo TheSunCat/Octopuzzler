@@ -1,6 +1,8 @@
 #include "Billboard.h"
+
 #include <glm\ext\matrix_transform.hpp>
-#include "../../util.h"
+
+#include "Util.h"
 
 Billboard::Billboard(const SimpleTexture& _tex) : texture(_tex)
 {

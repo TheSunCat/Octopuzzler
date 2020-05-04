@@ -3,10 +3,11 @@
 #include <string>
 #include <vector>
 
+#include <deque>
+
 #include <glm/glm.hpp>
 
-#include "../../Types.h"
-#include <deque>
+#include "Types.h"
 #include "Mesh.h"
 
 struct Material
