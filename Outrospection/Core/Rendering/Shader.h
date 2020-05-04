@@ -1,5 +1,6 @@
 #pragma once
 
+#include <unordered_map>
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -7,8 +8,7 @@
 #include <glad/glad.h> // include glad to get all the required OpenGL headers
 #include <glm/glm.hpp>
 
-#include "../Camera.h"
-#include <unordered_map>
+#include "Core/Camera.h"
 
 class Shader {
 public:

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ObjectGeneral.h"
-#include "Character.h"
+#include "Core/ObjectGeneral.h"
+#include "Core/Character.h"
 
 class Scene {
 public:

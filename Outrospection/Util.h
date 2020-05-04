@@ -15,7 +15,7 @@ namespace Util
 	template <typename T>
 	void push_all(std::vector<T>& input, std::vector<T>& add) {
 		for (const T& o : add)
-			input.push_back(o);
+			input.emplace_back(o);
 	}
 
 	glm::vec3 vecFromYaw(float yawDeg);
@@ -41,4 +41,7 @@ namespace Util
 	float angleBetweenV3(const glm::vec3 a, const glm::vec3 b);
 
 	glm::vec3 projectV3(const glm::vec3 a, const glm::vec3 b);
+
+	// return input depending on constant deadzones and limitzones
+	float valFromJoystickAxis(float axis);
 }

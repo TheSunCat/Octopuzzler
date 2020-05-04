@@ -1,13 +1,15 @@
 #pragma once
 
-#include "Constants.h"
-#include "Core/Rendering/OpenGL.h"
-#include "Core/Scene.h"
-#include "Core/Player.h"
-#include "Core/PlayerController.h"
-#include "Core/Rendering/TextureManager.h"
 #include "GameSettings.h"
 #include "Controller.h"
+#include "Constants.h"
+
+#include "Core/Rendering/TextureManager.h"
+#include "Core/Rendering/OpenGL.h"
+
+#include "Core/PlayerController.h"
+#include "Core/Scene.h"
+#include "Core/Player.h"
 
 class Outrospection {
 public:
