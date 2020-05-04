@@ -42,6 +42,6 @@ namespace Util
 
 	glm::vec3 projectV3(const glm::vec3 a, const glm::vec3 b);
 
-	// modify input depending on constant deadzones and limitzones
-	void valFromJoystickAxis(float* axis);
+	// return input depending on constant deadzones and limitzones
+	float valFromJoystickAxis(float axis);
 }
