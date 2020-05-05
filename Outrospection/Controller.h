@@ -2,6 +2,10 @@
 class Controller
 {
 public:
+	bool isGamepad;
+
+	// INPUT
+
 	bool jump;
 	bool talk;
 	bool pause;

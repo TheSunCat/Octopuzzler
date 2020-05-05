@@ -10,14 +10,16 @@ void PlayerController::acceleratePlayer(Player* playerIn, const Controller& cont
 	inputMoveVector += Util::vecFromYaw(playerIn->playerRotation.y) * controller.leftForward;
 	inputMoveVector += Util::vecFromYaw(playerIn->playerRotation.y + 90) * controller.leftSide;
 
-	if (!Util::isZeroV3(inputMoveVector)) { // avoid NaN normalization if no input is given
+	if (Util::length2V3(inputMoveVector) > 1.0) { // normalize if we would move too fast
 		inputMoveVector = glm::normalize(inputMoveVector);
-
-		playerVelocity += inputMoveVector;
 	}
 
-	if (controller.jump) {
-		if (grounded) {
+	playerVelocity += inputMoveVector;
+
+	if (controller.jump)
+	{
+		if (grounded || DEBUG && controller.talk) // cheat code hold TALK to moonjump
+		{
 			jumping = true;
 			playerVelocity.y = 5;
 		}
@@ -35,14 +37,6 @@ void PlayerController::acceleratePlayer(Player* playerIn, const Controller& cont
 		playerVelocity.x = 0;
 	if (abs(playerVelocity.z) < 0.001)
 		playerVelocity.z = 0;
-
-	// DEBUG move up and down
-	if (DEBUG) {
-		//if (keyAttack) {
-		//	playerIn->playerPosition = glm::vec3(0, 0, 0);
-		//	playerVelocity = glm::vec3(0.0f);
-		//}
-	}
 }
 
 void PlayerController::collidePlayer(Player* playerIn, const std::vector<Triangle>& collisionData, float deltaTime)
