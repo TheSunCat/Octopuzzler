@@ -277,6 +277,10 @@ void Outrospection::updateInput()
 			controller.leftForward = -Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_LEFT_Y]);
 			controller.leftSide = Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_LEFT_X]);
 
+			controller.rightForward = -Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y]);
+			controller.rightSide = Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_RIGHT_X]);
+
+
 			controller.jump = gamepadState.buttons[GLFW_GAMEPAD_BUTTON_A];
 			controller.talk = gamepadState.buttons[GLFW_GAMEPAD_BUTTON_X];
 			controller.pause = gamepadState.buttons[GLFW_GAMEPAD_BUTTON_START];
@@ -294,7 +298,7 @@ void Outrospection::updateInput()
 			{
 				joystick = 4294967295;
 			}
-			else if (axesCount == 2) // one stick! assumed to be left
+			else if (axesCount == 2) // one stick! assumed to be left so we can move around
 			{
 				controller.leftForward = -Util::valFromJoystickAxis(rawAxes[STICK_LEFT_UP]);
 				controller.leftSide = Util::valFromJoystickAxis(rawAxes[STICK_LEFT_SIDE]);
