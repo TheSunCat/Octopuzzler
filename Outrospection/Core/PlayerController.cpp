@@ -16,8 +16,10 @@ void PlayerController::acceleratePlayer(Player* playerIn, const Controller& cont
 
 	playerVelocity += inputMoveVector;
 
-	if (controller.jump) {
-		if (grounded) {
+	if (controller.jump)
+	{
+		if (grounded || DEBUG && controller.talk) // cheat code hold TALK to moonjump
+		{
 			jumping = true;
 			playerVelocity.y = 5;
 		}
@@ -35,14 +37,6 @@ void PlayerController::acceleratePlayer(Player* playerIn, const Controller& cont
 		playerVelocity.x = 0;
 	if (abs(playerVelocity.z) < 0.001)
 		playerVelocity.z = 0;
-
-	// DEBUG move up and down
-	if (DEBUG) {
-		//if (keyAttack) {
-		//	playerIn->playerPosition = glm::vec3(0, 0, 0);
-		//	playerVelocity = glm::vec3(0.0f);
-		//}
-	}
 }
 
 void PlayerController::collidePlayer(Player* playerIn, const std::vector<Triangle>& collisionData, float deltaTime)
