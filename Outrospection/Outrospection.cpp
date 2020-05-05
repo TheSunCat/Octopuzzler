@@ -133,7 +133,7 @@ void Outrospection::updateCamera()
 	if (controller.isGamepad)
 	{
 		// TODO maybe smooth start/stop camera movement using time since last started moving
-		camera.rotateCameraBy(controller.rightSide, controller.rightForward); // TODO test this
+		camera.rotateCameraBy(controller.rightSide * 5, controller.rightForward * 5); // TODO test this
 	}
 
 	// Calculate camera position w/ collision
