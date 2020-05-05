@@ -93,13 +93,13 @@ Shader::Shader(const GLchar* vertexName, const GLchar* fragmentName) {
 
 void Shader::doProjView(Camera& _camera, int _width, int _height, bool doPos)
 {
-	glm::mat4 projection = glm::perspective(glm::radians(_camera.Zoom), (float)_width / (float)_height, 0.1f, 100.0f);
+	glm::mat4 projection = glm::perspective(glm::radians(_camera.zoom), (float)_width / (float)_height, 0.1f, 100.0f);
 
 	glm::mat4 view = glm::mat4();
 	if (doPos)
-		view = _camera.GetViewMatrix();
+		view = _camera.getViewMatrix();
 	else
-		view = glm::lookAt(glm::vec3(0.0), _camera.Front, _camera.Up);
+		view = glm::lookAt(glm::vec3(0.0), _camera.front, _camera.Up);
 
 	setMat4("projection", projection);
 	setMat4("view", view);

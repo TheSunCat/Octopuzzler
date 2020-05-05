@@ -3,18 +3,18 @@
 #include <glad/glad.h>
 #include <glm/gtc/matrix_transform.hpp>
 
-Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch)
-	: front(glm::vec3(0.0f, 0.0f, -1.0f)), movementSpeed(SPEED), mouseSensitivity(SENSITIVITY), zoom(ZOOM)
+Camera::Camera(glm::vec3 _pos, glm::vec3 _up, float _yaw, float _pitch)
+	: front(glm::vec3(0.0f, 0.0f, -1.0f)), rotationSpeed(ROT_SPEED), zoom(ZOOM)
 {
-	position = position;
-	worldUp = up;
-	yaw = yaw;
-	pitch = pitch;
+	position = _pos;
+	worldUp = _up;
+	yaw = _yaw;
+	pitch = _pitch;
 	updateCameraVectors();
 }
 
 Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float _yaw, float _pitch)
-	: front(glm::vec3(0.0f, 0.0f, -1.0f)), movementSpeed(SPEED), mouseSensitivity(SENSITIVITY), zoom(ZOOM)
+	: front(glm::vec3(0.0f, 0.0f, -1.0f)), rotationSpeed(ROT_SPEED), zoom(ZOOM)
 {
 	position = glm::vec3(posX, posY, posZ);
 	worldUp = glm::vec3(upX, upY, upZ);
@@ -25,13 +25,16 @@ Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float u
 
 glm::mat4 Camera::getViewMatrix()
 {
-	return glm::lookAt(position, position + front, up);
+	return glm::lookAt(position, position + front, Up);
 }
 
-void Camera::processMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch)
+void Camera::rotateCameraBy(float xoffset, float yoffset, GLboolean applyCameraSpeed, GLboolean constrainPitch)
 {
-	xoffset *= mouseSensitivity;
-	yoffset *= mouseSensitivity;
+	if (applyCameraSpeed)
+	{
+		xoffset *= rotationSpeed;
+		yoffset *= rotationSpeed;
+	}
 
 	yaw += xoffset;
 	pitch += yoffset;
@@ -49,7 +52,7 @@ void Camera::processMouseMovement(float xoffset, float yoffset, GLboolean constr
 	updateCameraVectors();
 }
 
-void Camera::processMouseScroll(float yoffset)
+void Camera::zoomCameraBy(float yoffset)
 {
 	if (zoom >= 1.0f && zoom <= 45.0f)
 		zoom -= yoffset;
@@ -62,12 +65,12 @@ void Camera::processMouseScroll(float yoffset)
 void Camera::updateCameraVectors()
 {
 	// Calculate the new Front vector
-	glm::vec3 front;
-	front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-	front.y = sin(glm::radians(pitch));
-	front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-	front = glm::normalize(front);
+	glm::vec3 _front;
+	_front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+	_front.y = sin(glm::radians(pitch));
+	_front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+	front = glm::normalize(_front);
 	// Also re-calculate the Right and Up vector
 	right = glm::normalize(glm::cross(front, worldUp));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
-	up = glm::normalize(glm::cross(right, front));
+	Up = glm::normalize(glm::cross(right, front));
 }
