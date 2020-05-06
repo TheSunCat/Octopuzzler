@@ -18,7 +18,7 @@ namespace Util
 			input.emplace_back(o);
 	}
 
-	glm::vec3 vecFromYaw(float yawDeg);
+	glm::vec3 rotToVec3(float yaw, float pitch = 0);
 
 	std::string vecToStr(const glm::vec3& vec);
 

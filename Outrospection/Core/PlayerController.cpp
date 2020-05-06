@@ -7,8 +7,8 @@ void PlayerController::acceleratePlayer(Player* playerIn, const Controller& cont
 {
 	glm::vec3 inputMoveVector(0.0f);
 
-	inputMoveVector += Util::vecFromYaw(playerIn->playerRotation.y) * controller.leftForward;
-	inputMoveVector += Util::vecFromYaw(playerIn->playerRotation.y + 90) * controller.leftSide;
+	inputMoveVector += Util::rotToVec3(playerIn->playerRotation.y) * controller.leftForward;
+	inputMoveVector += Util::rotToVec3(playerIn->playerRotation.y + 90) * controller.leftSide;
 
 	if (Util::length2V3(inputMoveVector) > 1.0) { // normalize if we would move too fast
 		inputMoveVector = glm::normalize(inputMoveVector);

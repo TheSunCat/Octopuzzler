@@ -99,7 +99,7 @@ void Shader::doProjView(Camera& _camera, int _width, int _height, bool doPos)
 	if (doPos)
 		view = _camera.getViewMatrix();
 	else
-		view = glm::lookAt(glm::vec3(0.0), _camera.front, _camera.Up);
+		view = glm::lookAt(glm::vec3(0.0), _camera.front, _camera.up);
 
 	setMat4("projection", projection);
 	setMat4("view", view);
