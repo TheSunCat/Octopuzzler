@@ -1,7 +1,12 @@
 #include "PlayerController.h"
 
+#include <iostream>
+
 #include "Util.h"
-#include "Constants.h"
+#include "Macros.h"
+#include "Controller.h"
+
+#include "Core/Player.h"
 
 void PlayerController::acceleratePlayer(Player* playerIn, const Controller& controller)
 {
@@ -77,9 +82,11 @@ void PlayerController::collidePlayer(Player* playerIn, const std::vector<Triangl
 
 	grounded = false; // assume player isn't on ground until we know
 
-	for (const Triangle& curTri : collisionData) {
+	for (const Triangle& curTri : collisionData)
+	{
 		RayHit groundHit = Util::rayCast(downRay, curTri, false);
-		if (!std::isnan(groundHit.dist) && groundHit.dist < 0.05) { // if the ground exists under player, and is close to player's feet (0.05)
+		if (!std::isnan(groundHit.dist) && groundHit.dist < 0.05) // if the ground exists under player, and is close to player's feet (0.05)
+		{
 			grounded = true;
 			break; // only need to check *if* we're on ground, only once
 		}
@@ -170,10 +177,12 @@ RayHit PlayerController::cast(Ray r, const std::vector<Triangle>& collisionData)
 {
 	RayHit closestHit = RayHit { INFINITY };
 
-	for (const Triangle& tri : collisionData) {
+	for (const Triangle& tri : collisionData)
+	{
 		RayHit hit = Util::rayCast(r, tri, false);
 
-		if (hit.dist < closestHit.dist) {
+		if (hit.dist < closestHit.dist)
+		{
 			closestHit = hit;
 			closestHit.tri = tri;
 		}

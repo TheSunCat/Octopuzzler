@@ -7,30 +7,19 @@
 #include "Core/Rendering/SimpleTexture.h"
 #include "Core/Rendering/Resource.h"
 
-enum class AnimType {
-	walk,
-	idle,
-	jump, 
-	fall
-};
-
-const std::unordered_map<AnimType, std::string> animTypeMap ({
-	{AnimType::idle, "idle"},
-	{AnimType::walk, "walk"},
-	{AnimType::jump, "jump"},
-	{AnimType::fall, "fall"}
-});
-
-//struct Animation {
-//	AnimType animType;
-//	unsigned int frameCount;
-//	unsigned int frameLength;
-//
-//	unsigned int frameTally;
-//
-//	unsigned int curFrame;
-//	std::vector<unsigned int> frames;
+//enum class AnimType {
+//	walk,
+//	idle,
+//	jump, 
+//	fall
 //};
+//
+//const std::unordered_map<AnimType, std::string> animTypeMap ({
+//	{AnimType::idle, "idle"},
+//	{AnimType::walk, "walk"},
+//	{AnimType::jump, "jump"},
+//	{AnimType::fall, "fall"}
+//});
 
 struct Vertex {
 	glm::vec3 pos;

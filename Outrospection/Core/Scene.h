@@ -3,6 +3,8 @@
 #include "Core/ObjectGeneral.h"
 #include "Core/Character.h"
 
+class Shader;
+
 class Scene {
 public:
 	// default ctor

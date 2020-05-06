@@ -10,7 +10,8 @@ void AnimatedTexture::step()
 {
 	frameTally++;
 
-	if (frameTally > frameLength) {
+	if (frameTally > frameLength)
+	{
 		frameTally = 0;
 		nextFrame();
 	}

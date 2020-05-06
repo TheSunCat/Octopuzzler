@@ -105,7 +105,8 @@ bool ModelLoader::loadFile(std::string filePath)
 	Material tempMaterial;
 
 	std::string curLine;
-	while (std::getline(file, curLine)) {
+	while (std::getline(file, curLine))
+	{
 		if (curLine == "" || curLine[0] == '#')
 			continue;
 

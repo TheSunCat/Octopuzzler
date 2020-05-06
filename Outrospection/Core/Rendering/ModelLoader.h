@@ -10,8 +10,9 @@
 #include "Types.h"
 #include "Mesh.h"
 
-struct Material
-{
+struct Vertex;
+
+struct Material {
 	Material()
 	{
 		name;
@@ -35,8 +36,6 @@ struct Material
 	// Specular Texture Map
 	std::string mapSpecular;
 };
-
-struct Vertex;
 
 class ModelLoader {
 public:

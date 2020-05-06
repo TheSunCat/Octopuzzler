@@ -4,6 +4,9 @@
 
 #include "Util.h"
 
+#include "Core/Rendering/SimpleTexture.h"
+#include "Core/Rendering/Shader.h"
+
 Billboard::Billboard(const SimpleTexture& _tex) : texture(_tex)
 {
 	float quadVertices[] = {  // tex coords = (x + 0.5, y)

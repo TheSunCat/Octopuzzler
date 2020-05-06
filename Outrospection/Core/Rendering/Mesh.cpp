@@ -1,7 +1,8 @@
 #include "Mesh.h"
 
-#include "Outrospection.h"
+#include <glad/glad.h>
 
+#include "Outrospection.h"
 #include "Core/Rendering/TextureManager.h"
 
 Mesh::Mesh(const std::string& _name, const std::vector<Vertex>& _vertices, const std::vector<unsigned int>& _indices) : Mesh(_name, _vertices, _indices, TextureManager::missingTexture)

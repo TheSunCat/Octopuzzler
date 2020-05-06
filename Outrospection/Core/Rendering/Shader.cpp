@@ -1,11 +1,17 @@
 #include "Shader.h"
 
+#include <fstream>
+#include <sstream>
+#include <iostream>
+
 #include <glm\ext\matrix_clip_space.hpp>
 #include <glm\ext\matrix_transform.hpp>
 
 #include "Core/Camera.h"
 
-Shader::Shader(const GLchar* vertexName, const GLchar* fragmentName) {
+// TODO make this class... nicer
+Shader::Shader(const GLchar* vertexName, const GLchar* fragmentName)
+{
 	std::string vName(vertexName);
 	std::string veName(("res/ShaderData/" + vName + ".vert"));
 	const GLchar* vertexPath = veName.c_str();
@@ -57,7 +63,8 @@ Shader::Shader(const GLchar* vertexName, const GLchar* fragmentName) {
 	glCompileShader(vertex);
 	// print compile errors if any
 	glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
-	if (!success) {
+	if (!success)
+	{
 		glGetShaderInfoLog(vertex, 512, NULL, infoLog);
 		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
 	};
@@ -68,7 +75,8 @@ Shader::Shader(const GLchar* vertexName, const GLchar* fragmentName) {
 	glCompileShader(fragment);
 	// print compile errors if any
 	glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
-	if (!success) {
+	if (!success)
+	{
 		glGetShaderInfoLog(vertex, 512, NULL, infoLog);
 		std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED (" << fragmentPath << "\n" << infoLog << std::endl;
 	};
@@ -81,7 +89,8 @@ Shader::Shader(const GLchar* vertexName, const GLchar* fragmentName) {
 	glLinkProgram(ID);
 	// print linking errors if any
 	glGetProgramiv(ID, GL_LINK_STATUS, &success);
-	if (!success) {
+	if (!success)
+	{
 		glGetProgramInfoLog(ID, 512, NULL, infoLog);
 		std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
 	}
