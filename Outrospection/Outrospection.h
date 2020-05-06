@@ -2,14 +2,16 @@
 
 #include "GameSettings.h"
 #include "Controller.h"
-#include "Constants.h"
+#include "Macros.h"
 
 #include "Core/Rendering/TextureManager.h"
 #include "Core/Rendering/OpenGL.h"
+#include "Core/Rendering/Shader.h"
 
 #include "Core/PlayerController.h"
 #include "Core/Scene.h"
 #include "Core/Player.h"
+#include "Core/Camera.h"
 
 class Outrospection {
 public:
@@ -34,6 +36,8 @@ public:
 	GameSettings gameSettings;
 
 	Controller controller;
+
+	DISALLOW_COPY_AND_ASSIGN(Outrospection)
 private:
 	void runGameLoop();
 

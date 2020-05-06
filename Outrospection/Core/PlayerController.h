@@ -3,9 +3,9 @@
 #include <glm/glm.hpp>
 
 #include "Types.h"
-#include "Controller.h"
 
-#include "Core/Player.h"
+class Controller;
+class Player;
 
 class PlayerController {
 public:
@@ -29,6 +29,4 @@ private:
 
 	bool grounded = false;
 	bool jumping = false;
-	
-	AnimType pastAnim;
 };

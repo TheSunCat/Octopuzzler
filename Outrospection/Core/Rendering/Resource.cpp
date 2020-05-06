@@ -1,6 +1,9 @@
 #include "Resource.h"
 
-Resource::Resource(std::string path, std::string name) {
+#include <sstream>
+
+Resource::Resource(std::string path, std::string name)
+{
 	resourcePath = path;
 	resourceName = name;
 }

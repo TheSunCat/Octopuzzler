@@ -3,11 +3,11 @@
 #include <unordered_map>
 
 #include "Resource.h"
+#include "Types.h"
+#include "Macros.h"
 
 #include "Core/Rendering/SimpleTexture.h"
 #include "Core/Rendering/AnimatedTexture.h"
-
-#include "Types.h"
 
 class TextureManager {
 private:
@@ -27,6 +27,8 @@ public:
 	void tickAllTextures();
 
 	static SimpleTexture missingTexture;
+
+	DISALLOW_COPY_AND_ASSIGN(TextureManager)
 private:
 	unsigned int textureFromFile(const std::string& filename);
 	void createTexture(const unsigned int& texId, const unsigned char* data, const GLenum& format, const unsigned int& width, const unsigned int& height);

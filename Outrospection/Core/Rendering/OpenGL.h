@@ -6,13 +6,14 @@
 #include <GLFW\glfw3.h>
 #include <glm/glm.hpp>
 
-#include "Constants.h"
+#include "Macros.h"
 
 class OpenGL {
 public:
 	OpenGL()
 	{
-		if (!glfwInit()) {
+		if (!glfwInit())
+		{
 			std::cout << "Failed to initialize GLFW" << std::endl;
 			glfwTerminate();
 			return;
@@ -29,7 +30,8 @@ public:
 
 		// Window init
 		gameWindow = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Outrospection", NULL, NULL);
-		if (gameWindow == NULL) {
+		if (gameWindow == NULL)
+		{
 			std::cout << "Failed to create GLFW window" << std::endl;
 			glfwTerminate();
 			return;
@@ -43,7 +45,8 @@ public:
 		glfwSetWindowUserPointer(gameWindow, reinterpret_cast<void*>(this));
 
 		// Load OGL function pointers
-		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+		{
 			std::cout << "Failed to initialize GLAD" << std::endl;
 			return;
 		}
@@ -104,4 +107,6 @@ public:
 	unsigned int framebuffer;
 	unsigned int textureColorbuffer;
 	GLFWwindow* gameWindow;
+
+	DISALLOW_COPY_AND_ASSIGN(OpenGL)
 };

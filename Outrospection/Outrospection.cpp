@@ -17,7 +17,8 @@ Outrospection::Outrospection() : opengl() // init ogl
 	player = Player(glm::vec3(0.0, 3.0, 0.0), glm::vec3(0.0f));
 }
 
-void Outrospection::run() {
+void Outrospection::run()
+{
 	running = true;
 
 	while (running)
@@ -38,7 +39,8 @@ void Outrospection::unpauseGame()
 	isGamePaused = false;
 }
 
-void Outrospection::runGameLoop() {
+void Outrospection::runGameLoop()
+{
 	float currentFrame = glfwGetTime();
 	deltaTime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
@@ -60,7 +62,8 @@ void Outrospection::runGameLoop() {
 	player.playerRotation.y = camera.yaw;
 
 
-	if (!isGamePaused) {
+	if (!isGamePaused)
+	{
 		// Run one "tick" of the game physics
 		runTick();
 	}
@@ -160,13 +163,15 @@ void Outrospection::createShaders()
 	simpleShader    = Shader("simple"   , "simple"   );
 }
 
-// Set proper Viewport size when window is resized
-void Outrospection::framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+// set proper viewport size when window is resized
+void Outrospection::framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
 	glViewport(0, 0, width, height);
 }
 
-void Outrospection::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
-	Outrospection* orig = (Outrospection*)glfwGetWindowUserPointer(window);
+void Outrospection::mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+	Outrospection* orig = getOutrospection();
 
 	if (orig->firstMouse) {
 		orig->lastX = xpos;
@@ -218,7 +223,7 @@ void Outrospection::key_callback(GLFWwindow* window, int key, int scancode, int 
 
 void Outrospection::updateInput()
 {
-	unsigned int joystick = 4294967295;
+	unsigned int joystick = -1; // "magic" value evaluates to 4294967295 bc unsigned
 	for (unsigned int i = GLFW_JOYSTICK_1; i < GLFW_JOYSTICK_LAST; i++)
 	{
 		if (glfwJoystickPresent(i) == GLFW_TRUE)
@@ -234,9 +239,10 @@ void Outrospection::updateInput()
 			break;
 		}
 	}
-
+								
 	if (joystick != 4294967295) // there is a controller
-	{
+	{							// 4294967295 is uint(-1)
+		
 		if (glfwJoystickIsGamepad(joystick)) // easy!
 		{
 			if (VERBOSE)
@@ -268,7 +274,7 @@ void Outrospection::updateInput()
 
 			if (axesCount < 2) // no sticks, return for now?
 			{
-				joystick = 4294967295;
+				joystick = -1;
 			}
 			else if (axesCount == 2) // one stick! assumed to be left so we can move around
 			{
@@ -289,9 +295,9 @@ void Outrospection::updateInput()
 			int buttonCount = -1;
 			const unsigned char* rawButtons = glfwGetJoystickButtons(joystick, &buttonCount);
 
-			if (buttonCount < 4) // not enough buttons
+			if (buttonCount < 4) // not enough buttons for us
 			{
-				joystick = 4294967295;
+				joystick = -1;
 			}
 			else
 			{

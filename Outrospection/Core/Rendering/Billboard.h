@@ -1,7 +1,10 @@
 #pragma once
 
-#include "Core/Rendering/Shader.h"
+#include <glm/glm.hpp>
+
 #include "Core/Rendering/SimpleTexture.h"
+
+class Shader;
 
 class Billboard {
 public:

@@ -4,6 +4,8 @@
 
 #include "Core/Character.h"
 
+class Shader;
+
 class Player {
 public:
 	Player() = default;

@@ -1,5 +1,15 @@
 #pragma once
 
+#define DISALLOW_COPY_AND_ASSIGN(TypeName) \
+  TypeName(const TypeName&);   \
+  void operator=(const TypeName&);
+
+#define DISALLOW_COPY(TypeName) \
+  TypeName(const TypeName&);
+
+#define DISALLOW_ASSIGN(TypeName) \
+  void operator=(const TypeName&);
+
 // subtract from vertical velocity
 #define GRAVITY -0.25
 

@@ -1,14 +1,11 @@
 #pragma once
 
 #include <unordered_map>
-#include <fstream>
-#include <sstream>
-#include <iostream>
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 
-#include "Core/Camera.h"
+class Camera;
 
 class Shader {
 public:

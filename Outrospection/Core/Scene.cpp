@@ -1,10 +1,17 @@
 #include "Scene.h"
 
-#include "Util.h"
-#include "External/stb_image.h"
-#include "Constants.h"
+#include <iostream>
+#include <fstream>
 
-Scene::Scene(std::string _name) {
+#include "External/stb_image.h"
+
+#include "Util.h"
+#include "Macros.h"
+
+#include "Core/Rendering/Shader.h"
+
+Scene::Scene(std::string _name)
+{
 	name = _name;
 
 	loadScene();
@@ -67,7 +74,8 @@ Scene::Scene(std::string _name) {
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 }
 
-void Scene::loadScene() {
+void Scene::loadScene()
+{
 	// parser code partly by MarkCangila
 
 	std::ifstream sceneFile("./res/StageData/" + name + "/" + name + ".lvl");
@@ -135,7 +143,8 @@ void Scene::loadScene() {
 
 				parseCollision(line);
 
-				if (DEBUG) {
+				if (DEBUG)
+				{
 					std::vector<Vertex> colVerticesVector;
 					for (const Triangle& t : collision) {
 						colVerticesVector.push_back(Vertex{ t.v0, t.n });
@@ -152,14 +161,15 @@ void Scene::loadScene() {
 					colMesh = Mesh("Collision model", colVerticesVector, indices);
 				}
 			}
-			}
-		}
-	}
+			} // end switch(currentState)
+		} // end line compare else
+	} // end for loop
 
 	sceneFile.close();
 }
 
-void Scene::draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShader, Shader& _simpleShader) {
+void Scene::draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShader, Shader& _simpleShader)
+{
 	// render sky
 	_skyShader.use();
 	glDepthMask(GL_FALSE);
@@ -173,14 +183,16 @@ void Scene::draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShade
 	_objShader.use();
 	
 
-	if (DEBUG) {
+	if (DEBUG)
+	{
 		glm::mat4 modelMat = glm::mat4(1.0f);
 		_objShader.setMat4("model", modelMat);
 
 		colMesh.draw(_objShader);
 	}
 	else {
-		for (const ObjectGeneral& object : objects) {
+		for (const ObjectGeneral& object : objects)
+		{
 			object.draw(_objShader);
 		}
 	}
@@ -188,14 +200,16 @@ void Scene::draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShade
 	Util::glError(true);
 
 	_billboardShader.use();
-	for (const Character& chara : characters) {
+	for (const Character& chara : characters)
+	{
 		chara.draw(_billboardShader);
 	}
 
 	Util::glError(true);
 }
 
-std::vector<std::string> Scene::parseLine(std::string line) { // TODO do not hardcode number of elements CHECK
+std::vector<std::string> Scene::parseLine(std::string line)
+{
 	size_t n = std::count(line.begin(), line.end(), '|');
 
 	if (n == 0)
@@ -211,7 +225,8 @@ std::vector<std::string> Scene::parseLine(std::string line) { // TODO do not har
 	ret.push_back(splittedLine[0]);
 
 	// Object properties
-	for (int i = 0; i < n; i++) {
+	for (int i = 0; i < n; i++)
+	{
 		std::vector<std::string> v;
 		Util::split(splittedLine[i + 1], ' ', v);
 
@@ -259,7 +274,8 @@ void Scene::parseCollision(std::string name)
 
 		std::vector<glm::vec3> vertices;
 
-		for (const std::string& s : verticesStr) {
+		for (const std::string& s : verticesStr)
+		{
 			std::vector<std::string> sStr;
 			Util::split(s, ' ', sStr);
 

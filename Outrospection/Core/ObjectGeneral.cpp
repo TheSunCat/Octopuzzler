@@ -1,9 +1,12 @@
 #include "ObjectGeneral.h"
 
+#include <glm/gtc/matrix_transform.hpp>
+
 #include "Source.h"
 
 #include "Core/Rendering/ModelLoader.h"
 #include "Core/Rendering/TextureManager.h"
+#include "Core/Rendering/Shader.h"
 
 ObjectGeneral::ObjectGeneral(std::string _name, glm::vec3 _pos, glm::vec3 _rot, glm::vec3 _scale)
 {
