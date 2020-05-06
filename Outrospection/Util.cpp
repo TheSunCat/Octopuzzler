@@ -37,15 +37,13 @@ void Util::split(const std::string& input, const char& delimiter, std::vector<st
 	out.push_back(std::string(start, next));
 }
 
-glm::vec3 Util::vecFromYaw(float yawDeg)
+glm::vec3 Util::rotToVec3(float yaw, float pitch)
 {
-	glm::vec3 front;
-	front.x = cos(glm::radians(yawDeg));
-	front.y = 0;
-	front.z = sin(glm::radians(yawDeg));
-	front = glm::normalize(front);
-
-	return front;
+	glm::vec3 ret;
+	ret.x = cos(glm::radians(yaw)) * (pitch == 0 ? 1 : cos(glm::radians(pitch)));
+	ret.y = pitch == 0 ? 0 : sin(glm::radians(pitch));
+	ret.z = sin(glm::radians(yaw)) * (pitch == 0 ? 1 : cos(glm::radians(pitch)));
+	return glm::normalize(ret);
 }
 
 std::string Util::vecToStr(const glm::vec3& vec)

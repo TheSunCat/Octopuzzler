@@ -42,7 +42,16 @@ void Outrospection::runGameLoop() {
 	float currentFrame = glfwGetTime();
 	deltaTime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
+	
+	// fetch input into simplified controller class
 	updateInput();
+
+	if (controller.isGamepad)
+	{
+		// TODO maybe smooth start/stop camera movement using time since last started moving
+		camera.rotateCameraBy(controller.rightSide * 5, controller.rightForward * 5);
+	}
+
 	// exit game on next loop iteration
 	if (controller.pause)
 		running = false;
@@ -130,44 +139,7 @@ void Outrospection::runTick()
 
 void Outrospection::updateCamera()
 {
-	if (controller.isGamepad)
-	{
-		// TODO maybe smooth start/stop camera movement using time since last started moving
-		camera.rotateCameraBy(controller.rightSide * 5, controller.rightForward * 5);
-	}
-
-	// Calculate camera position w/ collision
-	glm::vec3 playerHeadPos = player.playerPosition + glm::vec3(0.0, 0.7, 0.0);
-
-	glm::vec3 cameraCastDir = glm::normalize(-Util::vecFromYaw(camera.yaw));
-	Ray cameraRay = Ray{playerHeadPos, cameraCastDir };
-
-	RayHit closestHit = RayHit{ INFINITY };
-	for (Triangle& t : scene.collision) {
-		// invert normal bc we're looking backwards
-		t.n = -t.n;
-
-		RayHit hit = Util::rayCast(cameraRay, t, false);
-		if (hit.dist < closestHit.dist)
-			closestHit = hit;
-
-		// reset normal so it doesn't affect our collision
-		t.n = -t.n;
-	}
-
-	closestHit.dist -= 0.2;
-
-	glm::vec3 target;
-
-	if (closestHit.dist != INFINITY && closestHit.dist < 4.0f) {
-		target = playerHeadPos + cameraCastDir * closestHit.dist - (closestHit.tri.n * 0.1f);
-	}
-	else {
-		target = playerHeadPos + cameraCastDir * 4.0f;
-	}
-
-	// lerp
-	camera.position = target;// glm::mix(camera.Position, target, .25);
+	//camera.calculateCameraPosition(player, scene);
 }
 
 void Outrospection::registerCallbacks()
