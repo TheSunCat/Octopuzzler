@@ -1,18 +1,20 @@
 #include "Mesh.h"
 
-#include <glad/glad.h>
+#include <GLAD/glad.h>
 
 #include "Outrospection.h"
 #include "Core/Rendering/TextureManager.h"
 
-Mesh::Mesh(const std::string& _name, const std::vector<Vertex>& _vertices, const std::vector<unsigned int>& _indices) : Mesh(_name, _vertices, _indices, TextureManager::missingTexture)
+Mesh::Mesh(const std::string& _name, const std::vector<Vertex>& _vertices,
+           const std::vector<unsigned int>& _indices) : Mesh(_name, _vertices, _indices, TextureManager::missingTexture)
 {
 	
 }
 
-Mesh::Mesh(const std::string& _name, const std::vector<Vertex>& _vertices, const std::vector<unsigned int>& _indices, const SimpleTexture& _texture)
+Mesh::Mesh(const std::string& _name, const std::vector<Vertex>& _vertices, const std::vector<unsigned int>& _indices,
+           const SimpleTexture& _texture)
 {
-	name = _name.c_str();
+	name = _name;
 	indicesSize = _indices.size();
 	texture = _texture;
 
@@ -32,25 +34,25 @@ Mesh::Mesh(const std::string& _name, const std::vector<Vertex>& _vertices, const
 
 	// pos
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), nullptr);
 	// norms
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, normal)));
 	// tex coords
 	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoord));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, texCoord)));
 	// tangents
 	glEnableVertexAttribArray(3);
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tangent));
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, tangent)));
 	// bitangents
 	glEnableVertexAttribArray(4);
-	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, bitangent));
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), reinterpret_cast<void*>(offsetof(Vertex, bitangent)));
 
 	glBindVertexArray(0);
 }
 
 // render the mesh
-void Mesh::draw(const Shader& _shader) const
+void Mesh::draw() const
 {
 
 	glActiveTexture(GL_TEXTURE0);

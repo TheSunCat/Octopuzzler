@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>
 
+
 #include "External/stb_image.h"
 
 SimpleTexture TextureManager::missingTexture(-1, "missing_texture");

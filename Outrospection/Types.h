@@ -59,7 +59,7 @@ public:
 
 	size_t operator() (const Resource& r) const
 	{
-		std::hash<std::string> strhash;
+		const std::hash<std::string> strhash;
 
 		return strhash(r.resourcePath) + strhash(r.resourceName);
 	}

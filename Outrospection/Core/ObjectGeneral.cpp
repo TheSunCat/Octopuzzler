@@ -8,7 +8,7 @@
 #include "Core/Rendering/TextureManager.h"
 #include "Core/Rendering/Shader.h"
 
-ObjectGeneral::ObjectGeneral(std::string _name, glm::vec3 _pos, glm::vec3 _rot, glm::vec3 _scale)
+ObjectGeneral::ObjectGeneral(const std::string& _name, glm::vec3 _pos, glm::vec3 _rot, glm::vec3 _scale)
 {
 	name = _name;
 	pos = _pos;
@@ -55,7 +55,7 @@ void ObjectGeneral::draw(const Shader& shader) const
 
 	for (const Mesh& m : meshes)
 	{
-		m.draw(shader);
+		m.draw();
 	}
 }
 

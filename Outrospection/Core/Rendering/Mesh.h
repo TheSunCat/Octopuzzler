@@ -22,7 +22,7 @@ public:
 	Mesh(const std::string& _name, const std::vector<Vertex>& _vertices, const std::vector<unsigned int>& _indices, const SimpleTexture& _texture);
 
 	// render the mesh
-	void draw(const Shader& shader) const;
+	void draw() const;
 
 private:
 	unsigned int indicesSize;

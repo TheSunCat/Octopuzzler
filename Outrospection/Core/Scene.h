@@ -25,15 +25,15 @@ public:
 	std::vector<Character> characters;
 	std::vector<Triangle> collision;
 private:
-	std::vector<std::string> parseLine(std::string line);
+	static std::vector<std::string> parseLine(std::string line);
 
-	ObjectGeneral parseObj(std::string line);
-	Character parseChar(std::string line);
+	ObjectGeneral parseObj(const std::string& line) const;
+	Character parseChar(const std::string& line) const;
 
-	void parseCollision(std::string name);
+	void parseCollision(const std::string& name);
 
 	// skybox
-	unsigned int loadCubemap(std::string name);
+	static unsigned int loadCubemap(std::string name);
 	unsigned int cubemapTexture;
 	unsigned int skyboxVAO;
 

@@ -15,7 +15,6 @@ struct Vertex;
 struct Material {
 	Material()
 	{
-		name;
 		specularExponent = 0.0f;
 	}
 
@@ -40,16 +39,17 @@ struct Material {
 class ModelLoader {
 public:
 	// load new file, replacing all fields
-	bool loadFile(std::string filePath);
+	bool loadFile(const std::string& filePath);
 
 	std::deque<Mesh> loadedMeshes;
 	std::vector<Material> loadedMaterials;
 
 private:
-	// Generate vertices from a list of positions, tcoords, normals and a face line
-	void verticesFromFaceString(std::vector<Vertex>& outputVertices, const std::vector<glm::vec3>& _positions, const std::vector<glm::vec2>& _texCoords, const std::vector<glm::vec3>& _normals, std::string _curLine);
+	// generate vertices from positions, tcoords, normals and a face string
+	static void verticesFromFaceString(std::vector<Vertex>& outputVertices, const std::vector<glm::vec3>& _positions,
+	                                   const std::vector<glm::vec2>& _texCoords, const std::vector<glm::vec3>& _normals,
+	                                   const std::string& _curLine);
 
-	// Triangulate a list of vertices into a face by printing
-	// indicies corresponding with triangles within it
-	void verticesToIndicesTriangulated(std::vector<unsigned int>& indicesOut, const std::vector<Vertex>& _vertices);
+	// triangulate a list of vertices into a face
+	static void verticesToIndicesTriangulated(std::vector<unsigned int>& indicesOut, const std::vector<Vertex>& _vertices);
 };

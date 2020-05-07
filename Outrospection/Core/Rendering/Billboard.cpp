@@ -1,13 +1,14 @@
 #include "Billboard.h"
 
-#include <glm\ext\matrix_transform.hpp>
+#include <glm/ext/matrix_transform.hpp>
+#include <utility>
 
 #include "Util.h"
 
 #include "Core/Rendering/SimpleTexture.h"
 #include "Core/Rendering/Shader.h"
 
-Billboard::Billboard(const SimpleTexture& _tex) : texture(_tex)
+Billboard::Billboard(SimpleTexture _tex) : texture(std::move(_tex))
 {
 	float quadVertices[] = {  // tex coords = (x + 0.5, y)
 		-0.5f,  0.0f,
@@ -30,7 +31,7 @@ Billboard::Billboard(const SimpleTexture& _tex) : texture(_tex)
 
 	// vertex coordinates
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), nullptr);
 }
 
 void Billboard::draw(const Shader& _shader, const glm::vec3& _pos) const
@@ -61,7 +62,7 @@ void Billboard::draw(const Shader& _shader, const glm::vec3& _pos, const SimpleT
 
 	Util::glError(true);
 
-	glm::mat4 modelMat = glm::mat4(1.0);// glm::translate(glm::mat4(1.0), _pos);
+	const glm::mat4 modelMat = glm::mat4(1.0);// glm::translate(glm::mat4(1.0), _pos);
 	_shader.setMat4("model", modelMat);
 
 	Util::glError(true);
