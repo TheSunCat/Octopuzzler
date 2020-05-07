@@ -1,6 +1,5 @@
 #pragma once
 
-#include <GLAD/glad.h>
 #include <glm/glm.hpp>
 
 #include "Types.h"

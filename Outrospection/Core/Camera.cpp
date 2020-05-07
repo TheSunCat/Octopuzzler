@@ -1,6 +1,5 @@
 #include "Camera.h"
 
-#include <glad/glad.h>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "Util.h"
@@ -31,7 +30,7 @@ Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float u
 void Camera::calculateCameraPosition(const Player& player, const Scene& scene)
 {
 	// what the camera is looking at
-	glm::vec3 cameraFocus = position + offset;
+	const glm::vec3 cameraFocus = position + offset;
 
 	Ray backRay = Ray{ cameraFocus, -front };
 
@@ -42,7 +41,7 @@ void Camera::calculateCameraPosition(const Player& player, const Scene& scene)
 
 }
 
-glm::mat4 Camera::getViewMatrix()
+glm::mat4 Camera::getViewMatrix() const
 {
 	return glm::lookAt(position, position + front, up);
 }

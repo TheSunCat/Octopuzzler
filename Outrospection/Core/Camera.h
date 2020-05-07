@@ -1,7 +1,5 @@
 #pragma once
 
-#include <vector>
-
 #include <glm/glm.hpp>
 
 class Player;
@@ -32,7 +30,8 @@ public:
 	float zoom;
 	glm::vec3 offset;
 
-	Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float _yaw = YAW, float _pitch = PITCH);
+	Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),
+	       float _yaw = YAW, float _pitch = PITCH);
 
 	// same ctor but w/ scalar args
 	Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch);
@@ -40,7 +39,7 @@ public:
 	// PROBLEMATIC FUNCTION (requires the two includes)
 	void calculateCameraPosition(const Player& player, const Scene& scene);
 
-	glm::mat4 getViewMatrix();
+	glm::mat4 getViewMatrix() const;
 
 	void rotateCameraBy(float xoffset, float yoffset, bool applyCameraSpeed = true, bool constrainPitch = true);
 

@@ -1,17 +1,20 @@
 #include "Resource.h"
 
 #include <sstream>
+#include <utility>
 
 Resource::Resource(std::string path, std::string name)
 {
-	resourcePath = path;
-	resourceName = name;
+	resourcePath = std::move(path);
+	resourceName = std::move(name);
+
+	std::stringstream ss;
+	ss << "./res/ObjectData/" << resourcePath << resourceName;
+	fullPath = ss.str();
 }
 
 std::string Resource::getResourcePath() const {
-	std::stringstream ss;
-	ss << "./res/ObjectData/" << resourcePath << resourceName;
-	return ss.str();
+	return fullPath;
 }
 
 bool Resource::operator== (const Resource& r) const

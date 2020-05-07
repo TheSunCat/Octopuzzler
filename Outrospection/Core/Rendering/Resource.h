@@ -13,4 +13,6 @@ public:
 
 	std::string resourcePath;
 	std::string resourceName;
+
+	std::string fullPath;
 };

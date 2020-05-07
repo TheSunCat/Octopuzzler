@@ -3,6 +3,8 @@
 #include <sstream>
 #include <iostream>
 
+#include <GLAD/glad.h>
+
 #include "External/stb_image.h"
 #include "Macros.h"
 
@@ -23,18 +25,18 @@ bool Util::glError(bool print)
 
 void Util::split(const std::string& input, const char& delimiter, std::vector<std::string>& out) {
 	std::string::const_iterator start = input.begin();
-	std::string::const_iterator end = input.end();
+	const std::string::const_iterator end = input.end();
 	std::string::const_iterator next = std::find(start, end, delimiter);
 
 	while (next != end)
 	{
-		out.push_back(std::string(start, next));
+		out.emplace_back(start, next);
 		start = next + 1;
 
 		next = std::find(start, end, delimiter);
 	}
 
-	out.push_back(std::string(start, next));
+	out.emplace_back(start, next);
 }
 
 glm::vec3 Util::rotToVec3(float yaw, float pitch)
@@ -77,7 +79,7 @@ unsigned char* Util::DataFromFile(const char* path, const std::string& directory
 
 // partly based on https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/ray-triangle-intersection-geometric-solution
 
-const RayHit noHit = RayHit{ -NAN, glm::vec3(0.0) };
+const RayHit NO_HIT = RayHit{ -NAN, glm::vec3(0.0) };
 
 // Cast a ray against finite triangle tri, and return the distance from the ray to the tri.
 RayHit Util::rayCast(
@@ -97,29 +99,29 @@ RayHit Util::rayCast(
 	float det = dot(v0v1, pvec);
 
 	// add abs if tri can be touched from both sides
-	if (bothSides ? abs(det) : det < 0.000001) // parallel
-		return noHit;
+	if (bothSides ? abs(det) : det < 0.000001f) // parallel
+		return NO_HIT;
 
-	float invDet = 1.0 / det;
+	float invDet = 1.0f / det;
 
 	glm::vec3 tvec = ray.origin - v0;
 
 	float u = dot(tvec, pvec) * invDet;
 
 	if (u < 0 || u > 1)
-		return noHit;
+		return NO_HIT;
 
 	glm::vec3 qvec = cross(tvec, v0v1);
 
 	float v = dot(ray.direction, qvec) * invDet;
 
 	if (v < 0 || u + v > 1)
-		return noHit;
+		return NO_HIT;
 
 	float ret = dot(v0v2, qvec) * invDet;
 
 	if(ret < 0)
-		return noHit;
+		return NO_HIT;
 
 	glm::vec3 hitPos = glm::normalize(ray.direction) * ret;
 
@@ -128,17 +130,17 @@ RayHit Util::rayCast(
 
 // Cast a ray against an infinite plane with the triangle's normal, return where ray hits plane or NaN if ray never hits
 glm::vec3 Util::rayCastPlane(const Ray& r, const Triangle& plane) {
-	glm::vec3 diff = r.origin - plane.v0;
-	float prod1 = glm::dot(diff, -plane.n);
-	float prod2 = glm::dot(r.direction, -plane.n);
-	float prod3 = prod1 / prod2;
+	const glm::vec3 diff = r.origin - plane.v0;
+	const float prod1 = glm::dot(diff, -plane.n);
+	const float prod2 = glm::dot(r.direction, -plane.n);
+	const float prod3 = prod1 / prod2;
 	return r.origin - r.direction * prod3;
 }
 
 glm::vec3 Util::getNormal(const Triangle& t) {
-	glm::vec3 v0v1 = t.v1 - t.v0;
-	glm::vec3 v0v2 = t.v2 - t.v0;
-	glm::vec3 normal = glm::cross(v0v1, v0v2);
+	const glm::vec3 v0v1 = t.v1 - t.v0;
+	const glm::vec3 v0v2 = t.v2 - t.v0;
+	const glm::vec3 normal = glm::cross(v0v1, v0v2);
 
 	return normalize(normal);
 }
@@ -167,13 +169,13 @@ float Util::angleBetweenV3(const glm::vec3 a, const glm::vec3 b)
 
 glm::vec3 Util::projectV3(const glm::vec3 a, const glm::vec3 b)
 {
-	glm::vec3 bn = b / glm::length(b);
+	const glm::vec3 bn = b / glm::length(b);
 	return bn * glm::dot(a, bn);
 }
 
 float Util::valFromJoystickAxis(float axis)
 {
-	float absxis = std::fabs(axis);
+	const float absxis = std::fabs(axis);
 	if (absxis < STICK_DEADZONE)
 		axis = 0.0f;
 	else if (absxis > STICK_LIMITZONE)

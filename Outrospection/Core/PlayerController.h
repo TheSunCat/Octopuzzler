@@ -18,7 +18,7 @@ public:
 	void movePlayer(Player* playerIn, float deltaTime);
 
 private:
-	RayHit cast(Ray r, const std::vector<Triangle>& collisionData);
+	static RayHit cast(Ray r, const std::vector<Triangle>& collisionData);
 	
 	// Return true if a triangle was hit.
 	bool resolveCollision(Player* playerIn, const std::vector<Triangle>& collisionData);
