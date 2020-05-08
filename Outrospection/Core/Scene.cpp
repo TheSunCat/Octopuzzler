@@ -7,7 +7,7 @@
 #include "External/stb_image.h"
 
 #include "Util.h"
-#include "Macros.h"
+#include "Constants.h"
 
 #include "Core/Rendering/Shader.h"
 
