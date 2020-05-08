@@ -111,8 +111,8 @@ bool PlayerController::resolveCollision(Player* playerIn, const std::vector<Tria
 	float playerVelMagnitude = glm::length(playerVelocity);
 
 	// get RayHit of closest wall
-	RayHit hit = cast(playerRay, collisionData);
-	RayHit topHit = cast(playerHeadRay, collisionData);
+	RayHit hit = Util::rayCast(playerRay, collisionData);
+	RayHit topHit = Util::rayCast(playerHeadRay, collisionData);
 
 	if (topHit.dist < hit.dist || (std::isnan(hit.dist) && !std::isnan(topHit.dist))) {
 		colCalcOffset.y = 1.0;
@@ -158,7 +158,7 @@ bool PlayerController::resolveCollision(Player* playerIn, const std::vector<Tria
 	Ray checkRay = Ray{ playerIn->playerPosition + glm::vec3(0, 1.0, 0) + playerVelocity, glm::vec3(0, -1, 0) }; // ghost position ray
 
 	// raycast down from player head
-	RayHit checkHit = cast(checkRay, collisionData);
+	RayHit checkHit = Util::rayCast(checkRay, collisionData);
 
 	if (checkHit.dist < 1.0) { // cancel all movement if player would be impaled. TODO keep slide from past solving. this cur overrides all collision
 		playerVelocity.x = 0.0f;
@@ -171,27 +171,6 @@ bool PlayerController::resolveCollision(Player* playerIn, const std::vector<Tria
 	}
 
 	return needsMoreSolving;
-}
-
-RayHit PlayerController::cast(Ray r, const std::vector<Triangle>& collisionData)
-{
-	RayHit closestHit = RayHit { INFINITY };
-
-	for (const Triangle& tri : collisionData)
-	{
-		RayHit hit = Util::rayCast(r, tri, false);
-
-		if (hit.dist < closestHit.dist)
-		{
-			closestHit = hit;
-			closestHit.tri = tri;
-		}
-	}
-
-	if (closestHit.dist == INFINITY)
-		closestHit.dist = NAN;
-
-	return closestHit;
 }
 
 void PlayerController::animatePlayer(Player* playerIn)

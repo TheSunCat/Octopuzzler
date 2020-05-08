@@ -61,6 +61,6 @@ public:
 	{
 		const std::hash<std::string> strhash;
 
-		return strhash(r.resourcePath) + strhash(r.resourceName);
+		return strhash(r.fullPath);
 	}
 };

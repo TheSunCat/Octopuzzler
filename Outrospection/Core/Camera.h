@@ -46,6 +46,6 @@ public:
 	void zoomCameraBy(float yoffset);
 
 private:
-	// calculate the camera vectors from the updated Euler angles
+	// calculate front, right, and up vectors from camera angles
 	void updateCameraVectors();
 };

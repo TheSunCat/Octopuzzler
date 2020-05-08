@@ -1,16 +1,8 @@
 #include "Resource.h"
 
-#include <sstream>
-#include <utility>
-
-Resource::Resource(std::string path, std::string name)
+Resource::Resource(const std::string& path, const std::string& name) : fullPath("./res/ObjectData/" + path + name)
 {
-	resourcePath = std::move(path);
-	resourceName = std::move(name);
-
-	std::stringstream ss;
-	ss << "./res/ObjectData/" << resourcePath << resourceName;
-	fullPath = ss.str();
+	
 }
 
 std::string Resource::getResourcePath() const {
@@ -19,5 +11,5 @@ std::string Resource::getResourcePath() const {
 
 bool Resource::operator== (const Resource& r) const
 {
-	return (resourcePath == r.resourcePath && resourceName == r.resourceName);
+	return (fullPath == r.fullPath);
 }
