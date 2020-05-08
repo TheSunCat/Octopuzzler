@@ -21,9 +21,9 @@ private:
 	// Return true if a triangle was hit.
 	bool resolveCollision(Player* playerIn, const std::vector<Triangle>& collisionData);
 
-	glm::vec3 playerVelocity;
-
-	glm::vec3 lastGoodPlayerPosition;
+	glm::vec3 playerVelocity = glm::vec3(0.0f);
+	glm::vec3 velocityShift = glm::vec3(0.0f); // not carried over loops
+	//glm::vec3 lastGoodPlayerPosition;
 
 	bool grounded = false;
 	bool jumping = false;

@@ -4,9 +4,14 @@
 #include <iostream>
 
 #include <GLAD/glad.h>
+#include <glm/common.hpp>
+#include <glm/common.hpp>
+#include <glm/common.hpp>
+#include <glm/common.hpp>
+
 
 #include "External/stb_image.h"
-#include "Macros.h"
+#include "Constants.h"
 
 bool Util::glError(bool print)
 {
@@ -79,7 +84,7 @@ unsigned char* Util::DataFromFile(const char* path, const std::string& directory
 
 // partly based on https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/ray-triangle-intersection-geometric-solution
 
-const RayHit NO_HIT = RayHit{ -NAN, glm::vec3(0.0) };
+const RayHit NO_HIT = RayHit{ INFINITY, glm::vec3(0.0) };
 
 // Cast a ray against finite triangle tri, and return the distance from the ray to the tri.
 RayHit Util::rayCast(
@@ -150,12 +155,80 @@ RayHit Util::rayCast(const Ray& r, const std::vector<Triangle>& tris, bool bothS
 			closestHit = hit;
 			closestHit.tri = tri;
 		}
-	}
+	}/*
 
 	if (closestHit.dist == INFINITY)
 		return NO_HIT;
-	else
-		return closestHit;
+	else*/
+	return closestHit;
+}
+
+//https://gamedev.stackexchange.com/questions/96459/fast-ray-sphere-collision-code
+bool Util::intersectRaySegmentSphere(const Ray& ray, const glm::vec3 sphereOrigin, const float sphereRadius2, glm::vec3& ip)
+{
+	const glm::vec3 origin = ray.origin;
+	glm::vec3 direction = ray.direction;
+	
+	// manual normalization so we know the length
+	const float rayLength = glm::length(direction);
+	direction /= rayLength;
+
+	const glm::vec3 originDiff = origin - sphereOrigin;
+	const float oDiffDotDir = glm::dot(originDiff, direction);
+	const float oDiffDotODiffSphereRadius2 = glm::dot(originDiff, originDiff) - sphereRadius2;
+
+	// Exit if r’s origin outside s (c > 0) and r pointing away from s (b > 0)
+	if (oDiffDotODiffSphereRadius2 > 0.0f && oDiffDotDir > 0.0f)
+		return false;
+	const float discr = oDiffDotDir * oDiffDotDir - oDiffDotODiffSphereRadius2;
+
+	// A negative discriminant corresponds to ray missing sphere
+	if (discr < 0.0f)
+		return false;
+
+	// Ray now found to intersect sphere, compute smallest t value of intersection
+	float t = -oDiffDotDir - sqrtf(discr);
+
+	// If t is negative, ray started inside sphere so clamp t to zero
+	if (t < 0.0f)
+		t = 0.0f;
+	ip = origin + (direction * t);
+
+	//here's that last segment check I was talking about
+	if (t > rayLength)
+		return false;
+
+	return true;
+}
+
+
+bool Util::leftOf(const glm::vec2& a, const glm::vec2& b, const glm::vec2& p)
+{
+	//3x3 determinant (can also think of this as projecting onto 2D lines)
+	// | ax  bx  px |
+	// | ay  by  py |
+	// | 1   1   1  |
+
+	const float area = 0.5f * (a.x * (b.y - p.y) +
+		b.x * (p.y - a.y) +
+		p.x * (a.y - b.y));
+	return (area > 0.0f);
+}
+
+//2D test for point inside polygon
+bool Util::pointInside(const glm::vec2 poly[], const int pcount, const glm::vec2& v)
+{
+	for (int i = 0; i < pcount; i++)
+	{
+		int next = i;
+		next++;
+		if (next == pcount)
+			next = 0;
+
+		if (!leftOf(poly[i], poly[next], v))
+			return false;
+	}
+	return true;
 }
 
 glm::vec3 Util::getNormal(const Triangle& t) {
