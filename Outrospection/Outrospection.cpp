@@ -221,6 +221,10 @@ void Outrospection::key_callback(GLFWwindow* window, int key, int scancode, int 
 		{
 			controller.pause = false;
 		}
+		if(key == gameSettings.keyBindTalk.keyCode)
+		{
+			controller.talk = true;
+		}
 	}
 }
 
@@ -343,7 +347,7 @@ void Outrospection::updateInput()
 
 
 		controller.jump = glfwGetKey(gameWindow, gameSettings.keyBindJump.keyCode) == GLFW_PRESS;
-		//controller.talk = glfwGetKey(gameWindow, gameSettings.k.keyCode) == GLFW_PRESS;
+		controller.talk = glfwGetKey(gameWindow, gameSettings.keyBindTalk.keyCode) == GLFW_PRESS;
 		controller.pause = glfwGetKey(gameWindow, gameSettings.keyBindExit.keyCode) == GLFW_PRESS;
 	}
 

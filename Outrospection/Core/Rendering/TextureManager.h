@@ -6,7 +6,7 @@
 
 #include "Resource.h"
 #include "Types.h"
-#include "Macros.h"
+#include "Constants.h"
 
 #include "Core/Rendering/SimpleTexture.h"
 #include "Core/Rendering/AnimatedTexture.h"

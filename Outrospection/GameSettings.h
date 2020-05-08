@@ -14,5 +14,6 @@ public:
 	KeyBinding keyBindLeft = KeyBinding(GLFW_KEY_A);
 
 	KeyBinding keyBindJump = KeyBinding(GLFW_KEY_SPACE);
+	KeyBinding keyBindTalk = KeyBinding(GLFW_KEY_LEFT_SHIFT);
 	KeyBinding keyBindExit = KeyBinding(GLFW_KEY_ESCAPE);
 };

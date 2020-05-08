@@ -2,7 +2,7 @@
 
 #include "GameSettings.h"
 #include "Controller.h"
-#include "Macros.h"
+#include "Constants.h"
 
 #include "Core/Rendering/TextureManager.h"
 #include "Core/Rendering/OpenGL.h"

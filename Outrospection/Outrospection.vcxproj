@@ -182,7 +182,7 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Macros.h" />
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Core\Camera.h" />
     <ClInclude Include="Core\Character.h" />

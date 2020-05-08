@@ -5,7 +5,7 @@
 #include <GLAD/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "Macros.h"
+#include "Constants.h"
 
 class OpenGL {
 public:
