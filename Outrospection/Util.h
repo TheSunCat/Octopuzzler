@@ -29,6 +29,8 @@ namespace Util
 
 	glm::vec3 rayCastPlane(const Ray& r, const Triangle& plane);
 
+	RayHit rayCast(const Ray& r, const std::vector<Triangle>& tris, bool bothSides = false);
+
 	glm::vec3 getNormal(const Triangle& t);
 
 	float length2V3(const glm::vec3& v);

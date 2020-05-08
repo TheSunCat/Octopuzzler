@@ -41,7 +41,7 @@ void Outrospection::unpauseGame()
 
 void Outrospection::runGameLoop()
 {
-	float currentFrame = glfwGetTime();
+	const float currentFrame = glfwGetTime();
 	deltaTime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
 	
@@ -142,10 +142,10 @@ void Outrospection::runTick()
 
 void Outrospection::updateCamera()
 {
-	//camera.calculateCameraPosition(player, scene);
+	camera.calculateCameraPosition(player, scene);
 }
 
-void Outrospection::registerCallbacks()
+void Outrospection::registerCallbacks() const
 {
 	// Register OpenGL events
 	glfwSetFramebufferSizeCallback(gameWindow, framebuffer_size_callback);
@@ -169,30 +169,33 @@ void Outrospection::framebuffer_size_callback(GLFWwindow* window, int width, int
 	glViewport(0, 0, width, height);
 }
 
-void Outrospection::mouse_callback(GLFWwindow* window, double xpos, double ypos)
+void Outrospection::mouse_callback(GLFWwindow* window, double xPosD, double yPosD)
 {
 	Outrospection* orig = getOutrospection();
 
+	const float xPos = float(xPosD);
+	const float yPos = float(yPosD);
+	
 	if (orig->firstMouse) {
-		orig->lastX = xpos;
-		orig->lastY = ypos;
+		orig->lastX = xPos;
+		orig->lastY = yPos;
 		orig->firstMouse = false;
 		return; // nothing to calculate because we technically didn't move the mouse
 	}
 
-	float xoffset = xpos - orig->lastX;
-	float yoffset = orig->lastY - ypos;
+	const float xOffset = xPos - orig->lastX;
+	const float yOffset = orig->lastY - yPos;
 
-	orig->lastX = xpos;
-	orig->lastY = ypos;
+	orig->lastX = xPos;
+	orig->lastY = yPos;
 
-	orig->camera.rotateCameraBy(xoffset, yoffset);
+	orig->camera.rotateCameraBy(xOffset, yOffset);
 }
 
 void Outrospection::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-	Outrospection* orig = (Outrospection*)glfwGetWindowUserPointer(window);
-	orig->camera.zoomCameraBy(yoffset);
+	Outrospection* orig = getOutrospection();
+	orig->camera.zoomCameraBy(float(yoffset));
 }
 
 void Outrospection::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -223,8 +226,8 @@ void Outrospection::key_callback(GLFWwindow* window, int key, int scancode, int 
 
 void Outrospection::updateInput()
 {
-	unsigned int joystick = -1; // "magic" value evaluates to 4294967295 bc unsigned
-	for (unsigned int i = GLFW_JOYSTICK_1; i < GLFW_JOYSTICK_LAST; i++)
+	int joystick = -1;
+	for (int i = GLFW_JOYSTICK_1; i < GLFW_JOYSTICK_LAST; i++)
 	{
 		if (glfwJoystickPresent(i) == GLFW_TRUE)
 		{
@@ -240,8 +243,7 @@ void Outrospection::updateInput()
 		}
 	}
 								
-	if (joystick != 4294967295) // there is a controller
-	{							// 4294967295 is uint(-1)
+	if (joystick != -1) {					// there is a controller
 		
 		if (glfwJoystickIsGamepad(joystick)) // easy!
 		{
@@ -309,7 +311,7 @@ void Outrospection::updateInput()
 		}
 	}
 	
-	if (joystick == 4294967295) // no *usable* controllers are present
+	if (joystick == -1) // no *usable* controllers are present
 	{
 		if (VERBOSE)
 			std::cout << "No usable controller is present. ";

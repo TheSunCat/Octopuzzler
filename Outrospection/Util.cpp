@@ -137,6 +137,27 @@ glm::vec3 Util::rayCastPlane(const Ray& r, const Triangle& plane) {
 	return r.origin - r.direction * prod3;
 }
 
+RayHit Util::rayCast(const Ray& r, const std::vector<Triangle>& tris, bool bothSides)
+{
+	RayHit closestHit = RayHit{ INFINITY };
+
+	for (const Triangle& tri : tris)
+	{
+		const RayHit hit = Util::rayCast(r, tri, bothSides);
+
+		if (hit.dist < closestHit.dist)
+		{
+			closestHit = hit;
+			closestHit.tri = tri;
+		}
+	}
+
+	if (closestHit.dist == INFINITY)
+		return NO_HIT;
+	else
+		return closestHit;
+}
+
 glm::vec3 Util::getNormal(const Triangle& t) {
 	const glm::vec3 v0v1 = t.v1 - t.v0;
 	const glm::vec3 v0v2 = t.v2 - t.v0;
