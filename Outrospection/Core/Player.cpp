@@ -23,7 +23,7 @@ void Player::rotate(float yaw)
 //	playerCharacter.setAnimation(_animType);
 //}
 
-void Player::draw(Shader& _shader)
+void Player::draw(Shader& _shader) const
 {
 	playerCharacter.draw(_shader);
 }

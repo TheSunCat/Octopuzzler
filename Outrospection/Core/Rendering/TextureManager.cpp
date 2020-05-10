@@ -1,6 +1,8 @@
 #include "TextureManager.h"
 
 #include <iostream>
+#include <sstream>
+
 
 #include "External/stb_image.h"
 
@@ -28,7 +30,8 @@ SimpleTexture TextureManager::loadTexture(Resource& r)
 
 	unsigned int texId = textureFromFile(path);
 
-	if (texId != -1) {
+	if (texId != -1)
+	{
 		SimpleTexture texObj(texId, path);
 
 		textures.insert(std::pair<Resource, SimpleTexture>(r, texObj));

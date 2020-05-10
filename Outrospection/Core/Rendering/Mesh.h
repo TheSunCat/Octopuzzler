@@ -1,20 +1,13 @@
 #pragma once
 
 #include <string>
-#include <fstream>
-#include <sstream>
-#include <iostream>
 #include <vector>
 
-#include <glad/glad.h> // holds all OpenGL type declarations
+#include "Types.h"
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+#include "Core/Rendering/SimpleTexture.h"
 
-#include "Shader.h"
-#include "SimpleTexture.h"
-
-#include "../../Types.h"
+class Shader;
 
 class Mesh {
 public:
@@ -29,7 +22,7 @@ public:
 	Mesh(const std::string& _name, const std::vector<Vertex>& _vertices, const std::vector<unsigned int>& _indices, const SimpleTexture& _texture);
 
 	// render the mesh
-	void draw(const Shader& shader) const;
+	void draw() const;
 
 private:
 	unsigned int indicesSize;

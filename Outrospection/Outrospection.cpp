@@ -17,7 +17,8 @@ Outrospection::Outrospection() : opengl() // init ogl
 	player = Player(glm::vec3(0.0, 3.0, 0.0), glm::vec3(0.0f));
 }
 
-void Outrospection::run() {
+void Outrospection::run()
+{
 	running = true;
 
 	while (running)
@@ -38,11 +39,21 @@ void Outrospection::unpauseGame()
 	isGamePaused = false;
 }
 
-void Outrospection::runGameLoop() {
-	float currentFrame = glfwGetTime();
+void Outrospection::runGameLoop()
+{
+	const float currentFrame = glfwGetTime();
 	deltaTime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
+	
+	// fetch input into simplified controller class
 	updateInput();
+
+	if (controller.isGamepad)
+	{
+		// TODO maybe smooth start/stop camera movement using time since last started moving
+		camera.rotateCameraBy(controller.rightSide * 5, controller.rightForward * 5);
+	}
+
 	// exit game on next loop iteration
 	if (controller.pause)
 		running = false;
@@ -50,8 +61,9 @@ void Outrospection::runGameLoop() {
 	// player always "faces" forward, so W goes away from camera
 	player.playerRotation.y = camera.yaw;
 
-
-	if (!isGamePaused) {
+	
+	if (!isGamePaused)
+	{
 		// Run one "tick" of the game physics
 		runTick();
 	}
@@ -73,7 +85,7 @@ void Outrospection::runGameLoop() {
 	objectShader.use();
 	objectShader.setVec3("viewPos", camera.position);
 	objectShader.setFloat("shininess", 32.0f);
-	objectShader.setVec3("lightPos", camera.position);
+	objectShader.setVec3("lightPos", player.playerPosition + glm::vec3(0, 1.5f, 0));
 	objectShader.doProjView(camera, SCR_WIDTH, SCR_HEIGHT, true);
 
 	billboardShader.use();
@@ -130,47 +142,10 @@ void Outrospection::runTick()
 
 void Outrospection::updateCamera()
 {
-	if (controller.isGamepad)
-	{
-		// TODO maybe smooth start/stop camera movement using time since last started moving
-		camera.rotateCameraBy(controller.rightSide, controller.rightForward); // TODO test this
-	}
-
-	// Calculate camera position w/ collision
-	glm::vec3 playerHeadPos = player.playerPosition + glm::vec3(0.0, 0.7, 0.0);
-
-	glm::vec3 cameraCastDir = glm::normalize(-Util::vecFromYaw(camera.yaw));
-	Ray cameraRay = Ray{playerHeadPos, cameraCastDir };
-
-	RayHit closestHit = RayHit{ INFINITY };
-	for (Triangle& t : scene.collision) {
-		// invert normal bc we're looking backwards
-		t.n = -t.n;
-
-		RayHit hit = Util::rayCast(cameraRay, t, false);
-		if (hit.dist < closestHit.dist)
-			closestHit = hit;
-
-		// reset normal so it doesn't affect our collision
-		t.n = -t.n;
-	}
-
-	closestHit.dist -= 0.2;
-
-	glm::vec3 target;
-
-	if (closestHit.dist != INFINITY && closestHit.dist < 4.0f) {
-		target = playerHeadPos + cameraCastDir * closestHit.dist - (closestHit.tri.n * 0.1f);
-	}
-	else {
-		target = playerHeadPos + cameraCastDir * 4.0f;
-	}
-
-	// lerp
-	camera.position = target;// glm::mix(camera.Position, target, .25);
+	camera.calculateCameraPosition(player, scene);
 }
 
-void Outrospection::registerCallbacks()
+void Outrospection::registerCallbacks() const
 {
 	// Register OpenGL events
 	glfwSetFramebufferSizeCallback(gameWindow, framebuffer_size_callback);
@@ -188,34 +163,39 @@ void Outrospection::createShaders()
 	simpleShader    = Shader("simple"   , "simple"   );
 }
 
-// Set proper Viewport size when window is resized
-void Outrospection::framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+// set proper viewport size when window is resized
+void Outrospection::framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
 	glViewport(0, 0, width, height);
 }
 
-void Outrospection::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
-	Outrospection* orig = (Outrospection*)glfwGetWindowUserPointer(window);
+void Outrospection::mouse_callback(GLFWwindow* window, double xPosD, double yPosD)
+{
+	Outrospection* orig = getOutrospection();
 
+	const float xPos = float(xPosD);
+	const float yPos = float(yPosD);
+	
 	if (orig->firstMouse) {
-		orig->lastX = xpos;
-		orig->lastY = ypos;
+		orig->lastX = xPos;
+		orig->lastY = yPos;
 		orig->firstMouse = false;
 		return; // nothing to calculate because we technically didn't move the mouse
 	}
 
-	float xoffset = xpos - orig->lastX;
-	float yoffset = orig->lastY - ypos;
+	const float xOffset = xPos - orig->lastX;
+	const float yOffset = orig->lastY - yPos;
 
-	orig->lastX = xpos;
-	orig->lastY = ypos;
+	orig->lastX = xPos;
+	orig->lastY = yPos;
 
-	orig->camera.rotateCameraBy(xoffset, yoffset);
+	orig->camera.rotateCameraBy(xOffset, yOffset);
 }
 
 void Outrospection::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-	Outrospection* orig = (Outrospection*)glfwGetWindowUserPointer(window);
-	orig->camera.zoomCameraBy(yoffset);
+	Outrospection* orig = getOutrospection();
+	orig->camera.zoomCameraBy(float(yoffset));
 }
 
 void Outrospection::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -241,13 +221,21 @@ void Outrospection::key_callback(GLFWwindow* window, int key, int scancode, int 
 		{
 			controller.pause = false;
 		}
+		if(key == gameSettings.keyBindTalk.keyCode)
+		{
+			controller.talk = false;
+		}
+		if(key == gameSettings.keyBindBreak.keyCode)
+		{
+			controller.debugBreak = false;
+		}
 	}
 }
 
 void Outrospection::updateInput()
 {
-	unsigned int joystick = 4294967295;
-	for (unsigned int i = GLFW_JOYSTICK_1; i < GLFW_JOYSTICK_LAST; i++)
+	int joystick = -1;
+	for (int i = GLFW_JOYSTICK_1; i < GLFW_JOYSTICK_LAST; i++)
 	{
 		if (glfwJoystickPresent(i) == GLFW_TRUE)
 		{
@@ -262,9 +250,9 @@ void Outrospection::updateInput()
 			break;
 		}
 	}
-
-	if (joystick != 4294967295) // there is a controller
-	{
+								
+	if (joystick != -1) {					// there is a controller
+		
 		if (glfwJoystickIsGamepad(joystick)) // easy!
 		{
 			if (VERBOSE)
@@ -296,7 +284,7 @@ void Outrospection::updateInput()
 
 			if (axesCount < 2) // no sticks, return for now?
 			{
-				joystick = 4294967295;
+				joystick = -1;
 			}
 			else if (axesCount == 2) // one stick! assumed to be left so we can move around
 			{
@@ -317,9 +305,9 @@ void Outrospection::updateInput()
 			int buttonCount = -1;
 			const unsigned char* rawButtons = glfwGetJoystickButtons(joystick, &buttonCount);
 
-			if (buttonCount < 4) // not enough buttons
+			if (buttonCount < 4) // not enough buttons for us
 			{
-				joystick = 4294967295;
+				joystick = -1;
 			}
 			else
 			{
@@ -331,7 +319,7 @@ void Outrospection::updateInput()
 		}
 	}
 	
-	if (joystick == 4294967295) // no *usable* controllers are present
+	if (joystick == -1) // no *usable* controllers are present
 	{
 		if (VERBOSE)
 			std::cout << "No usable controller is present. ";
@@ -363,8 +351,9 @@ void Outrospection::updateInput()
 
 
 		controller.jump = glfwGetKey(gameWindow, gameSettings.keyBindJump.keyCode) == GLFW_PRESS;
-		//controller.talk = glfwGetKey(gameWindow, gameSettings.k.keyCode) == GLFW_PRESS;
+		controller.talk = glfwGetKey(gameWindow, gameSettings.keyBindTalk.keyCode) == GLFW_PRESS;
 		controller.pause = glfwGetKey(gameWindow, gameSettings.keyBindExit.keyCode) == GLFW_PRESS;
+		controller.debugBreak = glfwGetKey(gameWindow, gameSettings.keyBindBreak.keyCode) == GLFW_PRESS;
 	}
 
 	if (VERBOSE)

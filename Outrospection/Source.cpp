@@ -2,7 +2,8 @@
 
 Outrospection oinstance;
 
-Outrospection* getOutrospection() {
+Outrospection* getOutrospection()
+{
 	return &oinstance;
 }
 

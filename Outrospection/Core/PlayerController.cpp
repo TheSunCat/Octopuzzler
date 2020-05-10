@@ -1,19 +1,17 @@
 #include "PlayerController.h"
 
+#include <iostream>
+
 #include "Util.h"
 #include "Constants.h"
+#include "Controller.h"
+#include "Source.h"
+
+#include "Core/Player.h"
 
 void PlayerController::acceleratePlayer(Player* playerIn, const Controller& controller)
 {
-	glm::vec3 inputMoveVector(0.0f);
-
-	inputMoveVector += Util::vecFromYaw(playerIn->playerRotation.y) * controller.leftForward;
-	inputMoveVector += Util::vecFromYaw(playerIn->playerRotation.y + 90) * controller.leftSide;
-
-	if (Util::length2V3(inputMoveVector) > 1.0) { // normalize if we would move too fast
-		inputMoveVector = glm::normalize(inputMoveVector);
-	}
-
+	const glm::vec3 inputMoveVector = processInput(controller, playerIn->playerRotation.y);
 	playerVelocity += inputMoveVector;
 
 	if (controller.jump)
@@ -21,11 +19,11 @@ void PlayerController::acceleratePlayer(Player* playerIn, const Controller& cont
 		if (grounded || DEBUG && controller.talk) // cheat code hold TALK to moonjump
 		{
 			jumping = true;
-			playerVelocity.y = 5;
+			playerVelocity.y = 10;
 		}
 	}
 
-	if(playerVelocity.y > GRAVITY * 20) // GRAVITY * 20 is the terminal velocity
+	if (playerVelocity.y > GRAVITY * 50) // terminal velocity
 		playerVelocity.y += GRAVITY;
 
 	// slow player down
@@ -37,154 +35,213 @@ void PlayerController::acceleratePlayer(Player* playerIn, const Controller& cont
 		playerVelocity.x = 0;
 	if (abs(playerVelocity.z) < 0.001)
 		playerVelocity.z = 0;
+
+	//std::cout << Util::vecToStr(playerVelocity) << std::endl;
 }
 
 void PlayerController::collidePlayer(Player* playerIn, const std::vector<Triangle>& collisionData, float deltaTime)
 {
+	// reset important fields
+	colResponseDelta = glm::vec3(0);
+	grounded = false;
+
+	playerVelocity *= deltaTime;
+	
 	if (Util::isZeroV3(playerVelocity))
 		return;
 
-	playerVelocity *= deltaTime;
-
-	// collide with walls
-	// ------------------
-
-	unsigned int collisionCount = 0;
-
-	while (resolveCollision(playerIn, collisionData)) {
-		// Now that we've resolved collision, we need to check
-		// if we'd be going thru other tris with this newly set velocity.
-
-		//       \
-		//        \o
-		//         |\
-		//      ---+\\-------- <-- this wall would be skipped, we need to check
-		//         | \\
-		// orig -> V  \V <- new ray
-
-		collisionCount++;
-
-		if (collisionCount > 20) {
-			playerVelocity = glm::vec3(0.0);
-			return; // prevent infinite loops (?)
-		}
-	}
-
-	Ray downRay = Ray{ playerIn->playerPosition, glm::vec3(0, -1, 0) };
-
-	// detect if player is on ground
-	// -----------------------------
-
-	grounded = false; // assume player isn't on ground until we know
-
-	for (const Triangle& curTri : collisionData) {
-		RayHit groundHit = Util::rayCast(downRay, curTri, false);
-		if (!std::isnan(groundHit.dist) && groundHit.dist < 0.05) { // if the ground exists under player, and is close to player's feet (0.05)
-			grounded = true;
-			break; // only need to check *if* we're on ground, only once
-		}
-	}
-
-
-	playerVelocity /= deltaTime;
+	resolveCollision(playerIn, collisionData);
 }
 
 // return true when another iteration must be run to resolve all collision
-bool PlayerController::resolveCollision(Player* playerIn, const std::vector<Triangle>& collisionData)
+void PlayerController::resolveCollision(Player* playerIn, const std::vector<Triangle>& collisionData)
 {
-	bool needsMoreSolving = false;
-
-	if (playerVelocity == glm::vec3(0.0))
-		return needsMoreSolving;
-
-	glm::vec3 colCalcOffset = glm::vec3(0.0, 0.0, 0.0);
-
-	Ray playerRay = Ray{ playerIn->playerPosition + colCalcOffset, normalize(playerVelocity) };
-	Ray playerHeadRay = Ray{ playerIn->playerPosition + glm::vec3(0, 1.0, 0), normalize(playerVelocity) };
-	float playerVelMagnitude = glm::length(playerVelocity);
-
-	// get RayHit of closest wall
-	RayHit hit = cast(playerRay, collisionData);
-	RayHit topHit = cast(playerHeadRay, collisionData);
-
-	if (topHit.dist < hit.dist || (std::isnan(hit.dist) && !std::isnan(topHit.dist))) {
-		colCalcOffset.y = 1.0;
-
-		hit = topHit;
+	if(getOutrospection()->controller.debugBreak)
+	{
+		std::cout << "DEBUG: break" << std::endl;
 	}
 
-	// if there is a triangle within the dist we will move next frame
-	if (!std::isnan(hit.dist) && hit.dist < playerVelMagnitude) {
+	colResponseDelta = glm::vec3(0.0f);
 
-		glm::vec3 calcPos = playerIn->playerPosition + colCalcOffset;
+	std::vector<Triangle> groundCollisions;
+	std::vector<Collision> wallCollisions;
 
-		// position if player *were* a ghost and *could* go thru walls (warning: spooky)
-		glm::vec3 ghostPosition = calcPos + playerVelocity;
+	const float colSphereRadius = 0.35f;
+	const float colSphereRadiusSquare = colSphereRadius * colSphereRadius;
 
-		// ray starting from ghost pos back to tri
-		Ray ghostRay = { ghostPosition, hit.tri.n };
+	const glm::vec3 playerColliderOrigin = playerIn->playerPosition + glm::vec3(0, colSphereRadius, 0);
+	
+	glm::vec3 playerGhostPosition = playerColliderOrigin + playerVelocity;
+	float playerGhostDistance = glm::length(playerVelocity); // TODO prevent sqrt here
+	
+	const glm::vec3 playerDirection = glm::normalize(playerVelocity);
 
-		// where ghostRay intersects the tri's plane would be where the player would end up since she's not a ghost
-		glm::vec3 notGhostPosition = Util::rayCastPlane(ghostRay, hit.tri);
+	//const Ray playerRay{ playerColliderOrigin, playerDirection };
+	//const Collision playerRayHit = Util::rayCast(playerRay, collisionData);
+	
+	const glm::vec3 colSphereOrigin = /*playerRayHit.dist < playerGhostDistance
+		                                   ? playerRayHit.point
+		                                   :*/ playerGhostPosition; // there's a tri we would skip over, so instead tp player to here
 
-		if (std::isnan(notGhostPosition.x) || std::isnan(notGhostPosition.y) || std::isnan(notGhostPosition.z))
-			std::cout << "ERROR: playerVelocity is " << Util::vecToStr(playerVelocity) << std::endl;
+	//if(playerRayHit.dist < playerGhostDistance) // there's a try we would skip over
+	//{
+	//	playerVelocity = playerDirection * (playerRayHit.dist - colSphereRadius);
 
-		notGhostPosition += hit.tri.n * 0.001f;
+	//	// recalculate these 
+	//	playerGhostPosition = playerColliderOrigin + playerVelocity;
+	//	playerGhostDistance = glm::length(playerVelocity);
+	//	
+	//}
+	
+    int numCollisions = 0;
+	
+    for (const Triangle& curTri : collisionData)
+    {
+        //bool outsidePlane = false;
+        bool outsideAllVerts = false;
+        bool outsideAllEdges = false;
+        bool fullyInsidePlane = false;
 
-		// if the ray does not collide with the plane, something's wrong
-		if (std::isnan(notGhostPosition.x))
-			playerVelocity = ghostPosition - calcPos;
-		else
-			playerVelocity = (notGhostPosition - calcPos + (hit.tri.n * 0.001f)); // adding normal "skin offset" so player can go up slopes
+        glm::vec3 v0 = curTri.v0;
+        glm::vec3 v1 = curTri.v1;
+        glm::vec3 v2 = curTri.v2;
 
-		if (std::isnan(playerVelocity.x) || std::isnan(playerVelocity.y) || std::isnan(playerVelocity.z))
-			std::cout << "ERROR: playerVelocity is " << Util::vecToStr(playerVelocity) << std::endl;
+        float d = -glm::dot((v0 + v1 + v2) / 3.0f, curTri.n);
 
-		// collision was detected, we need to check for MORE WALLS
-		needsMoreSolving = true;
-	}
+        // the distance from the center of the collider sphere to the triangle
+        float pointToPlaneDist = glm::dot(curTri.n, colSphereOrigin) + d;
 
-	// Solve impaling.
-	// raycast down from head to toes and see if there's any impaling tris. if so, BAD.
+    	
+        if (fabs(pointToPlaneDist) > colSphereRadius)
+        {
+            // distance from center to plane is larger than sphere radius
+            continue;
+        }
 
-	Ray checkRay = Ray{ playerIn->playerPosition + glm::vec3(0, 1.0, 0) + playerVelocity, glm::vec3(0, -1, 0) }; // ghost position ray
+        // build 3 rays (line segments) so we can do plane projection later
+        glm::vec3 v1v0 = v1 - v0;
+        glm::vec3 v2v1 = v2 - v1;
+        glm::vec3 v0v2 = v0 - v2;
 
-	// raycast down from player head
-	RayHit checkHit = cast(checkRay, collisionData);
+        // project to triangle plane (3D -> 2D) and see if we are within its bounds
+        glm::vec3 planeX = glm::normalize(v1v0);
+        glm::vec3 planeY = glm::normalize(glm::cross(curTri.n, v1v0));
 
-	if (checkHit.dist < 1.0) { // cancel all movement if player would be impaled. TODO keep slide from past solving. this cur overrides all collision
-		playerVelocity.x = 0.0f;
-		playerVelocity.z = 0.0f;
+        // local function to do projection
+        auto project2D = [&](const glm::vec3& p) { return glm::vec2(glm::dot(p, planeX), glm::dot(p, planeY)); };
 
-		if (std::isnan(playerVelocity.x) || std::isnan(playerVelocity.y) || std::isnan(playerVelocity.z))
-			std::cout << "ERROR: playerVelocity is " << Util::vecToStr(playerVelocity) << std::endl;
+        glm::vec2 planePos2D = project2D(colSphereOrigin);
+        glm::vec2 triangle2D[3] = { project2D(v0), project2D(v1), project2D(v2) };
 
-		return true;
-	}
+        if (Util::pointInside(triangle2D, 3, planePos2D))
+        {
+            fullyInsidePlane = true;
+        }
+		
 
-	return needsMoreSolving;
-}
+    	// check vertices
+        bool outsideV1 = (Util::length2V3(v0 - colSphereOrigin) > colSphereRadiusSquare);
+        bool outsideV2 = (Util::length2V3(v1 - colSphereOrigin) > colSphereRadiusSquare);
+        bool outsideV3 = (Util::length2V3(v2 - colSphereOrigin) > colSphereRadiusSquare);
 
-RayHit PlayerController::cast(Ray r, const std::vector<Triangle>& collisionData)
-{
-	RayHit closestHit = RayHit { INFINITY };
+        if (outsideV1 && outsideV2 && outsideV3)
+        {
+            //sphere outside of of all triangle vertices
+            outsideAllVerts = true;
+        }
 
-	for (const Triangle& tri : collisionData) {
-		RayHit hit = Util::rayCast(r, tri, false);
 
-		if (hit.dist < closestHit.dist) {
-			closestHit = hit;
-			closestHit.tri = tri;
+    	// check lines (rays)
+        glm::vec3 intersectPoint;
+
+		if (!Util::intersectRaySegmentSphere(Ray{ v0, v1v0 }, colSphereOrigin, colSphereRadiusSquare, intersectPoint) &&
+			!Util::intersectRaySegmentSphere(Ray{ v1, v2v1 }, colSphereOrigin, colSphereRadiusSquare, intersectPoint) &&
+            !Util::intersectRaySegmentSphere(Ray{ v2, v0v2 }, colSphereOrigin, colSphereRadiusSquare, intersectPoint))
+        {
+            //sphere outside of all triangle edges
+            outsideAllEdges = true;
+        }
+
+        if (outsideAllVerts && outsideAllEdges && !fullyInsidePlane)
+        {
+            continue;
+        }
+
+    	
+    	// --------------------------------------------------
+    	// we found a collision!
+        // push the character outside of the triangle we intersected
+
+		if (fabs(curTri.n.y) > 0.1) // we are colliding with ground
+		{
+			groundCollisions.emplace_back(curTri);
+
+			grounded = true;
 		}
-	}
+		else // handle wall collisions
+    	{
+			// we need to correct by this
+			const float distancePastTri = playerGhostDistance - (colSphereRadius - pointToPlaneDist);
 
-	if (closestHit.dist == INFINITY)
-		closestHit.dist = NAN;
+			// angle at which we run into
+			const float cosine = 1.0f - fabs(Util::cosBetweenV3(playerDirection, curTri.n));
+			
+			std::cout << cosine << std::endl;
+			
+			const float hypotenuse = distancePastTri, adjacentSide = cosine * hypotenuse;
+			const float oppositeSide = sqrt(pow(hypotenuse, 2) - pow(adjacentSide, 2));
 
-	return closestHit;
+			glm::vec3 curCollisionShift = curTri.n * (oppositeSide);
+
+			colResponseDelta += curCollisionShift;
+
+			Collision col{ pointToPlaneDist, intersectPoint, curTri, curCollisionShift };
+			wallCollisions.emplace_back(col);
+		}
+
+		numCollisions++;
+    }
+
+    if (numCollisions != 0 || !groundCollisions.empty())
+    {
+    	if(numCollisions > 0)
+			colResponseDelta /= float(numCollisions); // average our collision responses?
+
+
+		float highestY = -INFINITY;
+    	// do this after ALL mods to playerVelocity and colResponseDelta are done
+		for (const Triangle& curTri : groundCollisions)
+		{
+			glm::vec3 newPlayerPos = playerIn->playerPosition + playerVelocity + colResponseDelta;
+
+			float y = ((curTri.n.x * (newPlayerPos.x - curTri.v0.x)
+				+ curTri.n.z * (newPlayerPos.z - curTri.v0.z)) / -curTri.n.y)
+				+ curTri.v0.y;
+
+			y = y - playerIn->playerPosition.y;
+
+			if (y > highestY)
+				highestY = y;
+		}
+
+    	for(const Collision& collision : wallCollisions)
+    	{
+			if (collision.point.y <= highestY) // we're colliding with stuff under the ground we're on
+			{
+				//colResponseDelta -= collision.shiftBy;
+			}
+    	}
+
+		if (highestY != -INFINITY)
+		{
+			colResponseDelta.y = highestY;
+			playerVelocity.y = 0;
+		}
+    }
 }
 
+// TODO implement this function
+// ReSharper disable once CppMemberFunctionMayBeStatic
 void PlayerController::animatePlayer(Player* playerIn)
 {
 	return;
@@ -214,12 +271,35 @@ void PlayerController::animatePlayer(Player* playerIn)
 
 void PlayerController::movePlayer(Player* playerIn, float deltaTime)
 {
-	if (std::isnan(playerVelocity.x) || std::isnan(playerVelocity.y) || std::isnan(playerVelocity.z))
+	//if(double(rand()) / RAND_MAX < 0.2)
+	//{
+	//	for (int i = 0; i < 30000000; i++);
+	//}
+
+	
+	
+	// NAN check
+	if (playerVelocity.x != playerVelocity.x)
 		std::cout << "ERROR: playerVelocity is " << Util::vecToStr(playerVelocity) << std::endl;
+	
+	playerIn->move(playerVelocity + colResponseDelta);
 
-	lastGoodPlayerPosition = playerIn->playerPosition - playerVelocity;
+	// NAN check	
+	if (playerIn->playerPosition.x != playerIn->playerPosition.x)
+		std::cout << "ERROR: playerPosition is " << Util::vecToStr(playerIn->playerPosition) << std::endl;
 
-	playerIn->move(playerVelocity * deltaTime);
+	playerVelocity /= deltaTime;
+}
 
-	//std::cout << Util::vecToStr(playerIn->playerPosition) << ", " << Util::vecToStr(playerIn->playerCharacter.charPosition) << std::endl;
+glm::vec3 PlayerController::processInput(const Controller& controller, const float yaw)
+{
+	glm::vec3 inputVector(0.0f);
+	inputVector += Util::rotToVec3(yaw) * controller.leftForward;
+	inputVector += Util::rotToVec3(yaw + 90) * controller.leftSide;
+
+	if (Util::length2V3(inputVector) > 1.0) { // normalize if we would move too fast
+		inputVector = glm::normalize(inputVector);
+	}
+
+	return inputVector;
 }

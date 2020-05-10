@@ -3,8 +3,6 @@
 #include <vector>
 #include <string>
 
-#include <glad/glad.h>
-
 #include "Core/Rendering/SimpleTexture.h"
 
 class AnimatedTexture : public SimpleTexture

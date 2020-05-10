@@ -4,6 +4,8 @@
 
 #include "Core/Character.h"
 
+class Shader;
+
 class Player {
 public:
 	Player() = default;
@@ -16,7 +18,7 @@ public:
 
 	//void setAnimation(AnimType _animType);
 
-	void draw(Shader& objShader);
+	void draw(Shader& objShader) const;
 
 	glm::vec3 playerPosition;
 	glm::vec3 playerRotation;

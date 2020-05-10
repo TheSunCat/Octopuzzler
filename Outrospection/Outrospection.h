@@ -6,10 +6,12 @@
 
 #include "Core/Rendering/TextureManager.h"
 #include "Core/Rendering/OpenGL.h"
+#include "Core/Rendering/Shader.h"
 
 #include "Core/PlayerController.h"
 #include "Core/Scene.h"
 #include "Core/Player.h"
+#include "Core/Camera.h"
 
 class Outrospection {
 public:
@@ -34,6 +36,8 @@ public:
 	GameSettings gameSettings;
 
 	Controller controller;
+
+	DISALLOW_COPY_AND_ASSIGN(Outrospection)
 private:
 	void runGameLoop();
 
@@ -65,11 +69,11 @@ private:
 	bool firstMouse = true;
 
 	static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-	static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+	static void mouse_callback(GLFWwindow* window, double xPosD, double yPosD);
 	static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
-	void registerCallbacks();
+	void registerCallbacks() const;
 	void createShaders();
 	void updateInput();
 

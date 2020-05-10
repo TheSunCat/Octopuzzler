@@ -3,9 +3,9 @@
 #include <glm/glm.hpp>
 
 #include "Types.h"
-#include "Controller.h"
 
-#include "Core/Player.h"
+class Controller;
+class Player;
 
 class PlayerController {
 public:
@@ -18,17 +18,16 @@ public:
 	void movePlayer(Player* playerIn, float deltaTime);
 
 private:
-	RayHit cast(Ray r, const std::vector<Triangle>& collisionData);
+	static glm::vec3 processInput(const Controller& controller, const float yaw);
 	
 	// Return true if a triangle was hit.
-	bool resolveCollision(Player* playerIn, const std::vector<Triangle>& collisionData);
+	void resolveCollision(Player* playerIn, const std::vector<Triangle>& collisionData);
 
-	glm::vec3 playerVelocity;
-
-	glm::vec3 lastGoodPlayerPosition;
+	glm::vec3 playerVelocity = glm::vec3(0.0f);
+	glm::vec3 colResponseDelta = glm::vec3(0.0f); // not carried over loops
+	float lastWalkSpeed = 0;
+	//glm::vec3 lastGoodPlayerPosition;
 
 	bool grounded = false;
 	bool jumping = false;
-	
-	AnimType pastAnim;
 };

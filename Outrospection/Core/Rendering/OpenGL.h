@@ -2,9 +2,8 @@
 
 #include <iostream>
 
-#include <GLAD\glad.h>
-#include <GLFW\glfw3.h>
-#include <glm/glm.hpp>
+#include <GLAD/glad.h>
+#include <GLFW/glfw3.h>
 
 #include "Constants.h"
 
@@ -12,7 +11,8 @@ class OpenGL {
 public:
 	OpenGL()
 	{
-		if (!glfwInit()) {
+		if (!glfwInit())
+		{
 			std::cout << "Failed to initialize GLFW" << std::endl;
 			glfwTerminate();
 			return;
@@ -28,8 +28,9 @@ public:
 #endif
 
 		// Window init
-		gameWindow = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Outrospection", NULL, NULL);
-		if (gameWindow == NULL) {
+		gameWindow = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Outrospection", nullptr, nullptr);
+		if (gameWindow == nullptr)
+		{
 			std::cout << "Failed to create GLFW window" << std::endl;
 			glfwTerminate();
 			return;
@@ -43,7 +44,8 @@ public:
 		glfwSetWindowUserPointer(gameWindow, reinterpret_cast<void*>(this));
 
 		// Load OGL function pointers
-		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+		if (!gladLoadGLLoader(GLADloadproc(glfwGetProcAddress)))
+		{
 			std::cout << "Failed to initialize GLAD" << std::endl;
 			return;
 		}
@@ -74,9 +76,9 @@ public:
 		glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
 		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), reinterpret_cast<void*>(2 * sizeof(float)));
 
 
 		glGenFramebuffers(1, &framebuffer);
@@ -104,4 +106,6 @@ public:
 	unsigned int framebuffer;
 	unsigned int textureColorbuffer;
 	GLFWwindow* gameWindow;
+
+	DISALLOW_COPY_AND_ASSIGN(OpenGL)
 };

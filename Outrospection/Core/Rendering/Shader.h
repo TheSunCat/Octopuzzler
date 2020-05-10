@@ -1,14 +1,11 @@
 #pragma once
 
 #include <unordered_map>
-#include <fstream>
-#include <sstream>
-#include <iostream>
 
-#include <glad/glad.h> // include glad to get all the required OpenGL headers
+#include <GLAD/glad.h>
 #include <glm/glm.hpp>
 
-#include "Core/Camera.h"
+class Camera;
 
 class Shader {
 public:
@@ -20,7 +17,7 @@ public:
 	// constructor reads and builds the shader
 	Shader(const GLchar* vertexName, const GLchar* fragmentName);
 
-	void doProjView(Camera& _camera, int _width, int _height, bool doPos);
+	void doProjView(Camera& _camera, int _width, int _height, bool doPos) const;
 
 	// activate the shader
 	void use() const;
@@ -39,7 +36,7 @@ public:
 	void setVec3(const std::string& name, float x, float y, float z) const;
 	// ------------------------------------------------------------------------
 	void setVec4(const std::string& name, const glm::vec4& value) const;
-	void setVec4(const std::string& name, float x, float y, float z, float w);
+	void setVec4(const std::string& name, const float x, const float y, const float z, const float w) const;
 	// ------------------------------------------------------------------------
 	void setMat2(const std::string& name, const glm::mat2& mat) const;
 	// ------------------------------------------------------------------------
@@ -49,7 +46,7 @@ public:
 
 private:
 	// utility function for checking shader compilation/linking errors.
-	void checkCompileErrors(GLuint shader, std::string type);
+	static void checkCompileErrors(GLuint shader, const std::string& type);
 
 	GLint getUniformLocation(const char* uniformName) const;
 

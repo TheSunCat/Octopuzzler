@@ -7,32 +7,22 @@
 #include "Core/Rendering/SimpleTexture.h"
 #include "Core/Rendering/Resource.h"
 
-enum class AnimType {
-	walk,
-	idle,
-	jump, 
-	fall
-};
-
-const std::unordered_map<AnimType, std::string> animTypeMap ({
-	{AnimType::idle, "idle"},
-	{AnimType::walk, "walk"},
-	{AnimType::jump, "jump"},
-	{AnimType::fall, "fall"}
-});
-
-//struct Animation {
-//	AnimType animType;
-//	unsigned int frameCount;
-//	unsigned int frameLength;
-//
-//	unsigned int frameTally;
-//
-//	unsigned int curFrame;
-//	std::vector<unsigned int> frames;
+//enum class AnimType {
+//	walk,
+//	idle,
+//	jump, 
+//	fall
 //};
+//
+//const std::unordered_map<AnimType, std::string> animTypeMap ({
+//	{AnimType::idle, "idle"},
+//	{AnimType::walk, "walk"},
+//	{AnimType::jump, "jump"},
+//	{AnimType::fall, "fall"}
+//});
 
-struct Vertex {
+struct Vertex
+{
 	glm::vec3 pos;
 	glm::vec3 normal;
 
@@ -42,22 +32,26 @@ struct Vertex {
 	glm::vec3 bitangent;
 };
 
-struct Triangle {
+struct Triangle
+{
 	glm::vec3 v0;
 	glm::vec3 v1;
 	glm::vec3 v2;
 	glm::vec3 n;
 };
 
-struct Ray {
+struct Ray
+{
 	glm::vec3 origin; // where the ray starts
 	glm::vec3 direction; // direction the ray is going in
 };
 
-struct RayHit {
+struct Collision
+{
 	float dist;
 	glm::vec3 point;
 	Triangle tri;
+	glm::vec3 shiftBy;
 };
 
 class Hashes
@@ -70,8 +64,8 @@ public:
 
 	size_t operator() (const Resource& r) const
 	{
-		std::hash<std::string> strhash;
+		const std::hash<std::string> strhash;
 
-		return strhash(r.resourcePath) + strhash(r.resourceName);
+		return strhash(r.fullPath);
 	}
 };
