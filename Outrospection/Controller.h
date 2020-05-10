@@ -11,6 +11,8 @@ public:
 	bool talk;
 	bool pause;
 
+	bool debugBreak;
+	
 	// L stick
 	float leftForward;
 	float leftSide;
@@ -18,4 +20,5 @@ public:
 	// R stick
 	float rightForward;
 	float rightSide;
+
 };

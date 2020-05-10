@@ -57,7 +57,7 @@ std::string Util::vecToStr(const glm::vec3& vec)
 {
 	std::stringstream ss("vec3(");
 
-	ss << vec.x << ", " << vec.y << ", " << vec.z << ")";
+	ss << "vec3(" << vec.x << ", " << vec.y << ", " << vec.z << ")";
 
 	return ss.str();
 }
@@ -84,10 +84,10 @@ unsigned char* Util::DataFromFile(const char* path, const std::string& directory
 
 // partly based on https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/ray-triangle-intersection-geometric-solution
 
-const RayHit NO_HIT = RayHit{ INFINITY, glm::vec3(0.0) };
+const Collision NO_HIT = Collision{ INFINITY, glm::vec3(0.0) };
 
 // Cast a ray against finite triangle tri, and return the distance from the ray to the tri.
-RayHit Util::rayCast(
+Collision Util::rayCast(
 	const Ray& ray,
 	const Triangle& tri, bool bothSides)
 {
@@ -130,7 +130,7 @@ RayHit Util::rayCast(
 
 	glm::vec3 hitPos = glm::normalize(ray.direction) * ret;
 
-	return RayHit{ ret, hitPos, tri };
+	return Collision{ ret, hitPos, tri };
 }
 
 // Cast a ray against an infinite plane with the triangle's normal, return where ray hits plane or NaN if ray never hits
@@ -142,24 +142,21 @@ glm::vec3 Util::rayCastPlane(const Ray& r, const Triangle& plane) {
 	return r.origin - r.direction * prod3;
 }
 
-RayHit Util::rayCast(const Ray& r, const std::vector<Triangle>& tris, bool bothSides)
+Collision Util::rayCast(const Ray& r, const std::vector<Triangle>& tris, bool bothSides)
 {
-	RayHit closestHit = RayHit{ INFINITY };
+	Collision closestHit = Collision{ INFINITY };
 
 	for (const Triangle& tri : tris)
 	{
-		const RayHit hit = Util::rayCast(r, tri, bothSides);
+		const Collision hit = Util::rayCast(r, tri, bothSides);
 
 		if (hit.dist < closestHit.dist)
 		{
 			closestHit = hit;
 			closestHit.tri = tri;
 		}
-	}/*
-
-	if (closestHit.dist == INFINITY)
-		return NO_HIT;
-	else*/
+	}
+	
 	return closestHit;
 }
 
@@ -256,9 +253,16 @@ float Util::sumAbsV3(const glm::vec3& v)
 
 float Util::angleBetweenV3(const glm::vec3 a, const glm::vec3 b)
 {
+	float angle = glm::dot(a, b);      // dot = length(a) * length(b) * cos(angle)
+	angle /= (glm::length(a) * glm::length(b));
+	return acosf(angle);
+}
+
+float Util::cosBetweenV3(const glm::vec3 a, const glm::vec3 b)
+{
 	float angle = glm::dot(a, b);
 	angle /= (glm::length(a) * glm::length(b));
-	return angle = acosf(angle);
+	return angle;
 }
 
 glm::vec3 Util::projectV3(const glm::vec3 a, const glm::vec3 b)

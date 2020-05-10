@@ -61,7 +61,7 @@ void Outrospection::runGameLoop()
 	// player always "faces" forward, so W goes away from camera
 	player.playerRotation.y = camera.yaw;
 
-
+	
 	if (!isGamePaused)
 	{
 		// Run one "tick" of the game physics
@@ -85,7 +85,7 @@ void Outrospection::runGameLoop()
 	objectShader.use();
 	objectShader.setVec3("viewPos", camera.position);
 	objectShader.setFloat("shininess", 32.0f);
-	objectShader.setVec3("lightPos", camera.position);
+	objectShader.setVec3("lightPos", player.playerPosition + glm::vec3(0, 1.5f, 0));
 	objectShader.doProjView(camera, SCR_WIDTH, SCR_HEIGHT, true);
 
 	billboardShader.use();
@@ -132,10 +132,10 @@ void Outrospection::runGameLoop()
 
 void Outrospection::runTick()
 {
-	playerController.acceleratePlayer(&player, controller);
-	playerController.collidePlayer(&player, scene.collision, deltaTime);
+	playerController.acceleratePlayer(&player, controller, deltaTime);
+	playerController.collidePlayer(&player, scene.collision);
 	playerController.animatePlayer(&player);
-	playerController.movePlayer(&player, deltaTime);
+	playerController.movePlayer(&player);
 
 	updateCamera();
 }
@@ -223,7 +223,11 @@ void Outrospection::key_callback(GLFWwindow* window, int key, int scancode, int 
 		}
 		if(key == gameSettings.keyBindTalk.keyCode)
 		{
-			controller.talk = true;
+			controller.talk = false;
+		}
+		if(key == gameSettings.keyBindBreak.keyCode)
+		{
+			controller.debugBreak = false;
 		}
 	}
 }
@@ -349,6 +353,7 @@ void Outrospection::updateInput()
 		controller.jump = glfwGetKey(gameWindow, gameSettings.keyBindJump.keyCode) == GLFW_PRESS;
 		controller.talk = glfwGetKey(gameWindow, gameSettings.keyBindTalk.keyCode) == GLFW_PRESS;
 		controller.pause = glfwGetKey(gameWindow, gameSettings.keyBindExit.keyCode) == GLFW_PRESS;
+		controller.debugBreak = glfwGetKey(gameWindow, gameSettings.keyBindBreak.keyCode) == GLFW_PRESS;
 	}
 
 	if (VERBOSE)

@@ -23,13 +23,13 @@ namespace Util
 
 	unsigned char* DataFromFile(const char* path, const std::string& directory, int* widthOut, int* heightOut);
 
-	RayHit rayCast(
+	Collision rayCast(
 		const Ray& ray,
 		const Triangle& tri, bool bothSides);
 
 	glm::vec3 rayCastPlane(const Ray& r, const Triangle& plane);
 
-	RayHit rayCast(const Ray& r, const std::vector<Triangle>& tris, bool bothSides = false);
+	Collision rayCast(const Ray& r, const std::vector<Triangle>& tris, bool bothSides = false);
 
 	bool intersectRaySegmentSphere(const ::Ray& ray, const glm::vec3 sphereOrigin, const float sphereRadius2, glm::vec3& ip);
 
@@ -47,6 +47,8 @@ namespace Util
 	float sumAbsV3(const glm::vec3& v);
 
 	float angleBetweenV3(const glm::vec3 a, const glm::vec3 b);
+	
+	float cosBetweenV3(const glm::vec3 a, const glm::vec3 b);
 
 	glm::vec3 projectV3(const glm::vec3 a, const glm::vec3 b);
 
