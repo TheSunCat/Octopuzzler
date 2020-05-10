@@ -1,5 +1,6 @@
 #include "Camera.h"
 
+#include <array>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "Util.h"
@@ -29,16 +30,39 @@ Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float u
 
 void Camera::calculateCameraPosition(const Player& player, const Scene& scene)
 {
+	offset = glm::vec3(0, 0.7, 0);
+	
 	// what the camera is looking at
-	const glm::vec3 cameraFocus = position + offset;
+	focus = /*glm::mix(focus, */player.playerPosition + offset;// , 0.0725);
 
-	Ray backRay = Ray{ cameraFocus, -front };
-
-//	Ray whiskers[5] = { firstRay, backRay, lastRay };
-
+	Ray backRay = Ray{ focus, -front };
 
 	// thanks to "50 Game Camera Mistakes" from GDC 2014
+	Ray firstRay = Ray{ focus, -Util::rotToVec3((yaw - 10), pitch) };
+	Ray lastRay = Ray{ focus, -Util::rotToVec3((yaw + 10), pitch) };
 
+	// the 'whiskers' will point slightly offset of the camera so we know what's around us
+	std::array<Ray, 3> whiskers = { firstRay, backRay, lastRay };
+	std::array<Collision, 3> hits{};
+	
+	for(unsigned int i = 0; i < whiskers.size(); i++)
+	{
+		hits[i] = Util::rayCast(whiskers[i], scene.collision, true);
+
+		if(hits[i].dist != INFINITY)
+		{
+			yaw += 10;
+		}
+	}
+
+	updateCameraVectors();
+	
+	// get camera position
+	const glm::vec3 newPos = focus - (front * dist);
+	
+	position = newPos; //glm::mix(position, newPos, 0.12);
+	
+	
 }
 
 glm::mat4 Camera::getViewMatrix() const

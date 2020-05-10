@@ -21,7 +21,8 @@
 //	{AnimType::fall, "fall"}
 //});
 
-struct Vertex {
+struct Vertex
+{
 	glm::vec3 pos;
 	glm::vec3 normal;
 
@@ -31,22 +32,26 @@ struct Vertex {
 	glm::vec3 bitangent;
 };
 
-struct Triangle {
+struct Triangle
+{
 	glm::vec3 v0;
 	glm::vec3 v1;
 	glm::vec3 v2;
 	glm::vec3 n;
 };
 
-struct Ray {
+struct Ray
+{
 	glm::vec3 origin; // where the ray starts
 	glm::vec3 direction; // direction the ray is going in
 };
 
-struct RayHit {
+struct Collision
+{
 	float dist;
 	glm::vec3 point;
 	Triangle tri;
+	glm::vec3 shiftBy;
 };
 
 class Hashes

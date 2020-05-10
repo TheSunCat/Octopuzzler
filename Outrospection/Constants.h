@@ -11,10 +11,10 @@
   void operator=(const TypeName&);
 
 // subtract from vertical velocity
-constexpr auto GRAVITY = -0.25;
+constexpr auto GRAVITY = -9.8f;
 
 // divide velocity by this to slow down
-constexpr auto FRICTION = 1.35;
+constexpr auto FRICTION = 0.95f;
 
 constexpr auto SCR_WIDTH = 1152;
 constexpr auto SCR_HEIGHT = 648;

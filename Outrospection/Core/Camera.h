@@ -15,6 +15,7 @@ const float ZOOM = 45.0f;
 class Camera
 {
 public:
+	// automatically calculated, do not modify
 	glm::vec3 position;
 	glm::vec3 front;
 	glm::vec3 up;
@@ -26,11 +27,13 @@ public:
 	float pitch;
 
 	// options
+	glm::vec3 focus;
 	float rotationSpeed;
 	float zoom;
+	float dist = 4;
 	glm::vec3 offset;
 
-	Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),
+	Camera(glm::vec3 _pos = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 _up = glm::vec3(0.0f, 1.0f, 0.0f),
 	       float _yaw = YAW, float _pitch = PITCH);
 
 	// same ctor but w/ scalar args
