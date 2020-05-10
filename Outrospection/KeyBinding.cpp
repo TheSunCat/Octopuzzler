@@ -1,6 +1,6 @@
 #include "KeyBinding.h"
 
-KeyBinding::KeyBinding(unsigned int _keyCode)
+KeyBinding::KeyBinding(const int _keyCode)
 {
 	keyCode = _keyCode;
 }

@@ -4,8 +4,9 @@
 
 #include <glm/glm.hpp>
 
-#include "Core/Rendering/Shader.h"
 #include "Core/Rendering/Billboard.h"
+
+class Shader;
 
 class Character {
 public:

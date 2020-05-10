@@ -1,13 +1,16 @@
 #pragma once
 
-#include "Core/Rendering/Shader.h"
+#include <glm/glm.hpp>
+
 #include "Core/Rendering/SimpleTexture.h"
+
+class Shader;
 
 class Billboard {
 public:
 	Billboard() = default;
 
-	Billboard(const SimpleTexture& _tex);
+	Billboard(SimpleTexture _tex);
 
 	void draw(const Shader& _shader, const glm::vec3& _pos) const;
 

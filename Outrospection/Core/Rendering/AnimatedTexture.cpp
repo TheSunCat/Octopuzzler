@@ -1,7 +1,7 @@
 #include "AnimatedTexture.h"
 
 AnimatedTexture::AnimatedTexture(const std::vector<unsigned int>& texIds, const std::string& _texPath, const unsigned int _frameLength)
-	: SimpleTexture(texIds.at(0), _texPath.c_str()), frameLength(_frameLength), textures(texIds)
+	: SimpleTexture(texIds.at(0), _texPath), textures(texIds), frameLength(_frameLength)
 {
 	
 }
@@ -10,7 +10,8 @@ void AnimatedTexture::step()
 {
 	frameTally++;
 
-	if (frameTally > frameLength) {
+	if (frameTally > frameLength)
+	{
 		frameTally = 0;
 		nextFrame();
 	}
@@ -18,7 +19,7 @@ void AnimatedTexture::step()
 
 void AnimatedTexture::step(unsigned int& stepCount)
 {
-	for (int i = 0; i < stepCount; i++)
+	for (unsigned int i = 0; i < stepCount; i++)
 	{
 		step();
 	}

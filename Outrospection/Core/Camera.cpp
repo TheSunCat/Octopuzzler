@@ -1,7 +1,12 @@
 #include "Camera.h"
 
-#include <glad/glad.h>
+#include <array>
 #include <glm/gtc/matrix_transform.hpp>
+
+#include "Util.h"
+
+#include "Core/Player.h"
+#include "Core/Scene.h"
 
 Camera::Camera(glm::vec3 _pos, glm::vec3 _up, float _yaw, float _pitch)
 	: front(glm::vec3(0.0f, 0.0f, -1.0f)), rotationSpeed(ROT_SPEED), zoom(ZOOM)
@@ -23,12 +28,49 @@ Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float u
 	updateCameraVectors();
 }
 
-glm::mat4 Camera::getViewMatrix()
+void Camera::calculateCameraPosition(const Player& player, const Scene& scene)
 {
-	return glm::lookAt(position, position + front, Up);
+	offset = glm::vec3(0, 0.7, 0);
+	
+	// what the camera is looking at
+	focus = /*glm::mix(focus, */player.playerPosition + offset;// , 0.0725);
+
+	Ray backRay = Ray{ focus, -front };
+
+	// thanks to "50 Game Camera Mistakes" from GDC 2014
+	Ray firstRay = Ray{ focus, -Util::rotToVec3((yaw - 10), pitch) };
+	Ray lastRay = Ray{ focus, -Util::rotToVec3((yaw + 10), pitch) };
+
+	// the 'whiskers' will point slightly offset of the camera so we know what's around us
+	std::array<Ray, 3> whiskers = { firstRay, backRay, lastRay };
+	std::array<Collision, 3> hits{};
+	
+	for(unsigned int i = 0; i < whiskers.size(); i++)
+	{
+		hits[i] = Util::rayCast(whiskers[i], scene.collision, true);
+
+		if(hits[i].dist != INFINITY)
+		{
+			yaw += 10;
+		}
+	}
+
+	updateCameraVectors();
+	
+	// get camera position
+	const glm::vec3 newPos = focus - (front * dist);
+	
+	position = newPos; //glm::mix(position, newPos, 0.12);
+	
+	
 }
 
-void Camera::rotateCameraBy(float xoffset, float yoffset, GLboolean applyCameraSpeed, GLboolean constrainPitch)
+glm::mat4 Camera::getViewMatrix() const
+{
+	return glm::lookAt(position, position + front, up);
+}
+
+void Camera::rotateCameraBy(float xoffset, float yoffset, bool applyCameraSpeed, bool constrainPitch)
 {
 	if (applyCameraSpeed)
 	{
@@ -64,13 +106,8 @@ void Camera::zoomCameraBy(float yoffset)
 
 void Camera::updateCameraVectors()
 {
-	// Calculate the new Front vector
-	glm::vec3 _front;
-	_front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-	_front.y = sin(glm::radians(pitch));
-	_front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-	front = glm::normalize(_front);
+	front = Util::rotToVec3(yaw, pitch);
 	// Also re-calculate the Right and Up vector
 	right = glm::normalize(glm::cross(front, worldUp));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
-	Up = glm::normalize(glm::cross(right, front));
+	up = glm::normalize(glm::cross(right, front));
 }

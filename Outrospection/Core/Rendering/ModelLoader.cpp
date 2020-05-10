@@ -10,10 +10,10 @@
 namespace algorithm
 {
 	// A test to see if P1 is on the same side as P2 of a line segment ab
-	bool SameSide(glm::vec3 p1, glm::vec3 p2, glm::vec3 a, glm::vec3 b)
+	bool sameSide(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& a, const glm::vec3& b)
 	{
-		glm::vec3 cp1 = glm::cross(b - a, p1 - a);
-		glm::vec3 cp2 = glm::cross(b - a, p2 - a);
+		const glm::vec3 cp1 = glm::cross(b - a, p1 - a);
+		const glm::vec3 cp2 = glm::cross(b - a, p2 - a);
 
 		if (glm::dot(cp1, cp2) >= 0)
 			return true;
@@ -21,33 +21,33 @@ namespace algorithm
 			return false;
 	}
 
-	// Generate a cross produect normal for a triangle
-	glm::vec3 GenTriNormal(glm::vec3 t1, glm::vec3 t2, glm::vec3 t3)
+	// generate a cross product normal for a triangle
+	glm::vec3 genTriNormal(const glm::vec3& t1, const glm::vec3& t2, const glm::vec3& t3)
 	{
-		glm::vec3 u = t2 - t1;
-		glm::vec3 v = t3 - t1;
+		const glm::vec3 u = t2 - t1;
+		const glm::vec3 v = t3 - t1;
 
 		glm::vec3 normal = glm::cross(u, v);
 
 		return normal;
 	}
 
-	// Check to see if a glm::vec3 Point is within a 3 glm::vec3 Triangle
-	bool inTriangle(glm::vec3 point, glm::vec3 tri1, glm::vec3 tri2, glm::vec3 tri3)
+	// check to see if a glm::vec3 Point is within a 3 glm::vec3 Triangle
+	bool inTriangle(const glm::vec3& point, const glm::vec3& tri1, const glm::vec3& tri2, const glm::vec3& tri3)
 	{
-		// Test to see if it is within an infinite prism that the triangle outlines.
-		bool within_tri_prisim = SameSide(point, tri1, tri2, tri3) && SameSide(point, tri2, tri1, tri3)
-			&& SameSide(point, tri3, tri1, tri2);
+		// test to see if it is within an infinite prism that the triangle outlines
+		const bool withinTriPrism = sameSide(point, tri1, tri2, tri3) && sameSide(point, tri2, tri1, tri3)
+			&& sameSide(point, tri3, tri1, tri2);
 
-		// If it isn't it will never be on the triangle
-		if (!within_tri_prisim)
+		// if it isn't it will never be on the triangle
+		if (!withinTriPrism)
 			return false;
 
-		// Calulate Triangle's Normal
-		glm::vec3 n = GenTriNormal(tri1, tri2, tri3);
+		// calc normal
+		const glm::vec3 n = genTriNormal(tri1, tri2, tri3);
 
-		// Project the point onto this normal
-		glm::vec3 proj = Util::projectV3(point, n);
+		// project the point onto normal
+		const glm::vec3 proj = Util::projectV3(point, n);
 
 		// If the distance from the triangle to the point is 0
 		//	it lies on the triangle
@@ -72,7 +72,7 @@ namespace algorithm
 	}
 }
 
-bool ModelLoader::loadFile(std::string filePath)
+bool ModelLoader::loadFile(const std::string& filePath)
 {
 	// if the file is not an .obj file return false
 	if (filePath.substr(filePath.size() - 4, 4) != ".omd")
@@ -105,8 +105,9 @@ bool ModelLoader::loadFile(std::string filePath)
 	Material tempMaterial;
 
 	std::string curLine;
-	while (std::getline(file, curLine)) {
-		if (curLine == "" || curLine[0] == '#')
+	while (std::getline(file, curLine))
+	{
+		if (curLine.empty() || curLine[0] == '#')
 			continue;
 
 		
@@ -183,9 +184,9 @@ bool ModelLoader::loadFile(std::string filePath)
 			verticesFromFaceString(vertsFromFace, positions, texCoords, normals, curLine);
 
 			// Add Vertices
-			for (int i = 0; i < vertsFromFace.size(); i++)
+			for (Vertex& i : vertsFromFace)
 			{
-				vertices.emplace_back(vertsFromFace[i]);
+				vertices.emplace_back(i);
 			}
 
 			std::vector<unsigned int> indicesVector;
@@ -193,9 +194,9 @@ bool ModelLoader::loadFile(std::string filePath)
 			verticesToIndicesTriangulated(indicesVector, vertsFromFace);
 
 			// Add Indices
-			for (int i = 0; i < indicesVector.size(); i++)
+			for (unsigned int i : indicesVector)
 			{
-				unsigned int curIndex = (unsigned int)((vertices.size()) - vertsFromFace.size()) + indicesVector[i];
+				unsigned int curIndex = static_cast<unsigned int>(vertices.size() - vertsFromFace.size()) + i;
 				indices.push_back(curIndex);
 			}
 
@@ -384,19 +385,19 @@ bool ModelLoader::loadFile(std::string filePath)
 
 	TextureManager* _textureManager = &(getOutrospection()->textureManager);
 	// Set Materials for each Mesh
-	for (int i = 0; i < meshMatNames.size(); i++)
+	for (unsigned int i = 0; i < meshMatNames.size(); i++)
 	{
-		std::string matname = meshMatNames[i];
+		std::string matName = meshMatNames[i];
 
 		// Find corresponding material name in loaded materials
 		// when found copy material variables into mesh material
-		for (int j = 0; j < loadedMaterials.size(); j++)
+		for (Material& loadedMaterial : loadedMaterials)
 		{
-			if (loadedMaterials[j].name == matname)
+			if (loadedMaterial.name == matName)
 			{
 				// TODO support more mat stuff (and write it to the Mesh obj)
 
-				Resource r("Textures/", loadedMaterials[j].mapDiffuse);
+				Resource r("Textures/", loadedMaterial.mapDiffuse);
 
 				loadedMeshes[i].texture = _textureManager->loadTexture(r);
 				break;
@@ -410,7 +411,9 @@ bool ModelLoader::loadFile(std::string filePath)
 		return true;
 }
 
-void ModelLoader::verticesFromFaceString(std::vector<Vertex>& outputVertices, const std::vector<glm::vec3>& _positions, const std::vector<glm::vec2>& _texCoords, const std::vector<glm::vec3>& _normals, std::string _curLine)
+void ModelLoader::verticesFromFaceString(std::vector<Vertex>& outputVertices, const std::vector<glm::vec3>& _positions,
+                                         const std::vector<glm::vec2>& _texCoords,
+                                         const std::vector<glm::vec3>& _normals, const std::string& _curLine)
 {
 	// substr to remove "f "
 	std::vector<std::string> splitFaceStr;
@@ -420,10 +423,10 @@ void ModelLoader::verticesFromFaceString(std::vector<Vertex>& outputVertices, co
 	bool noNormal = false;
 
 	// For every given vertex do this
-	for (int i = 0; i < splitFaceStr.size(); i++)
+	for (std::string& i : splitFaceStr)
 	{
 		std::vector<std::string> splitVertexStr;
-		Util::split(splitFaceStr[i], '/', splitVertexStr);
+		Util::split(i, '/', splitVertexStr);
 
 		// 1 = pos, 2 = pos/tex, 3 = pos/norm,, 4 = pos/tex/norm
 		int vertexType = 0;
@@ -446,7 +449,7 @@ void ModelLoader::verticesFromFaceString(std::vector<Vertex>& outputVertices, co
 		// or if Position and Normal - v1//vn1
 		if (splitVertexStr.size() == 3)
 		{
-			if (splitVertexStr[1] != "")
+			if (!splitVertexStr[1].empty())
 			{
 				// Position, Texture, and Normal
 				vertexType = 4;
@@ -510,9 +513,9 @@ void ModelLoader::verticesFromFaceString(std::vector<Vertex>& outputVertices, co
 
 		glm::vec3 normal = glm::cross(A, B);
 
-		for (int i = 0; i < outputVertices.size(); i++)
+		for (Vertex& outputVertex : outputVertices)
 		{
-			outputVertices[i].normal = normal;
+			outputVertex.normal = normal;
 		}
 	}
 
@@ -540,7 +543,7 @@ void ModelLoader::verticesToIndicesTriangulated(std::vector<unsigned int>& indic
 	while (true)
 	{
 		// For every vertex
-		for (int index = 0; index < verticesVector.size(); index++)
+		for (unsigned int index = 0; index < verticesVector.size(); index++)
 		{
 			Vertex prevVertex;
 
@@ -555,13 +558,13 @@ void ModelLoader::verticesToIndicesTriangulated(std::vector<unsigned int>& indic
 			if (index == verticesVector.size() - 1)
 				nextVertex = verticesVector[0];
 			else
-				nextVertex = verticesVector[index + 1];
+				nextVertex = verticesVector[1 + index];
 
 			// 3 verts left means this is the last tri
 			if (verticesVector.size() == 3)
 			{
 				// create tri from current, previous, and next vert
-				for (int j = 0; j < verticesVector.size(); j++)
+				for (unsigned int j = 0; j < verticesVector.size(); j++)
 				{
 					if (_vertices[j].pos == curVertex.pos)
 						indicesOut.push_back(j);
@@ -579,7 +582,7 @@ void ModelLoader::verticesToIndicesTriangulated(std::vector<unsigned int>& indic
 			if (verticesVector.size() == 4)
 			{
 				// create tri from current, previous, and next vert
-				for (int j = 0; j < _vertices.size(); j++)
+				for (unsigned int j = 0; j < _vertices.size(); j++)
 				{
 					if (_vertices[j].pos == curVertex.pos)
 						indicesOut.push_back(j);
@@ -590,19 +593,19 @@ void ModelLoader::verticesToIndicesTriangulated(std::vector<unsigned int>& indic
 				}
 
 				glm::vec3 tempVec;
-				for (int j = 0; j < verticesVector.size(); j++)
+				for (Vertex& j : verticesVector)
 				{
-					if (verticesVector[j].pos != curVertex.pos
-						&& verticesVector[j].pos != prevVertex.pos
-						&& verticesVector[j].pos != nextVertex.pos)
+					if (j.pos != curVertex.pos
+						&& j.pos != prevVertex.pos
+						&& j.pos != nextVertex.pos)
 					{
-						tempVec = verticesVector[j].pos;
+						tempVec = j.pos;
 						break;
 					}
 				}
 
 				// create tri from current, previous, and next vert
-				for (int j = 0; j < _vertices.size(); j++)
+				for (unsigned int j = 0; j < _vertices.size(); j++)
 				{
 					if (_vertices[j].pos == prevVertex.pos)
 						indicesOut.push_back(j);
@@ -618,18 +621,19 @@ void ModelLoader::verticesToIndicesTriangulated(std::vector<unsigned int>& indic
 			}
 
 			// If Vertex is not an interior vertex
-			float angle = Util::angleBetweenV3(prevVertex.pos - curVertex.pos, nextVertex.pos - curVertex.pos) * (180 / 3.14159265359);
+			float angle = Util::angleBetweenV3(prevVertex.pos - curVertex.pos, nextVertex.pos - curVertex.pos)
+											* (180.0f / 3.14159265359f);
 			if (angle <= 0 && angle >= 180)
 				continue;
 
 			// If any vertices are within this triangle
 			bool inTri = false;
-			for (int j = 0; j < _vertices.size(); j++)
+			for (const Vertex& vertex : _vertices)
 			{
-				if (algorithm::inTriangle(_vertices[j].pos, prevVertex.pos, curVertex.pos, nextVertex.pos)
-					&& _vertices[j].pos != prevVertex.pos
-					&& _vertices[j].pos != curVertex.pos
-					&& _vertices[j].pos != nextVertex.pos)
+				if (algorithm::inTriangle(vertex.pos, prevVertex.pos, curVertex.pos, nextVertex.pos)
+					&& vertex.pos != prevVertex.pos
+					&& vertex.pos != curVertex.pos
+					&& vertex.pos != nextVertex.pos)
 				{
 					inTri = true;
 					break;
@@ -640,7 +644,7 @@ void ModelLoader::verticesToIndicesTriangulated(std::vector<unsigned int>& indic
 				continue;
 
 			// create tri from current, previous, and next vert
-			for (int j = 0; j < _vertices.size(); j++)
+			for (unsigned int j = 0; j < _vertices.size(); j++)
 			{
 				if (_vertices[j].pos == curVertex.pos)
 					indicesOut.push_back(j);
@@ -651,7 +655,7 @@ void ModelLoader::verticesToIndicesTriangulated(std::vector<unsigned int>& indic
 			}
 
 			// remove curVertex from the working list
-			for (int j = 0; j < verticesVector.size(); j++)
+			for (unsigned int j = 0; j < verticesVector.size(); j++)
 			{
 				if (verticesVector[j].pos == curVertex.pos)
 				{
@@ -665,11 +669,11 @@ void ModelLoader::verticesToIndicesTriangulated(std::vector<unsigned int>& indic
 		}
 
 		// no triangles were created
-		if (indicesOut.size() == 0)
+		if (indicesOut.empty())
 			break;
 
 		// no more vertices
-		if (verticesVector.size() == 0)
+		if (verticesVector.empty())
 			break;
 	}
 
