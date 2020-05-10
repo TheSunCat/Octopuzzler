@@ -9,13 +9,13 @@ class Player;
 
 class PlayerController {
 public:
-	void acceleratePlayer(Player* playerIn, const Controller& controller, float deltaTime);
+	void acceleratePlayer(Player* playerIn, const Controller& controller);
 
-	void collidePlayer(Player* playerIn, const std::vector<Triangle>& collisionData);
+	void collidePlayer(Player* playerIn, const std::vector<Triangle>& collisionData, float deltaTime);
 
 	void animatePlayer(Player* playerIn);
 	
-	void movePlayer(Player* playerIn) const;
+	void movePlayer(Player* playerIn, float deltaTime);
 
 private:
 	static glm::vec3 processInput(const Controller& controller, const float yaw);

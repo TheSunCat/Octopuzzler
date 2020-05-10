@@ -132,10 +132,10 @@ void Outrospection::runGameLoop()
 
 void Outrospection::runTick()
 {
-	playerController.acceleratePlayer(&player, controller, deltaTime);
-	playerController.collidePlayer(&player, scene.collision);
+	playerController.acceleratePlayer(&player, controller);
+	playerController.collidePlayer(&player, scene.collision, deltaTime);
 	playerController.animatePlayer(&player);
-	playerController.movePlayer(&player);
+	playerController.movePlayer(&player, deltaTime);
 
 	updateCamera();
 }

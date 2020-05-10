@@ -260,9 +260,9 @@ float Util::angleBetweenV3(const glm::vec3 a, const glm::vec3 b)
 
 float Util::cosBetweenV3(const glm::vec3 a, const glm::vec3 b)
 {
-	float angle = glm::dot(a, b);
-	angle /= (glm::length(a) * glm::length(b));
-	return angle;
+	float cos = glm::dot(a, b);
+	cos /= (glm::length(a) * glm::length(b));
+	return cos;
 }
 
 glm::vec3 Util::projectV3(const glm::vec3 a, const glm::vec3 b)
