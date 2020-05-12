@@ -9,58 +9,46 @@
 
 #include "Core/Player.h"
 
-void PlayerController::acceleratePlayer(Player* playerIn, const Controller& controller)
+void PlayerController::acceleratePlayer(const Player& player, const Controller& controller, const float deltaTime)
 {
-	const glm::vec3 inputMoveVector = processInput(controller, playerIn->playerRotation.y);
-	playerVelocity += inputMoveVector;
+	const glm::vec3 inputMoveVector = processInput(controller, player.yaw);
+	velocity += inputMoveVector * (DEBUG && controller.talk ? 3.0f : 1.0f) * deltaTime;
 
 	if (controller.jump)
 	{
 		if (grounded || DEBUG && controller.talk) // cheat code hold TALK to moonjump
 		{
 			jumping = true;
-			playerVelocity.y = 10;
+			velocity.y = 0.075f;
 		}
 	}
 
-	if (playerVelocity.y > GRAVITY * 50) // terminal velocity
-		playerVelocity.y += GRAVITY;
+	if (velocity.y > (GRAVITY * 50 * deltaTime)) // terminal velocity
+		velocity.y += GRAVITY * deltaTime;
 
 	// slow player down
-	playerVelocity.x /= FRICTION;
-	playerVelocity.z /= FRICTION;
+	velocity.x /= FRICTION;
+	velocity.z /= FRICTION;
 
 	// round low velocity to 0
-	if (abs(playerVelocity.x) < 0.001)
-		playerVelocity.x = 0;
-	if (abs(playerVelocity.z) < 0.001)
-		playerVelocity.z = 0;
-
-	//std::cout << Util::vecToStr(playerVelocity) << std::endl;
+	if (abs(velocity.x) < 0.001)
+		velocity.x = 0;
+	if (abs(velocity.z) < 0.001)
+		velocity.z = 0;
 }
 
-void PlayerController::collidePlayer(Player* playerIn, const std::vector<Triangle>& collisionData, float deltaTime)
+void PlayerController::collidePlayer(Player& player, const std::vector<Triangle>& collisionData)
 {
 	// reset important fields
 	colResponseDelta = glm::vec3(0);
 	grounded = false;
 
-	playerVelocity *= deltaTime;
-	
-	if (Util::isZeroV3(playerVelocity))
-		return;
-
-	resolveCollision(playerIn, collisionData);
+	resolveCollision(player, collisionData);
 }
 
 // return true when another iteration must be run to resolve all collision
-void PlayerController::resolveCollision(Player* playerIn, const std::vector<Triangle>& collisionData)
+void PlayerController::resolveCollision(Player& player, const std::vector<Triangle>& collisionData)
 {
-	if(getOutrospection()->controller.debugBreak)
-	{
-		std::cout << "DEBUG: break" << std::endl;
-	}
-
 	colResponseDelta = glm::vec3(0.0f);
 
 	std::vector<Triangle> groundCollisions;
@@ -69,29 +57,30 @@ void PlayerController::resolveCollision(Player* playerIn, const std::vector<Tria
 	const float colSphereRadius = 0.35f;
 	const float colSphereRadiusSquare = colSphereRadius * colSphereRadius;
 
-	const glm::vec3 playerColliderOrigin = playerIn->playerPosition + glm::vec3(0, colSphereRadius, 0);
+	const glm::vec3 colliderOrigin = player.position + glm::vec3(0, colSphereRadius, 0);
 	
-	glm::vec3 playerGhostPosition = playerColliderOrigin + playerVelocity;
-	float playerGhostDistance = glm::length(playerVelocity); // TODO prevent sqrt here
+	glm::vec3 ghostPosition = colliderOrigin + velocity;
+	float playerGhostDistance = glm::length(velocity); // TODO prevent sqrt here
 	
-	const glm::vec3 playerDirection = glm::normalize(playerVelocity);
+	const glm::vec3 direction = glm::normalize(velocity);
 
-	//const Ray playerRay{ playerColliderOrigin, playerDirection };
-	//const Collision playerRayHit = Util::rayCast(playerRay, collisionData);
+	// commented out this "continuous collision" so I can make sure that's not the problem
+	const Ray playerRay{ colliderOrigin, direction };
+	const Collision playerRayHit = Util::rayCast(playerRay, collisionData);
 	
-	const glm::vec3 colSphereOrigin = /*playerRayHit.dist < playerGhostDistance
+	const glm::vec3 colSphereOrigin = playerRayHit.dist < playerGhostDistance
 		                                   ? playerRayHit.point
-		                                   :*/ playerGhostPosition; // there's a tri we would skip over, so instead tp player to here
+		                                   : ghostPosition; // there's a tri we would skip over, so instead tp player to here
 
-	//if(playerRayHit.dist < playerGhostDistance) // there's a try we would skip over
-	//{
-	//	playerVelocity = playerDirection * (playerRayHit.dist - colSphereRadius);
+	if(playerRayHit.dist < playerGhostDistance) // there's a try we would skip over
+	{
+		velocity = direction * (playerRayHit.dist - colSphereRadius);
 
-	//	// recalculate these 
-	//	playerGhostPosition = playerColliderOrigin + playerVelocity;
-	//	playerGhostDistance = glm::length(playerVelocity);
-	//	
-	//}
+		// recalculate these 
+		ghostPosition = colliderOrigin + velocity;
+		playerGhostDistance = glm::length(velocity);
+		
+	}
 	
     int numCollisions = 0;
 	
@@ -174,19 +163,24 @@ void PlayerController::resolveCollision(Player* playerIn, const std::vector<Tria
 
 		if (fabs(curTri.n.y) > 0.1) // we are colliding with ground
 		{
-			groundCollisions.emplace_back(curTri);
+			// check if ground is actually under us or not
+			Ray downRay = Ray{ ghostPosition + glm::vec3(0, 999, 0), glm::vec3(0, -1, 0) };
+			Collision downCollision = Util::rayCast(downRay, curTri, true);
 
-			grounded = true;
+			if (downCollision.dist != INFINITY)
+			{
+				groundCollisions.emplace_back(curTri);
+
+				grounded = true;
+			}
 		}
 		else // handle wall collisions
     	{
 			// we need to correct by this
-			const float distancePastTri = playerGhostDistance - (colSphereRadius - pointToPlaneDist);
+			const float distancePastTri = (colSphereRadius - pointToPlaneDist);
 
 			// angle at which we run into
-			const float cosine = 1.0f - fabs(Util::cosBetweenV3(playerDirection, curTri.n));
-			
-			std::cout << cosine << std::endl;
+			const float cosine = 1.0f - fabs(Util::cosBetweenV3(direction, curTri.n));
 			
 			const float hypotenuse = distancePastTri, adjacentSide = cosine * hypotenuse;
 			const float oppositeSide = sqrt(pow(hypotenuse, 2) - pow(adjacentSide, 2));
@@ -207,52 +201,53 @@ void PlayerController::resolveCollision(Player* playerIn, const std::vector<Tria
     	if(numCollisions > 0)
 			colResponseDelta /= float(numCollisions); // average our collision responses?
 
+		colResponseDelta.y = 0;
 
-		float highestY = -INFINITY;
-    	// do this after ALL mods to playerVelocity and colResponseDelta are done
+		float highestDeltaY = -INFINITY;
+    	// do this after ALL mods to velocity and colResponseDelta are done
 		for (const Triangle& curTri : groundCollisions)
 		{
-			glm::vec3 newPlayerPos = playerIn->playerPosition + playerVelocity + colResponseDelta;
+			glm::vec3 newPlayerPos = player.position + velocity + colResponseDelta;
 
-			float y = ((curTri.n.x * (newPlayerPos.x - curTri.v0.x)
+			const float y = ((curTri.n.x * (newPlayerPos.x - curTri.v0.x)
 				+ curTri.n.z * (newPlayerPos.z - curTri.v0.z)) / -curTri.n.y)
 				+ curTri.v0.y;
 
-			y = y - playerIn->playerPosition.y;
+			const float deltaY = y - player.position.y;
 
-			if (y > highestY)
-				highestY = y;
+			if (deltaY > highestDeltaY)
+				highestDeltaY = deltaY;
 		}
 
     	for(const Collision& collision : wallCollisions)
     	{
-			if (collision.point.y <= highestY) // we're colliding with stuff under the ground we're on
+			if (collision.point.y <= highestDeltaY) // we're colliding with stuff under the ground we're on
 			{
 				//colResponseDelta -= collision.shiftBy;
 			}
     	}
 
-		if (highestY != -INFINITY)
+		if (highestDeltaY != -INFINITY)
 		{
-			colResponseDelta.y = highestY;
-			playerVelocity.y = 0;
+			colResponseDelta.y = highestDeltaY;
+			velocity.y = 0;
 		}
     }
 }
 
 // TODO implement this function
 // ReSharper disable once CppMemberFunctionMayBeStatic
-void PlayerController::animatePlayer(Player* playerIn)
+void PlayerController::animatePlayer(Player& playerIn)
 {
 	return;
 
 	//AnimType newAnim;
 
-	//if (isGrounded && length2V3(playerVelocity) < 0.0000002) {
+	//if (isGrounded && length2V3(velocity) < 0.0000002) {
 	//	newAnim = AnimType::idle;
 	//}
 	//else if (!isGrounded) {
-	//	if (playerVelocity.y > -0.01) {
+	//	if (velocity.y > -0.01) {
 	//		newAnim = AnimType::jump;
 	//	}
 	//	else {
@@ -269,9 +264,9 @@ void PlayerController::animatePlayer(Player* playerIn)
 	//pastAnim = newAnim;
 }
 
-void PlayerController::movePlayer(Player* playerIn, float deltaTime)
+void PlayerController::movePlayer(Player& player)
 {
-	//if(double(rand()) / RAND_MAX < 0.2)
+	//if(double(rand()) / RAND_MAX < 0.1)
 	//{
 	//	for (int i = 0; i < 30000000; i++);
 	//}
@@ -279,16 +274,16 @@ void PlayerController::movePlayer(Player* playerIn, float deltaTime)
 	
 	
 	// NAN check
-	if (playerVelocity.x != playerVelocity.x)
-		std::cout << "ERROR: playerVelocity is " << Util::vecToStr(playerVelocity) << std::endl;
+	if (velocity.x != velocity.x)
+		std::cout << "ERROR: velocity is " << Util::vecToStr(velocity) << std::endl;
 	
-	playerIn->move(playerVelocity + colResponseDelta);
+	player.move(velocity + colResponseDelta);
 
+	//std::cout << "player x pos: " << player.position.x << " \t| player z pos: " << player.position.z << std::endl;
+	
 	// NAN check	
-	if (playerIn->playerPosition.x != playerIn->playerPosition.x)
-		std::cout << "ERROR: playerPosition is " << Util::vecToStr(playerIn->playerPosition) << std::endl;
-
-	playerVelocity /= deltaTime;
+	if (player.position.x != player.position.x)
+		std::cout << "ERROR: position is " << Util::vecToStr(player.position) << std::endl;
 }
 
 glm::vec3 PlayerController::processInput(const Controller& controller, const float yaw)

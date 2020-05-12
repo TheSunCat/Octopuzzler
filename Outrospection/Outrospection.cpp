@@ -3,7 +3,7 @@
 #include "Util.h"
 #include "Source.h"
 
-Outrospection::Outrospection() : opengl() // init ogl
+Outrospection::Outrospection() : opengl()
 {
 	gameWindow = opengl.gameWindow;
 	quadVAO = opengl.quadVAO;
@@ -14,7 +14,7 @@ Outrospection::Outrospection() : opengl() // init ogl
 	createShaders();
 
 	scene = Scene("TestLevel000");
-	player = Player(glm::vec3(0.0, 3.0, 0.0), glm::vec3(0.0f));
+	player = Player(glm::vec3(0.0, 3.0, 0.0));
 }
 
 void Outrospection::run()
@@ -51,7 +51,7 @@ void Outrospection::runGameLoop()
 	if (controller.isGamepad)
 	{
 		// TODO maybe smooth start/stop camera movement using time since last started moving
-		camera.rotateCameraBy(controller.rightSide * 5, controller.rightForward * 5);
+		camera.playerRotateCameraBy(controller.rightSide * 5, controller.rightForward * 5);
 	}
 
 	// exit game on next loop iteration
@@ -59,7 +59,7 @@ void Outrospection::runGameLoop()
 		running = false;
 
 	// player always "faces" forward, so W goes away from camera
-	player.playerRotation.y = camera.yaw;
+	player.yaw = camera.yaw;
 
 	
 	if (!isGamePaused)
@@ -85,7 +85,7 @@ void Outrospection::runGameLoop()
 	objectShader.use();
 	objectShader.setVec3("viewPos", camera.position);
 	objectShader.setFloat("shininess", 32.0f);
-	objectShader.setVec3("lightPos", player.playerPosition + glm::vec3(0, 1.5f, 0));
+	objectShader.setVec3("lightPos", player.position + glm::vec3(0, 1.5f, 0));
 	objectShader.doProjView(camera, SCR_WIDTH, SCR_HEIGHT, true);
 
 	billboardShader.use();
@@ -132,10 +132,10 @@ void Outrospection::runGameLoop()
 
 void Outrospection::runTick()
 {
-	playerController.acceleratePlayer(&player, controller);
-	playerController.collidePlayer(&player, scene.collision, deltaTime);
-	playerController.animatePlayer(&player);
-	playerController.movePlayer(&player, deltaTime);
+	playerController.acceleratePlayer(player, controller, deltaTime);
+	playerController.collidePlayer(player, scene.collision);
+	//playerController.animatePlayer(player);
+	playerController.movePlayer(player);
 
 	updateCamera();
 }
@@ -189,7 +189,7 @@ void Outrospection::mouse_callback(GLFWwindow* window, double xPosD, double yPos
 	orig->lastX = xPos;
 	orig->lastY = yPos;
 
-	orig->camera.rotateCameraBy(xOffset, yOffset);
+	orig->camera.playerRotateCameraBy(xOffset, yOffset);
 }
 
 void Outrospection::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)

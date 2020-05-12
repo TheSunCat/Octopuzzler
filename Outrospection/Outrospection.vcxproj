@@ -190,7 +190,7 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
     <ClInclude Include="Core\ObjectRail.h" />
     <ClInclude Include="Core\Player.h" />
     <ClInclude Include="Core\PlayerController.h" />
-    <ClInclude Include="Core\Rendering\AnimatedTexture.h" />
+    <ClInclude Include="Core\Rendering\TickableTexture.h" />
     <ClInclude Include="Core\Rendering\Billboard.h" />
     <ClInclude Include="Core\Rendering\Mesh.h" />
     <ClInclude Include="Core\Rendering\ModelLoader.h" />
@@ -217,7 +217,7 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
     <ClCompile Include="Core\ObjectRail.cpp" />
     <ClCompile Include="Core\Player.cpp" />
     <ClCompile Include="Core\PlayerController.cpp" />
-    <ClCompile Include="Core\Rendering\AnimatedTexture.cpp" />
+    <ClCompile Include="Core\Rendering\TickableTexture.cpp" />
     <ClCompile Include="Core\Rendering\Billboard.cpp" />
     <ClCompile Include="Core\Rendering\Mesh.cpp" />
     <ClCompile Include="Core\Rendering\ModelLoader.cpp" />

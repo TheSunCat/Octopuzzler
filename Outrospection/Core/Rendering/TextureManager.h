@@ -9,18 +9,18 @@
 #include "Constants.h"
 
 #include "Core/Rendering/SimpleTexture.h"
-#include "Core/Rendering/AnimatedTexture.h"
+#include "Core/Rendering/TickableTexture.h"
 
 class TextureManager {
 private:
 	std::unordered_map<Resource, SimpleTexture, Hashes> textures;
-	std::vector<AnimatedTexture> tickableTextures;
+	std::vector<TickableTexture> tickableTextures;
 public:
 	TextureManager();
 
 	SimpleTexture loadTexture(Resource& r);
 
-	AnimatedTexture loadAnimatedTexture(Resource& r, unsigned int textureTickLength, unsigned int textureFrameCount);
+	TickableTexture loadAnimatedTexture(Resource& r, unsigned int textureTickLength, unsigned int textureFrameCount);
 
 	void bindTexture(Resource& r);
 

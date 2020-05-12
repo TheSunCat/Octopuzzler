@@ -5,15 +5,11 @@
 
 #include <GLAD/glad.h>
 #include <glm/common.hpp>
-#include <glm/common.hpp>
-#include <glm/common.hpp>
-#include <glm/common.hpp>
-
 
 #include "External/stb_image.h"
 #include "Constants.h"
 
-bool Util::glError(bool print)
+bool Util::glError(const bool print)
 {
 	bool ret = false;
 	GLenum err;
@@ -44,7 +40,7 @@ void Util::split(const std::string& input, const char& delimiter, std::vector<st
 	out.emplace_back(start, next);
 }
 
-glm::vec3 Util::rotToVec3(float yaw, float pitch)
+glm::vec3 Util::rotToVec3(const float yaw, const float pitch)
 {
 	glm::vec3 ret;
 	ret.x = cos(glm::radians(yaw)) * (pitch == 0 ? 1 : cos(glm::radians(pitch)));
@@ -62,7 +58,7 @@ std::string Util::vecToStr(const glm::vec3& vec)
 	return ss.str();
 }
 
-unsigned char* Util::DataFromFile(const char* path, const std::string& directory, int* widthOut, int* heightOut)
+unsigned char* Util::dataFromFile(const char* path, const std::string& directory, int* widthOut, int* heightOut)
 {
 	std::string filename = std::string(path);
 	filename = directory + '/' + filename;
@@ -104,7 +100,7 @@ Collision Util::rayCast(
 	float det = dot(v0v1, pvec);
 
 	// add abs if tri can be touched from both sides
-	if (bothSides ? abs(det) : det < 0.000001f) // parallel
+	if ((bothSides ? abs(det) : det) < 0.000001f) // parallel
 		return NO_HIT;
 
 	float invDet = 1.0f / det;
@@ -130,7 +126,7 @@ Collision Util::rayCast(
 
 	glm::vec3 hitPos = glm::normalize(ray.direction) * ret;
 
-	return Collision{ ret, hitPos, tri };
+	return Collision { ret, hitPos, tri };
 }
 
 // Cast a ray against an infinite plane with the triangle's normal, return where ray hits plane or NaN if ray never hits
