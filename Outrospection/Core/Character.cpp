@@ -4,17 +4,17 @@
 
 #include "Core/Rendering/Resource.h"
 
-Character::Character(const std::string& _charId, const glm::vec3& _pos) : charPosition(_pos)
+Character::Character(const std::string& _id, const glm::vec3& _pos) : position(_pos)
 {
-	charId = _charId;
+	id = _id;
 
-	Resource r("Characters/" + charId + "/idle/", "idle0.png");
+	Resource r("Characters/" + id + "/idle/", "idle0.png");
 
-	const SimpleTexture billboardTex = getOutrospection()->textureManager.loadTexture(r);
+	const SimpleTexture texture = getOutrospection()->textureManager.loadTexture(r);
 
-	charBillboard = Billboard(billboardTex);
+	billboard = Billboard(texture);
 }
 void Character::draw(Shader& _shader) const
 {
-	charBillboard.draw(_shader, charPosition);
+	billboard.draw(_shader, position);
 }

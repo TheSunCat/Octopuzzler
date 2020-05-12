@@ -26,9 +26,9 @@ TextureManager::TextureManager()
 
 SimpleTexture TextureManager::loadTexture(Resource& r)
 {
-	std::string path = r.getResourcePath();
+	const std::string path = r.getResourcePath();
 
-	unsigned int texId = textureFromFile(path);
+	const unsigned int texId = textureFromFile(path);
 
 	if (texId != -1)
 	{
@@ -45,20 +45,19 @@ SimpleTexture TextureManager::loadTexture(Resource& r)
 	}
 }
 
-AnimatedTexture TextureManager::loadAnimatedTexture(Resource& r, unsigned int textureTickLength, unsigned int textureFrameCount)
+TickableTexture TextureManager::loadAnimatedTexture(Resource& r, unsigned int textureTickLength, unsigned int textureFrameCount)
 {
 	std::string path = r.getResourcePath();
 
 	std::vector<unsigned int> textureIds;
 
-	for (int i = 0; i < textureFrameCount; i++)
+	for (unsigned int i = 0; i < textureFrameCount; i++)
 	{
 		std::stringstream ss(path);
 		ss << i << ".png";
 		std::string currentPath = ss.str();
 
 		unsigned int currentTextureId = textureFromFile(currentPath);
-
 
 		if (currentTextureId != -1) {
 			textureIds.push_back(currentTextureId);
@@ -71,21 +70,21 @@ AnimatedTexture TextureManager::loadAnimatedTexture(Resource& r, unsigned int te
 	}
 
 	tickableTextures.emplace_back(textureIds, path, textureTickLength);
-	textures.insert(std::pair<Resource, AnimatedTexture>(r, tickableTextures.back()));
+	textures.insert(std::pair<Resource, TickableTexture>(r, tickableTextures.back()));
 
 	return tickableTextures.back();
 }
 
 void TextureManager::bindTexture(Resource& r)
 {
-	SimpleTexture tex = get(r);
+	const SimpleTexture tex = get(r);
 
 	tex.bindTexture();
 }
 
 SimpleTexture TextureManager::get(Resource& r)
 {
-	std::unordered_map<Resource, SimpleTexture>::const_iterator f = textures.find(r);
+	const auto f = textures.find(r);
 
 	SimpleTexture tex;
 
@@ -102,9 +101,9 @@ SimpleTexture TextureManager::get(Resource& r)
 // Called every tick, calls step on every tickable texture.
 void TextureManager::tickAllTextures()
 {
-	for (int i = 0; i < tickableTextures.size(); i++)
+	for(TickableTexture& tickableTexture : tickableTextures)
 	{
-		tickableTextures[i].step();
+		tickableTexture.step();
 	}
 }
 

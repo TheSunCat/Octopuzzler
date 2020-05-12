@@ -10,19 +10,17 @@ class Player {
 public:
 	Player() = default;
 
-	Player(const glm::vec3& _startPos, const glm::vec3& _startRot);
+	Player(const glm::vec3& _startPos);
 
 	void move(const glm::vec3& deltaPos);
 
-	void rotate(float yaw);
-
 	//void setAnimation(AnimType _animType);
 
-	void draw(Shader& objShader) const;
+	void draw(Shader& _shader) const;
 
-	glm::vec3 playerPosition;
-	glm::vec3 playerRotation;
-	Character playerCharacter;
-
-	float playerSpeed = 1;
+	glm::vec3 position;
+	Character character;
+	float yaw = 0.0f;
+	
+	float moveSpeed = 1.5f;
 };

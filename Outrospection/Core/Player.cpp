@@ -1,29 +1,23 @@
 #include "Player.h"
 
-Player::Player(const glm::vec3& _startPos, const glm::vec3& _startRot) : playerPosition(_startPos),
-playerRotation(_startRot), playerCharacter("deborah", _startPos)//, { Animation {AnimType::idle, 32, 7}, Animation {AnimType::walk, 8, 6}, Animation {AnimType::jump, 5, 12} , Animation {AnimType::fall, 6, 12} })
+Player::Player(const glm::vec3& _startPos) : position(_startPos), character("deborah", _startPos)
 {
 
 }
 
 void Player::move(const glm::vec3& deltaPos)
 {
-	playerPosition += deltaPos * playerSpeed;
+	position += deltaPos * moveSpeed;
 
-	playerCharacter.charPosition = playerPosition;
-}
-
-void Player::rotate(float yaw)
-{
-	playerRotation.y = yaw;
+	character.position = position;
 }
 
 //void Player::setAnimation(AnimType _animType)
 //{
-//	playerCharacter.setAnimation(_animType);
+//	character.setAnimation(_animType);
 //}
 
 void Player::draw(Shader& _shader) const
 {
-	playerCharacter.draw(_shader);
+	character.draw(_shader);
 }
