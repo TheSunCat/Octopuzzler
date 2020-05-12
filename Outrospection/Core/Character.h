@@ -12,14 +12,14 @@ class Character {
 public:
 	Character() = default;
 
-	Character(const std::string& _charId, const glm::vec3& _pos);
+	Character(const std::string& _id, const glm::vec3& _pos);
 
 	void draw(Shader& _shader) const;
 
-	glm::vec3 charPosition;
+	glm::vec3 position;
 
 private:
-	std::string charId;
+	std::string id;
 
-	Billboard charBillboard;
+	Billboard billboard;
 };

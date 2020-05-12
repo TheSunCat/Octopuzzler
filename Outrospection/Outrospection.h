@@ -65,7 +65,7 @@ private:
 
 	// camera stuff
 	Camera camera = Camera(glm::vec3(0.0f, 0.0f, 3.0f));
-	float lastX = SCR_HEIGHT / 2, lastY = SCR_WIDTH / 2;
+	float lastX = SCR_HEIGHT / 2.0f, lastY = SCR_WIDTH / 2.0f;
 	bool firstMouse = true;
 
 	static void framebuffer_size_callback(GLFWwindow* window, int width, int height);

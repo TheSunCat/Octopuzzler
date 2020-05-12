@@ -1,8 +1,11 @@
 #include "Camera.h"
 
 #include <array>
+#include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
 
+
+#include "Source.h"
 #include "Util.h"
 
 #include "Core/Player.h"
@@ -30,37 +33,78 @@ Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float u
 
 void Camera::calculateCameraPosition(const Player& player, const Scene& scene)
 {
+	if (getOutrospection()->controller.debugBreak)
+	{
+		std::cout << "DEBUG: break" << std::endl;
+	}
+	
+	if(framesSinceUserRotate < framesBeforeAutoCam)
+		framesSinceUserRotate++;
+	
 	offset = glm::vec3(0, 0.7, 0);
 	
 	// what the camera is looking at
-	focus = /*glm::mix(focus, */player.playerPosition + offset;// , 0.0725);
+	focus = player.position + offset;// glm::mix(focus, player.position + offset, 0.0725);
 
 	Ray backRay = Ray{ focus, -front };
-
-	// thanks to "50 Game Camera Mistakes" from GDC 2014
-	Ray firstRay = Ray{ focus, -Util::rotToVec3((yaw - 10), pitch) };
-	Ray lastRay = Ray{ focus, -Util::rotToVec3((yaw + 10), pitch) };
-
-	// the 'whiskers' will point slightly offset of the camera so we know what's around us
-	std::array<Ray, 3> whiskers = { firstRay, backRay, lastRay };
-	std::array<Collision, 3> hits{};
+	Collision backRayCol = Util::rayCast(backRay, scene.collision, false);
 	
-	for(unsigned int i = 0; i < whiskers.size(); i++)
+	if (backRayCol.dist < desiredDistance)
 	{
-		hits[i] = Util::rayCast(whiskers[i], scene.collision, true);
+		dist = backRayCol.dist;
+		focus += backRayCol.tri.n * 0.1f;// avoid clipping into wall
+	}
+	else
+	{
+		dist += dist >= desiredDistance ? 0.0f : 0.1f; // snap back to normal
+	}
+	
+	if (framesSinceUserRotate >= framesBeforeAutoCam) {
+		const unsigned int maxWhiskerCount = 10;
 
-		if(hits[i].dist != INFINITY)
+		// thanks to "50 Game Camera Mistakes" from GDC 2014
+		// the 'whiskers' will point slightly offset of the camera so we know what's around us
+
+		bool leftCol = false, rightCol = false;
+		unsigned int i = 1;
+		do
 		{
-			yaw += 10;
+			if (i >= maxWhiskerCount)
+				break;
+
+			Ray leftRay  = Ray{ focus, -Util::rotToVec3(yaw - (10.0f * i), pitch) };
+			Ray rightRay = Ray{ focus, -Util::rotToVec3(yaw + (10.0f * i), pitch) };
+			
+			Collision leftCollision = Util::rayCast(leftRay, scene.collision, false);
+			leftCol = leftCollision.dist < desiredDistance;
+			
+			Collision rightCollision = Util::rayCast(rightRay, scene.collision, false);
+			rightCol = rightCollision.dist < desiredDistance;
+
+			i++;
+		} while (leftCol && rightCol);
+
+		std::cout << i << ", left: " << leftCol << ", right: " << rightCol << std::endl;
+		
+		if(rightCol)
+		{
+			yaw -= 1.0f * (i + 1) / 5.0f;
+		}
+
+		if(leftCol)
+		{
+			yaw += 1.0f * (i + 1) / 5.0f;
 		}
 	}
-
+	
+	//std::cout << dist << std::endl;
+	
 	updateCameraVectors();
 	
 	// get camera position
 	const glm::vec3 newPos = focus - (front * dist);
 	
-	position = newPos; //glm::mix(position, newPos, 0.12);
+	position = newPos;
 	
 	
 }
@@ -70,7 +114,7 @@ glm::mat4 Camera::getViewMatrix() const
 	return glm::lookAt(position, position + front, up);
 }
 
-void Camera::rotateCameraBy(float xoffset, float yoffset, bool applyCameraSpeed, bool constrainPitch)
+void Camera::playerRotateCameraBy(float xoffset, float yoffset, bool applyCameraSpeed, bool constrainPitch)
 {
 	if (applyCameraSpeed)
 	{
@@ -92,9 +136,12 @@ void Camera::rotateCameraBy(float xoffset, float yoffset, bool applyCameraSpeed,
 
 	// Update Front, Right and Up Vectors using the updated Euler angles
 	updateCameraVectors();
+
+	if(fabs(xoffset) + fabs(yoffset) > 0.5f)
+		framesSinceUserRotate = 0;
 }
 
-void Camera::zoomCameraBy(float yoffset)
+void Camera::zoomCameraBy(const float yoffset)
 {
 	if (zoom >= 1.0f && zoom <= 45.0f)
 		zoom -= yoffset;
