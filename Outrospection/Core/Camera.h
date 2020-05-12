@@ -30,7 +30,8 @@ public:
 	glm::vec3 focus;
 	float rotationSpeed;
 	float zoom;
-	float dist = 4;
+	float desiredDistance = 4.0f;
+	float dist = desiredDistance;
 	glm::vec3 offset;
 
 	Camera(glm::vec3 _pos = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 _up = glm::vec3(0.0f, 1.0f, 0.0f),
@@ -44,11 +45,14 @@ public:
 
 	glm::mat4 getViewMatrix() const;
 
-	void rotateCameraBy(float xoffset, float yoffset, bool applyCameraSpeed = true, bool constrainPitch = true);
+	void playerRotateCameraBy(float xoffset, float yoffset, bool applyCameraSpeed = true, bool constrainPitch = true);
 
 	void zoomCameraBy(float yoffset);
 
 private:
 	// calculate front, right, and up vectors from camera angles
 	void updateCameraVectors();
+
+	unsigned int framesSinceUserRotate = 0;
+	unsigned int framesBeforeAutoCam = 120;
 };

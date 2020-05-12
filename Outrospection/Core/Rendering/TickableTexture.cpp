@@ -1,12 +1,12 @@
-#include "AnimatedTexture.h"
+#include "TickableTexture.h"
 
-AnimatedTexture::AnimatedTexture(const std::vector<unsigned int>& texIds, const std::string& _texPath, const unsigned int _frameLength)
+TickableTexture::TickableTexture(const std::vector<unsigned int>& texIds, const std::string& _texPath, const unsigned int _frameLength)
 	: SimpleTexture(texIds.at(0), _texPath), textures(texIds), frameLength(_frameLength)
 {
 	
 }
 
-void AnimatedTexture::step()
+void TickableTexture::step()
 {
 	frameTally++;
 
@@ -17,7 +17,7 @@ void AnimatedTexture::step()
 	}
 }
 
-void AnimatedTexture::step(unsigned int& stepCount)
+void TickableTexture::step(unsigned int& stepCount)
 {
 	for (unsigned int i = 0; i < stepCount; i++)
 	{
@@ -25,7 +25,7 @@ void AnimatedTexture::step(unsigned int& stepCount)
 	}
 }
 
-void AnimatedTexture::nextFrame()
+void TickableTexture::nextFrame()
 {
 	if (curFrame < (textures.size() - 1))
 		curFrame++;

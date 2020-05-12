@@ -5,10 +5,10 @@
 
 #include "Core/Rendering/SimpleTexture.h"
 
-class AnimatedTexture : public SimpleTexture
+class TickableTexture : public SimpleTexture
 {
 public:
-	AnimatedTexture(const std::vector<unsigned int>& texIds, const std::string& _texPath, const unsigned int _frameLength);
+	TickableTexture(const std::vector<unsigned int>& texIds, const std::string& _texPath, const unsigned int _frameLength);
 
 	void step();
 

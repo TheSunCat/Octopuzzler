@@ -21,7 +21,7 @@ namespace Util
 
 	std::string vecToStr(const glm::vec3& vec);
 
-	unsigned char* DataFromFile(const char* path, const std::string& directory, int* widthOut, int* heightOut);
+	unsigned char* dataFromFile(const char* path, const std::string& directory, int* widthOut, int* heightOut);
 
 	Collision rayCast(
 		const Ray& ray,
