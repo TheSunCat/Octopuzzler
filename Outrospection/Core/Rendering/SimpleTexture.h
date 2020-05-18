@@ -11,7 +11,7 @@ public:
 
 	void bindTexture() const;
 
-	unsigned int texId;
+	unsigned int texId = 0;
 
 	bool operator== (const SimpleTexture& st) const;
 private:

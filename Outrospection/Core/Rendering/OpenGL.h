@@ -102,9 +102,9 @@ public:
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
-	unsigned int quadVAO;
-	unsigned int framebuffer;
-	unsigned int textureColorbuffer;
+	unsigned int quadVAO = 0;
+	unsigned int framebuffer = 0;
+	unsigned int textureColorbuffer = 0;
 	GLFWwindow* gameWindow;
 
 	DISALLOW_COPY_AND_ASSIGN(OpenGL)

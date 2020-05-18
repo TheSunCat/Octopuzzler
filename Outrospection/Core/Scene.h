@@ -34,8 +34,8 @@ private:
 
 	// skybox
 	static unsigned int loadCubemap(std::string name);
-	unsigned int cubemapTexture;
-	unsigned int skyboxVAO;
+	unsigned int cubemapTexture = 0;
+	unsigned int skyboxVAO = 0;
 
 	// DEBUG
 	Mesh colMesh;
