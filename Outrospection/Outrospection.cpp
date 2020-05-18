@@ -50,8 +50,7 @@ void Outrospection::runGameLoop()
 
 	if (controller.isGamepad)
 	{
-		// TODO maybe smooth start/stop camera movement using time since last started moving
-		camera.playerRotateCameraBy(controller.rightSide * 5, controller.rightForward * 5);
+		camera.playerRotateCameraBy(controller.rightSide * 12.5f, controller.rightForward * 10);
 	}
 
 	// exit game on next loop iteration
