@@ -25,6 +25,6 @@ public:
 	void draw() const;
 
 private:
-	unsigned int indicesSize;
-	unsigned int VBO, VAO, EBO;
+	unsigned int indicesSize = 0;
+	unsigned int VBO = 0, VAO = 0, EBO = 0;
 };
