@@ -40,6 +40,11 @@ void Util::split(const std::string& input, const char& delimiter, std::vector<st
 	out.emplace_back(start, next);
 }
 
+//float Util::clamp(const float& val, const float min, const float max)
+//{
+//	
+//}
+
 glm::vec3 Util::rotToVec3(const float yaw, const float pitch)
 {
 	glm::vec3 ret;
@@ -150,6 +155,24 @@ Collision Util::rayCast(const Ray& r, const std::vector<Triangle>& tris, bool bo
 		{
 			closestHit = hit;
 			closestHit.tri = tri;
+		}
+	}
+	
+	return closestHit;
+}
+
+Collision Util::rayCast(const Ray& r, const std::vector<std::vector<Triangle>::const_iterator>& tris, bool bothSides)
+{
+	Collision closestHit = Collision{ INFINITY };
+
+	for (auto& tri : tris)
+	{
+		const Collision hit = Util::rayCast(r, *tri, bothSides);
+
+		if (hit.dist < closestHit.dist)
+		{
+			closestHit = hit;
+			closestHit.tri = *tri;
 		}
 	}
 	
