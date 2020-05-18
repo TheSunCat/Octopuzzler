@@ -65,7 +65,7 @@ private:
 
 	float yawVelocity = 0.0f;
 	float yawDrag = 0.8f;
-
+	
 	float pitchVelocity = 0.0f;
-	float pitchDrag = 0.9;
+	float pitchDrag = 0.9f;
 };
