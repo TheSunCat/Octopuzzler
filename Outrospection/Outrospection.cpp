@@ -142,7 +142,8 @@ void Outrospection::runTick()
 
 void Outrospection::updateCamera()
 {
-	camera.calculateCameraPosition(player, scene);
+	// TODO need a better way to determine whether the camera should be auto-updated or not
+	camera.calculateCameraPosition(player, scene, Util::length2V3(playerController.velocity) > 0.0f);
 }
 
 void Outrospection::registerCallbacks() const
@@ -195,7 +196,7 @@ void Outrospection::mouse_callback(GLFWwindow* window, double xPosD, double yPos
 void Outrospection::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
 	Outrospection* orig = getOutrospection();
-	orig->camera.zoomCameraBy(float(yoffset));
+	orig->camera.changeDistBy(float(yoffset));
 }
 
 void Outrospection::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)

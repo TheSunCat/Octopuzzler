@@ -17,6 +17,25 @@ namespace Util
 			input.emplace_back(o);
 	}
 
+	template <typename T>
+	T clamp(const T& val, const T& min, const T& max)
+	{
+		if (val < min)
+			return min;
+		if (val > max)
+			return max;
+
+		return val;
+	}
+
+	template <typename T>
+	T lerp(const T& startVal, const T& endVal, const float percent)
+	{
+		const T& difference = endVal - startVal;
+
+		return startVal + difference * percent;
+	}
+
 	glm::vec3 rotToVec3(float yaw, float pitch = 0);
 
 	std::string vecToStr(const glm::vec3& vec);
@@ -30,6 +49,8 @@ namespace Util
 	glm::vec3 rayCastPlane(const Ray& r, const Triangle& plane);
 
 	Collision rayCast(const Ray& r, const std::vector<Triangle>& tris, bool bothSides = false);
+	
+	Collision rayCast(const Ray& r, const std::vector<std::vector<Triangle>::const_iterator>& tris, bool bothSides = false);
 
 	bool intersectRaySegmentSphere(const ::Ray& ray, const glm::vec3 sphereOrigin, const float sphereRadius2, glm::vec3& ip);
 

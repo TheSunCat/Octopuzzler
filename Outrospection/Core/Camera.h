@@ -30,8 +30,10 @@ public:
 	glm::vec3 focus;
 	float rotationSpeed;
 	float zoom;
-	float desiredDistance = 4.0f;
+	float desiredDistance = 5.0f;
+	float maxDistance = desiredDistance;
 	float dist = desiredDistance;
+	
 	glm::vec3 offset;
 
 	Camera(glm::vec3 _pos = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 _up = glm::vec3(0.0f, 1.0f, 0.0f),
@@ -40,14 +42,15 @@ public:
 	// same ctor but w/ scalar args
 	Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch);
 
-	// PROBLEMATIC FUNCTION (requires the two includes)
-	void calculateCameraPosition(const Player& player, const Scene& scene);
+	void calculateCameraPosition(const Player& player, const Scene& scene, const bool shouldAutoCam);
 
 	glm::mat4 getViewMatrix() const;
 
 	void playerRotateCameraBy(float xoffset, float yoffset, bool applyCameraSpeed = true, bool constrainPitch = true);
 
-	void zoomCameraBy(float yoffset);
+	void changeDistBy(float yoffset);
+	
+	void zoomBy(float yoffset);
 
 private:
 	// calculate front, right, and up vectors from camera angles
@@ -55,4 +58,14 @@ private:
 
 	unsigned int framesSinceUserRotate = 0;
 	unsigned int framesBeforeAutoCam = 120;
+	unsigned int framesRemainingLerpingDist = 0;
+	
+	float zoomVelocity = 0.0f;
+	float zoomDrag = 0.8f;
+
+	float yawVelocity = 0.0f;
+	float yawDrag = 0.8f;
+
+	float pitchVelocity = 0.0f;
+	float pitchDrag = 0.9;
 };
