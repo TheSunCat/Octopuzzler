@@ -156,6 +156,24 @@ Collision Util::rayCast(const Ray& r, const std::vector<Triangle>& tris, bool bo
 	return closestHit;
 }
 
+Collision Util::rayCast(const Ray& r, const std::vector<std::vector<Triangle>::const_iterator>& tris, bool bothSides)
+{
+	Collision closestHit = Collision{ INFINITY };
+
+	for (auto& tri : tris)
+	{
+		const Collision hit = Util::rayCast(r, *tri, bothSides);
+
+		if (hit.dist < closestHit.dist)
+		{
+			closestHit = hit;
+			closestHit.tri = *tri;
+		}
+	}
+	
+	return closestHit;
+}
+
 //https://gamedev.stackexchange.com/questions/96459/fast-ray-sphere-collision-code
 bool Util::intersectRaySegmentSphere(const Ray& ray, const glm::vec3 sphereOrigin, const float sphereRadius2, glm::vec3& ip)
 {
@@ -170,7 +188,7 @@ bool Util::intersectRaySegmentSphere(const Ray& ray, const glm::vec3 sphereOrigi
 	const float oDiffDotDir = glm::dot(originDiff, direction);
 	const float oDiffDotODiffSphereRadius2 = glm::dot(originDiff, originDiff) - sphereRadius2;
 
-	// Exit if r’s origin outside s (c > 0) and r pointing away from s (b > 0)
+	// Exit if râ€™s origin outside s (c > 0) and r pointing away from s (b > 0)
 	if (oDiffDotODiffSphereRadius2 > 0.0f && oDiffDotDir > 0.0f)
 		return false;
 	const float discr = oDiffDotDir * oDiffDotDir - oDiffDotODiffSphereRadius2;

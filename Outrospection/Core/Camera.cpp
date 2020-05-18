@@ -31,7 +31,7 @@ Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float u
 	updateCameraVectors();
 }
 
-void Camera::calculateCameraPosition(const Player& player, const Scene& scene)
+void Camera::calculateCameraPosition(const Player& player, const Scene& scene, const bool shouldAutoCam)
 {
 	if (getOutrospection()->controller.debugBreak)
 	{
@@ -40,31 +40,81 @@ void Camera::calculateCameraPosition(const Player& player, const Scene& scene)
 	
 	if(framesSinceUserRotate < framesBeforeAutoCam)
 		framesSinceUserRotate++;
-	
-	offset = glm::vec3(0, 0.7, 0);
+
+	if(zoomVelocity != 0.0f)
+	{
+		if (desiredDistance != dist)
+		{
+			desiredDistance = Util::clamp(dist + zoomVelocity, 1.0f, maxDistance);
+		}
+		else
+		{
+			desiredDistance = Util::clamp(desiredDistance + zoomVelocity, 1.0f, maxDistance);
+		}
+		
+		zoomVelocity *= zoomDrag;
+		if (fabs(zoomVelocity) < 0.01f)
+			zoomVelocity = 0.0f;
+	}
 	
 	// what the camera is looking at
-	focus = player.position + offset;// glm::mix(focus, player.position + offset, 0.0725);
+	const glm::vec3 newFocus = player.position + glm::vec3(0, player.eyeHeight, 0) + offset;
+	focus = newFocus;
 
-	Ray backRay = Ray{ focus, -front };
-	Collision backRayCol = Util::rayCast(backRay, scene.collision, false);
-	
-	if (backRayCol.dist < desiredDistance)
+	// raycast backwards from the camera's focus
+	std::array<Ray, 3> arRay = {
+		Ray { focus - right * 0.1f, -front },
+		Ray{ focus, -front },
+		Ray { focus + right * 0.1f, -front } };
+
+	float closestDist = INFINITY;
+	for (unsigned int i = 0; i < arRay.size(); i++)
 	{
-		dist = backRayCol.dist;
-		focus += backRayCol.tri.n * 0.1f;// avoid clipping into wall
-	}
-	else
-	{
-		dist += dist >= desiredDistance ? 0.0f : 0.1f; // snap back to normal
+		Collision curCollision = Util::rayCast(arRay[i], scene.collision, false);
+
+		// i = 0 makes this 0.8, i = 1 makes this 1, i = 2 makes this 0.8
+		const float sideMultiplier = 1 - (abs(i - 1.0f) * 0.2f);
+		
+		const float curDist = curCollision.dist * sideMultiplier;
+
+		if (curDist < closestDist)
+			closestDist = curDist;
 	}
 	
-	if (framesSinceUserRotate >= framesBeforeAutoCam) {
+	if (closestDist < desiredDistance) // camera collision!
+	{
+		float correctedDist = closestDist * 0.9f;
+													// first time we detect collision
+		if (fabs(desiredDistance - dist) < 0.1f) // dist will change lots the next few times,
+			framesRemainingLerpingDist = 10;		// so this won't trigger
+													
+		
+		if (framesRemainingLerpingDist != 0) // lerp the transition to make it   s m o o t h
+		{
+			framesRemainingLerpingDist--;
+			
+			dist = Util::lerp(dist, correctedDist, 0.6);
+		}
+		else // we're already colliding, let's just follow the wall
+		{
+			dist = correctedDist;
+		}
+	}
+	else // not colliding, we're free to move all the way out to desiredDistance
+	{
+		if (desiredDistance - dist > 0.5f) // we're zooming out & it's a big diff so we want to avoid snap
+			dist = Util::lerp(dist, desiredDistance, 0.12);
+		else
+			dist = Util::lerp(dist, desiredDistance, 0.5); // less snap
+	}
+	
+	bool autoCamming = (framesSinceUserRotate >= framesBeforeAutoCam) && shouldAutoCam;
+
+	if (autoCamming) { // rotate camera to avoid occluding the player
 		const unsigned int maxWhiskerCount = 10;
 
 		// thanks to "50 Game Camera Mistakes" from GDC 2014
 		// the 'whiskers' will point slightly offset of the camera so we know what's around us
-
 		bool leftCol = false, rightCol = false;
 		unsigned int i = 1;
 		do
@@ -72,41 +122,50 @@ void Camera::calculateCameraPosition(const Player& player, const Scene& scene)
 			if (i >= maxWhiskerCount)
 				break;
 
-			Ray leftRay  = Ray{ focus, -Util::rotToVec3(yaw - (10.0f * i), pitch) };
-			Ray rightRay = Ray{ focus, -Util::rotToVec3(yaw + (10.0f * i), pitch) };
-			
-			Collision leftCollision = Util::rayCast(leftRay, scene.collision, false);
+			Ray leftRay = Ray{ focus, -Util::rotToVec3(yaw - float(10 * i), pitch) };
+			Ray rightRay = Ray{ focus, -Util::rotToVec3(yaw + float(10 * i), pitch) };
+
+			Collision leftCollision = Util::rayCast(leftRay, scene.wallCollision, false);
 			leftCol = leftCollision.dist < desiredDistance;
-			
-			Collision rightCollision = Util::rayCast(rightRay, scene.collision, false);
+
+			Collision rightCollision = Util::rayCast(rightRay, scene.wallCollision, false);
 			rightCol = rightCollision.dist < desiredDistance;
 
 			i++;
 		} while (leftCol && rightCol);
 
-		std::cout << i << ", left: " << leftCol << ", right: " << rightCol << std::endl;
-		
-		if(rightCol)
-		{
-			yaw -= 1.0f * (i + 1) / 5.0f;
-		}
+		if (rightCol)
+			yawVelocity -= 1.0f * float(i + 1) / 5.0f;
 
-		if(leftCol)
-		{
-			yaw += 1.0f * (i + 1) / 5.0f;
-		}
+		if (leftCol)
+			yawVelocity += 1.0f * float(i + 1) / 5.0f;
 	}
-	
-	//std::cout << dist << std::endl;
+
+	if (yawVelocity != 0.0f)
+	{
+		yaw += yawVelocity;
+
+		yawVelocity *= yawDrag;
+		if (fabs(yawVelocity) < 0.01f)
+			yawVelocity = 0.0f;
+	}
+
+	if (pitchVelocity != 0.0f)
+	{
+		pitch += pitchVelocity;
+
+		pitch = Util::clamp(pitch, -65.0f, 70.0f);
+
+		pitchVelocity *= pitchDrag;
+		if (fabs(pitchVelocity) < 0.01f)
+			pitchVelocity = 0.0f;
+	}
 	
 	updateCameraVectors();
 	
 	// get camera position
 	const glm::vec3 newPos = focus - (front * dist);
-	
 	position = newPos;
-	
-	
 }
 
 glm::mat4 Camera::getViewMatrix() const
@@ -122,33 +181,23 @@ void Camera::playerRotateCameraBy(float xoffset, float yoffset, bool applyCamera
 		yoffset *= rotationSpeed;
 	}
 
-	yaw += xoffset;
-	pitch += yoffset;
-
-	// Make sure that when pitch is out of bounds, screen doesn't get flipped
-	if (constrainPitch)
-	{
-		if (pitch > 89.0f)
-			pitch = 89.0f;
-		if (pitch < -89.0f)
-			pitch = -89.0f;
-	}
-
-	// Update Front, Right and Up Vectors using the updated Euler angles
-	updateCameraVectors();
+	yawVelocity = xoffset;
+	pitchVelocity = yoffset;
 
 	if(fabs(xoffset) + fabs(yoffset) > 0.5f)
 		framesSinceUserRotate = 0;
 }
 
-void Camera::zoomCameraBy(const float yoffset)
+void Camera::changeDistBy(const float yoffset)
 {
-	if (zoom >= 1.0f && zoom <= 45.0f)
-		zoom -= yoffset;
-	if (zoom <= 1.0f)
-		zoom = 1.0f;
-	if (zoom >= 45.0f)
-		zoom = 45.0f;
+	zoomVelocity = yoffset / 3.0f;
+}
+
+void Camera::zoomBy(const float yoffset)
+{
+	zoom -= yoffset;
+
+	zoom = Util::clamp(zoom, 1.0f, 45.0f);
 }
 
 void Camera::updateCameraVectors()

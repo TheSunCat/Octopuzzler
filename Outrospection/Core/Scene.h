@@ -23,7 +23,10 @@ public:
 	std::vector<ObjectGeneral> objects;
 	std::vector<ObjectGeneral> skies;
 	std::vector<Character> characters;
+	
 	std::vector<Triangle> collision;
+	std::vector<std::vector<Triangle>::const_iterator> groundCollision;
+	std::vector<std::vector<Triangle>::const_iterator> wallCollision;
 private:
 	static std::vector<std::string> parseLine(std::string line);
 
