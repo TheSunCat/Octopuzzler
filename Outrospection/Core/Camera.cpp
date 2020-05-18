@@ -115,30 +115,32 @@ void Camera::calculateCameraPosition(const Player& player, const Scene& scene, c
 
 		// thanks to "50 Game Camera Mistakes" from GDC 2014
 		// the 'whiskers' will point slightly offset of the camera so we know what's around us
-		bool leftCol = false, rightCol = false;
-		unsigned int i = 1;
+		bool collidedLeft = false, collidedRight = false;
+		unsigned int whiskersHit = 1;
 		do
 		{
-			if (i >= maxWhiskerCount)
+			if (whiskersHit >= maxWhiskerCount)
 				break;
 
-			Ray leftRay = Ray{ focus, -Util::rotToVec3(yaw - float(10 * i), pitch) };
-			Ray rightRay = Ray{ focus, -Util::rotToVec3(yaw + float(10 * i), pitch) };
+			Ray leftRay  = Ray{ focus, -Util::rotToVec3(yaw - float(30 * whiskersHit), pitch) };
+			Ray rightRay = Ray{ focus, -Util::rotToVec3(yaw + float(30 * whiskersHit), pitch) };
 
 			Collision leftCollision = Util::rayCast(leftRay, scene.wallCollision, false);
-			leftCol = leftCollision.dist < desiredDistance;
+			collidedLeft = leftCollision.dist < desiredDistance;
 
 			Collision rightCollision = Util::rayCast(rightRay, scene.wallCollision, false);
-			rightCol = rightCollision.dist < desiredDistance;
+			collidedRight = rightCollision.dist < desiredDistance;
 
-			i++;
-		} while (leftCol && rightCol);
+			whiskersHit++;
+		} while (collidedLeft && collidedRight);
 
-		if (rightCol)
-			yawVelocity -= 1.0f * float(i + 1) / 5.0f;
+		float correctBy = 1.0f * float(whiskersHit + 1);
 
-		if (leftCol)
-			yawVelocity += 1.0f * float(i + 1) / 5.0f;
+		if (collidedRight)
+			yawVelocity -= correctBy;
+
+		if (collidedLeft)
+			yawVelocity += correctBy;
 	}
 
 	if (yawVelocity != 0.0f)
