@@ -17,6 +17,7 @@ public:
 	
 	void movePlayer(Player& player);
 
+	bool isMoving() const;
 private:
 	static glm::vec3 processInput(const Controller& controller, const float yaw);
 	
