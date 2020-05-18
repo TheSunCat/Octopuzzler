@@ -13,7 +13,7 @@ public:
 	{
 		if (!glfwInit())
 		{
-			std::cout << "Failed to initialize GLFW" << std::endl;
+			std::cout << "GLFW has not initialized properly! Aborting..." << std::endl;
 			glfwTerminate();
 			return;
 		}
@@ -38,12 +38,14 @@ public:
 
 		glfwMakeContextCurrent(gameWindow);
 
-		// Capture mouse
 		glfwSetInputMode(gameWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 		glfwSetWindowUserPointer(gameWindow, reinterpret_cast<void*>(this));
 
-		// Load OGL function pointers
+		// turn on VSync so we don't run at about a kjghpillion fps
+		glfwSwapInterval(1);
+		
+		// load OGL function pointers
 		if (!gladLoadGLLoader(GLADloadproc(glfwGetProcAddress)))
 		{
 			std::cout << "Failed to initialize GLAD" << std::endl;
