@@ -11,12 +11,14 @@
 
 void PlayerController::acceleratePlayer(const Player& player, const Controller& controller, const float deltaTime)
 {
+	const bool hacking = DEBUG && controller.leftTrigger >= 0.85f; // apparently, hacking is a side effect of debug mode - smug
+
 	const glm::vec3 inputMoveVector = processInput(controller, player.yaw);
-	velocity += inputMoveVector * (DEBUG && controller.talk ? 3.0f : 1.0f) * deltaTime;
+	velocity += inputMoveVector * (hacking ? 3.0f : 1.0f) * deltaTime;
 
 	if (controller.jump)
 	{
-		if (grounded || DEBUG && controller.talk) // cheat code hold TALK to moonjump
+		if (grounded || hacking) // cheat code hold left trigger to moonjump
 		{
 			jumping = true;
 			velocity.y = 0.075f;

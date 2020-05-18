@@ -268,6 +268,8 @@ void Outrospection::updateInput()
 			controller.rightForward = -Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y]);
 			controller.rightSide = Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_RIGHT_X]);
 
+			controller.leftTrigger = Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_LEFT_TRIGGER]);
+
 
 			controller.jump = gamepadState.buttons[GLFW_GAMEPAD_BUTTON_A];
 			controller.talk = gamepadState.buttons[GLFW_GAMEPAD_BUTTON_X];

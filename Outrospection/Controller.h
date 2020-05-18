@@ -21,4 +21,7 @@ public:
 	float rightForward;
 	float rightSide;
 
+	// L trigger
+	float leftTrigger;
+
 };
