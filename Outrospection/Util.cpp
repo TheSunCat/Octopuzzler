@@ -40,11 +40,6 @@ void Util::split(const std::string& input, const char& delimiter, std::vector<st
 	out.emplace_back(start, next);
 }
 
-//float Util::clamp(const float& val, const float min, const float max)
-//{
-//	
-//}
-
 glm::vec3 Util::rotToVec3(const float yaw, const float pitch)
 {
 	glm::vec3 ret;
@@ -193,7 +188,7 @@ bool Util::intersectRaySegmentSphere(const Ray& ray, const glm::vec3 sphereOrigi
 	const float oDiffDotDir = glm::dot(originDiff, direction);
 	const float oDiffDotODiffSphereRadius2 = glm::dot(originDiff, originDiff) - sphereRadius2;
 
-	// Exit if r’s origin outside s (c > 0) and r pointing away from s (b > 0)
+	// Exit if râ€™s origin outside s (c > 0) and r pointing away from s (b > 0)
 	if (oDiffDotODiffSphereRadius2 > 0.0f && oDiffDotDir > 0.0f)
 		return false;
 	const float discr = oDiffDotDir * oDiffDotDir - oDiffDotODiffSphereRadius2;
