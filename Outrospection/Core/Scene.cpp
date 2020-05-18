@@ -229,7 +229,7 @@ std::vector<std::string> Scene::parseLine(std::string line)
 	for (unsigned int i = 0; i < n; i++)
 	{
 		std::vector<std::string> v;
-		Util::split(splittedLine[1 + i], ' ', v);
+		Util::split(splittedLine[i + 1], ' ', v);
 
 		Util::push_all(ret, v);
 	}
@@ -289,6 +289,19 @@ void Scene::parseCollision(const std::string& name)
 	}
 
 	collisionFile.close();
+
+	for(auto iter = collision.begin(); iter != collision.end(); ++iter)
+	{
+		Triangle curTri = *iter;
+		if(fabs(curTri.n.y) > 0.1f)
+		{
+			groundCollision.emplace_back(iter);
+		}
+		else
+		{
+			wallCollision.emplace_back(iter);
+		}
+	}
 }
 
 unsigned int Scene::loadCubemap(std::string name)
