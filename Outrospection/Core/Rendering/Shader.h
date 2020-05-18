@@ -10,7 +10,7 @@ class Camera;
 class Shader {
 public:
 	// the shader program ID
-	unsigned int ID;
+	unsigned int ID = 0;
 
 	Shader() = default;
 
