@@ -17,15 +17,14 @@ public:
 	
 	void movePlayer(Player& player);
 
+	glm::vec3 velocity = glm::vec3(0.0f);
 private:
 	static glm::vec3 processInput(const Controller& controller, const float yaw);
 	
 	// Return true if a triangle was hit.
 	void resolveCollision(Player& player, const std::vector<Triangle>& collisionData);
 
-	glm::vec3 velocity = glm::vec3(0.0f);
 	glm::vec3 colResponseDelta = glm::vec3(0.0f); // not carried over loops
-	float lastWalkSpeed = 0;
 
 	bool grounded = false;
 	bool jumping = false;
