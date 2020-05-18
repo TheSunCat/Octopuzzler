@@ -266,24 +266,20 @@ void PlayerController::animatePlayer(Player& playerIn)
 
 void PlayerController::movePlayer(Player& player)
 {
-	//if(double(rand()) / RAND_MAX < 0.1)
-	//{
-	//	for (int i = 0; i < 30000000; i++);
-	//}
-
-	
-	
 	// NAN check
 	if (velocity.x != velocity.x)
 		std::cout << "ERROR: velocity is " << Util::vecToStr(velocity) << std::endl;
 	
 	player.move(velocity + colResponseDelta);
-
-	//std::cout << "player x pos: " << player.position.x << " \t| player z pos: " << player.position.z << std::endl;
 	
 	// NAN check	
 	if (player.position.x != player.position.x)
 		std::cout << "ERROR: position is " << Util::vecToStr(player.position) << std::endl;
+}
+
+bool PlayerController::isMoving() const
+{
+	return Util::length2V3(velocity) != 0.0f;
 }
 
 glm::vec3 PlayerController::processInput(const Controller& controller, const float yaw)

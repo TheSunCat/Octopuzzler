@@ -143,7 +143,7 @@ void Outrospection::runTick()
 void Outrospection::updateCamera()
 {
 	// TODO need a better way to determine whether the camera should be auto-updated or not
-	camera.calculateCameraPosition(player, scene, Util::length2V3(playerController.velocity) > 0.0f);
+	camera.calculateCameraPosition(player, scene, playerController.isMoving());
 }
 
 void Outrospection::registerCallbacks() const
