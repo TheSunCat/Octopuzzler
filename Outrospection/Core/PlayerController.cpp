@@ -33,9 +33,9 @@ void PlayerController::acceleratePlayer(const Player& player, const Controller& 
 	velocity.z /= FRICTION;
 
 	// round low velocity to 0
-	if (abs(velocity.x) < 0.001)
+	if (abs(velocity.x) < 0.001f)
 		velocity.x = 0;
-	if (abs(velocity.z) < 0.001)
+	if (abs(velocity.z) < 0.001f)
 		velocity.z = 0;
 }
 
