@@ -9,8 +9,8 @@ class Camera;
 
 class Shader {
 public:
-	// the shader program ID
-	unsigned int ID = 0;
+	// the shader program's ID
+	GLuint ID = 0;
 
 	Shader() = default;
 

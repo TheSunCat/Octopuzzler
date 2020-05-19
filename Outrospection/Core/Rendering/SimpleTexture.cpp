@@ -1,8 +1,6 @@
 #include "SimpleTexture.h"
 
-#include <GLAD/glad.h>
-
-SimpleTexture::SimpleTexture(const unsigned int& _texId, const std::string& _texPath)
+SimpleTexture::SimpleTexture(const GLuint& _texId, const std::string& _texPath)
 {
 	texId = _texId;
 	texPath = _texPath;

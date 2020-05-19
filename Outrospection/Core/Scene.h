@@ -36,9 +36,9 @@ private:
 	void parseCollision(const std::string& name);
 
 	// skybox
-	static unsigned int loadCubemap(std::string name);
-	unsigned int cubemapTexture = 0;
-	unsigned int skyboxVAO = 0;
+	static GLuint loadCubemap(std::string name);
+	GLuint cubemapTexture = 0;
+	GLuint skyboxVAO = 0;
 
 	// DEBUG
 	Mesh colMesh;

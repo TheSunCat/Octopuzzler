@@ -6,12 +6,13 @@
 #include "Core/Rendering/TextureManager.h"
 
 Mesh::Mesh(const std::string& _name, const std::vector<Vertex>& _vertices,
-           const std::vector<unsigned int>& _indices) : Mesh(_name, _vertices, _indices, TextureManager::missingTexture)
+           const std::vector<GLuint>& _indices)
+	: Mesh(_name, _vertices, _indices, TextureManager::missingTexture)
 {
 	
 }
 
-Mesh::Mesh(const std::string& _name, const std::vector<Vertex>& _vertices, const std::vector<unsigned int>& _indices,
+Mesh::Mesh(const std::string& _name, const std::vector<Vertex>& _vertices, const std::vector<GLuint>& _indices,
            const SimpleTexture& _texture)
 {
 	name = _name;
@@ -30,7 +31,7 @@ Mesh::Mesh(const std::string& _name, const std::vector<Vertex>& _vertices, const
 	glBufferData(GL_ARRAY_BUFFER, _vertices.size() * sizeof(Vertex), &_vertices[0], GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indices.size() * sizeof(unsigned int), &_indices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indices.size() * sizeof(GLuint), &_indices[0], GL_STATIC_DRAW);
 
 	// pos
 	glEnableVertexAttribArray(0);
@@ -54,13 +55,12 @@ Mesh::Mesh(const std::string& _name, const std::vector<Vertex>& _vertices, const
 // render the mesh
 void Mesh::draw() const
 {
-
 	glActiveTexture(GL_TEXTURE0);
 	texture.bindTexture();
 
 	// draw mesh
 	glBindVertexArray(VAO);
-	glDrawElements(GL_TRIANGLES, indicesSize, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, indicesSize, GL_UNSIGNED_INT, nullptr);
 
 	// reset vals
 	glBindVertexArray(0);

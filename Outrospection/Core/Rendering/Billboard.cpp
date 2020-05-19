@@ -20,7 +20,7 @@ Billboard::Billboard(SimpleTexture _tex) : texture(std::move(_tex))
 		-0.5f,  1.0f
 	};
 
-	unsigned int quadVBO = 0;
+	GLuint quadVBO = 0;
 
 	glGenVertexArrays(1, &quadVAO);
 	glGenBuffers(1, &quadVBO);

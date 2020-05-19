@@ -53,7 +53,7 @@ Shader::Shader(const GLchar* vertexName, const GLchar* fragmentName)
 
 
 	// 2. compile shaders
-	unsigned int vertex, fragment;
+	GLuint vertex, fragment;
 	int success;
 	char infoLog[512];
 

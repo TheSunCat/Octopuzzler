@@ -71,7 +71,7 @@ public:
 		};
 
 		// screen quad VAO
-		unsigned int quadVBO;
+		GLuint quadVBO;
 		glGenVertexArrays(1, &quadVAO);
 		glGenBuffers(1, &quadVBO);
 		glBindVertexArray(quadVAO);
@@ -93,21 +93,21 @@ public:
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
 		// create a renderbuffer object for depth and stencil attachment (we won't be sampling these)
-		unsigned int rbo;
-		glGenRenderbuffers(1, &rbo);
-		glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+		GLuint RBO;
+		glGenRenderbuffers(1, &RBO);
+		glBindRenderbuffer(GL_RENDERBUFFER, RBO);
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, SCR_WIDTH, SCR_HEIGHT); // use a single renderbuffer object for both a depth AND stencil buffer.
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo); // now actually attach it
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO); // now actually attach it
 		// now that we actually created the framebuffer and added all attachments we want to check if it is complete
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 			std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
-	unsigned int quadVAO = 0;
-	unsigned int framebuffer = 0;
-	unsigned int textureColorbuffer = 0;
-	GLFWwindow* gameWindow;
+	GLuint quadVAO = 0;
+	GLuint framebuffer = 0;
+	GLuint textureColorbuffer = 0;
+	GLFWwindow* gameWindow{};
 
 	DISALLOW_COPY_AND_ASSIGN(OpenGL)
 };

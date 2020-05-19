@@ -51,5 +51,5 @@ private:
 	                                   const std::string& _curLine);
 
 	// triangulate a list of vertices into a face
-	static void verticesToIndicesTriangulated(std::vector<unsigned int>& indicesOut, const std::vector<Vertex>& _vertices);
+	static void verticesToIndicesTriangulated(std::vector<GLuint>& indicesOut, const std::vector<Vertex>& _vertices);
 };

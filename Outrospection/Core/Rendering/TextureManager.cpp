@@ -3,7 +3,6 @@
 #include <iostream>
 #include <sstream>
 
-
 #include "External/stb_image.h"
 
 SimpleTexture TextureManager::missingTexture(-1, "missing_texture");
@@ -17,7 +16,7 @@ TextureManager::TextureManager()
 		255, 0, 220  // purple, bottom right
 	};
 
-	unsigned int missingTexId = -1;
+	GLuint missingTexId = -1;
 	glGenTextures(1, &missingTexId);
 	createTexture(missingTexId, missingTexData, GL_RGB, 2, 2);
 
@@ -28,7 +27,7 @@ SimpleTexture TextureManager::loadTexture(Resource& r)
 {
 	const std::string path = r.getResourcePath();
 
-	const unsigned int texId = textureFromFile(path);
+	const GLuint texId = textureFromFile(path);
 
 	if (texId != -1)
 	{
@@ -45,11 +44,12 @@ SimpleTexture TextureManager::loadTexture(Resource& r)
 	}
 }
 
-TickableTexture TextureManager::loadAnimatedTexture(Resource& r, unsigned int textureTickLength, unsigned int textureFrameCount)
+TickableTexture TextureManager::loadAnimatedTexture(Resource& r, unsigned int textureTickLength,
+                                                    const unsigned int textureFrameCount)
 {
 	std::string path = r.getResourcePath();
 
-	std::vector<unsigned int> textureIds;
+	std::vector<GLuint> textureIds;
 
 	for (unsigned int i = 0; i < textureFrameCount; i++)
 	{
@@ -57,7 +57,7 @@ TickableTexture TextureManager::loadAnimatedTexture(Resource& r, unsigned int te
 		ss << i << ".png";
 		std::string currentPath = ss.str();
 
-		unsigned int currentTextureId = textureFromFile(currentPath);
+		GLuint currentTextureId = textureFromFile(currentPath);
 
 		if (currentTextureId != -1) {
 			textureIds.push_back(currentTextureId);
@@ -107,7 +107,8 @@ void TextureManager::tickAllTextures()
 	}
 }
 
-void TextureManager::createTexture(const unsigned int& texId, const unsigned char* data, const GLenum& format, const unsigned int& width, const unsigned int& height)
+void TextureManager::createTexture(const GLuint& texId, const unsigned char* data, const GLenum& format,
+                                   const unsigned int& width, const unsigned int& height)
 {
 	glBindTexture(GL_TEXTURE_2D, texId);
 	glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
@@ -119,9 +120,9 @@ void TextureManager::createTexture(const unsigned int& texId, const unsigned cha
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
-unsigned int TextureManager::textureFromFile(const std::string& filename)
+GLuint TextureManager::textureFromFile(const std::string& filename)
 {
-	unsigned int tex;
+	GLuint tex;
 	int width, height;
 	glGenTextures(1, &tex);
 
