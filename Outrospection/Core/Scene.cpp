@@ -65,7 +65,7 @@ Scene::Scene(std::string _name)
 	};
 
 	// skybox VAO
-	unsigned int skyboxVBO;
+	GLuint skyboxVBO;
 	glGenVertexArrays(1, &skyboxVAO);
 	glGenBuffers(1, &skyboxVBO);
 	glBindVertexArray(skyboxVAO);
@@ -153,7 +153,7 @@ void Scene::loadScene()
 						colVerticesVector.push_back(Vertex{ t.v2, t.n });
 					}
 
-					std::vector<unsigned int> indices(colVerticesVector.size());
+					std::vector<GLuint> indices(colVerticesVector.size());
 					for (unsigned int i = 0; i < colVerticesVector.size(); i++)
 					{
 						indices[i] = i;
@@ -304,7 +304,7 @@ void Scene::parseCollision(const std::string& name)
 	}
 }
 
-unsigned int Scene::loadCubemap(std::string name)
+GLuint Scene::loadCubemap(std::string name)
 {
 	name = "./res/ObjectData/" + name + "/";
 
@@ -317,7 +317,7 @@ unsigned int Scene::loadCubemap(std::string name)
 		name + "back.png"
 	};
 
-	unsigned int textureID;
+	GLuint textureID;
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 

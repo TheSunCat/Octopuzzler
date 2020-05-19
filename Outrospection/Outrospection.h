@@ -59,9 +59,9 @@ private:
 	Shader screenShader;
 	Shader simpleShader;
 
-	unsigned int framebuffer, intermediateFBO;
-	unsigned int textureColorbuffer;
-	unsigned int quadVAO;
+	GLuint framebuffer, intermediateFBO;
+	GLuint textureColorbuffer;
+	GLuint quadVAO;
 
 	// camera stuff
 	Camera camera = Camera(glm::vec3(0.0f, 0.0f, 3.0f));

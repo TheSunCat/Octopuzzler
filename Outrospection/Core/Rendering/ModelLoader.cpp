@@ -91,16 +91,14 @@ bool ModelLoader::loadFile(const std::string& filePath)
 	std::vector<glm::vec3> normals;
 
 	std::vector<Vertex> vertices;
-	std::vector<unsigned int> indices;
+	std::vector<GLuint> indices;
 
 	std::vector<std::string> meshMatNames;
 
 	// controls whether the mesh has been named or not. name should be first 'o' or 'g'
-	bool listening = false;
+	bool meshListening = false;
 	std::string meshName;
-
-	//MeshData tempMesh;
-
+	
 	bool matListening = false;
 	Material tempMaterial;
 
@@ -112,16 +110,16 @@ bool ModelLoader::loadFile(const std::string& filePath)
 
 		
 		switch (curLine[0]) {
-		case 'o': // Generate a Mesh Object or Prepare for an object to be created
+		case 'o': // generate a Mesh Object or Prepare for an object to be created
 		{
-			if (!listening)
+			if (!meshListening)
 			{
-				listening = true;
+				meshListening = true;
 
 				// name the mesh
 				meshName = curLine.substr(2);
 			}
-			else // if(listening)
+			else // if(meshListening)
 			{
 				// Generate the mesh to put into the array
 				if (!indices.empty() && !vertices.empty()) // if there are verts and indices
@@ -189,14 +187,14 @@ bool ModelLoader::loadFile(const std::string& filePath)
 				vertices.emplace_back(i);
 			}
 
-			std::vector<unsigned int> indicesVector;
+			std::vector<GLuint> indicesVector;
 
 			verticesToIndicesTriangulated(indicesVector, vertsFromFace);
 
 			// Add Indices
-			for (unsigned int i : indicesVector)
+			for (GLuint i : indicesVector)
 			{
-				unsigned int curIndex = static_cast<unsigned int>(vertices.size() - vertsFromFace.size()) + i;
+				GLuint curIndex = static_cast<GLuint>(vertices.size() - vertsFromFace.size()) + i;
 				indices.push_back(curIndex);
 			}
 
@@ -522,7 +520,7 @@ void ModelLoader::verticesFromFaceString(std::vector<Vertex>& outputVertices, co
 	splitFaceStr.clear();
 }
 
-void ModelLoader::verticesToIndicesTriangulated(std::vector<unsigned int>& indicesOut, const std::vector<Vertex>& _vertices)
+void ModelLoader::verticesToIndicesTriangulated(std::vector<GLuint>& indicesOut, const std::vector<Vertex>& _vertices)
 {
 	// less than 3 verts means no tris, so exit
 	if (_vertices.size() < 3)
@@ -543,35 +541,35 @@ void ModelLoader::verticesToIndicesTriangulated(std::vector<unsigned int>& indic
 	while (true)
 	{
 		// For every vertex
-		for (unsigned int index = 0; index < verticesVector.size(); index++)
+		for (unsigned int vertexIndex = 0; vertexIndex < verticesVector.size(); vertexIndex++)
 		{
 			Vertex prevVertex;
 
-			if (index == 0)
+			if (vertexIndex == 0)
 				prevVertex = verticesVector[verticesVector.size() - 1];
 			else
-				prevVertex = verticesVector[index - 1];
+				prevVertex = verticesVector[vertexIndex - 1];
 
-			Vertex curVertex = verticesVector[index];
+			Vertex curVertex = verticesVector[vertexIndex];
 
 			Vertex nextVertex;
-			if (index == verticesVector.size() - 1)
+			if (vertexIndex == verticesVector.size() - 1)
 				nextVertex = verticesVector[0];
 			else
-				nextVertex = verticesVector[1 + index];
+				nextVertex = verticesVector[1 + vertexIndex];
 
 			// 3 verts left means this is the last tri
 			if (verticesVector.size() == 3)
 			{
 				// create tri from current, previous, and next vert
-				for (unsigned int j = 0; j < verticesVector.size(); j++)
+				for (GLuint index = 0; index < verticesVector.size(); index++)
 				{
-					if (_vertices[j].pos == curVertex.pos)
-						indicesOut.push_back(j);
-					if (_vertices[j].pos == prevVertex.pos)
-						indicesOut.push_back(j);
-					if (_vertices[j].pos == nextVertex.pos)
-						indicesOut.push_back(j);
+					if (_vertices[index].pos == curVertex.pos)
+						indicesOut.push_back(index);
+					if (_vertices[index].pos == prevVertex.pos)
+						indicesOut.push_back(index);
+					if (_vertices[index].pos == nextVertex.pos)
+						indicesOut.push_back(index);
 				}
 
 				// we're done!
@@ -582,14 +580,14 @@ void ModelLoader::verticesToIndicesTriangulated(std::vector<unsigned int>& indic
 			if (verticesVector.size() == 4)
 			{
 				// create tri from current, previous, and next vert
-				for (unsigned int j = 0; j < _vertices.size(); j++)
+				for (GLuint index = 0; index < _vertices.size(); index++)
 				{
-					if (_vertices[j].pos == curVertex.pos)
-						indicesOut.push_back(j);
-					if (_vertices[j].pos == prevVertex.pos)
-						indicesOut.push_back(j);
-					if (_vertices[j].pos == nextVertex.pos)
-						indicesOut.push_back(j);
+					if (_vertices[index].pos == curVertex.pos)
+						indicesOut.push_back(index);
+					if (_vertices[index].pos == prevVertex.pos)
+						indicesOut.push_back(index);
+					if (_vertices[index].pos == nextVertex.pos)
+						indicesOut.push_back(index);
 				}
 
 				glm::vec3 tempVec;
@@ -605,14 +603,14 @@ void ModelLoader::verticesToIndicesTriangulated(std::vector<unsigned int>& indic
 				}
 
 				// create tri from current, previous, and next vert
-				for (unsigned int j = 0; j < _vertices.size(); j++)
+				for (GLuint index = 0; index < _vertices.size(); index++)
 				{
-					if (_vertices[j].pos == prevVertex.pos)
-						indicesOut.push_back(j);
-					if (_vertices[j].pos == nextVertex.pos)
-						indicesOut.push_back(j);
-					if (_vertices[j].pos == tempVec)
-						indicesOut.push_back(j);
+					if (_vertices[index].pos == prevVertex.pos)
+						indicesOut.push_back(index);
+					if (_vertices[index].pos == nextVertex.pos)
+						indicesOut.push_back(index);
+					if (_vertices[index].pos == tempVec)
+						indicesOut.push_back(index);
 				}
 
 				// we're done!
@@ -620,13 +618,13 @@ void ModelLoader::verticesToIndicesTriangulated(std::vector<unsigned int>& indic
 				break;
 			}
 
-			// If Vertex is not an interior vertex
+			// if Vertex is not an interior vertex
 			float angle = Util::angleBetweenV3(prevVertex.pos - curVertex.pos, nextVertex.pos - curVertex.pos)
 											* (180.0f / 3.14159265359f);
 			if (angle <= 0 && angle >= 180)
 				continue;
 
-			// If any vertices are within this triangle
+			// if any vertices are within this triangle
 			bool inTri = false;
 			for (const Vertex& vertex : _vertices)
 			{
@@ -644,14 +642,14 @@ void ModelLoader::verticesToIndicesTriangulated(std::vector<unsigned int>& indic
 				continue;
 
 			// create tri from current, previous, and next vert
-			for (unsigned int j = 0; j < _vertices.size(); j++)
+			for (GLuint index = 0; index < _vertices.size(); index++)
 			{
-				if (_vertices[j].pos == curVertex.pos)
-					indicesOut.push_back(j);
-				if (_vertices[j].pos == prevVertex.pos)
-					indicesOut.push_back(j);
-				if (_vertices[j].pos == nextVertex.pos)
-					indicesOut.push_back(j);
+				if (_vertices[index].pos == curVertex.pos)
+					indicesOut.push_back(index);
+				if (_vertices[index].pos == prevVertex.pos)
+					indicesOut.push_back(index);
+				if (_vertices[index].pos == nextVertex.pos)
+					indicesOut.push_back(index);
 			}
 
 			// remove curVertex from the working list
@@ -665,7 +663,7 @@ void ModelLoader::verticesToIndicesTriangulated(std::vector<unsigned int>& indic
 			}
 
 			// reset index to the start (-1 since loop will add 1 to it)
-			index = -1;
+			vertexIndex = -1;
 		}
 
 		// no triangles were created

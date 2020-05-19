@@ -32,7 +32,7 @@ public:
 
 	DISALLOW_COPY_AND_ASSIGN(TextureManager)
 private:
-	unsigned int textureFromFile(const std::string& filename);
-	void createTexture(const unsigned int& texId, const unsigned char* data, const GLenum& format,
+	GLuint textureFromFile(const std::string& filename);
+	void createTexture(const GLuint& texId, const unsigned char* data, const GLenum& format,
 	                   const unsigned int& width, const unsigned int& height);
 };
