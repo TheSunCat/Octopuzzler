@@ -1,7 +1,10 @@
 #include "Outrospection.h"
 
+#include <glm/ext/matrix_clip_space.hpp>
+
 #include "Util.h"
 #include "Source.h"
+#include "Core/UI/GUIMenu.h"
 
 Outrospection::Outrospection() : opengl()
 {
@@ -101,13 +104,13 @@ void Outrospection::runGameLoop()
 
 	player.draw(billboardShader);
 
-	Util::glError(true);
+	//Util::glError(true);
 
-	// Bind to default framebuffer and draw ours
-	// -----------------------------------------
+	glDisable(GL_DEPTH_TEST); // disable depth test so stuff near camera isn't clipped
+	
+	// bind to default framebuffer and draw custom one over that
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
 	// clear all relevant buffers
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessery actually, since we won't be able to see behind the quad anyways)
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -117,6 +120,12 @@ void Outrospection::runGameLoop()
 	glBindTexture(GL_TEXTURE_2D, textureColorbuffer);	// use the color attachment texture as the texture of the quad plane
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
+	// draw UI
+	GUIMenu menu = GUIMenu("epic", {
+		UIComponent("dummy", .5f, .5f, glm::vec2(10, 10))
+		});
+	menu.draw(spriteShader);
+	
 	glEnable(GL_DEPTH_TEST); // re-enable depth testing
 
 	// Check for errors
@@ -161,6 +170,13 @@ void Outrospection::createShaders()
 	skyShader       = Shader("sky"      , "sky"      );
 	screenShader    = Shader("screen"   , "screen"   );
 	simpleShader    = Shader("simple"   , "simple"   );
+	spriteShader    = Shader("sprite"   , "sprite"   );
+
+	// set up 2d shader
+	const glm::mat4 projection = glm::ortho(0.0f, float(SCR_WIDTH),
+	                                        float(SCR_HEIGHT), 0.0f, -1.0f, 1.0f);
+	spriteShader.use();
+	spriteShader.setMat4("projection", projection);
 }
 
 // set proper viewport size when window is resized
@@ -173,8 +189,8 @@ void Outrospection::mouse_callback(GLFWwindow* window, double xPosD, double yPos
 {
 	Outrospection* orig = getOutrospection();
 
-	const float xPos = float(xPosD);
-	const float yPos = float(yPosD);
+	const auto xPos = float(xPosD);
+	const auto yPos = float(yPosD);
 	
 	if (orig->firstMouse) {
 		orig->lastX = xPos;
