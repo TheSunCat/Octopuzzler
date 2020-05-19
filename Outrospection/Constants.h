@@ -1,14 +1,14 @@
 #pragma once
 
 #define DISALLOW_COPY_AND_ASSIGN(TypeName) \
-  TypeName(const TypeName&);   \
-  void operator=(const TypeName&);
+  TypeName(const TypeName&) = delete;   \
+  TypeName& operator=(const TypeName&) = delete;
 
 #define DISALLOW_COPY(TypeName) \
-  TypeName(const TypeName&);
+  TypeName(const TypeName&) = delete;
 
 #define DISALLOW_ASSIGN(TypeName) \
-  void operator=(const TypeName&);
+  TypeName& operator=(const TypeName&) = delete;
 
 // subtract from vertical velocity
 constexpr auto GRAVITY = -0.25f;
