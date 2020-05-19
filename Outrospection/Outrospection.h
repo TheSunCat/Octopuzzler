@@ -53,11 +53,13 @@ private:
 	float lastFrame = 0.0f; // Time of last frame
 
 	GLFWwindow* gameWindow;
+	
 	Shader objectShader;
 	Shader billboardShader;
 	Shader skyShader;
 	Shader screenShader;
 	Shader simpleShader;
+	Shader spriteShader;
 
 	GLuint framebuffer, intermediateFBO;
 	GLuint textureColorbuffer;

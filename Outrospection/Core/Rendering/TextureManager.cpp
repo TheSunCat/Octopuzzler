@@ -63,7 +63,7 @@ TickableTexture TextureManager::loadAnimatedTexture(Resource& r, unsigned int te
 			textureIds.push_back(currentTextureId);
 		}
 		else {
-			std::cerr << "Failed to generate texture ID for " << path << std::endl;
+			std::cerr << "Failed to generate texture ID for " << currentPath << std::endl;
 
 			textureIds.push_back(missingTexture.texId);
 		}
@@ -79,7 +79,7 @@ void TextureManager::bindTexture(Resource& r)
 {
 	const SimpleTexture tex = get(r);
 
-	tex.bindTexture();
+	tex.bind();
 }
 
 SimpleTexture TextureManager::get(Resource& r)

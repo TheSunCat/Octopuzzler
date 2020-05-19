@@ -49,7 +49,7 @@ void Billboard::draw(const Shader& _shader, const glm::vec3& _pos, const SimpleT
 
 	// texture
 	glActiveTexture(GL_TEXTURE0);
-	_tex.bindTexture();
+	_tex.bind();
 
 	Util::glError(true);
 

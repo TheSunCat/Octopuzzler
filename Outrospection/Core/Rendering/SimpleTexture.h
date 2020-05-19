@@ -11,7 +11,7 @@ public:
 
 	SimpleTexture(const GLuint& _texId, const std::string& _texPath);
 
-	void bindTexture() const;
+	void bind() const;
 
 	GLuint texId = 0;
 
