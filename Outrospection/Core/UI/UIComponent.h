@@ -19,7 +19,7 @@ public:
 	
 	std::string name;
 	glm::vec2 position;
-	float width = 0.0f, height = 0.0f;
+	float width = 10.0f, height = 10.0f;
 private:
 	SimpleTexture texture = TextureManager::missingTexture;
 
