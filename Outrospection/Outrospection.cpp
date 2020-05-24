@@ -120,9 +120,10 @@ void Outrospection::runGameLoop()
 	glBindTexture(GL_TEXTURE_2D, textureColorbuffer);	// use the color attachment texture as the texture of the quad plane
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
+
 	// draw UI
 	GUIMenu menu = GUIMenu("epic", {
-		UIComponent("dummy", .5f, .5f, glm::vec2(10, 10))
+		UIComponent("dummy", 0.0f, 0.0f, glm::vec2(100, 100))
 		});
 	menu.draw(spriteShader);
 	

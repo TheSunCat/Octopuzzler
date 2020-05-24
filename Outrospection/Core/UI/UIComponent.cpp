@@ -9,11 +9,11 @@ GLuint UIComponent::quadVAO = 0;
 
 UIComponent::UIComponent(const std::string& _texName, const float posXPercent, const float posYPercent,
                          const glm::vec2 dimensions)
-	: UIComponent(_texName, glm::vec2(SCR_WIDTH* posXPercent, SCR_HEIGHT* posYPercent), dimensions)
+	: UIComponent(_texName, glm::vec2(SCR_WIDTH* posXPercent, SCR_HEIGHT* posYPercent), dimensions * glm::vec2(SCR_WIDTH, SCR_HEIGHT))
 { }
 
 UIComponent::UIComponent(std::string _texName, const glm::vec2& _position, const glm::vec2& dimensions)
-	: name(std::move(_texName)), position(_position)
+	: name(std::move(_texName)), position(_position), width(dimensions.x), height(dimensions.y)
 {
 	TextureManager& _textureManager = getOutrospection()->textureManager;
 	Resource r("UI/", name + ".png");
