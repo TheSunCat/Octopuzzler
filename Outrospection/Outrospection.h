@@ -12,8 +12,7 @@
 #include "Core/Scene.h"
 #include "Core/Player.h"
 #include "Core/Camera.h"
-
-class GUIScreen;
+#include "Core/UI/GUIScreen.h"
 
 class Outrospection {
 public:
