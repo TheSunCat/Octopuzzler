@@ -1,6 +1,7 @@
 #pragma once
 
-typedef float ControllerButton;
+// stores the amount of frames the button is down, 0 if never
+typedef unsigned int ControllerButton;
 
 class Controller
 {
