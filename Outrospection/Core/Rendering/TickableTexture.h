@@ -10,9 +10,9 @@ class TickableTexture : public SimpleTexture
 public:
 	TickableTexture(const std::vector<GLuint>& texIds, const std::string& _texPath, const unsigned int _frameLength);
 
-	void step();
+	void tick() override;
 
-	void step(unsigned int& stepCount);
+	void tick(unsigned int& stepCount);
 
 	void nextFrame();
 

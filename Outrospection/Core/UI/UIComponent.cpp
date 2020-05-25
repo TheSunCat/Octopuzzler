@@ -8,8 +8,9 @@
 GLuint UIComponent::quadVAO = 0;
 
 UIComponent::UIComponent(const std::string& _texName, const float posXPercent, const float posYPercent,
-                         const glm::vec2 dimensions)
-	: UIComponent(_texName, glm::vec2(SCR_WIDTH* posXPercent, SCR_HEIGHT* posYPercent), dimensions * glm::vec2(SCR_WIDTH, SCR_HEIGHT))
+	const float widthPercent, const float heightPercent)
+	: UIComponent(_texName, glm::vec2(SCR_WIDTH* posXPercent, SCR_HEIGHT* posYPercent),
+		glm::vec2(widthPercent * SCR_WIDTH, heightPercent * SCR_HEIGHT))
 { }
 
 UIComponent::UIComponent(std::string _texName, const glm::vec2& _position, const glm::vec2& dimensions)
@@ -70,3 +71,5 @@ void UIComponent::draw(Shader& shader) const
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);
 }
+
+void UIComponent::tick() {}

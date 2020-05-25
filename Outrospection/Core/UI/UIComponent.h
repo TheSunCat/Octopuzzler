@@ -11,15 +11,19 @@ class Shader;
 class UIComponent
 {
 public:
-	UIComponent(const std::string& _texName, const float posXPercent, const float posYPercent, const glm::vec2 dimensions);
+	UIComponent(const std::string& _texName, const float posXPercent, const float posYPercent, const float widthPercent, const float heightPercent);
 	
 	UIComponent(std::string _texName, const glm::vec2& _position, const glm::vec2& dimensions);
 
-	void draw(Shader& shader) const;
+	virtual void draw(Shader& shader) const;
+
+	virtual void tick();
 	
 	std::string name;
 	glm::vec2 position;
 	float width = 10.0f, height = 10.0f;
+
+	virtual ~UIComponent() = default;
 private:
 	SimpleTexture texture = TextureManager::missingTexture;
 

@@ -15,35 +15,29 @@
 #include "Core/UI/GUIScreen.h"
 
 class Outrospection {
+	OpenGL opengl; // defined at the beginning so nothing gets initialized before this
+	
 public:
 	Outrospection();
 
-	OpenGL opengl;
-
 	void run();
 
-	Scene scene;
-
-	Player player;
-
-	PlayerController playerController;
-
 	void pauseGame();
-
 	void unpauseGame();
 
+	void setGUIScreen(GUIScreen& screen, const bool replace = true);
+	
+	Scene scene;
+	Player player;
+	PlayerController playerController;
 	TextureManager textureManager;
-
 	GameSettings gameSettings;
-
-	Controller controller;
+	Controller controller{};
 
 	DISALLOW_COPY_AND_ASSIGN(Outrospection)
 private:
 	void runGameLoop();
-
 	void runTick();
-
 	void updateCamera();
 
 	// set to false when the game loop shouldn't run
@@ -62,7 +56,7 @@ private:
 	Shader simpleShader;
 	Shader spriteShader;
 
-	GLuint framebuffer, intermediateFBO;
+	GLuint framebuffer, intermediateFBO = 0;
 	GLuint textureColorbuffer;
 	GLuint quadVAO;
 
@@ -80,5 +74,7 @@ private:
 	void createShaders();
 	void updateInput();
 
-	bool isGamePaused;
+	bool isGamePaused{};
+
+	std::vector<GUIScreen> loadedGUIs;
 };

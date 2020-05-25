@@ -6,7 +6,7 @@ TickableTexture::TickableTexture(const std::vector<GLuint>& texIds, const std::s
 	
 }
 
-void TickableTexture::step()
+void TickableTexture::tick()
 {
 	frameTally++;
 
@@ -17,11 +17,11 @@ void TickableTexture::step()
 	}
 }
 
-void TickableTexture::step(unsigned int& stepCount)
+void TickableTexture::tick(unsigned int& stepCount)
 {
 	for (unsigned int i = 0; i < stepCount; i++)
 	{
-		step();
+		tick();
 	}
 }
 

@@ -11,6 +11,8 @@ void SimpleTexture::bind() const
 	glBindTexture(GL_TEXTURE_2D, texId);
 }
 
+void SimpleTexture::tick() {}
+
 bool SimpleTexture::operator== (const SimpleTexture& st) const
 {
 	return texId == st.texId;

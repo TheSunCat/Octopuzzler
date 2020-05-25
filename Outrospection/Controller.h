@@ -1,5 +1,10 @@
 #pragma once
 
+struct ControllerButton
+{
+	float framesDown;
+};
+
 class Controller
 {
 public:
@@ -7,11 +12,11 @@ public:
 
 	// INPUT
 
-	bool jump;
-	bool talk;
-	bool pause;
+	ControllerButton jump;
+	ControllerButton talk;
+	ControllerButton pause;
 
-	bool debugBreak;
+	ControllerButton debugBreak;
 	
 	// L stick
 	float leftForward;
