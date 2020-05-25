@@ -18,6 +18,10 @@ Outrospection::Outrospection() : opengl()
 
 	scene = Scene("TestLevel000");
 	player = Player(glm::vec3(0.0, 3.0, 0.0));
+
+	GUIScreen ingameGUI("Ingame GUI", { UIComponent("dummy", 0, 0, 0.3, 0.3) });
+	
+	setGUIScreen(ingameGUI);
 }
 
 void Outrospection::run()
@@ -35,11 +39,28 @@ void Outrospection::run()
 void Outrospection::pauseGame()
 {
 	isGamePaused = true;
+
+	GUIScreen pauseGUI("Pause GUI", { UIComponent("paused", 0.5, 0.5, 0.4, 0.4) });
+	setGUIScreen(pauseGUI);
 }
 
 void Outrospection::unpauseGame()
 {
 	isGamePaused = false;
+
+	GUIScreen ingameGUI("Ingame GUI", { UIComponent("dummy", 0, 0, 0.3, 0.3) });
+	setGUIScreen(ingameGUI);
+}
+
+void Outrospection::setGUIScreen(GUIScreen& screen, const bool replace)
+{
+	if(replace && !loadedGUIs.empty())
+	{
+		loadedGUIs.pop_back();
+	}
+
+	// move to avoid copy
+	loadedGUIs.push_back(std::move(screen));
 }
 
 void Outrospection::runGameLoop()
@@ -57,9 +78,14 @@ void Outrospection::runGameLoop()
 	}
 
 	// exit game on next loop iteration
-	if (controller.pause)
-		running = false;
-
+	if (controller.pause.framesDown == 1)
+	{
+		if (isGamePaused)
+			unpauseGame();
+		else
+			pauseGame();
+	}
+	
 	// player always "faces" forward, so W goes away from camera
 	player.yaw = camera.yaw;
 
@@ -122,10 +148,10 @@ void Outrospection::runGameLoop()
 
 
 	// draw UI
-	GUIScreen menu = GUIScreen("epic", {
-		UIComponent("dummy", 0.0f, 0.0f, glm::vec2(100, 100))
-		});
-	menu.draw(spriteShader);
+	for(const auto& screen : loadedGUIs)
+	{
+		screen.draw(spriteShader);
+	}
 	
 	glEnable(GL_DEPTH_TEST); // re-enable depth testing
 
@@ -147,6 +173,11 @@ void Outrospection::runTick()
 	playerController.movePlayer(player);
 
 	updateCamera();
+
+	for(auto& screen : loadedGUIs)
+	{
+		screen.tick();
+	}
 }
 
 void Outrospection::updateCamera()
@@ -232,19 +263,19 @@ void Outrospection::key_callback(GLFWwindow* window, int key, int scancode, int 
 		}
 		if (key == gameSettings.keyBindJump.keyCode)
 		{
-			controller.jump = false;
+			controller.jump.framesDown = false;
 		}
 		if (key == gameSettings.keyBindExit.keyCode)
 		{
-			controller.pause = false;
+			controller.pause.framesDown = false;
 		}
 		if(key == gameSettings.keyBindTalk.keyCode)
 		{
-			controller.talk = false;
+			controller.talk.framesDown = false;
 		}
 		if(key == gameSettings.keyBindBreak.keyCode)
 		{
-			controller.debugBreak = false;
+			controller.debugBreak.framesDown = false;
 		}
 	}
 }
@@ -287,10 +318,9 @@ void Outrospection::updateInput()
 
 			controller.leftTrigger = Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_LEFT_TRIGGER]);
 
-
-			controller.jump = gamepadState.buttons[GLFW_GAMEPAD_BUTTON_A];
-			controller.talk = gamepadState.buttons[GLFW_GAMEPAD_BUTTON_X];
-			controller.pause = gamepadState.buttons[GLFW_GAMEPAD_BUTTON_START];
+			controller.jump.framesDown  = gamepadState.buttons[GLFW_GAMEPAD_BUTTON_A]     ? controller.jump.framesDown  + 1 : false;
+			controller.talk.framesDown  = gamepadState.buttons[GLFW_GAMEPAD_BUTTON_X]     ? controller.talk.framesDown  + 1 : false;
+			controller.pause.framesDown = gamepadState.buttons[GLFW_GAMEPAD_BUTTON_START] ? controller.pause.framesDown + 1 : false;
 		}
 		else // have to manually set everything :c
 		{
@@ -330,9 +360,9 @@ void Outrospection::updateInput()
 			}
 			else
 			{
-				controller.jump = rawButtons[BUTTON_A];
-				controller.talk = rawButtons[BUTTON_X];
-				controller.pause = rawButtons[BUTTON_START];
+				controller.jump.framesDown = rawButtons[BUTTON_A] ? controller.jump.framesDown + 1 : false;
+				controller.talk.framesDown = rawButtons[BUTTON_X] ? controller.talk.framesDown + 1 : false;
+				controller.pause.framesDown = rawButtons[BUTTON_START] ? controller.pause.framesDown + 1 : false;
 				// TODO add more controls lol
 			}
 		}
@@ -369,10 +399,10 @@ void Outrospection::updateInput()
 		controller.leftSide = leftSideInput;
 
 
-		controller.jump = glfwGetKey(gameWindow, gameSettings.keyBindJump.keyCode) == GLFW_PRESS;
-		controller.talk = glfwGetKey(gameWindow, gameSettings.keyBindTalk.keyCode) == GLFW_PRESS;
-		controller.pause = glfwGetKey(gameWindow, gameSettings.keyBindExit.keyCode) == GLFW_PRESS;
-		controller.debugBreak = glfwGetKey(gameWindow, gameSettings.keyBindBreak.keyCode) == GLFW_PRESS;
+		controller.jump.framesDown = glfwGetKey(gameWindow, gameSettings.keyBindJump.keyCode) == GLFW_PRESS ? controller.jump.framesDown + 1 : false;
+		controller.talk.framesDown = glfwGetKey(gameWindow, gameSettings.keyBindTalk.keyCode) == GLFW_PRESS ? controller.talk.framesDown + 1 : false;
+		controller.pause.framesDown = glfwGetKey(gameWindow, gameSettings.keyBindExit.keyCode) == GLFW_PRESS ? controller.pause.framesDown + 1 : false;
+		controller.debugBreak.framesDown = glfwGetKey(gameWindow, gameSettings.keyBindBreak.keyCode) == GLFW_PRESS ? controller.debugBreak.framesDown + 1 : false;
 	}
 
 	if (VERBOSE)

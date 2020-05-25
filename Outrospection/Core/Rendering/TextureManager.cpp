@@ -98,12 +98,12 @@ SimpleTexture TextureManager::get(Resource& r)
 	return tex;
 }
 
-// Called every tick, calls step on every tickable texture.
+// Called every tick, calls tick on every tickable texture.
 void TextureManager::tickAllTextures()
 {
 	for(TickableTexture& tickableTexture : tickableTextures)
 	{
-		tickableTexture.step();
+		tickableTexture.tick();
 	}
 }
 

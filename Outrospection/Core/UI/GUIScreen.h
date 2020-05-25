@@ -11,8 +11,11 @@ public:
 	
 	GUIScreen(std::string _name, std::vector<UIComponent> _elements);
 
-	void draw(Shader& shader);
+	virtual void draw(Shader& shader) const;
 
+	virtual void tick();
+
+	virtual ~GUIScreen() = default;
 private:
 	std::string name;
 	std::vector<UIComponent> elements;

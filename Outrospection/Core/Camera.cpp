@@ -33,7 +33,7 @@ Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float u
 
 void Camera::calculateCameraPosition(const Player& player, const Scene& scene, const bool shouldAutoCam)
 {
-	if (getOutrospection()->controller.debugBreak)
+	if (getOutrospection()->controller.debugBreak.framesDown)
 	{
 		std::cout << "DEBUG: break" << std::endl;
 	}
