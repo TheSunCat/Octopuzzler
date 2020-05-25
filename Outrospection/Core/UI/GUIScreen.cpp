@@ -1,16 +1,16 @@
-﻿#include "GUIMenu.h"
+﻿#include "GUIScreen.h"
 
 #include <utility>
 
 #include "Core/Rendering/Shader.h"
 
-GUIMenu::GUIMenu(std::string _name, std::vector<UIComponent> _elements)
+GUIScreen::GUIScreen(std::string _name, std::vector<UIComponent> _elements)
 	: name(std::move(_name)), elements(std::move(_elements))
 {
 	
 }
 
-void GUIMenu::draw(Shader& shader)
+void GUIScreen::draw(Shader& shader)
 {
 	for(const UIComponent& element : elements)
 	{

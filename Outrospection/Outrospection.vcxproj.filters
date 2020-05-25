@@ -100,7 +100,7 @@
     <ClInclude Include="Core\UI\UIComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\UI\GUIMenu.h">
+    <ClInclude Include="Core\UI\GUIScreen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -180,7 +180,7 @@
     <ClCompile Include="Core\UI\UIComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Core\UI\GUIMenu.cpp">
+    <ClCompile Include="Core\UI\GUIScreen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
