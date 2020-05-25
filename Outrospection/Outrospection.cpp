@@ -220,7 +220,7 @@ void Outrospection::key_callback(GLFWwindow* window, int key, int scancode, int 
 	const GameSettings& gameSettings = getOutrospection()->gameSettings;
 	Controller& controller = getOutrospection()->controller;
 
-	if (GLFW_RELEASE)
+	if (action == GLFW_RELEASE)
 	{
 		if (key == gameSettings.keyBindForward.keyCode || key == gameSettings.keyBindBackward.keyCode)
 		{
