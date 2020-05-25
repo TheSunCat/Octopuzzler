@@ -4,12 +4,12 @@
 
 #include "UIComponent.h"
 
-class GUIMenu
+class GUIScreen
 {
 public:
-	GUIMenu(const std::string& _name);
+	GUIScreen(const std::string& _name);
 	
-	GUIMenu(std::string _name, std::vector<UIComponent> _elements);
+	GUIScreen(std::string _name, std::vector<UIComponent> _elements);
 
 	void draw(Shader& shader);
 

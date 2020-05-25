@@ -4,7 +4,7 @@
 
 #include "Util.h"
 #include "Source.h"
-#include "Core/UI/GUIMenu.h"
+#include "Core/UI/GUIScreen.h"
 
 Outrospection::Outrospection() : opengl()
 {
@@ -112,7 +112,7 @@ void Outrospection::runGameLoop()
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	// clear all relevant buffers
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessery actually, since we won't be able to see behind the quad anyways)
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessary actually, since we won't be able to see behind the quad anyways)
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	screenShader.use();
@@ -122,7 +122,7 @@ void Outrospection::runGameLoop()
 
 
 	// draw UI
-	GUIMenu menu = GUIMenu("epic", {
+	GUIScreen menu = GUIScreen("epic", {
 		UIComponent("dummy", 0.0f, 0.0f, glm::vec2(100, 100))
 		});
 	menu.draw(spriteShader);

@@ -201,7 +201,7 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
     <ClInclude Include="Core\Rendering\SimpleTexture.h" />
     <ClInclude Include="Core\Rendering\TextureManager.h" />
     <ClInclude Include="Core\Scene.h" />
-    <ClInclude Include="Core\UI\GUIMenu.h" />
+    <ClInclude Include="Core\UI\GUIScreen.h" />
     <ClInclude Include="Core\UI\UIComponent.h" />
     <ClInclude Include="External\stb_image.h" />
     <ClInclude Include="GameSettings.h" />
@@ -229,7 +229,7 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
     <ClCompile Include="Core\Rendering\SimpleTexture.cpp" />
     <ClCompile Include="Core\Rendering\TextureManager.cpp" />
     <ClCompile Include="Core\Scene.cpp" />
-    <ClCompile Include="Core\UI\GUIMenu.cpp" />
+    <ClCompile Include="Core\UI\GUIScreen.cpp" />
     <ClCompile Include="Core\UI\UIComponent.cpp" />
     <ClCompile Include="External\glad.c" />
     <ClCompile Include="External\stb_image.cpp" />
