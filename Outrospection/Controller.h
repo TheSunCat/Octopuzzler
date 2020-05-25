@@ -1,9 +1,6 @@
 #pragma once
 
-struct ControllerButton
-{
-	float framesDown;
-};
+typedef float ControllerButton;
 
 class Controller
 {
