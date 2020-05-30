@@ -48,7 +48,6 @@ void PlayerController::collidePlayer(Player& player, const std::vector<Triangle>
 	resolveCollision(player, collisionData);
 }
 
-// return true when another iteration must be run to resolve all collision
 void PlayerController::resolveCollision(Player& player, const std::vector<Triangle>& collisionData)
 {
 	colResponseDelta = glm::vec3(0.0f);
