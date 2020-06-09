@@ -6,7 +6,7 @@
 #include "Source.h"
 #include "Core/UI/GUIScreen.h"
 
-Outrospection::Outrospection() : opengl()
+Outrospection::Outrospection() : opengl(), freetype()
 {
 	gameWindow = opengl.gameWindow;
 	quadVAO = opengl.quadVAO;
