@@ -7,6 +7,7 @@
 #include "Core/Rendering/TextureManager.h"
 #include "Core/Rendering/OpenGL.h"
 #include "Core/Rendering/Shader.h"
+#include "Core/Rendering/FreeType.h"
 
 #include "Core/PlayerController.h"
 #include "Core/Scene.h"
@@ -16,6 +17,7 @@
 
 class Outrospection {
 	OpenGL opengl; // defined at the beginning so nothing gets initialized before this
+	FreeType freetype;
 	
 public:
 	Outrospection();
