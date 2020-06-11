@@ -11,11 +11,15 @@ public:
 
 	SimpleTexture(const GLuint& _texId, const std::string& _texPath);
 
-	void bindTexture() const;
+	void bind() const;
+
+	virtual void tick();
 
 	GLuint texId = 0;
 
 	bool operator== (const SimpleTexture& st) const;
+
+	virtual ~SimpleTexture() = default;
 private:
 	std::string texPath;
 };

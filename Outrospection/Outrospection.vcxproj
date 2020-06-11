@@ -92,10 +92,11 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\Libraries\include;$(ProjectDir)</AdditionalIncludeDirectories>
-      <LanguageStandard>Default</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\Libraries\lib\freetype.lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -113,10 +114,11 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\Libraries\include;$(ProjectDir)</AdditionalIncludeDirectories>
-      <LanguageStandard>Default</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\Libraries\lib\freetype.lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -136,12 +138,13 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\Libraries\include;$(ProjectDir)</AdditionalIncludeDirectories>
-      <LanguageStandard>Default</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\Libraries\lib\freetype.lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -161,12 +164,13 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\Libraries\include;$(ProjectDir)</AdditionalIncludeDirectories>
-      <LanguageStandard>Default</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)\Libraries\lib\freetype.lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -190,6 +194,7 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
     <ClInclude Include="Core\ObjectRail.h" />
     <ClInclude Include="Core\Player.h" />
     <ClInclude Include="Core\PlayerController.h" />
+    <ClInclude Include="Core\Rendering\FreeType.h" />
     <ClInclude Include="Core\Rendering\TickableTexture.h" />
     <ClInclude Include="Core\Rendering\Billboard.h" />
     <ClInclude Include="Core\Rendering\Mesh.h" />
@@ -201,6 +206,8 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
     <ClInclude Include="Core\Rendering\SimpleTexture.h" />
     <ClInclude Include="Core\Rendering\TextureManager.h" />
     <ClInclude Include="Core\Scene.h" />
+    <ClInclude Include="Core\UI\GUIScreen.h" />
+    <ClInclude Include="Core\UI\UIComponent.h" />
     <ClInclude Include="External\stb_image.h" />
     <ClInclude Include="GameSettings.h" />
     <ClInclude Include="KeyBinding.h" />
@@ -227,6 +234,8 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
     <ClCompile Include="Core\Rendering\SimpleTexture.cpp" />
     <ClCompile Include="Core\Rendering\TextureManager.cpp" />
     <ClCompile Include="Core\Scene.cpp" />
+    <ClCompile Include="Core\UI\GUIScreen.cpp" />
+    <ClCompile Include="Core\UI\UIComponent.cpp" />
     <ClCompile Include="External\glad.c" />
     <ClCompile Include="External\stb_image.cpp" />
     <ClCompile Include="GameSettings.cpp" />

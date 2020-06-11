@@ -54,6 +54,16 @@ struct Collision
 	glm::vec3 shiftBy;
 };
 
+struct FontCharacter
+{
+	GLuint textureId;
+	glm::ivec2 size;
+	glm::ivec2 bearing; // offset from base line
+	unsigned int advance; // offset to advance to next glyph
+};
+
+typedef glm::vec3 Color;
+
 class Hashes
 {
 public:
