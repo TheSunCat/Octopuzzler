@@ -97,6 +97,15 @@
     <ClInclude Include="Core\Rendering\TickableTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Core\UI\UIComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\UI\GUIScreen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Rendering\FreeType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Rendering\TextureManager.cpp">
@@ -169,6 +178,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Core\Rendering\TickableTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\UI\UIComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\UI\GUIScreen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

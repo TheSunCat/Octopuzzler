@@ -1,20 +1,29 @@
-#include "Outrospection.h"
+﻿#include "Outrospection.h"
+
+#include <glm/ext/matrix_clip_space.hpp>
 
 #include "Util.h"
 #include "Source.h"
+#include "Core/UI/GUIScreen.h"
 
-Outrospection::Outrospection() : opengl()
+Outrospection::Outrospection() : opengl(), freetype()
 {
 	gameWindow = opengl.gameWindow;
 	quadVAO = opengl.quadVAO;
 	framebuffer = opengl.framebuffer;
 	textureColorbuffer = opengl.textureColorbuffer;
 
+	fontCharacters = freetype.loadedCharacters;
+
 	registerCallbacks();
 	createShaders();
 
 	scene = Scene("TestLevel000");
 	player = Player(glm::vec3(0.0, 3.0, 0.0));
+
+	GUIScreen ingameGUI("Ingame GUI", { UIComponent("dummy", 0, 0, 0.3, 0.3) });
+	
+	setGUIScreen(ingameGUI);
 }
 
 void Outrospection::run()
@@ -32,11 +41,28 @@ void Outrospection::run()
 void Outrospection::pauseGame()
 {
 	isGamePaused = true;
+
+	GUIScreen pauseGUI("Pause GUI", { UIComponent("paused", 0.5, 0.5, 0.4, 0.4) });
+	setGUIScreen(pauseGUI);
 }
 
 void Outrospection::unpauseGame()
 {
 	isGamePaused = false;
+
+	GUIScreen ingameGUI("Ingame GUI", { UIComponent("dummy", 0, 0, 0.3, 0.3) });
+	setGUIScreen(ingameGUI);
+}
+
+void Outrospection::setGUIScreen(GUIScreen& screen, const bool replace)
+{
+	if(replace && !loadedGUIs.empty())
+	{
+		loadedGUIs.pop_back();
+	}
+
+	// move to avoid copy
+	loadedGUIs.push_back(std::move(screen));
 }
 
 void Outrospection::runGameLoop()
@@ -54,9 +80,14 @@ void Outrospection::runGameLoop()
 	}
 
 	// exit game on next loop iteration
-	if (controller.pause)
-		running = false;
-
+	if (controller.pause == 1)
+	{
+		if (isGamePaused)
+			unpauseGame();
+		else
+			pauseGame();
+	}
+	
 	// player always "faces" forward, so W goes away from camera
 	player.yaw = camera.yaw;
 
@@ -101,15 +132,15 @@ void Outrospection::runGameLoop()
 
 	player.draw(billboardShader);
 
-	Util::glError(true);
+	//Util::glError(true);
 
-	// Bind to default framebuffer and draw ours
-	// -----------------------------------------
+	glDisable(GL_DEPTH_TEST); // disable depth test so stuff near camera isn't clipped
+	
+	// bind to default framebuffer and draw custom one over that
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glDisable(GL_DEPTH_TEST); // disable depth test so screen-space quad isn't discarded due to depth test.
 	// clear all relevant buffers
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessery actually, since we won't be able to see behind the quad anyways)
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessary actually, since we won't be able to see behind the quad anyways)
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	screenShader.use();
@@ -117,6 +148,13 @@ void Outrospection::runGameLoop()
 	glBindTexture(GL_TEXTURE_2D, textureColorbuffer);	// use the color attachment texture as the texture of the quad plane
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
+
+	// draw UI
+	for(const auto& screen : loadedGUIs)
+	{
+		screen.draw(spriteShader, glyphShader);
+	}
+	
 	glEnable(GL_DEPTH_TEST); // re-enable depth testing
 
 	// Check for errors
@@ -137,6 +175,11 @@ void Outrospection::runTick()
 	playerController.movePlayer(player);
 
 	updateCamera();
+
+	for(auto& screen : loadedGUIs)
+	{
+		screen.tick();
+	}
 }
 
 void Outrospection::updateCamera()
@@ -161,6 +204,17 @@ void Outrospection::createShaders()
 	skyShader       = Shader("sky"      , "sky"      );
 	screenShader    = Shader("screen"   , "screen"   );
 	simpleShader    = Shader("simple"   , "simple"   );
+	spriteShader    = Shader("sprite"   , "sprite"   );
+	glyphShader     = Shader("sprite"   , "glyph"    );
+
+	// set up 2d shader
+	const glm::mat4 projection = glm::ortho(0.0f, float(SCR_WIDTH),
+	                                        float(SCR_HEIGHT), 0.0f, -1.0f, 1.0f);
+	spriteShader.use();
+	spriteShader.setMat4("projection", projection);
+
+	glyphShader.use();
+	glyphShader.setMat4("projection", projection);
 }
 
 // set proper viewport size when window is resized
@@ -173,8 +227,8 @@ void Outrospection::mouse_callback(GLFWwindow* window, double xPosD, double yPos
 {
 	Outrospection* orig = getOutrospection();
 
-	const float xPos = float(xPosD);
-	const float yPos = float(yPosD);
+	const auto xPos = float(xPosD);
+	const auto yPos = float(yPosD);
 	
 	if (orig->firstMouse) {
 		orig->lastX = xPos;
@@ -203,7 +257,7 @@ void Outrospection::key_callback(GLFWwindow* window, int key, int scancode, int 
 	const GameSettings& gameSettings = getOutrospection()->gameSettings;
 	Controller& controller = getOutrospection()->controller;
 
-	if (GLFW_RELEASE)
+	if (action == GLFW_RELEASE)
 	{
 		if (key == gameSettings.keyBindForward.keyCode || key == gameSettings.keyBindBackward.keyCode)
 		{
@@ -270,10 +324,9 @@ void Outrospection::updateInput()
 
 			controller.leftTrigger = Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_LEFT_TRIGGER]);
 
-
-			controller.jump = gamepadState.buttons[GLFW_GAMEPAD_BUTTON_A];
-			controller.talk = gamepadState.buttons[GLFW_GAMEPAD_BUTTON_X];
-			controller.pause = gamepadState.buttons[GLFW_GAMEPAD_BUTTON_START];
+			controller.jump  = gamepadState.buttons[GLFW_GAMEPAD_BUTTON_A]     ? controller.jump  + 1 : false;
+			controller.talk  = gamepadState.buttons[GLFW_GAMEPAD_BUTTON_X]     ? controller.talk  + 1 : false;
+			controller.pause = gamepadState.buttons[GLFW_GAMEPAD_BUTTON_START] ? controller.pause + 1 : false;
 		}
 		else // have to manually set everything :c
 		{
@@ -313,9 +366,9 @@ void Outrospection::updateInput()
 			}
 			else
 			{
-				controller.jump = rawButtons[BUTTON_A];
-				controller.talk = rawButtons[BUTTON_X];
-				controller.pause = rawButtons[BUTTON_START];
+				controller.jump = rawButtons[BUTTON_A] ? controller.jump + 1 : false;
+				controller.talk = rawButtons[BUTTON_X] ? controller.talk + 1 : false;
+				controller.pause = rawButtons[BUTTON_START] ? controller.pause + 1 : false;
 				// TODO add more controls lol
 			}
 		}
@@ -352,10 +405,10 @@ void Outrospection::updateInput()
 		controller.leftSide = leftSideInput;
 
 
-		controller.jump = glfwGetKey(gameWindow, gameSettings.keyBindJump.keyCode) == GLFW_PRESS;
-		controller.talk = glfwGetKey(gameWindow, gameSettings.keyBindTalk.keyCode) == GLFW_PRESS;
-		controller.pause = glfwGetKey(gameWindow, gameSettings.keyBindExit.keyCode) == GLFW_PRESS;
-		controller.debugBreak = glfwGetKey(gameWindow, gameSettings.keyBindBreak.keyCode) == GLFW_PRESS;
+		controller.jump = glfwGetKey(gameWindow, gameSettings.keyBindJump.keyCode) == GLFW_PRESS ? controller.jump + 1 : false;
+		controller.talk = glfwGetKey(gameWindow, gameSettings.keyBindTalk.keyCode) == GLFW_PRESS ? controller.talk + 1 : false;
+		controller.pause = glfwGetKey(gameWindow, gameSettings.keyBindExit.keyCode) == GLFW_PRESS ? controller.pause + 1 : false;
+		controller.debugBreak = glfwGetKey(gameWindow, gameSettings.keyBindBreak.keyCode) == GLFW_PRESS ? controller.debugBreak + 1 : false;
 	}
 
 	if (VERBOSE)

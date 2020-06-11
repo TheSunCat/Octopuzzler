@@ -56,7 +56,7 @@ Mesh::Mesh(const std::string& _name, const std::vector<Vertex>& _vertices, const
 void Mesh::draw() const
 {
 	glActiveTexture(GL_TEXTURE0);
-	texture.bindTexture();
+	texture.bind();
 
 	// draw mesh
 	glBindVertexArray(VAO);

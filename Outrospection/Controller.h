@@ -1,5 +1,8 @@
 #pragma once
 
+// stores the amount of frames the button is down, 0 if never
+typedef unsigned int ControllerButton;
+
 class Controller
 {
 public:
@@ -7,11 +10,11 @@ public:
 
 	// INPUT
 
-	bool jump;
-	bool talk;
-	bool pause;
+	ControllerButton jump;
+	ControllerButton talk;
+	ControllerButton pause;
 
-	bool debugBreak;
+	ControllerButton debugBreak;
 	
 	// L stick
 	float leftForward;

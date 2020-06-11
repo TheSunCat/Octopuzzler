@@ -7,42 +7,41 @@
 #include "Core/Rendering/TextureManager.h"
 #include "Core/Rendering/OpenGL.h"
 #include "Core/Rendering/Shader.h"
+#include "Core/Rendering/FreeType.h"
 
 #include "Core/PlayerController.h"
 #include "Core/Scene.h"
 #include "Core/Player.h"
 #include "Core/Camera.h"
+#include "Core/UI/GUIScreen.h"
 
 class Outrospection {
+	OpenGL opengl; // defined at the beginning so nothing gets initialized before this
+	FreeType freetype;
+	
 public:
 	Outrospection();
 
-	OpenGL opengl;
-
 	void run();
 
-	Scene scene;
-
-	Player player;
-
-	PlayerController playerController;
-
 	void pauseGame();
-
 	void unpauseGame();
 
+	void setGUIScreen(GUIScreen& screen, const bool replace = true);
+	
+	Scene scene;
+	Player player;
+	PlayerController playerController;
 	TextureManager textureManager;
-
 	GameSettings gameSettings;
+	Controller controller{};
 
-	Controller controller;
+	std::unordered_map<char, FontCharacter> fontCharacters;
 
 	DISALLOW_COPY_AND_ASSIGN(Outrospection)
 private:
 	void runGameLoop();
-
 	void runTick();
-
 	void updateCamera();
 
 	// set to false when the game loop shouldn't run
@@ -53,13 +52,16 @@ private:
 	float lastFrame = 0.0f; // Time of last frame
 
 	GLFWwindow* gameWindow;
+	
 	Shader objectShader;
 	Shader billboardShader;
 	Shader skyShader;
 	Shader screenShader;
 	Shader simpleShader;
+	Shader spriteShader;
+	Shader glyphShader;
 
-	GLuint framebuffer, intermediateFBO;
+	GLuint framebuffer, intermediateFBO = 0;
 	GLuint textureColorbuffer;
 	GLuint quadVAO;
 
@@ -77,5 +79,7 @@ private:
 	void createShaders();
 	void updateInput();
 
-	bool isGamePaused;
+	bool isGamePaused{};
+
+	std::vector<GUIScreen> loadedGUIs;
 };

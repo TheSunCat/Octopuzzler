@@ -16,7 +16,7 @@ void PlayerController::acceleratePlayer(const Player& player, const Controller& 
 	const glm::vec3 inputMoveVector = processInput(controller, player.yaw);
 	velocity += inputMoveVector * (hacking ? 3.0f : 1.0f) * deltaTime;
 
-	if (controller.jump)
+	if (controller.jump && controller.jump < 10) // can jump for 10 frames after hitting jump
 	{
 		if (grounded || hacking) // cheat code hold left trigger to moonjump
 		{
