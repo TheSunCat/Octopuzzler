@@ -10,11 +10,11 @@ GUIScreen::GUIScreen(std::string _name, std::vector<UIComponent> _elements)
 	
 }
 
-void GUIScreen::draw(Shader& shader) const
+void GUIScreen::draw(Shader& shader, Shader& glyphShader) const
 {
 	for(const UIComponent& element : elements)
 	{
-		element.draw(shader);
+		element.draw(shader, glyphShader);
 	}
 }
 

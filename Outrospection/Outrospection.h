@@ -36,6 +36,8 @@ public:
 	GameSettings gameSettings;
 	Controller controller{};
 
+	std::unordered_map<char, FontCharacter> fontCharacters;
+
 	DISALLOW_COPY_AND_ASSIGN(Outrospection)
 private:
 	void runGameLoop();
@@ -57,6 +59,7 @@ private:
 	Shader screenShader;
 	Shader simpleShader;
 	Shader spriteShader;
+	Shader glyphShader;
 
 	GLuint framebuffer, intermediateFBO = 0;
 	GLuint textureColorbuffer;

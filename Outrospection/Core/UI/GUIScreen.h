@@ -11,7 +11,7 @@ public:
 	
 	GUIScreen(std::string _name, std::vector<UIComponent> _elements);
 
-	virtual void draw(Shader& shader) const;
+	virtual void draw(Shader& shader, Shader& glyphShader) const;
 
 	virtual void tick();
 

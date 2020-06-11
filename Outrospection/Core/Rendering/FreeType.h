@@ -1,16 +1,9 @@
 #pragma once
 
 #include <ft2build.h>
-
 #include FT_FREETYPE_H
 
-struct FontCharacter
-{
-    GLuint textureId;
-    glm::ivec2 size;
-    glm::ivec2 position;
-    float advance;
-};
+#include "Types.h"
 
 class FreeType
 {
@@ -24,7 +17,8 @@ public:
 		}
 		
 		FT_Face face;
-		if (FT_New_Face(ft, "./res/ObjectData/UI/font.ttf", 0, &face)) {
+		//if (FT_New_Face(ft, "./res/ObjectData/UI/font.ttf", 0, &face)) {
+		if (FT_New_Face(ft, "C:/Windows/Fonts/Arial.ttf", 0, &face)) {
 			std::cout << "Failed to load font.ttf!" << std::endl;
 			return;
 		}
@@ -38,10 +32,11 @@ public:
 			// load character glyph 
 			if (FT_Load_Char(face, c, FT_LOAD_RENDER))
 			{
-				std::cout << "ERROR::FREETYTPE: Failed to load glyph \'" << c << "\'" << std::endl;
+				std::cout << "FreeType failed to load glyph \'" << c << "\'!" << std::endl;
 				continue;
 			}
-			// generate texture
+			
+			// create the texture for this character
 			unsigned int texture;
 			glGenTextures(1, &texture);
 			glBindTexture(GL_TEXTURE_2D, texture);
@@ -56,12 +51,11 @@ public:
 				GL_UNSIGNED_BYTE,
 				face->glyph->bitmap.buffer
 			);
-			// set texture options
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			// now store character for later use
+			
 			FontCharacter character = {
 				texture,
 				glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
