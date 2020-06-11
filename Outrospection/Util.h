@@ -9,7 +9,10 @@ namespace Util
 	// Check for OpenGL errors and print them
 	bool glError(bool print);
 
-	void split(const std::string& input, const char& delimiter, std::vector<std::string>& out);
+	void split(const std::string& input, const char& delimiter, std::vector<std::string_view>& out, int startCut = 0, int endCut = 0);
+	void split(const std::string&& input, const char& delimiter, std::vector<std::string_view>& out, int startCut = 0, int endCut = 0) = delete;
+	void split(const std::string&& input, const char& delimiter, std::vector<std::string_view>& out, int startCut = 0) = delete;
+	void split(const std::string&& input, const char& delimiter, std::vector<std::string_view>& out) = delete;
 
 	template <typename T>
 	void push_all(std::vector<T>& input, std::vector<T>& add) {
@@ -75,4 +78,8 @@ namespace Util
 
 	// return input depending on constant deadzones and limitzones
 	float valFromJoystickAxis(float axis);
+
+	float stof(const std::string_view& str);
+
+	int stoi(const std::string_view& str);
 }

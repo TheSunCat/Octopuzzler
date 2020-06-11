@@ -57,11 +57,11 @@ namespace algorithm
 			return false;
 	}
 
-	// Get element at given index position
-	template <class T>
-	inline const T& getElement(const std::vector<T>& elements, std::string& indexStr)
+	// get element at index position
+	template<class T>
+	inline const T& getElement(const std::vector<T>& elements, std::string_view& indexStr)
 	{
-		int index = std::stoi(indexStr);
+		int index = Util::stoi(indexStr);
 
 		if (index < 0)
 			index = elements.size() + index;
@@ -144,10 +144,10 @@ bool ModelLoader::loadFile(const std::string& filePath)
 		}
 		case 'v': // Generate a Vertex Position
 		{
-			std::vector<std::string> vertPosStr;
-			Util::split(curLine.substr(2), ' ', vertPosStr);
-
-			positions.emplace_back(std::stof(vertPosStr[0]), std::stof(vertPosStr[1]), std::stof(vertPosStr[2]));
+			std::vector<std::string_view> vertPosStr;
+			Util::split(curLine, ' ', vertPosStr, 2);
+				
+			positions.emplace_back(Util::stof(vertPosStr[0]), Util::stof(vertPosStr[1]), Util::stof(vertPosStr[2]));
 
 			vertPosStr.clear();
 			break;
@@ -155,10 +155,10 @@ bool ModelLoader::loadFile(const std::string& filePath)
 		
 		case 't': // Generate a Vertex Texture Coordinate
 		{
-			std::vector<std::string> texCoordStr;
-			Util::split(curLine.substr(2), ' ', texCoordStr);
+			std::vector<std::string_view> texCoordStr;
+			Util::split(curLine, ' ', texCoordStr, 2);
 
-			texCoords.emplace_back(std::stof(texCoordStr[0]), std::stof(texCoordStr[1]));
+			texCoords.emplace_back(Util::stof(texCoordStr[0]), Util::stof(texCoordStr[1]));
 
 			texCoordStr.clear();
 
@@ -167,10 +167,10 @@ bool ModelLoader::loadFile(const std::string& filePath)
 		// Generate a Vertex Normal;
 		case 'n':
 		{
-			std::vector<std::string> vertNormStr;
-			Util::split(curLine.substr(2), ' ', vertNormStr);
+			std::vector<std::string_view> vertNormStr;
+			Util::split(curLine, ' ', vertNormStr, 2);
 
-			normals.emplace_back(std::stof(vertNormStr[0]), std::stof(vertNormStr[1]), std::stof(vertNormStr[2]));
+			normals.emplace_back(Util::stof(vertNormStr[0]), Util::stof(vertNormStr[1]), Util::stof(vertNormStr[2]));
 			vertNormStr.clear();
 			break;
 		}
@@ -217,18 +217,17 @@ bool ModelLoader::loadFile(const std::string& filePath)
 					// Create Mesh
 					loadedMeshes.emplace_back(meshName, vertices, indices);
 
-					// rename new mesh
-					int i = 2;
-					while (true) {
-						loadedMeshes.back().name = meshName + "_" + std::to_string(i);
-
-						// check for duplicate names
-						for (const Mesh& m : loadedMeshes)
-							if (m.name == loadedMeshes.back().name)
-								continue;
-
-						break;
+					// check for duplicate names
+					int sameNameCount = 0;
+					for (const Mesh& m : loadedMeshes) {
+						if (m.name.starts_with(meshName))
+							sameNameCount++;
 					}
+
+					if (sameNameCount > 0)
+						loadedMeshes.back().name = meshName + "_" + std::to_string(sameNameCount);
+					else
+						loadedMeshes.back().name = meshName;
 
 					// cleanup
 					vertices.clear();
@@ -274,15 +273,15 @@ bool ModelLoader::loadFile(const std::string& filePath)
 			switch (curLine[1]) {
 			case 'd': // Kd, Diffuse Color
 			{
-				std::vector<std::string> temp;
-				Util::split(curLine.substr(3), ' ', temp);
+				std::vector<std::string_view> temp;
+				Util::split(curLine, ' ', temp, 3);
 
 				if (temp.size() != 3)
 					continue;
-
-				tempMaterial.colDiffuse.x = std::stof(temp[0]);
-				tempMaterial.colDiffuse.y = std::stof(temp[1]);
-				tempMaterial.colDiffuse.z = std::stof(temp[2]);
+					
+				tempMaterial.colDiffuse.x = Util::stof(temp[0]);
+				tempMaterial.colDiffuse.y = Util::stof(temp[1]);
+				tempMaterial.colDiffuse.z = Util::stof(temp[2]);
 
 				temp.clear();
 				break;
@@ -291,15 +290,15 @@ bool ModelLoader::loadFile(const std::string& filePath)
 			// Specular Color
 			case 's': // Ks, Specular Color
 			{
-				std::vector<std::string> temp;
-				Util::split(curLine.substr(3), ' ', temp);
+				std::vector<std::string_view> temp;
+				Util::split(curLine, ' ', temp, 3);
 
 				if (temp.size() != 3)
 					continue;
 
-				tempMaterial.colSpecular.x = std::stof(temp[0]);
-				tempMaterial.colSpecular.y = std::stof(temp[1]);
-				tempMaterial.colSpecular.z = std::stof(temp[2]);
+				tempMaterial.colSpecular.x = Util::stof(temp[0]);
+				tempMaterial.colSpecular.y = Util::stof(temp[1]);
+				tempMaterial.colSpecular.z = Util::stof(temp[2]);
 
 				temp.clear();
 				break;
@@ -308,15 +307,15 @@ bool ModelLoader::loadFile(const std::string& filePath)
 			// Ambient Color
 			case 'a':
 			{
-				std::vector<std::string> temp;
-				Util::split(curLine.substr(3), ' ', temp);
+				std::vector<std::string_view> temp;
+				Util::split(curLine, ' ', temp, 3);
 
 				if (temp.size() != 3)
 					continue;
 
-				tempMaterial.colAmbient.x = std::stof(temp[0]);
-				tempMaterial.colAmbient.y = std::stof(temp[1]);
-				tempMaterial.colAmbient.z = std::stof(temp[2]);
+				tempMaterial.colAmbient.x = Util::stof(temp[0]);
+				tempMaterial.colAmbient.y = Util::stof(temp[1]);
+				tempMaterial.colAmbient.z = Util::stof(temp[2]);
 
 				temp.clear();
 				break;
@@ -366,6 +365,8 @@ bool ModelLoader::loadFile(const std::string& filePath)
 		}
 	}
 
+	file.close();
+	
 	// Deal with last Mesh
 	if (!vertices.empty() && !indices.empty())
 	{
@@ -378,8 +379,6 @@ bool ModelLoader::loadFile(const std::string& filePath)
 
 	// take care of the last material
 	loadedMaterials.push_back(tempMaterial);
-
-	file.close();
 
 	TextureManager* _textureManager = &(getOutrospection()->textureManager);
 	// Set Materials for each Mesh
@@ -414,17 +413,18 @@ void ModelLoader::verticesFromFaceString(std::vector<Vertex>& outputVertices, co
                                          const std::vector<glm::vec3>& _normals, const std::string& _curLine)
 {
 	// substr to remove "f "
-	std::vector<std::string> splitFaceStr;
-	Vertex vertex;
-	Util::split(_curLine.substr(2), ' ', splitFaceStr);
+	std::vector<std::string_view> splitFaceStr;
+	Vertex vertex{};
+	Util::split(_curLine, ' ', splitFaceStr, 2);
 
 	bool noNormal = false;
 
-	// For every given vertex do this
-	for (std::string& i : splitFaceStr)
+	for (std::string_view& i : splitFaceStr)
 	{
-		std::vector<std::string> splitVertexStr;
-		Util::split(i, '/', splitVertexStr);
+		std::string strToSplit(i.begin(), i.end());
+		
+		std::vector<std::string_view> splitVertexStr;
+		Util::split(strToSplit, '/', splitVertexStr);
 
 		// 1 = pos, 2 = pos/tex, 3 = pos/norm,, 4 = pos/tex/norm
 		int vertexType = 0;

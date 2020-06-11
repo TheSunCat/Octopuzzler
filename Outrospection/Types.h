@@ -62,6 +62,12 @@ struct FontCharacter
 	unsigned int advance; // offset to advance to next glyph
 };
 
+struct DummyObj
+{
+	std::string name;
+	std::vector<float> properties;
+};
+
 typedef glm::vec3 Color;
 
 class Hashes
