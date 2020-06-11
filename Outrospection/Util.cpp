@@ -2,6 +2,7 @@
 
 #include <sstream>
 #include <iostream>
+#include <charconv>
 
 #include <GLAD/glad.h>
 #include <glm/common.hpp>
@@ -24,20 +25,25 @@ bool Util::glError(const bool print)
 	return ret;
 }
 
-void Util::split(const std::string& input, const char& delimiter, std::vector<std::string>& out) {
-	std::string::const_iterator start = input.begin();
-	const std::string::const_iterator end = input.end();
-	std::string::const_iterator next = std::find(start, end, delimiter);
+//void Util::split(const std::string& input, const char& delimiter, std::vector<std::string_view>& out)
+//{
+//	split(std::string_view(input), delimiter, out);
+//}
+
+void Util::split(const std::string& input, const char& delimiter, std::vector<std::string_view>& out, const int startCut, const int endCut) {
+	auto start = input.begin() + startCut;
+	const auto end = input.end() - endCut;
+	auto next = std::find(start, end, delimiter);
 
 	while (next != end)
 	{
-		out.emplace_back(start, next);
+		out.emplace_back(&*start, next - start);
 		start = next + 1;
 
 		next = std::find(start, end, delimiter);
 	}
 
-	out.emplace_back(start, next);
+	out.emplace_back(&*start, next - start);
 }
 
 glm::vec3 Util::rotToVec3(const float yaw, const float pitch)
@@ -294,4 +300,18 @@ float Util::valFromJoystickAxis(float axis)
 		axis = axis < 0 ? -1.0f : 1.0f;
 
 	return axis;
+}
+
+float Util::stof(const std::string_view& str)
+{
+	float ret;
+	std::from_chars(str.data(), str.data() + str.size(), ret);
+	return ret;
+}
+
+int Util::stoi(const std::string_view& str)
+{
+	int ret;
+	std::from_chars(str.data(), str.data() + str.size(), ret);
+	return ret;
 }
