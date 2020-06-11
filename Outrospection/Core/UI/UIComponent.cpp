@@ -1,4 +1,4 @@
-#include "UIComponent.h"
+﻿#include "UIComponent.h"
 
 #include <utility>
 #include <glm/ext/matrix_transform.inl>
@@ -14,7 +14,7 @@ UIComponent::UIComponent(const std::string& _texName, const float posXPercent, c
 { }
 
 UIComponent::UIComponent(std::string _texName, const glm::vec2& _position, const glm::vec2& dimensions)
-	: name(std::move(_texName)), position(_position), width(dimensions.x), height(dimensions.y)
+	: name(std::move(_texName)), position(_position), width(dimensions.x), height(dimensions.y), textOffset(0.0f, height / 2), textColor(0.0f)
 {
 	TextureManager& _textureManager = getOutrospection()->textureManager;
 	Resource r("UI/", name + ".png");
@@ -49,7 +49,7 @@ UIComponent::UIComponent(std::string _texName, const glm::vec2& _position, const
 	}
 }
 
-void UIComponent::draw(Shader& shader) const
+void UIComponent::draw(Shader& shader, const Shader& glyphShader) const
 {
 	shader.use();
 	glm::mat4 model = glm::mat4(1.0f);
@@ -69,6 +69,52 @@ void UIComponent::draw(Shader& shader) const
 
 	glBindVertexArray(quadVAO);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glBindVertexArray(0);
+	
+	if(!name.empty()) // drawing item name for now, need a text class from other branch
+	{
+		drawText(name, glyphShader);
+	}
+}
+
+void UIComponent::drawText(const std::string& text, const Shader& glyphShader) const
+{
+	glyphShader.use();
+	glyphShader.setVec3("textColor", textColor); // temp set color to black
+	glActiveTexture(GL_TEXTURE0);
+	glBindVertexArray(quadVAO);
+
+	float textScale = 1.0f;
+
+	float textX = position.x + textOffset.x;
+	float textY = position.y + textOffset.y;
+
+	for (char c : name)
+	{
+		if (c == '\0') // replace null char with space
+			c = ' ';
+
+		FontCharacter fontCharacter = getOutrospection()->fontCharacters.at(c);
+
+		// calculate model matrix
+		glm::mat4 charModel = glm::mat4(1.0f);
+
+		float xPos = textX + fontCharacter.bearing.x * textScale;
+		float yPos = textY - fontCharacter.bearing.y * textScale;
+		charModel = glm::translate(charModel, glm::vec3(xPos, yPos, 0.0f));
+
+		float width = (fontCharacter.size.x) * textScale;
+		float height = (fontCharacter.size.y) * textScale;
+		charModel = glm::scale(charModel, glm::vec3(width, height, 1.0f));
+
+		glyphShader.setMat4("model", charModel);
+		glBindTexture(GL_TEXTURE_2D, fontCharacter.textureId);
+
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+
+		textX += (fontCharacter.advance >> 6) * textScale;
+	}
+
 	glBindVertexArray(0);
 }
 

@@ -1,4 +1,4 @@
-#include "Outrospection.h"
+﻿#include "Outrospection.h"
 
 #include <glm/ext/matrix_clip_space.hpp>
 
@@ -12,6 +12,8 @@ Outrospection::Outrospection() : opengl(), freetype()
 	quadVAO = opengl.quadVAO;
 	framebuffer = opengl.framebuffer;
 	textureColorbuffer = opengl.textureColorbuffer;
+
+	fontCharacters = freetype.loadedCharacters;
 
 	registerCallbacks();
 	createShaders();
@@ -150,7 +152,7 @@ void Outrospection::runGameLoop()
 	// draw UI
 	for(const auto& screen : loadedGUIs)
 	{
-		screen.draw(spriteShader);
+		screen.draw(spriteShader, glyphShader);
 	}
 	
 	glEnable(GL_DEPTH_TEST); // re-enable depth testing
@@ -203,12 +205,16 @@ void Outrospection::createShaders()
 	screenShader    = Shader("screen"   , "screen"   );
 	simpleShader    = Shader("simple"   , "simple"   );
 	spriteShader    = Shader("sprite"   , "sprite"   );
+	glyphShader     = Shader("sprite"   , "glyph"    );
 
 	// set up 2d shader
 	const glm::mat4 projection = glm::ortho(0.0f, float(SCR_WIDTH),
 	                                        float(SCR_HEIGHT), 0.0f, -1.0f, 1.0f);
 	spriteShader.use();
 	spriteShader.setMat4("projection", projection);
+
+	glyphShader.use();
+	glyphShader.setMat4("projection", projection);
 }
 
 // set proper viewport size when window is resized

@@ -44,8 +44,9 @@ Shader::Shader(const GLchar* vertexName, const GLchar* fragmentName)
 		vertexCode = vShaderStream.str();
 		fragmentCode = fShaderStream.str();
 	}
-	catch (std::ifstream::failure e) {
-		std::cout << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ" << std::endl;
+	catch (std::ifstream::failure& e) {
+		std::cout << "Failed to read shader file \"" << vertexPath << "\" or \"" << fragmentPath << "\"! errno " << errno << std::endl;
+		return;
 	}
 
 	const char* vShaderCode = vertexCode.c_str();
