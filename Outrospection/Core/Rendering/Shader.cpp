@@ -184,8 +184,7 @@ GLint Shader::getUniformLocation(const char* uniformName) const
 	if (f == uniform_cache.end()) {// get uniform location
 		loc = glGetUniformLocation(ID, uniformName);
 
-		std::pair<std::string, GLuint> newLoc(std::string(uniformName), loc);
-
+		std::pair<std::string, GLuint> newLoc(uniformName, loc);
 		uniform_cache.insert(newLoc);
 	}
 	else
