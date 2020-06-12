@@ -8,7 +8,7 @@
 class TickableTexture : public SimpleTexture
 {
 public:
-	TickableTexture(const std::vector<GLuint>& texIds, const std::string& _texPath, const unsigned int _frameLength);
+	TickableTexture(const std::vector<GLuint>& texIds, const std::string& _texPath, unsigned int _frameLength);
 
 	void tick() override;
 
