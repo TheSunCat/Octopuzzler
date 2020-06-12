@@ -124,7 +124,7 @@ bool ModelLoader::loadFile(const std::string& filePath)
 				// Generate the mesh to put into the array
 				if (!indices.empty() && !vertices.empty()) // if there are verts and indices
 				{
-					// ceate and insert Mesh
+					// create and insert Mesh
 					loadedMeshes.emplace_back(meshName, vertices, indices);
 
 					// Cleanup
