@@ -166,7 +166,7 @@ Collision Util::rayCast(const Ray& r, const std::vector<std::vector<Triangle>::c
 {
 	Collision closestHit = Collision{ INFINITY };
 
-	for (auto& tri : tris)
+	for (const auto& tri : tris)
 	{
 		const Collision hit = Util::rayCast(r, *tri, bothSides);
 
@@ -232,7 +232,7 @@ bool Util::leftOf(const glm::vec2& a, const glm::vec2& b, const glm::vec2& p)
 	return (area > 0.0f);
 }
 
-//2D test for point inside polygon
+// 2D test for point inside polygon
 bool Util::pointInside(const glm::vec2 poly[], const int pcount, const glm::vec2& v)
 {
 	for (int i = 0; i < pcount; i++)
