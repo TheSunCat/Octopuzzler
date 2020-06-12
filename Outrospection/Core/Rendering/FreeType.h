@@ -17,8 +17,7 @@ public:
 		}
 		
 		FT_Face face;
-		//if (FT_New_Face(ft, "./res/ObjectData/UI/font.ttf", 0, &face)) {
-		if (FT_New_Face(ft, "C:/Windows/Fonts/Arial.ttf", 0, &face)) {
+		if (FT_New_Face(ft, "./res/ObjectData/UI/font.ttf", 0, &face)) {
 			std::cout << "Failed to load font.ttf!" << std::endl;
 			return;
 		}

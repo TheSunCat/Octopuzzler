@@ -11,7 +11,7 @@ class Shader;
 class UIComponent
 {
 public:
-	UIComponent(const std::string& _texName, const float posXPercent, const float posYPercent, const float widthPercent, const float heightPercent);
+	UIComponent(const std::string& _texName, float posXPercent, float posYPercent, float widthPercent, float heightPercent);
 	
 	UIComponent(std::string _texName, const glm::vec2& _position, const glm::vec2& dimensions);
 

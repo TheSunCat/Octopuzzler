@@ -96,7 +96,7 @@ Shader::Shader(const GLchar* vertexName, const GLchar* fragmentName)
 		std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
 	}
 
-	// delete the shaders as they're linked into our program now and no longer necessery
+	// delete the shaders as they're linked into our program now and no longer necessary
 	glDeleteShader(vertex);
 	glDeleteShader(fragment);
 }
@@ -105,7 +105,7 @@ void Shader::doProjView(Camera& _camera, int _width, int _height, const bool doP
 {
 	const glm::mat4 projection = glm::perspective(glm::radians(_camera.zoom), float(_width) / float(_height), 0.1f, 100.0f);
 
-	glm::mat4 view = glm::mat4();
+	glm::mat4 view;
 	if (doPos)
 		view = _camera.getViewMatrix();
 	else

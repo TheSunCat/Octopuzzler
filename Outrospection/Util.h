@@ -9,7 +9,10 @@ namespace Util
 	// Check for OpenGL errors and print them
 	bool glError(bool print);
 
-	void split(const std::string& input, const char& delimiter, std::vector<std::string>& out);
+	void split(const std::string& input, const char& delimiter, std::vector<std::string_view>& out, int startCut = 0, int endCut = 0);
+	void split(const std::string&& input, const char& delimiter, std::vector<std::string_view>& out, int startCut = 0, int endCut = 0) = delete;
+	void split(const std::string&& input, const char& delimiter, std::vector<std::string_view>& out, int startCut = 0) = delete;
+	void split(const std::string&& input, const char& delimiter, std::vector<std::string_view>& out) = delete;
 
 	template <typename T>
 	void push_all(std::vector<T>& input, std::vector<T>& add) {
@@ -52,12 +55,12 @@ namespace Util
 	
 	Collision rayCast(const Ray& r, const std::vector<std::vector<Triangle>::const_iterator>& tris, bool bothSides = false);
 
-	bool intersectRaySegmentSphere(const ::Ray& ray, const glm::vec3 sphereOrigin, const float sphereRadius2, glm::vec3& ip);
+	bool intersectRaySegmentSphere(const Ray& ray, glm::vec3 sphereOrigin, float sphereRadius2, glm::vec3& ip);
 
 	// 2D test for which side of a 2D line a 2D point lies on
 	bool leftOf(const glm::vec2& a, const glm::vec2& b, const glm::vec2& p);
 
-	bool pointInside(const glm::vec2 poly[], const int pcount, const glm::vec2& v);
+	bool pointInside(const glm::vec2 poly[], int pcount, const glm::vec2& v);
 
 	glm::vec3 getNormal(const Triangle& t);
 
@@ -67,12 +70,16 @@ namespace Util
 
 	float sumAbsV3(const glm::vec3& v);
 
-	float angleBetweenV3(const glm::vec3 a, const glm::vec3 b);
+	float angleBetweenV3(glm::vec3 a, glm::vec3 b);
 	
-	float cosBetweenV3(const glm::vec3 a, const glm::vec3 b);
+	float cosBetweenV3(glm::vec3 a, glm::vec3 b);
 
-	glm::vec3 projectV3(const glm::vec3 a, const glm::vec3 b);
+	glm::vec3 projectV3(glm::vec3 a, glm::vec3 b);
 
 	// return input depending on constant deadzones and limitzones
 	float valFromJoystickAxis(float axis);
+
+	float stof(const std::string_view& str);
+
+	int stoi(const std::string_view& str);
 }

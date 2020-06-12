@@ -1,14 +1,13 @@
 #include "Billboard.h"
 
 #include <glm/ext/matrix_transform.hpp>
-#include <utility>
 
 #include "Util.h"
 
 #include "Core/Rendering/SimpleTexture.h"
 #include "Core/Rendering/Shader.h"
 
-Billboard::Billboard(SimpleTexture _tex) : texture(std::move(_tex))
+Billboard::Billboard(const SimpleTexture& _tex) : texture(_tex)
 {
 	float quadVertices[] = {  // tex coords = (x + 0.5, y)
 		-0.5f,  0.0f,

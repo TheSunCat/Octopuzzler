@@ -59,7 +59,13 @@ struct FontCharacter
 	GLuint textureId;
 	glm::ivec2 size;
 	glm::ivec2 bearing; // offset from base line
-	unsigned int advance; // offset to advance to next glyph
+	long advance; // offset to advance to next glyph
+};
+
+struct DummyObj
+{
+	std::string name;
+	std::vector<float> properties;
 };
 
 typedef glm::vec3 Color;
