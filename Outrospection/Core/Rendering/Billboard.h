@@ -10,7 +10,7 @@ class Billboard {
 public:
 	Billboard() = default;
 
-	Billboard(SimpleTexture _tex);
+	Billboard(const SimpleTexture& _tex);
 
 	void draw(const Shader& _shader, const glm::vec3& _pos) const;
 

@@ -42,7 +42,7 @@ public:
 	// same ctor but w/ scalar args
 	Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch);
 
-	void calculateCameraPosition(const Player& player, const Scene& scene, const bool shouldAutoCam);
+	void calculateCameraPosition(const Player& player, const Scene& scene, bool shouldAutoCam);
 
 	glm::mat4 getViewMatrix() const;
 

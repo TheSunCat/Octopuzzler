@@ -27,7 +27,9 @@ public:
 	void pauseGame();
 	void unpauseGame();
 
-	void setGUIScreen(GUIScreen& screen, const bool replace = true);
+	void setGUIScreen(GUIScreen& screen, bool replace = true);
+
+	void captureMouse(bool doCapture) const;
 	
 	Scene scene;
 	Player player;

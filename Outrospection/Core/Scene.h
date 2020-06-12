@@ -28,10 +28,10 @@ public:
 	std::vector<std::vector<Triangle>::const_iterator> groundCollision;
 	std::vector<std::vector<Triangle>::const_iterator> wallCollision;
 private:
-	static std::vector<std::string> parseLine(std::string line);
+	static DummyObj parseLine(const std::string& line);
 
-	ObjectGeneral parseObj(const std::string& line) const;
-	Character parseChar(const std::string& line) const;
+	[[nodiscard]] ObjectGeneral parseObj(const std::string& line) const;
+	[[nodiscard]] Character parseChar(const std::string& line) const;
 
 	void parseCollision(const std::string& name);
 

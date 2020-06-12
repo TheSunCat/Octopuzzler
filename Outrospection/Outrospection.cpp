@@ -42,7 +42,7 @@ void Outrospection::pauseGame()
 {
 	isGamePaused = true;
 
-	GUIScreen pauseGUI("Pause GUI", { UIComponent("paused", 0.5, 0.5, 0.4, 0.4) });
+	GUIScreen pauseGUI("Pause GUI", { UIComponent("paused", 0.5, 0.5, 0.4, 0.4) }, false);
 	setGUIScreen(pauseGUI);
 }
 
@@ -63,6 +63,20 @@ void Outrospection::setGUIScreen(GUIScreen& screen, const bool replace)
 
 	// move to avoid copy
 	loadedGUIs.push_back(std::move(screen));
+
+	loadedGUIs.back().onFocus();
+}
+
+void Outrospection::captureMouse(const bool doCapture) const
+{
+	if (doCapture)
+		glfwSetInputMode(gameWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	else
+	{
+		glfwSetInputMode(gameWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
+		glfwSetCursorPos(gameWindow, SCR_WIDTH / 2, SCR_HEIGHT / 2);
+	}
 }
 
 void Outrospection::runGameLoop()
@@ -226,6 +240,11 @@ void Outrospection::framebuffer_size_callback(GLFWwindow* window, int width, int
 void Outrospection::mouse_callback(GLFWwindow* window, double xPosD, double yPosD)
 {
 	Outrospection* orig = getOutrospection();
+
+	if (orig->isGamePaused) {
+		orig->firstMouse = true;
+		return;
+	}
 
 	const auto xPos = float(xPosD);
 	const auto yPos = float(yPosD);
