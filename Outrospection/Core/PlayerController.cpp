@@ -269,13 +269,13 @@ void PlayerController::animatePlayer(Player& playerIn)
 void PlayerController::movePlayer(Player& player)
 {
 	// NAN check
-	if (velocity.x != velocity.x)
+	if (std::isnan(velocity.x))
 		std::cout << "ERROR: velocity is " << Util::vecToStr(velocity) << std::endl;
 	
 	player.move(velocity + colResponseDelta);
 	
 	// NAN check	
-	if (player.position.x != player.position.x)
+	if (std::isnan(player.position.x))
 		std::cout << "ERROR: position is " << Util::vecToStr(player.position) << std::endl;
 }
 

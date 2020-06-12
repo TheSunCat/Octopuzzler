@@ -36,7 +36,7 @@ public:
 	void setVec3(const std::string& name, float x, float y, float z) const;
 	// ------------------------------------------------------------------------
 	void setVec4(const std::string& name, const glm::vec4& value) const;
-	void setVec4(const std::string& name, const float x, const float y, const float z, const float w) const;
+	void setVec4(const std::string& name, float x, float y, float z, float w) const;
 	// ------------------------------------------------------------------------
 	void setMat2(const std::string& name, const glm::mat2& mat) const;
 	// ------------------------------------------------------------------------

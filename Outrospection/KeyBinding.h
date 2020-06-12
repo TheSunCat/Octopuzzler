@@ -3,7 +3,7 @@
 class KeyBinding
 {
 public:
-	KeyBinding(const int _keyCode);
+	KeyBinding(int _keyCode);
 
 	int keyCode;
 };

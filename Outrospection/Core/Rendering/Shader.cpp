@@ -105,7 +105,7 @@ void Shader::doProjView(Camera& _camera, int _width, int _height, const bool doP
 {
 	const glm::mat4 projection = glm::perspective(glm::radians(_camera.zoom), float(_width) / float(_height), 0.1f, 100.0f);
 
-	glm::mat4 view = glm::mat4();
+	glm::mat4 view;
 	if (doPos)
 		view = _camera.getViewMatrix();
 	else
