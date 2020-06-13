@@ -4,6 +4,7 @@
 #include <glm/ext/matrix_transform.inl>
 
 #include "Source.h"
+#include "Util.h"
 
 GLuint UIComponent::quadVAO = 0;
 
@@ -49,6 +50,11 @@ UIComponent::UIComponent(std::string _texName, const glm::vec2& _position, const
 	}
 }
 
+void UIComponent::tick()
+{
+	name = Util::vecToStr(getOutrospection()->player.position);
+}
+
 void UIComponent::draw(Shader& shader, const Shader& glyphShader) const
 {
 	shader.use();
@@ -71,7 +77,7 @@ void UIComponent::draw(Shader& shader, const Shader& glyphShader) const
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);
 	
-	if(!name.empty()) // drawing item name for now, need a text class from other branch
+	if(!name.empty()) // TODO drawing item name for now, need a text class from other branch
 	{
 		drawText(name, glyphShader);
 	}
@@ -117,5 +123,3 @@ void UIComponent::drawText(const std::string& text, const Shader& glyphShader) c
 
 	glBindVertexArray(0);
 }
-
-void UIComponent::tick() {}

@@ -88,11 +88,6 @@ void Outrospection::runGameLoop()
 	// fetch input into simplified controller class
 	updateInput();
 
-	if (controller.isGamepad)
-	{
-		camera.playerRotateCameraBy(controller.rightSide * 12.5f, controller.rightForward * 10);
-	}
-
 	// exit game on next loop iteration
 	if (controller.pause == 1)
 	{
@@ -101,19 +96,22 @@ void Outrospection::runGameLoop()
 		else
 			pauseGame();
 	}
-	
-	// player always "faces" forward, so W goes away from camera
-	player.yaw = camera.yaw;
 
 	
 	if (!isGamePaused)
 	{
 		// Run one "tick" of the game physics
 		runTick();
+
+		// TODO execute scheduled tasks
+		// ----------------------------
 	}
 
-	// TODO execute scheduled tasks
-	// ----------------------------
+	// UIs are also updated when game is paused
+	for (auto& screen : loadedGUIs)
+	{
+		screen.tick();
+	}
 
 
 	// Bind to framebuffer and draw scene to color texture
@@ -171,8 +169,7 @@ void Outrospection::runGameLoop()
 	
 	glEnable(GL_DEPTH_TEST); // re-enable depth testing
 
-	// Check for errors
-	// ----------------
+	// check for errors
 	Util::glError(DEBUG);
 
 	// swap buffers and poll IO events
@@ -183,17 +180,15 @@ void Outrospection::runGameLoop()
 
 void Outrospection::runTick()
 {
-	playerController.acceleratePlayer(player, controller, deltaTime);
+	playerController.acceleratePlayer(player, controller, deltaTime, camera.yaw);
 	playerController.collidePlayer(player, scene.collision);
 	//playerController.animatePlayer(player);
 	playerController.movePlayer(player);
 
+	if (controller.isGamepad)
+		camera.playerRotateCameraBy(controller.rightSide * 12.5f, controller.rightForward * 10);
+	
 	updateCamera();
-
-	for(auto& screen : loadedGUIs)
-	{
-		screen.tick();
-	}
 }
 
 void Outrospection::updateCamera()
