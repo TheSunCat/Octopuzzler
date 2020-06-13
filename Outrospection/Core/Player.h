@@ -20,7 +20,6 @@ public:
 
 	glm::vec3 position{};
 	Character character;
-	float yaw = 0.0f;
 
 	float eyeHeight = 0.7f;
 	float moveSpeed = 1.5f;

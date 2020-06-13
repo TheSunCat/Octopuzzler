@@ -9,11 +9,11 @@
 
 #include "Core/Player.h"
 
-void PlayerController::acceleratePlayer(const Player& player, const Controller& controller, const float deltaTime)
+void PlayerController::acceleratePlayer(const Player& player, const Controller& controller, const float deltaTime, const float yaw)
 {
-	const bool hacking = DEBUG && controller.leftTrigger >= 0.85f; // apparently, hacking is a side effect of debug mode - smug
+	const bool hacking = DEBUG && (controller.leftTrigger >= 0.85f || controller.talk); // apparently, hacking is a side effect of debug mode - smug
 
-	const glm::vec3 inputMoveVector = processInput(controller, player.yaw);
+	const glm::vec3 inputMoveVector = processInput(controller, yaw);
 	velocity += inputMoveVector * (hacking ? 3.0f : 1.0f) * deltaTime;
 
 	if (controller.jump && controller.jump < 10) // can jump for 10 frames after hitting jump
