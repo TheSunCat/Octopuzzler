@@ -16,8 +16,6 @@ public:
 	UIComponent(std::string _texName, const glm::vec2& _position, const glm::vec2& dimensions);
 
 	virtual void draw(Shader& shader, const Shader& glyphShader) const;
-
-	virtual void drawText(const std::string& text, const Shader& glyphShader) const;
 	
 	virtual void tick();
 	
@@ -30,6 +28,8 @@ public:
 
 	virtual ~UIComponent() = default;
 private:
+	virtual void drawText(const std::string& text, const Shader& glyphShader) const;
+	
 	SimpleTexture texture = TextureManager::missingTexture;
 
 	static GLuint quadVAO;

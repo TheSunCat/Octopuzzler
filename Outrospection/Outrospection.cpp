@@ -2,11 +2,12 @@
 
 #include <glm/ext/matrix_clip_space.hpp>
 
-#include "Util.h"
 #include "Source.h"
+#include "UIButton.h"
+#include "Util.h"
 #include "Core/UI/GUIScreen.h"
 
-Outrospection::Outrospection() : opengl(), freetype()
+Outrospection::Outrospection()
 {
 	gameWindow = opengl.gameWindow;
 	quadVAO = opengl.quadVAO;
@@ -21,9 +22,7 @@ Outrospection::Outrospection() : opengl(), freetype()
 	scene = Scene("TestLevel000");
 	player = Player(glm::vec3(0.0, 3.0, 0.0));
 
-	GUIScreen ingameGUI("Ingame GUI", { UIComponent("dummy", 0, 0, 0.3, 0.3) });
-	
-	setGUIScreen(ingameGUI);
+	setGUIScreen(ingameGUI.get());
 }
 
 void Outrospection::run()
@@ -42,29 +41,26 @@ void Outrospection::pauseGame()
 {
 	isGamePaused = true;
 
-	GUIScreen pauseGUI("Pause GUI", { UIComponent("paused", 0.5, 0.5, 0.4, 0.4) }, false);
-	setGUIScreen(pauseGUI);
+	setGUIScreen(pauseGUI.get());
 }
 
 void Outrospection::unpauseGame()
 {
 	isGamePaused = false;
 
-	GUIScreen ingameGUI("Ingame GUI", { UIComponent("dummy", 0, 0, 0.3, 0.3) });
-	setGUIScreen(ingameGUI);
+	setGUIScreen(ingameGUI.get());
 }
 
-void Outrospection::setGUIScreen(GUIScreen& screen, const bool replace)
+void Outrospection::setGUIScreen(GUIScreen* screen, const bool replace)
 {
 	if(replace && !loadedGUIs.empty())
 	{
 		loadedGUIs.pop_back();
 	}
 
-	// move to avoid copy
-	loadedGUIs.push_back(std::move(screen));
+	loadedGUIs.push_back(screen);
 
-	loadedGUIs.back().onFocus();
+	loadedGUIs.back()->onFocus();
 }
 
 void Outrospection::captureMouse(const bool doCapture) const
@@ -75,23 +71,18 @@ void Outrospection::captureMouse(const bool doCapture) const
 	{
 		glfwSetInputMode(gameWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
-		glfwSetCursorPos(gameWindow, SCR_WIDTH / 2, SCR_HEIGHT / 2);
+		glfwSetCursorPos(gameWindow, SCR_WIDTH / 2.0f, SCR_HEIGHT / 2.0f);
 	}
 }
 
 void Outrospection::runGameLoop()
 {
-	const float currentFrame = glfwGetTime();
-	deltaTime = currentFrame - lastFrame;
+	const double currentFrame = glfwGetTime();
+	deltaTime = float(currentFrame - lastFrame);
 	lastFrame = currentFrame;
 	
 	// fetch input into simplified controller class
 	updateInput();
-
-	if (controller.isGamepad)
-	{
-		camera.playerRotateCameraBy(controller.rightSide * 12.5f, controller.rightForward * 10);
-	}
 
 	// exit game on next loop iteration
 	if (controller.pause == 1)
@@ -101,19 +92,22 @@ void Outrospection::runGameLoop()
 		else
 			pauseGame();
 	}
-	
-	// player always "faces" forward, so W goes away from camera
-	player.yaw = camera.yaw;
 
 	
 	if (!isGamePaused)
 	{
 		// Run one "tick" of the game physics
 		runTick();
+
+		// TODO execute scheduled tasks
+		// ----------------------------
 	}
 
-	// TODO execute scheduled tasks
-	// ----------------------------
+	// UIs are also updated when game is paused
+	for (auto& screen : loadedGUIs)
+	{
+		screen->tick();
+	}
 
 
 	// Bind to framebuffer and draw scene to color texture
@@ -166,13 +160,12 @@ void Outrospection::runGameLoop()
 	// draw UI
 	for(const auto& screen : loadedGUIs)
 	{
-		screen.draw(spriteShader, glyphShader);
+		screen->draw(spriteShader, glyphShader);
 	}
 	
 	glEnable(GL_DEPTH_TEST); // re-enable depth testing
 
-	// Check for errors
-	// ----------------
+	// check for errors
 	Util::glError(DEBUG);
 
 	// swap buffers and poll IO events
@@ -183,17 +176,15 @@ void Outrospection::runGameLoop()
 
 void Outrospection::runTick()
 {
-	playerController.acceleratePlayer(player, controller, deltaTime);
+	playerController.acceleratePlayer(controller, deltaTime, camera.yaw);
 	playerController.collidePlayer(player, scene.collision);
-	//playerController.animatePlayer(player);
+	playerController.animatePlayer(player);
 	playerController.movePlayer(player);
 
+	if (controller.isGamepad)
+		camera.playerRotateCameraBy(controller.rightSide * 12.5f, controller.rightForward * 10);
+	
 	updateCamera();
-
-	for(auto& screen : loadedGUIs)
-	{
-		screen.tick();
-	}
 }
 
 void Outrospection::updateCamera()
@@ -232,46 +223,41 @@ void Outrospection::createShaders()
 }
 
 // set proper viewport size when window is resized
-void Outrospection::framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void Outrospection::framebuffer_size_callback(GLFWwindow*, const int width, const int height)
 {
 	glViewport(0, 0, width, height);
 }
 
-void Outrospection::mouse_callback(GLFWwindow* window, double xPosD, double yPosD)
+void Outrospection::mouse_callback(GLFWwindow*, const double xPosD, const double yPosD)
 {
 	Outrospection* orig = getOutrospection();
-
-	if (orig->isGamePaused) {
-		orig->firstMouse = true;
-		return;
-	}
 
 	const auto xPos = float(xPosD);
 	const auto yPos = float(yPosD);
 	
 	if (orig->firstMouse) {
-		orig->lastX = xPos;
-		orig->lastY = yPos;
+		orig->lastMousePos.x = xPos;
+		orig->lastMousePos.y = yPos;
 		orig->firstMouse = false;
 		return; // nothing to calculate because we technically didn't move the mouse
 	}
 
-	const float xOffset = xPos - orig->lastX;
-	const float yOffset = orig->lastY - yPos;
+	const float xOffset = xPos - orig->lastMousePos.x;
+	const float yOffset = orig->lastMousePos.y - yPos;
 
-	orig->lastX = xPos;
-	orig->lastY = yPos;
+	orig->lastMousePos.x = xPos;
+	orig->lastMousePos.y = yPos;
 
 	orig->camera.playerRotateCameraBy(xOffset, yOffset);
 }
 
-void Outrospection::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+void Outrospection::scroll_callback(GLFWwindow*, const double xoffset, const double yoffset)
 {
 	Outrospection* orig = getOutrospection();
 	orig->camera.changeDistBy(float(yoffset));
 }
 
-void Outrospection::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+void Outrospection::key_callback(GLFWwindow*, const int key, const int scancode, const int action, const int mods)
 {
 	const GameSettings& gameSettings = getOutrospection()->gameSettings;
 	Controller& controller = getOutrospection()->controller;

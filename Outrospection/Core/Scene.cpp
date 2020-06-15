@@ -1,13 +1,13 @@
 #include "Scene.h"
 
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <utility>
 
 #include "External/stb_image.h"
 
-#include "Util.h"
 #include "Constants.h"
+#include "Util.h"
 
 #include "Core/Rendering/Shader.h"
 
@@ -217,7 +217,7 @@ DummyObj Scene::parseLine(const std::string& line)
 	return ret;
 }
 
-ObjectGeneral Scene::parseObj(const std::string& line) const
+ObjectGeneral Scene::parseObj(const std::string& line)
 {
 	DummyObj obj = parseLine(line);
 
@@ -230,7 +230,7 @@ ObjectGeneral Scene::parseObj(const std::string& line) const
 	return ObjectGeneral(std::string(objName), pos, rot, scl);
 }
 
-Character Scene::parseChar(const std::string& line) const
+Character Scene::parseChar(const std::string& line)
 {
 	DummyObj obj = parseLine(line);
 
