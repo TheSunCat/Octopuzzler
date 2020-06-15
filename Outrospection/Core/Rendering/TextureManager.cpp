@@ -29,7 +29,7 @@ SimpleTexture TextureManager::loadTexture(Resource& r)
 
 	const GLuint texId = textureFromFile(path);
 
-	if (texId != -1)
+	if (texId != INT_MAX)
 	{
 		SimpleTexture texObj(texId, path);
 
@@ -59,7 +59,7 @@ TickableTexture TextureManager::loadAnimatedTexture(Resource& r, unsigned int te
 
 		GLuint currentTextureId = textureFromFile(currentPath);
 
-		if (currentTextureId != -1) {
+		if (currentTextureId != INT_MAX) {
 			textureIds.push_back(currentTextureId);
 		}
 		else {
@@ -150,6 +150,6 @@ GLuint TextureManager::textureFromFile(const std::string& filename)
 		std::cout << "Texture failed to load at path: " << filename << std::endl;
 		stbi_image_free(data);
 
-		return -1;
+		return INT_MAX;
 	}
 }

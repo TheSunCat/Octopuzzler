@@ -4,8 +4,8 @@
 
 #include "Util.h"
 
-#include "Core/Rendering/SimpleTexture.h"
 #include "Core/Rendering/Shader.h"
+#include "Core/Rendering/SimpleTexture.h"
 
 Billboard::Billboard(const SimpleTexture& _tex) : texture(_tex)
 {

@@ -1,9 +1,7 @@
 #include "Camera.h"
 
 #include <array>
-#include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
-
 
 #include "Source.h"
 #include "Util.h"
@@ -11,7 +9,7 @@
 #include "Core/Player.h"
 #include "Core/Scene.h"
 
-Camera::Camera(glm::vec3 _pos, glm::vec3 _up, float _yaw, float _pitch)
+Camera::Camera(const glm::vec3 _pos, const glm::vec3 _up, const float _yaw, const float _pitch)
 	: front(glm::vec3(0.0f, 0.0f, -1.0f)), rotationSpeed(ROT_SPEED), zoom(ZOOM)
 {
 	position = _pos;
@@ -21,7 +19,7 @@ Camera::Camera(glm::vec3 _pos, glm::vec3 _up, float _yaw, float _pitch)
 	updateCameraVectors();
 }
 
-Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float _yaw, float _pitch)
+Camera::Camera(const float posX, const float posY, const float posZ, const float upX, const float upY, const float upZ, const float _yaw, const float _pitch)
 	: front(glm::vec3(0.0f, 0.0f, -1.0f)), rotationSpeed(ROT_SPEED), zoom(ZOOM)
 {
 	position = glm::vec3(posX, posY, posZ);
@@ -88,7 +86,7 @@ void Camera::calculateCameraPosition(const Player& player, const Scene& scene, c
 		{
 			framesRemainingLerpingDist--;
 			
-			dist = Util::lerp(dist, correctedDist, 0.6);
+			dist = Util::lerp(dist, correctedDist, 0.6f);
 		}
 		else // we're already colliding, let's just follow the wall
 		{
@@ -98,9 +96,9 @@ void Camera::calculateCameraPosition(const Player& player, const Scene& scene, c
 	else // not colliding, we're free to move all the way out to desiredDistance
 	{
 		if (desiredDistance - dist > 0.5f) // we're zooming out & it's a big diff so we want to avoid snap
-			dist = Util::lerp(dist, desiredDistance, 0.12);
+			dist = Util::lerp(dist, desiredDistance, 0.12f);
 		else
-			dist = Util::lerp(dist, desiredDistance, 0.5); // less snap
+			dist = Util::lerp(dist, desiredDistance, 0.5f); // less snap
 	}
 	
 	bool autoCamming = (framesSinceUserRotate >= framesBeforeAutoCam) && shouldAutoCam;
@@ -170,7 +168,7 @@ glm::mat4 Camera::getViewMatrix() const
 	return glm::lookAt(position, position + front, up);
 }
 
-void Camera::playerRotateCameraBy(float xoffset, float yoffset, bool applyCameraSpeed, bool constrainPitch)
+void Camera::playerRotateCameraBy(float xoffset, float yoffset, const bool applyCameraSpeed)
 {
 	if (applyCameraSpeed)
 	{
