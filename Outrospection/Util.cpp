@@ -1,14 +1,14 @@
 #include "Util.h"
 
-#include <sstream>
-#include <iostream>
 #include <charconv>
+#include <iostream>
+#include <sstream>
 
 #include <GLAD/glad.h>
 #include <glm/common.hpp>
 
-#include "External/stb_image.h"
 #include "Constants.h"
+#include "External/stb_image.h"
 
 bool Util::glError(const bool print)
 {
@@ -57,11 +57,7 @@ glm::vec3 Util::rotToVec3(const float yaw, const float pitch)
 
 std::string Util::vecToStr(const glm::vec3& vec)
 {
-	std::stringstream ss("vec3(");
-
-	ss << "vec3(" << vec.x << ", " << vec.y << ", " << vec.z << ")";
-
-	return ss.str();
+	return std::to_string(vec.x) + ", " + std::to_string(vec.y) + ", " + std::to_string(vec.z);
 }
 
 unsigned char* Util::dataFromFile(const char* path, const std::string& directory, int* widthOut, int* heightOut)
@@ -146,7 +142,7 @@ glm::vec3 Util::rayCastPlane(const Ray& r, const Triangle& plane) {
 
 Collision Util::rayCast(const Ray& r, const std::vector<Triangle>& tris, bool bothSides)
 {
-	Collision closestHit = Collision{ INFINITY };
+	auto closestHit = Collision{ INFINITY };
 
 	for (const Triangle& tri : tris)
 	{
@@ -164,7 +160,7 @@ Collision Util::rayCast(const Ray& r, const std::vector<Triangle>& tris, bool bo
 
 Collision Util::rayCast(const Ray& r, const std::vector<std::vector<Triangle>::const_iterator>& tris, bool bothSides)
 {
-	Collision closestHit = Collision{ INFINITY };
+	auto closestHit = Collision{ INFINITY };
 
 	for (const auto& tri : tris)
 	{

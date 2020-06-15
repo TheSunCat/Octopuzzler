@@ -16,7 +16,7 @@ public:
 
 	void draw(Shader& _shader) const;
 
-	glm::vec3 position;
+	glm::vec3 position{};
 
 private:
 	std::string id;

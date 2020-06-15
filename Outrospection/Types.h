@@ -4,8 +4,8 @@
 
 #include <glm/glm.hpp>
 
-#include "Core/Rendering/SimpleTexture.h"
 #include "Core/Rendering/Resource.h"
+#include "Core/Rendering/SimpleTexture.h"
 
 //enum class AnimType {
 //	walk,

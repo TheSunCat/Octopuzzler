@@ -7,13 +7,13 @@
 
 #include <glm/glm.hpp>
 
-#include "Types.h"
 #include "Mesh.h"
+#include "Types.h"
 
 struct Vertex;
 
 struct Material {
-	Material()
+	Material(): colAmbient(0.0f), colDiffuse(0.0f), colSpecular(0.0f)
 	{
 		specularExponent = 0.0f;
 	}

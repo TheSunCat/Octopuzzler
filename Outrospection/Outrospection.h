@@ -1,18 +1,20 @@
 #pragma once
 
-#include "GameSettings.h"
-#include "Controller.h"
 #include "Constants.h"
+#include "Controller.h"
+#include "GameSettings.h"
 
-#include "Core/Rendering/TextureManager.h"
+#include "Core/Rendering/FreeType.h"
 #include "Core/Rendering/OpenGL.h"
 #include "Core/Rendering/Shader.h"
-#include "Core/Rendering/FreeType.h"
+#include "Core/Rendering/TextureManager.h"
 
+#include "Core/Camera.h"
+#include "Core/Player.h"
 #include "Core/PlayerController.h"
 #include "Core/Scene.h"
-#include "Core/Player.h"
-#include "Core/Camera.h"
+#include "Core/UI/GUIIngame.h"
+#include "Core/UI/GUIPause.h"
 #include "Core/UI/GUIScreen.h"
 
 class Outrospection {
@@ -27,9 +29,11 @@ public:
 	void pauseGame();
 	void unpauseGame();
 
-	void setGUIScreen(GUIScreen& screen, bool replace = true);
+	void setGUIScreen(GUIScreen* screen, bool replace = true);
 
 	void captureMouse(bool doCapture) const;
+
+	glm::vec2 lastMousePos = glm::vec2(SCR_HEIGHT / 2.0f, SCR_WIDTH / 2.0f);
 	
 	Scene scene;
 	Player player;
@@ -46,12 +50,15 @@ private:
 	void runTick();
 	void updateCamera();
 
+	std::unique_ptr<GUIScreen> ingameGUI = std::make_unique<GUIIngame>();
+	std::unique_ptr<GUIScreen> pauseGUI = std::make_unique<GUIPause>();
+
 	// set to false when the game loop shouldn't run
 	volatile bool running = false;
 
 	// timing
 	float deltaTime = 0.0f;	// Time between current frame and last frame
-	float lastFrame = 0.0f; // Time of last frame
+	double lastFrame = 0.0f; // Time of last frame
 
 	GLFWwindow* gameWindow;
 	
@@ -69,7 +76,6 @@ private:
 
 	// camera stuff
 	Camera camera = Camera(glm::vec3(0.0f, 0.0f, 3.0f));
-	float lastX = SCR_HEIGHT / 2.0f, lastY = SCR_WIDTH / 2.0f;
 	bool firstMouse = true;
 
 	static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -83,5 +89,5 @@ private:
 
 	bool isGamePaused{};
 
-	std::vector<GUIScreen> loadedGUIs;
+	std::vector<GUIScreen*> loadedGUIs;
 };

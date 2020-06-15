@@ -17,9 +17,9 @@ UIComponent::UIComponent(const std::string& _texName, const float posXPercent, c
 UIComponent::UIComponent(std::string _texName, const glm::vec2& _position, const glm::vec2& dimensions)
 	: name(std::move(_texName)), position(_position), width(dimensions.x), height(dimensions.y), textOffset(0.0f, height / 2), textColor(0.0f)
 {
-	TextureManager& _textureManager = getOutrospection()->textureManager;
+	TextureManager& textureManager = getOutrospection()->textureManager;
 	Resource r("UI/", name + ".png");
-	texture = _textureManager.get(r);
+	texture = textureManager.get(r);
 
 	// we need to create our quad the first time!
 	if(quadVAO == 0)
@@ -50,10 +50,7 @@ UIComponent::UIComponent(std::string _texName, const glm::vec2& _position, const
 	}
 }
 
-void UIComponent::tick()
-{
-	name = Util::vecToStr(getOutrospection()->player.position);
-}
+void UIComponent::tick() {}
 
 void UIComponent::draw(Shader& shader, const Shader& glyphShader) const
 {
@@ -95,9 +92,9 @@ void UIComponent::drawText(const std::string& text, const Shader& glyphShader) c
 	float textX = position.x + textOffset.x;
 	float textY = position.y + textOffset.y;
 
-	for (char c : name)
+	for (char c : text)
 	{
-		if (c == '\0') // replace null char with space
+		if (c <= '\0') // replace null char with space
 			c = ' ';
 
 		FontCharacter fontCharacter = getOutrospection()->fontCharacters.at(c);

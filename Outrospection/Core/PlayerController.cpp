@@ -2,14 +2,14 @@
 
 #include <iostream>
 
-#include "Util.h"
 #include "Constants.h"
 #include "Controller.h"
 #include "Source.h"
+#include "Util.h"
 
 #include "Core/Player.h"
 
-void PlayerController::acceleratePlayer(const Player& player, const Controller& controller, const float deltaTime, const float yaw)
+void PlayerController::acceleratePlayer(const Controller& controller, const float deltaTime, const float yaw)
 {
 	const bool hacking = DEBUG && (controller.leftTrigger >= 0.85f || controller.talk); // apparently, hacking is a side effect of debug mode - smug
 
@@ -60,27 +60,30 @@ void PlayerController::resolveCollision(Player& player, const std::vector<Triang
 	const float colSphereRadiusSquare = colSphereRadius * colSphereRadius;
 
 	const glm::vec3 colliderOrigin = player.position + glm::vec3(0, colSphereRadius, 0);
+
+	//velocity.y = 0;
 	
 	glm::vec3 ghostPosition = colliderOrigin + velocity;
-	float playerGhostDistance = glm::length(velocity); // TODO prevent sqrt here
+	float playerGhostDistanceSq = Util::length2V3(velocity);
 	
 	const glm::vec3 direction = glm::normalize(velocity);
 
-	// commented out this "continuous collision" so I can make sure that's not the problem
+	// TODO make this a spherecast?
 	const Ray playerRay{ colliderOrigin, direction };
 	const Collision playerRayHit = Util::rayCast(playerRay, collisionData);
+
+	const float rayHitDistSq = playerRayHit.dist * playerRayHit.dist;
 	
-	const glm::vec3 colSphereOrigin = playerRayHit.dist < playerGhostDistance
+	const glm::vec3 colSphereOrigin = rayHitDistSq < playerGhostDistanceSq
 		                                   ? playerRayHit.point
 		                                   : ghostPosition; // there's a tri we would skip over, so instead tp player to here
 
-	if(playerRayHit.dist < playerGhostDistance) // there's a try we would skip over
+	if(rayHitDistSq < playerGhostDistanceSq) // there's a try we would skip over
 	{
 		velocity = direction * (playerRayHit.dist - colSphereRadius);
 
 		// recalculate these 
 		ghostPosition = colliderOrigin + velocity;
-		playerGhostDistance = glm::length(velocity);
 		
 	}
 	
@@ -162,7 +165,7 @@ void PlayerController::resolveCollision(Player& player, const std::vector<Triang
     	// --------------------------------------------------
     	// we found a collision!
         // push the character outside of the triangle we intersected
-
+    	
 		if (fabs(curTri.n.y) > 0.1) // we are colliding with ground
 		{
 			// check if ground is actually under us or not
@@ -181,8 +184,14 @@ void PlayerController::resolveCollision(Player& player, const std::vector<Triang
 			// we need to correct by this
 			const float distancePastTri = (colSphereRadius - pointToPlaneDist);
 
+			//std::cout << "intersecting wall " << distancePastTri << "\n";
+
+			glm::vec3 dirNoY = glm::vec3(direction.x, 0, direction.z);
+			if (Util::length2V3(dirNoY) == 0.0f)
+				dirNoY = -curTri.n;
+			
 			// angle at which we run into
-			const float cosine = 1.0f - fabs(Util::cosBetweenV3(direction, curTri.n));
+			const float cosine = 1.0f - fabs(Util::cosBetweenV3(dirNoY, curTri.n));
 			
 			const float hypotenuse = distancePastTri, adjacentSide = cosine * hypotenuse;
 			const float oppositeSide = sqrt(pow(hypotenuse, 2) - pow(adjacentSide, 2));
@@ -205,7 +214,7 @@ void PlayerController::resolveCollision(Player& player, const std::vector<Triang
 
 		colResponseDelta.y = 0;
 
-		float highestDeltaY = -INFINITY;
+		float highestGroundDeltaY = -INFINITY;
     	// do this after ALL mods to velocity and colResponseDelta are done
 		for (const Triangle& curTri : groundCollisions)
 		{
@@ -217,21 +226,23 @@ void PlayerController::resolveCollision(Player& player, const std::vector<Triang
 
 			const float deltaY = y - player.position.y;
 
-			if (deltaY > highestDeltaY)
-				highestDeltaY = deltaY;
+			if (deltaY > highestGroundDeltaY)
+				highestGroundDeltaY = deltaY;
 		}
 
     	for(const Collision& collision : wallCollisions)
     	{
-			if (collision.point.y <= highestDeltaY) // we're colliding with stuff under the ground we're on
+			const float deltaY = collision.point.y - player.position.y;
+    		
+			if (deltaY < highestGroundDeltaY) // we're colliding with stuff under the ground we're on
 			{
-				//colResponseDelta -= collision.shiftBy;
+				//colResponseDelta -= collision.shiftBy / 2.0f;
 			}
     	}
 
-		if (highestDeltaY != -INFINITY)
+		if (highestGroundDeltaY != -INFINITY)
 		{
-			colResponseDelta.y = highestDeltaY;
+			colResponseDelta.y = highestGroundDeltaY;
 			velocity.y = 0;
 		}
     }
@@ -239,7 +250,7 @@ void PlayerController::resolveCollision(Player& player, const std::vector<Triang
 
 // TODO implement this function
 // ReSharper disable once CppMemberFunctionMayBeStatic
-void PlayerController::animatePlayer(Player& playerIn)
+void PlayerController::animatePlayer(Player& player)
 {
 	return;
 
@@ -266,7 +277,7 @@ void PlayerController::animatePlayer(Player& playerIn)
 	//pastAnim = newAnim;
 }
 
-void PlayerController::movePlayer(Player& player)
+void PlayerController::movePlayer(Player& player) const
 {
 	// NAN check
 	if (std::isnan(velocity.x))

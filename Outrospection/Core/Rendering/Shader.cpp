@@ -1,11 +1,11 @@
 #include "Shader.h"
 
 #include <fstream>
-#include <sstream>
 #include <iostream>
+#include <sstream>
 
-#include <glm\ext\matrix_clip_space.hpp>
-#include <glm\ext\matrix_transform.hpp>
+#include <glm/ext/matrix_clip_space.hpp>
+#include <glm/ext/matrix_transform.hpp>
 
 #include "Core/Camera.h"
 
@@ -45,7 +45,7 @@ Shader::Shader(const GLchar* vertexName, const GLchar* fragmentName)
 		fragmentCode = fShaderStream.str();
 	}
 	catch (std::ifstream::failure& e) {
-		std::cout << "Failed to read shader file \"" << vertexPath << "\" or \"" << fragmentPath << "\"! errno " << errno << std::endl;
+		std::cout << "Failed to read shader file \"" << vertexPath << "\" or \"" << fragmentPath << "\"! errno " << e.code() << std::endl;
 		return;
 	}
 
@@ -68,7 +68,7 @@ Shader::Shader(const GLchar* vertexName, const GLchar* fragmentName)
 	{
 		glGetShaderInfoLog(vertex, 512, nullptr, infoLog);
 		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-	};
+	}
 
 	// fragment Shader
 	fragment = glCreateShader(GL_FRAGMENT_SHADER);
@@ -80,7 +80,7 @@ Shader::Shader(const GLchar* vertexName, const GLchar* fragmentName)
 	{
 		glGetShaderInfoLog(vertex, 512, nullptr, infoLog);
 		std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED (" << fragmentPath << "\n" << infoLog << std::endl;
-	};
+	}
 
 	// shader Program
 	ID = glCreateProgram();
@@ -101,7 +101,7 @@ Shader::Shader(const GLchar* vertexName, const GLchar* fragmentName)
 	glDeleteShader(fragment);
 }
 
-void Shader::doProjView(Camera& _camera, int _width, int _height, const bool doPos) const
+void Shader::doProjView(Camera& _camera, const int _width, const int _height, const bool doPos) const
 {
 	const glm::mat4 projection = glm::perspective(glm::radians(_camera.zoom), float(_width) / float(_height), 0.1f, 100.0f);
 
@@ -177,15 +177,15 @@ void Shader::setMat4(const std::string& name, const glm::mat4& mat) const
 
 GLint Shader::getUniformLocation(const char* uniformName) const
 {
-	const auto f = uniform_cache.find(uniformName);
+	const auto f = uniformCache.find(uniformName);
 
 	GLint loc;
 
-	if (f == uniform_cache.end()) {// get uniform location
+	if (f == uniformCache.end()) {// get uniform location
 		loc = glGetUniformLocation(ID, uniformName);
 
 		std::pair<std::string, GLuint> newLoc(uniformName, loc);
-		uniform_cache.insert(newLoc);
+		uniformCache.insert(newLoc);
 	}
 	else
 	{

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Core/ObjectGeneral.h"
 #include "Core/Character.h"
+#include "Core/ObjectGeneral.h"
 
 class Shader;
 
@@ -10,7 +10,7 @@ public:
 	// default ctor
 	Scene() = default;
 
-	Scene(std::string _name);
+	explicit Scene(std::string _name);
 
 	void loadScene();
 
@@ -30,8 +30,8 @@ public:
 private:
 	static DummyObj parseLine(const std::string& line);
 
-	[[nodiscard]] ObjectGeneral parseObj(const std::string& line) const;
-	[[nodiscard]] Character parseChar(const std::string& line) const;
+	[[nodiscard]] static ObjectGeneral parseObj(const std::string& line);
+	[[nodiscard]] static Character parseChar(const std::string& line);
 
 	void parseCollision(const std::string& name);
 

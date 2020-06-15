@@ -4,9 +4,9 @@
 
 #include <GLAD/glad.h>
 
+#include "Constants.h"
 #include "Resource.h"
 #include "Types.h"
-#include "Constants.h"
 
 #include "Core/Rendering/SimpleTexture.h"
 #include "Core/Rendering/TickableTexture.h"
@@ -32,7 +32,7 @@ public:
 
 	DISALLOW_COPY_AND_ASSIGN(TextureManager)
 private:
-	GLuint textureFromFile(const std::string& filename);
-	void createTexture(const GLuint& texId, const unsigned char* data, const GLenum& format,
-	                   const unsigned int& width, const unsigned int& height);
+	static GLuint textureFromFile(const std::string& filename);
+	static void createTexture(const GLuint& texId, const unsigned char* data, const GLenum& format,
+	                          const unsigned int& width, const unsigned int& height);
 };

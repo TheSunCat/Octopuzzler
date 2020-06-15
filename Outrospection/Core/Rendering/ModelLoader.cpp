@@ -2,8 +2,8 @@
 
 #include <fstream>
 
-#include "Util.h"
 #include "Source.h"
+#include "Util.h"
 
 #include "Core/Rendering/TextureManager.h"
 
@@ -59,12 +59,12 @@ namespace algorithm
 
 	// get element at index position
 	template<class T>
-	inline const T& getElement(const std::vector<T>& elements, std::string_view& indexStr)
+	const T& getElement(const std::vector<T>& elements, std::string_view& indexStr)
 	{
 		int index = Util::stoi(indexStr);
 
 		if (index < 0)
-			index = elements.size() + index;
+			index = static_cast<int>(elements.size()) + index;
 		else
 			index--;
 
@@ -380,7 +380,7 @@ bool ModelLoader::loadFile(const std::string& filePath)
 	// take care of the last material
 	loadedMaterials.push_back(tempMaterial);
 
-	TextureManager* _textureManager = &(getOutrospection()->textureManager);
+	TextureManager* textureManager = &(getOutrospection()->textureManager);
 	// Set Materials for each Mesh
 	for (unsigned int i = 0; i < meshMatNames.size(); i++)
 	{
@@ -396,7 +396,7 @@ bool ModelLoader::loadFile(const std::string& filePath)
 
 				Resource r("Textures/", loadedMaterial.mapDiffuse);
 
-				loadedMeshes[i].texture = _textureManager->loadTexture(r);
+				loadedMeshes[i].texture = textureManager->loadTexture(r);
 				break;
 			}
 		}
@@ -543,20 +543,9 @@ void ModelLoader::verticesToIndicesTriangulated(std::vector<GLuint>& indicesOut,
 		// For every vertex
 		for (unsigned int vertexIndex = 0; vertexIndex < verticesVector.size(); vertexIndex++)
 		{
-			Vertex prevVertex;
-
-			if (vertexIndex == 0)
-				prevVertex = verticesVector[verticesVector.size() - 1];
-			else
-				prevVertex = verticesVector[vertexIndex - 1];
-
+			Vertex prevVertex = vertexIndex == 0 ? verticesVector[verticesVector.size() - 1] : verticesVector[vertexIndex - 1];
 			Vertex curVertex = verticesVector[vertexIndex];
-
-			Vertex nextVertex;
-			if (vertexIndex == verticesVector.size() - 1)
-				nextVertex = verticesVector[0];
-			else
-				nextVertex = verticesVector[1 + vertexIndex];
+			Vertex nextVertex = vertexIndex == verticesVector.size() - 1 ? verticesVector[0] : verticesVector[1 + vertexIndex];
 
 			// 3 verts left means this is the last tri
 			if (verticesVector.size() == 3)
