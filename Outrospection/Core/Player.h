@@ -10,7 +10,7 @@ class Player {
 public:
 	Player() = default;
 
-	Player(const glm::vec3& _startPos);
+	explicit Player(const glm::vec3& _startPos);
 
 	void move(const glm::vec3& deltaPos);
 

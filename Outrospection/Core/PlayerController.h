@@ -9,13 +9,13 @@ class Player;
 
 class PlayerController {
 public:
-	void acceleratePlayer(const Player& player, const Controller& controller, float deltaTime, float yaw);
+	void acceleratePlayer(const Controller& controller, float deltaTime, float yaw);
 
 	void collidePlayer(Player& player, const std::vector<Triangle>& collisionData);
 
 	void animatePlayer(Player& player);
 	
-	void movePlayer(Player& player);
+	void movePlayer(Player& player) const;
 
 	bool isMoving() const;
 private:

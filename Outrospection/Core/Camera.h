@@ -16,37 +16,37 @@ class Camera
 {
 public:
 	// automatically calculated, do not modify
-	glm::vec3 position;
+	glm::vec3 position{};
 	glm::vec3 front;
-	glm::vec3 up;
-	glm::vec3 right;
-	glm::vec3 worldUp;
+	glm::vec3 up{};
+	glm::vec3 right{};
+	glm::vec3 worldUp{};
 	
 	// Euler angles
 	float yaw;
 	float pitch;
 
 	// options
-	glm::vec3 focus;
+	glm::vec3 focus{};
 	float rotationSpeed;
 	float zoom;
 	float desiredDistance = 5.0f;
 	float maxDistance = desiredDistance;
 	float dist = desiredDistance;
 	
-	glm::vec3 offset;
+	glm::vec3 offset{};
 
-	Camera(glm::vec3 _pos = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 _up = glm::vec3(0.0f, 1.0f, 0.0f),
-	       float _yaw = YAW, float _pitch = PITCH);
+	explicit Camera(glm::vec3 _pos = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 _up = glm::vec3(0.0f, 1.0f, 0.0f),
+	                float _yaw = YAW, float _pitch = PITCH);
 
 	// same ctor but w/ scalar args
-	Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch);
+	Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float _yaw, float _pitch);
 
 	void calculateCameraPosition(const Player& player, const Scene& scene, bool shouldAutoCam);
 
 	glm::mat4 getViewMatrix() const;
 
-	void playerRotateCameraBy(float xoffset, float yoffset, bool applyCameraSpeed = true, bool constrainPitch = true);
+	void playerRotateCameraBy(float xoffset, float yoffset, bool applyCameraSpeed = true);
 
 	void changeDistBy(float yoffset);
 	

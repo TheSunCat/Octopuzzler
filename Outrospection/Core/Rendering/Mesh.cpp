@@ -16,7 +16,7 @@ Mesh::Mesh(const std::string& _name, const std::vector<Vertex>& _vertices, const
            const SimpleTexture& _texture)
 {
 	name = _name;
-	indicesSize = _indices.size();
+	indicesSize = static_cast<unsigned int>(_indices.size());
 	texture = _texture;
 
 	// create buffers and arrays

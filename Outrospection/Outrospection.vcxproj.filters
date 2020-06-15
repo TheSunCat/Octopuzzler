@@ -17,6 +17,48 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="cpp.hint" />
+    <None Include="res\ShaderData\billboard.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\ShaderData\billboard.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\ShaderData\glyph.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\ShaderData\lightless.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\ShaderData\obj.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\ShaderData\obj.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\ShaderData\screen.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\ShaderData\screen.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\ShaderData\simple.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\ShaderData\simple.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\ShaderData\sky.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\ShaderData\sky.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\ShaderData\sprite.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\ShaderData\sprite.vert">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Camera.h">
@@ -106,6 +148,15 @@
     <ClInclude Include="Core\Rendering\FreeType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="UIButton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\UI\GUIIngame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\UI\GUIPause.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Rendering\TextureManager.cpp">
@@ -184,6 +235,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Core\UI\GUIScreen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UIButton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\UI\GUIIngame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\UI\GUIPause.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
