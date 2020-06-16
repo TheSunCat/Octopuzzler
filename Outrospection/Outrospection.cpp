@@ -72,6 +72,8 @@ void Outrospection::captureMouse(const bool doCapture) const
 		glfwSetInputMode(gameWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
 		glfwSetCursorPos(gameWindow, SCR_WIDTH / 2.0f, SCR_HEIGHT / 2.0f);
+
+		mouse_callback(gameWindow, SCR_WIDTH / 2.0f, SCR_HEIGHT / 2.0f);
 	}
 }
 
