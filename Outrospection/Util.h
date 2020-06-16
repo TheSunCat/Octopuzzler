@@ -55,7 +55,7 @@ namespace Util
 	
 	Collision rayCast(const Ray& r, const std::vector<std::vector<Triangle>::const_iterator>& tris, bool bothSides = false);
 
-	bool intersectRaySegmentSphere(const Ray& ray, glm::vec3 sphereOrigin, float sphereRadius2, glm::vec3& ip);
+	bool intersectRaySegmentSphere(const Ray& ray, glm::vec3 sphereOrigin, float sphereRadius2, glm::vec3& intersectPoint);
 
 	// 2D test for which side of a 2D line a 2D point lies on
 	bool leftOf(const glm::vec2& a, const glm::vec2& b, const glm::vec2& p);

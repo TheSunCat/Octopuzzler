@@ -177,7 +177,7 @@ Collision Util::rayCast(const Ray& r, const std::vector<std::vector<Triangle>::c
 }
 
 //https://gamedev.stackexchange.com/questions/96459/fast-ray-sphere-collision-code
-bool Util::intersectRaySegmentSphere(const Ray& ray, const glm::vec3 sphereOrigin, const float sphereRadius2, glm::vec3& ip)
+bool Util::intersectRaySegmentSphere(const Ray& ray, const glm::vec3 sphereOrigin, const float sphereRadius2, glm::vec3& intersectPoint)
 {
 	const glm::vec3 origin = ray.origin;
 	glm::vec3 direction = ray.direction;
@@ -205,7 +205,7 @@ bool Util::intersectRaySegmentSphere(const Ray& ray, const glm::vec3 sphereOrigi
 	// If t is negative, ray started inside sphere so clamp t to zero
 	if (t < 0.0f)
 		t = 0.0f;
-	ip = origin + (direction * t);
+	intersectPoint = origin + (direction * t);
 
 	//here's that last segment check I was talking about
 	if (t > rayLength)

@@ -48,7 +48,6 @@ void PlayerController::collidePlayer(Player& player, const std::vector<Triangle>
 	resolveCollision(player, collisionData);
 }
 
-// return true when another iteration must be run to resolve all collision
 void PlayerController::resolveCollision(Player& player, const std::vector<Triangle>& collisionData)
 {
 	colResponseDelta = glm::vec3(0.0f);
@@ -60,8 +59,6 @@ void PlayerController::resolveCollision(Player& player, const std::vector<Triang
 	const float colSphereRadiusSquare = colSphereRadius * colSphereRadius;
 
 	const glm::vec3 colliderOrigin = player.position + glm::vec3(0, colSphereRadius, 0);
-
-	//velocity.y = 0;
 	
 	glm::vec3 ghostPosition = colliderOrigin + velocity;
 	float playerGhostDistanceSq = Util::length2V3(velocity);
@@ -78,7 +75,7 @@ void PlayerController::resolveCollision(Player& player, const std::vector<Triang
 		                                   ? playerRayHit.point
 		                                   : ghostPosition; // there's a tri we would skip over, so instead tp player to here
 
-	if(rayHitDistSq < playerGhostDistanceSq) // there's a try we would skip over
+	if(rayHitDistSq < playerGhostDistanceSq) // there's a tri we would skip over
 	{
 		velocity = direction * (playerRayHit.dist - colSphereRadius);
 
@@ -172,19 +169,27 @@ void PlayerController::resolveCollision(Player& player, const std::vector<Triang
 			Ray downRay = Ray{ ghostPosition + glm::vec3(0, 999, 0), glm::vec3(0, -1, 0) };
 			Collision downCollision = Util::rayCast(downRay, curTri, true);
 
-			if (downCollision.dist != INFINITY)
+			// check if we're on a ledge, therefore need special treatment due to sphere collider
+			ledgeHitPoint = (downCollision.dist == INFINITY && (intersectPoint.y - player.position.y) < colSphereRadius / 3.0f) ? intersectPoint : glm::vec3(0.0f);
+
+			if((downCollision.dist != INFINITY) || Util::length2V3(ledgeHitPoint)) // somewhat arbitrary
 			{
 				groundCollisions.emplace_back(curTri);
-
+				
 				grounded = true;
 			}
 		}
 		else // handle wall collisions
     	{
+			float playerFollowsNorm = glm::dot(velocity, curTri.n);
+			if (playerFollowsNorm > 0)
+				continue;
+
+			if (fabs(intersectPoint.y - player.position.y) <= colSphereRadius / 4.0f)
+				continue;
+			
 			// we need to correct by this
 			const float distancePastTri = (colSphereRadius - pointToPlaneDist);
-
-			//std::cout << "intersecting wall " << distancePastTri << "\n";
 
 			glm::vec3 dirNoY = glm::vec3(direction.x, 0, direction.z);
 			if (Util::length2V3(dirNoY) == 0.0f)
@@ -209,11 +214,13 @@ void PlayerController::resolveCollision(Player& player, const std::vector<Triang
 
     if (numCollisions != 0 || !groundCollisions.empty())
     {
+	    std::cout << Util::vecToStr(ledgeHitPoint) << "\n";
+    	
     	if(numCollisions > 0)
-			colResponseDelta /= float(numCollisions); // average our collision responses?
+			colResponseDelta /= float(numCollisions); // average our collision responses
 
 		colResponseDelta.y = 0;
-
+    	
 		float highestGroundDeltaY = -INFINITY;
     	// do this after ALL mods to velocity and colResponseDelta are done
 		for (const Triangle& curTri : groundCollisions)
@@ -223,22 +230,12 @@ void PlayerController::resolveCollision(Player& player, const std::vector<Triang
 			const float y = ((curTri.n.x * (newPlayerPos.x - curTri.v0.x)
 				+ curTri.n.z * (newPlayerPos.z - curTri.v0.z)) / -curTri.n.y)
 				+ curTri.v0.y;
-
+			
 			const float deltaY = y - player.position.y;
 
 			if (deltaY > highestGroundDeltaY)
 				highestGroundDeltaY = deltaY;
 		}
-
-    	for(const Collision& collision : wallCollisions)
-    	{
-			const float deltaY = collision.point.y - player.position.y;
-    		
-			if (deltaY < highestGroundDeltaY) // we're colliding with stuff under the ground we're on
-			{
-				//colResponseDelta -= collision.shiftBy / 2.0f;
-			}
-    	}
 
 		if (highestGroundDeltaY != -INFINITY)
 		{
@@ -246,6 +243,23 @@ void PlayerController::resolveCollision(Player& player, const std::vector<Triang
 			velocity.y = 0;
 		}
     }
+
+	if(Util::length2V3(ledgeHitPoint))
+	{
+		Ray ledgeRay = Ray{ ledgeHitPoint, glm::vec3(0, 1, 0) };
+		ledgeRay.origin.y -= colSphereRadius / 2.0f;
+
+		glm::vec3 intersectPoint = glm::vec3();
+		bool hit = Util::intersectRaySegmentSphere(ledgeRay, ghostPosition, colSphereRadiusSquare, intersectPoint);
+
+		if (!hit)
+			ledgeHitPoint = glm::vec3(0.0f);
+		else
+		{
+			velocity.y = 0;
+			grounded = true;
+		}
+	}
 }
 
 // TODO implement this function
