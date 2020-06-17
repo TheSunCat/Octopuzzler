@@ -7,69 +7,18 @@
 
 #include "Core/Rendering/TextureManager.h"
 
-namespace algorithm
+// get element at index position
+template<class T>
+const T& getElement(const std::vector<T>& elements, std::string_view& indexStr)
 {
-	// A test to see if P1 is on the same side as P2 of a line segment ab
-	bool sameSide(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& a, const glm::vec3& b)
-	{
-		const glm::vec3 cp1 = glm::cross(b - a, p1 - a);
-		const glm::vec3 cp2 = glm::cross(b - a, p2 - a);
+	int index = Util::stoi(indexStr);
 
-		if (glm::dot(cp1, cp2) >= 0)
-			return true;
-		else
-			return false;
-	}
+	if (index < 0)
+		index = static_cast<int>(elements.size()) + index;
+	else
+		index--;
 
-	// generate a cross product normal for a triangle
-	glm::vec3 genTriNormal(const glm::vec3& t1, const glm::vec3& t2, const glm::vec3& t3)
-	{
-		const glm::vec3 u = t2 - t1;
-		const glm::vec3 v = t3 - t1;
-
-		glm::vec3 normal = glm::cross(u, v);
-
-		return normal;
-	}
-
-	// check to see if a glm::vec3 Point is within a 3 glm::vec3 Triangle
-	bool inTriangle(const glm::vec3& point, const glm::vec3& tri1, const glm::vec3& tri2, const glm::vec3& tri3)
-	{
-		// test to see if it is within an infinite prism that the triangle outlines
-		const bool withinTriPrism = sameSide(point, tri1, tri2, tri3) && sameSide(point, tri2, tri1, tri3)
-			&& sameSide(point, tri3, tri1, tri2);
-
-		// if it isn't it will never be on the triangle
-		if (!withinTriPrism)
-			return false;
-
-		// calc normal
-		const glm::vec3 n = genTriNormal(tri1, tri2, tri3);
-
-		// project the point onto normal
-		const glm::vec3 proj = Util::projectV3(point, n);
-
-		// If the distance from the triangle to the point is 0
-		//	it lies on the triangle
-		if (glm::length(proj) == 0)
-			return true;
-		else
-			return false;
-	}
-
-	// get element at index position
-	template<class T>
-	const T& getElement(const std::vector<T>& elements, std::string_view& indexStr)
-	{
-		int index = Util::stoi(indexStr);
-
-		if (index < 0)
-			index = static_cast<int>(elements.size()) + index;
-		else
-			index--;
-
-		return elements[index];
-	}
+	return elements[index];
 }
 
 bool ModelLoader::loadFile(const std::string& filePath)
@@ -464,7 +413,7 @@ void ModelLoader::verticesFromFaceString(std::vector<Vertex>& outputVertices, co
 		{
 		case 1: // P
 		{
-			vertex.pos = algorithm::getElement(_positions, splitVertexStr[0]);
+			vertex.pos = getElement(_positions, splitVertexStr[0]);
 			vertex.texCoord = glm::vec2(0, 0);
 			noNormal = true;
 			outputVertices.push_back(vertex);
@@ -472,25 +421,25 @@ void ModelLoader::verticesFromFaceString(std::vector<Vertex>& outputVertices, co
 		}
 		case 2: // P/T
 		{
-			vertex.pos = algorithm::getElement(_positions, splitVertexStr[0]);
-			vertex.texCoord = algorithm::getElement(_texCoords, splitVertexStr[1]);
+			vertex.pos = getElement(_positions, splitVertexStr[0]);
+			vertex.texCoord = getElement(_texCoords, splitVertexStr[1]);
 			noNormal = true;
 			outputVertices.push_back(vertex);
 			break;
 		}
 		case 3: // P//N
 		{
-			vertex.pos = algorithm::getElement(_positions, splitVertexStr[0]);
+			vertex.pos = getElement(_positions, splitVertexStr[0]);
 			vertex.texCoord = glm::vec2(0, 0);
-			vertex.normal = algorithm::getElement(_normals, splitVertexStr[2]);
+			vertex.normal = getElement(_normals, splitVertexStr[2]);
 			outputVertices.push_back(vertex);
 			break;
 		}
 		case 4: // P/T/N
 		{
-			vertex.pos = algorithm::getElement(_positions, splitVertexStr[0]);
-			vertex.texCoord = algorithm::getElement(_texCoords, splitVertexStr[1]);
-			vertex.normal = algorithm::getElement(_normals, splitVertexStr[2]);
+			vertex.pos = getElement(_positions, splitVertexStr[0]);
+			vertex.texCoord = getElement(_texCoords, splitVertexStr[1]);
+			vertex.normal = getElement(_normals, splitVertexStr[2]);
 			outputVertices.push_back(vertex);
 			break;
 		}
@@ -617,7 +566,7 @@ void ModelLoader::verticesToIndicesTriangulated(std::vector<GLuint>& indicesOut,
 			bool inTri = false;
 			for (const Vertex& vertex : _vertices)
 			{
-				if (algorithm::inTriangle(vertex.pos, prevVertex.pos, curVertex.pos, nextVertex.pos)
+				if (Util::inTriangle(vertex.pos, Triangle{ prevVertex.pos, curVertex.pos, nextVertex.pos })
 					&& vertex.pos != prevVertex.pos
 					&& vertex.pos != curVertex.pos
 					&& vertex.pos != nextVertex.pos)

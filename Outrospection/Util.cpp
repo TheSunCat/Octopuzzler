@@ -214,6 +214,41 @@ bool Util::intersectRaySegmentSphere(const Ray& ray, const glm::vec3 sphereOrigi
 	return true;
 }
 
+// returns whether a glm::vec3 is within a Triangle
+bool Util::inTriangle(const glm::vec3& point, const Triangle& tri)
+{
+	// test to see if it is within an infinite prism that the triangle outlines
+	const bool withinTriPrism = sameSide(point, tri.v0, tri.v1, tri.v2) && sameSide(point, tri.v1, tri.v0, tri.v2)
+		&& sameSide(point, tri.v2, tri.v0, tri.v1);
+
+	// if it isn't it will never be on the triangle
+	if (!withinTriPrism)
+		return false;
+
+	// calc normal
+	const glm::vec3 n = genNormal(tri);
+
+	// project the point onto normal
+	const glm::vec3 proj = Util::projectV3(point, n);
+
+	// if the distance from the triangle to the point is 0
+	if (Util::length2V3(proj) == 0)
+		return true;
+	else
+		return false;
+}
+
+bool Util::sameSide(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& a, const glm::vec3& b)
+{
+	const glm::vec3 cp1 = glm::cross(b - a, p1 - a);
+	const glm::vec3 cp2 = glm::cross(b - a, p2 - a);
+
+	if (glm::dot(cp1, cp2) >= 0)
+		return true;
+	else
+		return false;
+}
+
 
 bool Util::leftOf(const glm::vec2& a, const glm::vec2& b, const glm::vec2& p)
 {
@@ -244,10 +279,10 @@ bool Util::pointInside(const glm::vec2 poly[], const int pcount, const glm::vec2
 	return true;
 }
 
-glm::vec3 Util::getNormal(const Triangle& t) {
-	const glm::vec3 v0v1 = t.v1 - t.v0;
-	const glm::vec3 v0v2 = t.v2 - t.v0;
-	const glm::vec3 normal = glm::cross(v0v1, v0v2);
+glm::vec3 Util::genNormal(const Triangle& t) {
+	const glm::vec3 u = t.v1 - t.v0;
+	const glm::vec3 v = t.v2 - t.v0;
+	const glm::vec3 normal = glm::cross(u, v);
 
 	return normalize(normal);
 }
