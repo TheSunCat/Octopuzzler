@@ -214,7 +214,7 @@ void PlayerController::resolveCollision(Player& player, const std::vector<Triang
 
     if (numCollisions != 0 || !groundCollisions.empty())
     {
-	    std::cout << Util::vecToStr(ledgeHitPoint) << "\n";
+	    //std::cout << Util::vecToStr(ledgeHitPoint) << "\n";
     	
     	if(numCollisions > 0)
 			colResponseDelta /= float(numCollisions); // average our collision responses
@@ -250,7 +250,7 @@ void PlayerController::resolveCollision(Player& player, const std::vector<Triang
 		ledgeRay.origin.y -= colSphereRadius / 2.0f;
 
 		glm::vec3 intersectPoint = glm::vec3();
-		bool hit = Util::intersectRaySegmentSphere(ledgeRay, ghostPosition, colSphereRadiusSquare, intersectPoint);
+		bool hit = Util::intersectRaySegmentSphere(ledgeRay, ghostPosition, colSphereRadiusSquare / 1.5f, intersectPoint);
 
 		if (!hit)
 			ledgeHitPoint = glm::vec3(0.0f);
