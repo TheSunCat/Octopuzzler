@@ -6,8 +6,8 @@
 #include "Source.h"
 #include "Util.h"
 
-#include "Core/Player.h"
 #include "Core/Scene.h"
+#include "Core/World/Player.h"
 
 Camera::Camera(const glm::vec3 _pos, const glm::vec3 _up, const float _yaw, const float _pitch)
 	: front(glm::vec3(0.0f, 0.0f, -1.0f)), rotationSpeed(ROT_SPEED), zoom(ZOOM)
