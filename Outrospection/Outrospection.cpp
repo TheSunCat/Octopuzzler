@@ -202,6 +202,7 @@ void Outrospection::registerCallbacks() const
 	glfwSetCursorPosCallback(gameWindow, mouse_callback);
 	glfwSetScrollCallback(gameWindow, scroll_callback);
 	glfwSetKeyCallback(gameWindow, key_callback);
+	glfwSetErrorCallback(error_callback);
 }
 
 void Outrospection::createShaders()
@@ -292,6 +293,10 @@ void Outrospection::key_callback(GLFWwindow*, const int key, const int scancode,
 		}
 	}
 }
+void Outrospection::error_callback(const int errorcode, const char* description)
+{
+	std::cout << "ERROR::GLFW code = " << errorcode << ". " << description << '\n';
+}
 
 void Outrospection::updateInput()
 {
@@ -312,7 +317,7 @@ void Outrospection::updateInput()
 		}
 	}
 								
-	if (joystick != -1) {					// there is a controller
+	if (joystick != -1) {					 // there is a controller
 		
 		if (glfwJoystickIsGamepad(joystick)) // easy!
 		{

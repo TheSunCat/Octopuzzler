@@ -82,6 +82,7 @@ private:
 	static void mouse_callback(GLFWwindow* window, double xPosD, double yPosD);
 	static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+	static void error_callback(int errorcode, const char* description);
 
 	void registerCallbacks() const;
 	void createShaders();

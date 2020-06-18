@@ -164,8 +164,10 @@ void Scene::draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShade
 
 	if (DEBUG)
 	{
+		_simpleShader.use();
+		
 		const glm::mat4 modelMat = glm::mat4(1.0f);
-		_objShader.setMat4("model", modelMat);
+		_simpleShader.setMat4("model", modelMat);
 
 		colMesh.draw();
 	}
