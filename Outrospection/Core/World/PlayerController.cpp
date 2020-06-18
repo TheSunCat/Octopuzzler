@@ -7,7 +7,7 @@
 #include "Source.h"
 #include "Util.h"
 
-#include "Core/Player.h"
+#include "Core/World/Player.h"
 
 void PlayerController::acceleratePlayer(const Controller& controller, const float deltaTime, const float yaw)
 {
@@ -20,6 +20,8 @@ void PlayerController::acceleratePlayer(const Controller& controller, const floa
 	{
 		if (grounded || hacking) // cheat code hold left trigger to moonjump
 		{
+			std::cout << "jumping\n";
+			
 			jumping = true;
 			velocity.y = 0.075f;
 		}
@@ -169,13 +171,16 @@ void PlayerController::resolveCollision(Player& player, const std::vector<Triang
 			Ray downRay = Ray{ ghostPosition + glm::vec3(0, 999, 0), glm::vec3(0, -1, 0) };
 			Collision downCollision = Util::rayCast(downRay, curTri, true);
 
-			// check if we're on a ledge, therefore need special treatment due to sphere collider
-			ledgeHitPoint = (downCollision.dist == INFINITY && (intersectPoint.y - player.position.y) < colSphereRadius / 3.0f) ? intersectPoint : glm::vec3(0.0f);
+			// check if we're on a ledge, therefore need special treatment due to sphere collider not being flat on bottom
+			ledgeHitPoint = (downCollision.dist == INFINITY && (intersectPoint.y - player.position.y) < colSphereRadiusSquare / 1.5f) ? intersectPoint : glm::vec3(0.0f);
 
-			if((downCollision.dist != INFINITY) || Util::length2V3(ledgeHitPoint)) // somewhat arbitrary
+			if((downCollision.dist != INFINITY) || Util::length2V3(ledgeHitPoint))
 			{
 				groundCollisions.emplace_back(curTri);
-				
+
+				if (jumping)
+					jumping = false;
+
 				grounded = true;
 			}
 		}
@@ -185,8 +190,17 @@ void PlayerController::resolveCollision(Player& player, const std::vector<Triang
 			if (playerFollowsNorm > 0)
 				continue;
 
-			if (fabs(intersectPoint.y - player.position.y) <= colSphereRadius / 4.0f)
+			float intersectYDiff = intersectPoint.y - player.position.y;
+
+			// TODO fix where first time it does snap, maybe ledgeHitPoint isn't set?
+			if (Util::length2V3(ledgeHitPoint) && fabs(intersectYDiff) <= 0.075f)
+			{
+				std::cout << intersectYDiff << " skipping wall\n";
+				
 				continue;
+			}
+
+			std::cout << intersectYDiff << '\n';
 			
 			// we need to correct by this
 			const float distancePastTri = (colSphereRadius - pointToPlaneDist);
@@ -214,8 +228,6 @@ void PlayerController::resolveCollision(Player& player, const std::vector<Triang
 
     if (numCollisions != 0 || !groundCollisions.empty())
     {
-	    //std::cout << Util::vecToStr(ledgeHitPoint) << "\n";
-    	
     	if(numCollisions > 0)
 			colResponseDelta /= float(numCollisions); // average our collision responses
 
@@ -240,26 +252,33 @@ void PlayerController::resolveCollision(Player& player, const std::vector<Triang
 		if (highestGroundDeltaY != -INFINITY)
 		{
 			colResponseDelta.y = highestGroundDeltaY;
-			velocity.y = 0;
+			velocity.y = 0;// Util::clamp(velocity.y, 0.0f, fabs(velocity.y));
 		}
     }
 
-	if(Util::length2V3(ledgeHitPoint))
+	// edge case
+	// haha
+	if(Util::length2V3(ledgeHitPoint) && !jumping) // player is on a ledge
 	{
+		// TODO we need to move this raycast to the closest point on the ledge tri to the player so we stop pecking vibrating aaaaaaa (when moving along an edge)
 		Ray ledgeRay = Ray{ ledgeHitPoint, glm::vec3(0, 1, 0) };
 		ledgeRay.origin.y -= colSphereRadius / 2.0f;
 
 		glm::vec3 intersectPoint = glm::vec3();
-		bool hit = Util::intersectRaySegmentSphere(ledgeRay, ghostPosition, colSphereRadiusSquare / 1.5f, intersectPoint);
+		bool hit = Util::intersectRaySegmentSphere(ledgeRay, colSphereOrigin, colSphereRadiusSquare / 1.5f, intersectPoint);
 
 		if (!hit)
 			ledgeHitPoint = glm::vec3(0.0f);
 		else
 		{
-			velocity.y = 0;
+			velocity.y = Util::clamp(velocity.y, 0.0f, fabs(velocity.y));
 			grounded = true;
+
+			//std::cout << "RESET velocity.y\n";
 		}
 	}
+
+	//std::cout << grounded << ", " << velocity.y << '\n';
 }
 
 // TODO implement this function
