@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <glm/glm.hpp>
 
 #include "Types.h"
@@ -23,6 +24,12 @@ namespace Util
 	template <typename T>
 	T clamp(const T& val, const T& min, const T& max)
 	{
+		if (min > max)
+		{
+			std::cout << "ERROR: min is greater than max! min = " << min << ", max = " << max;
+			return val;
+		}
+		
 		if (val < min)
 			return min;
 		if (val > max)
@@ -55,14 +62,19 @@ namespace Util
 	
 	Collision rayCast(const Ray& r, const std::vector<std::vector<Triangle>::const_iterator>& tris, bool bothSides = false);
 
-	bool intersectRaySegmentSphere(const Ray& ray, glm::vec3 sphereOrigin, float sphereRadius2, glm::vec3& ip);
+	bool intersectRaySegmentSphere(const Ray& ray, glm::vec3 sphereOrigin, float sphereRadius2, glm::vec3& intersectPoint);
 
+	bool inTriangle(const glm::vec3& point, const Triangle& tri);
+
+	// A test to see if P1 is on the same side as P2 of a line segment ab
+	bool sameSide(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& a, const glm::vec3& b);
+	
 	// 2D test for which side of a 2D line a 2D point lies on
 	bool leftOf(const glm::vec2& a, const glm::vec2& b, const glm::vec2& p);
 
 	bool pointInside(const glm::vec2 poly[], int pcount, const glm::vec2& v);
 
-	glm::vec3 getNormal(const Triangle& t);
+	glm::vec3 genNormal(const Triangle& t);
 
 	float length2V3(const glm::vec3& v);
 

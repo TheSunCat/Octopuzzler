@@ -264,7 +264,7 @@ void Scene::parseCollision(const std::string& name)
 		}
 
 		collision.emplace_back(Triangle{ vertices[0], vertices[1], vertices[2] });
-		collision.back().n = Util::getNormal(collision.back());
+		collision.back().n = Util::genNormal(collision.back());
 	}
 
 	collisionFile.close();

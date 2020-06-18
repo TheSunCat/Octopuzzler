@@ -203,11 +203,6 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Core\Camera.h" />
-    <ClInclude Include="Core\Character.h" />
-    <ClInclude Include="Core\ObjectGeneral.h" />
-    <ClInclude Include="Core\ObjectRail.h" />
-    <ClInclude Include="Core\Player.h" />
-    <ClInclude Include="Core\PlayerController.h" />
     <ClInclude Include="Core\Rendering\FreeType.h" />
     <ClInclude Include="Core\Rendering\TickableTexture.h" />
     <ClInclude Include="Core\Rendering\Billboard.h" />
@@ -223,24 +218,24 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
     <ClInclude Include="Core\UI\GUIIngame.h" />
     <ClInclude Include="Core\UI\GUIPause.h" />
     <ClInclude Include="Core\UI\GUIScreen.h" />
+    <ClInclude Include="Core\UI\UIButton.h" />
     <ClInclude Include="Core\UI\UIComponent.h" />
-    <ClInclude Include="External\stb_image.h" />
+    <ClInclude Include="Core\World\Character.h" />
+    <ClInclude Include="Core\World\CollisionMesh.h" />
+    <ClInclude Include="Core\World\ObjectGeneral.h" />
+    <ClInclude Include="Core\World\ObjectRail.h" />
+    <ClInclude Include="Core\World\Player.h" />
+    <ClInclude Include="Core\World\PlayerController.h" />
     <ClInclude Include="GameSettings.h" />
     <ClInclude Include="KeyBinding.h" />
     <ClInclude Include="Outrospection.h" />
     <ClInclude Include="Source.h" />
     <ClInclude Include="Types.h" />
-    <ClInclude Include="UIButton.h" />
     <ClInclude Include="Util.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Core\Camera.cpp" />
-    <ClCompile Include="Core\Character.cpp" />
-    <ClCompile Include="Core\ObjectGeneral.cpp" />
-    <ClCompile Include="Core\ObjectRail.cpp" />
-    <ClCompile Include="Core\Player.cpp" />
-    <ClCompile Include="Core\PlayerController.cpp" />
     <ClCompile Include="Core\Rendering\TickableTexture.cpp" />
     <ClCompile Include="Core\Rendering\Billboard.cpp" />
     <ClCompile Include="Core\Rendering\Mesh.cpp" />
@@ -254,14 +249,20 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
     <ClCompile Include="Core\UI\GUIIngame.cpp" />
     <ClCompile Include="Core\UI\GUIPause.cpp" />
     <ClCompile Include="Core\UI\GUIScreen.cpp" />
+    <ClCompile Include="Core\UI\UIButton.cpp" />
     <ClCompile Include="Core\UI\UIComponent.cpp" />
+    <ClCompile Include="Core\World\Character.cpp" />
+    <ClCompile Include="Core\World\CollisionMesh.cpp" />
+    <ClCompile Include="Core\World\ObjectGeneral.cpp" />
+    <ClCompile Include="Core\World\ObjectRail.cpp" />
+    <ClCompile Include="Core\World\Player.cpp" />
+    <ClCompile Include="Core\World\PlayerController.cpp" />
     <ClCompile Include="External\glad.c" />
     <ClCompile Include="External\stb_image.cpp" />
     <ClCompile Include="GameSettings.cpp" />
     <ClCompile Include="KeyBinding.cpp" />
     <ClCompile Include="Outrospection.cpp" />
     <ClCompile Include="Source.cpp" />
-    <ClCompile Include="UIButton.cpp" />
     <ClCompile Include="Util.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
