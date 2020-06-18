@@ -10,12 +10,12 @@
 #include "Core/Rendering/TextureManager.h"
 
 #include "Core/Camera.h"
-#include "Core/Player.h"
-#include "Core/PlayerController.h"
 #include "Core/Scene.h"
 #include "Core/UI/GUIIngame.h"
 #include "Core/UI/GUIPause.h"
 #include "Core/UI/GUIScreen.h"
+#include "Core/World/Player.h"
+#include "Core/World/PlayerController.h"
 
 class Outrospection {
 	OpenGL opengl; // defined at the beginning so nothing gets initialized before this

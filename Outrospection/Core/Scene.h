@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Core/Character.h"
-#include "Core/ObjectGeneral.h"
+#include "Core/World/Character.h"
+#include "Core/World/ObjectGeneral.h"
 
 class Shader;
 
