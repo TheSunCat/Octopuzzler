@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <glm/glm.hpp>
 
 #include "Types.h"
@@ -23,6 +24,12 @@ namespace Util
 	template <typename T>
 	T clamp(const T& val, const T& min, const T& max)
 	{
+		if (min > max)
+		{
+			std::cout << "ERROR: min is greater than max! min = " << min << ", max = " << max;
+			return val;
+		}
+		
 		if (val < min)
 			return min;
 		if (val > max)
