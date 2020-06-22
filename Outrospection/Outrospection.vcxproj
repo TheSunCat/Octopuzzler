@@ -229,7 +229,6 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
     <ClInclude Include="GameSettings.h" />
     <ClInclude Include="KeyBinding.h" />
     <ClInclude Include="Outrospection.h" />
-    <ClInclude Include="Source.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="Util.h" />
   </ItemGroup>

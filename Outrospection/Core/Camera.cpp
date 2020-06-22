@@ -3,7 +3,6 @@
 #include <array>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "Source.h"
 #include "Util.h"
 
 #include "Core/Scene.h"

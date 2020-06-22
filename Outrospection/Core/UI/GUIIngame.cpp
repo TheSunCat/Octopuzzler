@@ -1,7 +1,6 @@
 #include "GUIIngame.h"
 
 #include "Outrospection.h"
-#include "Source.h"
 
 GUIIngame::GUIIngame() : GUIScreen("Ingame GUI", true), healthDisplay("health", 0, 0, .10f, .10f),
                          posX("button", 0, .10f, .10f, .10f),
@@ -12,10 +11,10 @@ GUIIngame::GUIIngame() : GUIScreen("Ingame GUI", true), healthDisplay("health", 
 
 void GUIIngame::tick()
 {
-	Outrospection* instance = getOutrospection();
-	posX.name = std::to_string(instance->player.position.x);
-	posY.name = std::to_string(instance->player.position.y);
-	posZ.name = std::to_string(instance->player.position.z);
+	Outrospection& instance = Outrospection::get();
+	posX.name = std::to_string(instance.player.position.x);
+	posY.name = std::to_string(instance.player.position.y);
+	posZ.name = std::to_string(instance.player.position.z);
 	
 	posX.tick();
 	posY.tick();

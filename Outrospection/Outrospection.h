@@ -22,16 +22,18 @@ class Outrospection {
 	FreeType freetype;
 	
 public:
+	static Outrospection& get();
+	
 	Outrospection();
 
-	void run();
+	static void run();
 
-	void pauseGame();
-	void unpauseGame();
+	static void pauseGame();
+	static void unpauseGame();
 
-	void setGUIScreen(GUIScreen* screen, bool replace = true);
+	static void setGUIScreen(GUIScreen* screen, bool replace = true);
 
-	void captureMouse(bool doCapture) const;
+	static void captureMouse(bool doCapture);
 
 	glm::vec2 lastMousePos = glm::vec2(SCR_HEIGHT / 2.0f, SCR_WIDTH / 2.0f);
 	
@@ -54,7 +56,7 @@ private:
 	std::unique_ptr<GUIScreen> pauseGUI = std::make_unique<GUIPause>();
 
 	// set to false when the game loop shouldn't run
-	volatile bool running = false;
+	bool running = false;
 
 	// timing
 	float deltaTime = 0.0f;	// Time between current frame and last frame

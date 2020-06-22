@@ -3,7 +3,8 @@
 #include <utility>
 #include <glm/ext/matrix_transform.inl>
 
-#include "Source.h"
+
+#include "Outrospection.h"
 #include "Util.h"
 
 GLuint UIComponent::quadVAO = 0;
@@ -17,7 +18,7 @@ UIComponent::UIComponent(const std::string& _texName, const float posXPercent, c
 UIComponent::UIComponent(std::string _texName, const glm::vec2& _position, const glm::vec2& dimensions)
 	: name(std::move(_texName)), position(_position), width(dimensions.x), height(dimensions.y), textOffset(0.0f, height / 2), textColor(0.0f)
 {
-	TextureManager& textureManager = getOutrospection()->textureManager;
+	TextureManager& textureManager = Outrospection::get().textureManager;
 	Resource r("UI/", name + ".png");
 	texture = textureManager.get(r);
 
@@ -97,7 +98,7 @@ void UIComponent::drawText(const std::string& text, const Shader& glyphShader) c
 		if (c <= '\0') // replace null char with space
 			c = ' ';
 
-		FontCharacter fontCharacter = getOutrospection()->fontCharacters.at(c);
+		FontCharacter fontCharacter = Outrospection::get().fontCharacters.at(c);
 
 		// calculate model matrix
 		glm::mat4 charModel = glm::mat4(1.0f);
