@@ -2,7 +2,8 @@
 
 #include <fstream>
 
-#include "Source.h"
+
+#include "Outrospection.h"
 #include "Util.h"
 
 #include "Core/Rendering/TextureManager.h"
@@ -329,7 +330,7 @@ bool ModelLoader::loadFile(const std::string& filePath)
 	// take care of the last material
 	loadedMaterials.push_back(tempMaterial);
 
-	TextureManager* textureManager = &(getOutrospection()->textureManager);
+	TextureManager& textureManager = Outrospection::get().textureManager;
 	// Set Materials for each Mesh
 	for (unsigned int i = 0; i < meshMatNames.size(); i++)
 	{
@@ -345,7 +346,7 @@ bool ModelLoader::loadFile(const std::string& filePath)
 
 				Resource r("Textures/", loadedMaterial.mapDiffuse);
 
-				loadedMeshes[i].texture = textureManager->loadTexture(r);
+				loadedMeshes[i].texture = textureManager.loadTexture(r);
 				break;
 			}
 		}

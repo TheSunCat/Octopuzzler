@@ -1,8 +1,8 @@
 #include "ObjectGeneral.h"
 
-#include <glm/gtc/matrix_transform.hpp>
+#include <iostream>
 
-#include "Source.h"
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "Core/Rendering/ModelLoader.h"
 #include "Core/Rendering/Shader.h"
