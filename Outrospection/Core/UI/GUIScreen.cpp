@@ -2,7 +2,7 @@
 
 #include <utility>
 
-#include "Source.h"
+#include "Outrospection.h"
 #include "Core/Rendering/Shader.h"
 
 GUIScreen::GUIScreen(std::string _name, const bool _captureMouse)
@@ -13,5 +13,5 @@ GUIScreen::GUIScreen(std::string _name, const bool _captureMouse)
 
 void GUIScreen::onFocus()
 {
-	getOutrospection()->captureMouse(captureMouse);
+	Outrospection::get().captureMouse(captureMouse);
 }

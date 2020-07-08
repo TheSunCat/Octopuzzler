@@ -11,10 +11,8 @@
 
 #include "Core/Rendering/Shader.h"
 
-Scene::Scene(std::string _name)
+Scene::Scene(std::string _name) : name(std::move(_name))
 {
-	name = std::move(_name);
-
 	loadScene();
 
 	// create skybox
@@ -122,23 +120,22 @@ void Scene::loadScene()
 			case Scene::State::Col: {
 				parseCollision(line);
 
-				if (DEBUG)
-				{
-					std::vector<Vertex> colVerticesVector;
-					for (const Triangle& t : collision) {
-						colVerticesVector.push_back(Vertex{ t.v0, t.n });
-						colVerticesVector.push_back(Vertex{ t.v1, t.n });
-						colVerticesVector.push_back(Vertex{ t.v2, t.n });
-					}
-
-					std::vector<GLuint> indices(colVerticesVector.size());
-					for (unsigned int i = 0; i < colVerticesVector.size(); i++)
-					{
-						indices[i] = i;
-					}
-
-					colMesh = Mesh("Collision model", colVerticesVector, indices);
+#ifdef DEBUG
+				std::vector<Vertex> colVerticesVector;
+				for (const Triangle& t : collision) {
+					colVerticesVector.push_back(Vertex{ t.v0, t.n });
+					colVerticesVector.push_back(Vertex{ t.v1, t.n });
+					colVerticesVector.push_back(Vertex{ t.v2, t.n });
 				}
+
+				std::vector<GLuint> indices(colVerticesVector.size());
+				for (unsigned int i = 0; i < colVerticesVector.size(); i++)
+				{
+					indices[i] = i;
+				}
+
+				colMesh = Mesh("Collision model", colVerticesVector, indices);
+#endif
 			}
 			} // end switch(currentState)
 		} // end line compare else
@@ -157,34 +154,28 @@ void Scene::draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShade
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glDepthMask(GL_TRUE);
 
-	Util::glError(true);
-
 	_objShader.use();
 	
 
-	if (DEBUG)
+#ifdef DEBUG
+	_simpleShader.use();
+	
+	const glm::mat4 modelMat = glm::mat4(1.0f);
+	_simpleShader.setMat4("model", modelMat);
+
+	colMesh.draw();
+#else
+	for (const ObjectGeneral& object : objects)
 	{
-		const glm::mat4 modelMat = glm::mat4(1.0f);
-		_objShader.setMat4("model", modelMat);
-
-		colMesh.draw();
+		object.draw(_objShader);
 	}
-	else {
-		for (const ObjectGeneral& object : objects)
-		{
-			object.draw(_objShader);
-		}
-	}
-
-	Util::glError(true);
+#endif
 
 	_billboardShader.use();
 	for (const Character& chara : characters)
 	{
 		chara.draw(_billboardShader);
 	}
-
-	Util::glError(true);
 }
 
 DummyObj Scene::parseLine(const std::string& line)

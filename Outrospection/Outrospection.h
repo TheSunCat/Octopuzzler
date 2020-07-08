@@ -22,12 +22,17 @@ class Outrospection {
 	FreeType freetype;
 	
 public:
+	inline static Outrospection& get()
+	{
+		return *instance;
+	}
+	
 	Outrospection();
 
 	void run();
 
-	void pauseGame();
-	void unpauseGame();
+	static void pauseGame();
+	static void unpauseGame();
 
 	void setGUIScreen(GUIScreen* screen, bool replace = true);
 
@@ -50,11 +55,11 @@ private:
 	void runTick();
 	void updateCamera();
 
-	std::unique_ptr<GUIScreen> ingameGUI = std::make_unique<GUIIngame>();
-	std::unique_ptr<GUIScreen> pauseGUI = std::make_unique<GUIPause>();
+	std::unique_ptr<GUIScreen> ingameGUI;
+	std::unique_ptr<GUIScreen> pauseGUI;
 
 	// set to false when the game loop shouldn't run
-	volatile bool running = false;
+	bool running = false;
 
 	// timing
 	float deltaTime = 0.0f;	// Time between current frame and last frame
@@ -82,6 +87,7 @@ private:
 	static void mouse_callback(GLFWwindow* window, double xPosD, double yPosD);
 	static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+	static void error_callback(int errorcode, const char* description);
 
 	void registerCallbacks() const;
 	void createShaders();
@@ -90,4 +96,6 @@ private:
 	bool isGamePaused{};
 
 	std::vector<GUIScreen*> loadedGUIs;
+
+	static Outrospection* instance;
 };

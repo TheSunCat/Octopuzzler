@@ -10,7 +10,7 @@
 #include "Constants.h"
 #include "External/stb_image.h"
 
-bool Util::glError(const bool print)
+bool Util::glError()
 {
 	bool ret = false;
 	GLenum err;
@@ -18,17 +18,11 @@ bool Util::glError(const bool print)
 	{
 		ret = true;
 
-		if (print)
-			std::cout << err << std::endl;
+		std::cout << err << std::endl;
 	}
 
 	return ret;
 }
-
-//void Util::split(const std::string& input, const char& delimiter, std::vector<std::string_view>& out)
-//{
-//	split(std::string_view(input), delimiter, out);
-//}
 
 void Util::split(const std::string& input, const char& delimiter, std::vector<std::string_view>& out, const int startCut, const int endCut) {
 	auto start = input.begin() + startCut;

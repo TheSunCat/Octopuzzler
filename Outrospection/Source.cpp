@@ -1,14 +1,7 @@
-#include "Source.h"
-
-Outrospection oinstance;
-
-Outrospection* getOutrospection()
-{
-	return &oinstance;
-}
+#include "Outrospection.h"
 
 int main()
 {
-	oinstance.run();
+	Outrospection().run();
 	return 0;
 }
