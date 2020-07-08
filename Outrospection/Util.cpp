@@ -10,7 +10,7 @@
 #include "Constants.h"
 #include "External/stb_image.h"
 
-bool Util::glError(const bool print)
+bool Util::glError()
 {
 	bool ret = false;
 	GLenum err;
@@ -18,8 +18,7 @@ bool Util::glError(const bool print)
 	{
 		ret = true;
 
-		if (print)
-			std::cout << err << std::endl;
+		std::cout << err << std::endl;
 	}
 
 	return ret;

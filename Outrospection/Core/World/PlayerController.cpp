@@ -10,7 +10,7 @@
 
 void PlayerController::acceleratePlayer(const Controller& controller, const float deltaTime, const float yaw)
 {
-	const bool hacking = DEBUG && (controller.leftTrigger >= 0.85f || controller.talk); // apparently, hacking is a side effect of debug mode - smug
+	const bool hacking = (controller.leftTrigger >= 0.85f || controller.talk); // apparently, hacking is a side effect of debug mode - smug
 
 	const glm::vec3 inputMoveVector = processInput(controller, yaw);
 	velocity += inputMoveVector * (hacking ? 3.0f : 1.0f) * deltaTime;

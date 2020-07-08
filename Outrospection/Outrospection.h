@@ -22,18 +22,21 @@ class Outrospection {
 	FreeType freetype;
 	
 public:
-	static Outrospection& get();
+	inline static Outrospection& get()
+	{
+		return *instance;
+	}
 	
 	Outrospection();
 
-	static void run();
+	void run();
 
 	static void pauseGame();
 	static void unpauseGame();
 
-	static void setGUIScreen(GUIScreen* screen, bool replace = true);
+	void setGUIScreen(GUIScreen* screen, bool replace = true);
 
-	static void captureMouse(bool doCapture);
+	void captureMouse(bool doCapture) const;
 
 	glm::vec2 lastMousePos = glm::vec2(SCR_HEIGHT / 2.0f, SCR_WIDTH / 2.0f);
 	
@@ -52,8 +55,8 @@ private:
 	void runTick();
 	void updateCamera();
 
-	std::unique_ptr<GUIScreen> ingameGUI = std::make_unique<GUIIngame>();
-	std::unique_ptr<GUIScreen> pauseGUI = std::make_unique<GUIPause>();
+	std::unique_ptr<GUIScreen> ingameGUI;
+	std::unique_ptr<GUIScreen> pauseGUI;
 
 	// set to false when the game loop shouldn't run
 	bool running = false;
@@ -93,4 +96,6 @@ private:
 	bool isGamePaused{};
 
 	std::vector<GUIScreen*> loadedGUIs;
+
+	static Outrospection* instance;
 };
