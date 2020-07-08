@@ -2,10 +2,6 @@
 
 int main()
 {
-	std::cout << "main\n";
-
-	Outrospection::get();
-	
-	Outrospection::run();
+	Outrospection().run();
 	return 0;
 }

@@ -6,15 +6,15 @@
 
 #include "Core/UI/GUIScreen.h"
 
-Outrospection& Outrospection::get()
-{
-	static Outrospection instance;
-
-	return instance;
-}
+Outrospection* Outrospection::instance = nullptr;
 
 Outrospection::Outrospection()
 {
+	instance = this;
+
+	ingameGUI = std::make_unique<GUIIngame>();
+	pauseGUI = std::make_unique<GUIPause>();
+	
 	gameWindow = opengl.gameWindow;
 	quadVAO = opengl.quadVAO;
 	framebuffer = opengl.framebuffer;
@@ -33,17 +33,11 @@ Outrospection::Outrospection()
 
 void Outrospection::run()
 {
-	std::cout << "run\n";
-
-	Outrospection& inst = get();
+	running = true;
 	
-	inst.running = true;
-
-	std::cout << inst.running;
-
-	while (inst.running)
+	while (running)
 	{
-		inst.runGameLoop();
+		runGameLoop();
 	}
 
 	glfwTerminate();
@@ -53,39 +47,39 @@ void Outrospection::pauseGame()
 {
 	get().isGamePaused = true;
 
-	setGUIScreen(get().pauseGUI.get());
+	get().setGUIScreen(get().pauseGUI.get());
 }
 
 void Outrospection::unpauseGame()
 {
 	get().isGamePaused = false;
 
-	setGUIScreen(get().ingameGUI.get());
+	get().setGUIScreen(get().ingameGUI.get());
 }
 
 void Outrospection::setGUIScreen(GUIScreen* screen, const bool replace)
 {
-	if(replace && !get().loadedGUIs.empty())
+	if(replace && !loadedGUIs.empty())
 	{
-		get().loadedGUIs.pop_back();
+		loadedGUIs.pop_back();
 	}
 
-	get().loadedGUIs.push_back(screen);
+	loadedGUIs.push_back(screen);
 
-	get().loadedGUIs.back()->onFocus();
+	loadedGUIs.back()->onFocus();
 }
 
-void Outrospection::captureMouse(const bool doCapture)
+void Outrospection::captureMouse(const bool doCapture) const
 {
 	if (doCapture)
-		glfwSetInputMode(get().gameWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		glfwSetInputMode(gameWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	else
 	{
-		glfwSetInputMode(get().gameWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		glfwSetInputMode(gameWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
-		glfwSetCursorPos(get().gameWindow, SCR_WIDTH / 2.0f, SCR_HEIGHT / 2.0f);
+		glfwSetCursorPos(gameWindow, SCR_WIDTH / 2.0f, SCR_HEIGHT / 2.0f);
 
-		mouse_callback(get().gameWindow, SCR_WIDTH / 2.0f, SCR_HEIGHT / 2.0f);
+		mouse_callback(gameWindow, SCR_WIDTH / 2.0f, SCR_HEIGHT / 2.0f);
 	}
 }
 
@@ -182,7 +176,7 @@ void Outrospection::runGameLoop()
 	glEnable(GL_DEPTH_TEST); // re-enable depth testing
 
 	// check for errors
-	Util::glError(DEBUG);
+	Util::glError();
 
 	// swap buffers and poll IO events
 	// -------------------------------
@@ -312,6 +306,11 @@ void Outrospection::error_callback(const int errorcode, const char* description)
 	std::cout << "ERROR::GLFW code = " << errorcode << ". " << description << '\n';
 }
 
+void setKey(ControllerButton& button, const int keyCode, GLFWwindow* window)
+{
+	button = glfwGetKey(window, keyCode) == GLFW_PRESS ? button + 1 : false;
+}
+
 void Outrospection::updateInput()
 {
 	int joystick = -1;
@@ -323,9 +322,10 @@ void Outrospection::updateInput()
 
 			controller.isGamepad = true;
 
-			if (VERBOSE)
+#ifdef VERBOSE
 				std::cout << "Joystick " << glfwGetJoystickName(joystick)
 					<< " detected with ID " << joystick << "! ";
+#endif
 
 			break;
 		}
@@ -335,9 +335,10 @@ void Outrospection::updateInput()
 		
 		if (glfwJoystickIsGamepad(joystick)) // easy!
 		{
-			if (VERBOSE)
+#ifdef VERBOSE
 				std::cout << "It is a gamepad! Sweet! ";
-
+#endif
+			
 			GLFWgamepadstate gamepadState;
 			glfwGetGamepadState(joystick, &gamepadState);
 
@@ -356,8 +357,9 @@ void Outrospection::updateInput()
 		}
 		else // have to manually set everything :c
 		{
-			if (VERBOSE)
+#ifdef VERBOSE
 				std::cout << "It is a non-mapped controller. Hrm. ";
+#endif
 
 			int axesCount = -1;
 
@@ -402,8 +404,9 @@ void Outrospection::updateInput()
 	
 	if (joystick == -1) // no *usable* controllers are present
 	{
-		if (VERBOSE)
+#ifdef VERBOSE
 			std::cout << "No usable controller is present. ";
+#endif
 
 		controller.isGamepad = false;
 
@@ -431,12 +434,13 @@ void Outrospection::updateInput()
 		controller.leftSide = leftSideInput;
 
 
-		controller.jump = glfwGetKey(gameWindow, gameSettings.keyBindJump.keyCode) == GLFW_PRESS ? controller.jump + 1 : false;
-		controller.talk = glfwGetKey(gameWindow, gameSettings.keyBindTalk.keyCode) == GLFW_PRESS ? controller.talk + 1 : false;
-		controller.pause = glfwGetKey(gameWindow, gameSettings.keyBindExit.keyCode) == GLFW_PRESS ? controller.pause + 1 : false;
-		controller.debugBreak = glfwGetKey(gameWindow, gameSettings.keyBindBreak.keyCode) == GLFW_PRESS ? controller.debugBreak + 1 : false;
+		setKey(controller.jump, gameSettings.keyBindJump.keyCode, gameWindow);
+		setKey(controller.talk, gameSettings.keyBindTalk.keyCode, gameWindow);
+		setKey(controller.pause, gameSettings.keyBindExit.keyCode, gameWindow);
+		setKey(controller.debugBreak, gameSettings.keyBindBreak.keyCode, gameWindow);
 	}
 
-	if (VERBOSE)
+#ifdef VERBOSE
 		std::cout << std::endl;
+#endif
 }

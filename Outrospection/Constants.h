@@ -51,5 +51,8 @@ constexpr auto BUTTON_D_DOWN = 12;
 constexpr auto BUTTON_D_LEFT = 13;
 
 
-constexpr auto DEBUG = false;
-constexpr auto VERBOSE = DEBUG && false;
+#define DEBUG
+
+#ifdef DEBUG
+#define VERBOSE
+#endif
