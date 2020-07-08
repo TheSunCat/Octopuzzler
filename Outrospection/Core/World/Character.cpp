@@ -1,7 +1,7 @@
 #include "Character.h"
 
-#include "Source.h"
 
+#include "Outrospection.h"
 #include "Core/Rendering/Resource.h"
 
 Character::Character(const std::string& _id, const glm::vec3& _pos) : position(_pos)
@@ -10,7 +10,7 @@ Character::Character(const std::string& _id, const glm::vec3& _pos) : position(_
 
 	Resource r("Characters/" + id + "/idle/", "idle0.png");
 
-	const SimpleTexture texture = getOutrospection()->textureManager.loadTexture(r);
+	const SimpleTexture texture = Outrospection::get().textureManager.loadTexture(r);
 
 	billboard = Billboard(texture);
 }

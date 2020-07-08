@@ -8,7 +8,7 @@
 namespace Util
 {
 	// Check for OpenGL errors and print them
-	bool glError(bool print);
+	bool glError();
 
 	void split(const std::string& input, const char& delimiter, std::vector<std::string_view>& out, int startCut = 0, int endCut = 0);
 	void split(const std::string&& input, const char& delimiter, std::vector<std::string_view>& out, int startCut = 0, int endCut = 0) = delete;

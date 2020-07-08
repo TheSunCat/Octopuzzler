@@ -5,7 +5,13 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
+out vec3 col;
+
 void main()
 {
-    gl_Position = projection * view * model * vec4(aPos, 0.5);
+    vec4 modelView = view * model * vec4(aPos, 1.0);
+    
+    col = vec3(-modelView.z / 96.0) + 0.1;
+
+    gl_Position = projection * modelView;
 }
