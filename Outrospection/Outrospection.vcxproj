@@ -202,7 +202,10 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
   <ItemGroup>
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Controller.h" />
+    <ClInclude Include="Core.h" />
     <ClInclude Include="Core\Camera.h" />
+    <ClInclude Include="Core\Layer.h" />
+    <ClInclude Include="Core\LayerStack.h" />
     <ClInclude Include="Core\Rendering\FreeType.h" />
     <ClInclude Include="Core\Rendering\TickableTexture.h" />
     <ClInclude Include="Core\Rendering\Billboard.h" />
@@ -217,7 +220,7 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
     <ClInclude Include="Core\Scene.h" />
     <ClInclude Include="Core\UI\GUIIngame.h" />
     <ClInclude Include="Core\UI\GUIPause.h" />
-    <ClInclude Include="Core\UI\GUIScreen.h" />
+    <ClInclude Include="Core\UI\GUILayer.h" />
     <ClInclude Include="Core\UI\UIButton.h" />
     <ClInclude Include="Core\UI\UIComponent.h" />
     <ClInclude Include="Core\World\Character.h" />
@@ -226,6 +229,11 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
     <ClInclude Include="Core\World\ObjectRail.h" />
     <ClInclude Include="Core\World\Player.h" />
     <ClInclude Include="Core\World\PlayerController.h" />
+    <ClInclude Include="Events\Event.h" />
+    <ClInclude Include="Events\EventBus.h" />
+    <ClInclude Include="Events\EventHandlerFunction.h" />
+    <ClInclude Include="Events\KeyEvent.h" />
+    <ClInclude Include="Events\MouseEvent.h" />
     <ClInclude Include="GameSettings.h" />
     <ClInclude Include="KeyBinding.h" />
     <ClInclude Include="Outrospection.h" />
@@ -235,6 +243,7 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
   <ItemGroup>
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Core\Camera.cpp" />
+    <ClCompile Include="Core\LayerStack.cpp" />
     <ClCompile Include="Core\Rendering\TickableTexture.cpp" />
     <ClCompile Include="Core\Rendering\Billboard.cpp" />
     <ClCompile Include="Core\Rendering\Mesh.cpp" />
@@ -247,7 +256,7 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
     <ClCompile Include="Core\Scene.cpp" />
     <ClCompile Include="Core\UI\GUIIngame.cpp" />
     <ClCompile Include="Core\UI\GUIPause.cpp" />
-    <ClCompile Include="Core\UI\GUIScreen.cpp" />
+    <ClCompile Include="Core\UI\GUILayer.cpp" />
     <ClCompile Include="Core\UI\UIButton.cpp" />
     <ClCompile Include="Core\UI\UIComponent.cpp" />
     <ClCompile Include="Core\World\Character.cpp" />

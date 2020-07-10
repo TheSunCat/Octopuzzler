@@ -11,11 +11,15 @@ UIButton::UIButton(const std::string& _texName, const float posXPercent, const f
 	
 }
 
+bool UIButton::isOnButton(const glm::vec2& point) const
+{
+	return (point.x > position.x && point.x < position.x + width) && (point.y > position.y && point.y < position.y + height);
+}
+
 void UIButton::tick()
 {
 	glm::vec2 mousePos = Outrospection::get().lastMousePos;
-	
-	hovered = (mousePos.x > this->position.x && mousePos.x < this->position.x + this->width) && (mousePos.y > this->position.y && mousePos.y < this->position.y + this->height);
+	hovered = isOnButton(mousePos);
 
 	name = std::to_string(hovered);
 }

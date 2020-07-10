@@ -3,8 +3,21 @@
 #include <glm/ext/matrix_clip_space.hpp>
 
 #include "Util.h"
+#include "Core/Layer.h"
 
-#include "Core/UI/GUIScreen.h"
+#include "Core/UI/GUIIngame.h"
+#include "Core/UI/GUIPause.h"
+#include "Core/UI/GUILayer.h"
+#include "Events/Event.h"
+#include "Events/KeyEvent.h"
+#include "Events/MouseEvent.h"
+
+void* operator new (size_t s)
+{
+	//std::cout << s << '\n';
+
+	return malloc(s);
+}
 
 Outrospection* Outrospection::instance = nullptr;
 
@@ -28,13 +41,13 @@ Outrospection::Outrospection()
 	scene = Scene("TestLevel000");
 	player = Player(glm::vec3(0.0, 3.0, 0.0));
 
-	setGUIScreen(ingameGUI.get());
+	//setGUIScreen(ingameGUI.get());
 }
 
 void Outrospection::run()
 {
 	running = true;
-	
+
 	while (running)
 	{
 		runGameLoop();
@@ -43,30 +56,39 @@ void Outrospection::run()
 	glfwTerminate();
 }
 
+void Outrospection::onEvent(Event& e)
+{
+	EventDispatcher dispatcher(e);
+	//dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FUNC(Outrospection::OnKeyPressed));
+	//dispatcher.dispatch<KeyReleasedEvent>(BIND_EVENT_FUNC(Outrospection::OnKeyReleased));
+
+	LOG_DEBUG(e.getName());
+}
+
 void Outrospection::pauseGame()
 {
 	get().isGamePaused = true;
 
-	get().setGUIScreen(get().pauseGUI.get());
+	//get().setGUIScreen(get().pauseGUI.get());
 }
 
 void Outrospection::unpauseGame()
 {
 	get().isGamePaused = false;
 
-	get().setGUIScreen(get().ingameGUI.get());
+	//get().setGUIScreen(get().ingameGUI.get());
 }
 
-void Outrospection::setGUIScreen(GUIScreen* screen, const bool replace)
+void Outrospection::pushLayer(Layer* layer)
 {
-	if(replace && !loadedGUIs.empty())
-	{
-		loadedGUIs.pop_back();
-	}
+	layerStack.pushLayer(layer);
+	layer->onAttach();
+}
 
-	loadedGUIs.push_back(screen);
-
-	loadedGUIs.back()->onFocus();
+void Outrospection::pushOverlay(Layer* layer)
+{
+	layerStack.pushOverlay(layer);
+	layer->onAttach();
 }
 
 void Outrospection::captureMouse(const bool doCapture) const
@@ -85,95 +107,93 @@ void Outrospection::captureMouse(const bool doCapture) const
 
 void Outrospection::runGameLoop()
 {
-	std::cout << "runGameLoop" << std::endl;
-	
 	const double currentFrame = glfwGetTime();
 	deltaTime = float(currentFrame - lastFrame);
 	lastFrame = currentFrame;
-	
-	// fetch input into simplified controller class
-	updateInput();
 
-	// exit game on next loop iteration
-	if (controller.pause == 1)
+
+	// Update game world
 	{
-		if (isGamePaused)
-			unpauseGame();
-		else
-			pauseGame();
+		// fetch input into simplified controller class
+		updateInput();
+
+		// exit game on next loop iteration
+		if (controller.pause == 1)
+		{
+			if (isGamePaused)
+				unpauseGame();
+			else
+				pauseGame();
+		}
+
+
+		if (!isGamePaused)
+		{
+			// Run one "tick" of the game physics
+			runTick();
+
+			// TODO execute scheduled tasks
+			// ----------------------------
+		}
+
+		// UIs are also updated when game is paused
+		for (auto& layer : layerStack)
+		{
+			layer->tick();
+		}
 	}
 
-	
-	if (!isGamePaused)
+	// Draw the frame!
 	{
-		// Run one "tick" of the game physics
-		runTick();
+		glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+		glClearColor(0.2f, 0.3f, 0.3f, 1.0f); // background color
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		// TODO execute scheduled tasks
-		// ----------------------------
+
+		// set shader info
+		objectShader.use();
+		objectShader.setVec3("viewPos", camera.position);
+		objectShader.setFloat("shininess", 32.0f);
+		objectShader.setVec3("lightPos", player.position + glm::vec3(0, 1.5f, 0));
+		objectShader.doProjView(camera, SCR_WIDTH, SCR_HEIGHT, true);
+
+		billboardShader.use();
+		billboardShader.doProjView(camera, SCR_WIDTH, SCR_HEIGHT, true);
+
+		skyShader.use();
+		skyShader.doProjView(camera, SCR_WIDTH, SCR_HEIGHT, false);
+
+		simpleShader.use();
+		simpleShader.doProjView(camera, SCR_WIDTH, SCR_HEIGHT, true);
+
+		// draw stuffs
+		scene.draw(objectShader, billboardShader, skyShader, simpleShader);
+		player.draw(billboardShader);
+
+
+		glDisable(GL_DEPTH_TEST); // disable depth test so stuff near camera isn't clipped
+
+		// bind to default framebuffer and draw custom one over that
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		// clear all relevant buffers
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessary actually, since we won't be able to see behind the quad anyways)
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		screenShader.use();
+		glBindVertexArray(quadVAO);
+		glBindTexture(GL_TEXTURE_2D, textureColorbuffer);	// use the color attachment texture as the texture of the quad plane
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+
+
+		// draw UI
+		for (const auto& layer : layerStack)
+		{
+			layer->draw();
+		}
+
+		glEnable(GL_DEPTH_TEST); // re-enable depth testing
 	}
-
-	// UIs are also updated when game is paused
-	for (auto& screen : loadedGUIs)
-	{
-		screen->tick();
-	}
-
-
-	// Bind to framebuffer and draw scene to color texture
-	// ---------------------------------------------------
-
-	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-
-	glClearColor(0.2f, 0.3f, 0.3f, 1.0f); // background color
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
-	// Set shader info
-	objectShader.use();
-	objectShader.setVec3("viewPos", camera.position);
-	objectShader.setFloat("shininess", 32.0f);
-	objectShader.setVec3("lightPos", player.position + glm::vec3(0, 1.5f, 0));
-	objectShader.doProjView(camera, SCR_WIDTH, SCR_HEIGHT, true);
-
-	billboardShader.use();
-	billboardShader.doProjView(camera, SCR_WIDTH, SCR_HEIGHT, true);
-
-	skyShader.use();
-	skyShader.doProjView(camera, SCR_WIDTH, SCR_HEIGHT, false);
-
-	simpleShader.use();
-	simpleShader.doProjView(camera, SCR_WIDTH, SCR_HEIGHT, true);
-
-	// draw stuff
-	scene.draw(objectShader, billboardShader, skyShader, simpleShader);
-
-	player.draw(billboardShader);
-
-	//Util::glError(true);
-
-	glDisable(GL_DEPTH_TEST); // disable depth test so stuff near camera isn't clipped
-	
-	// bind to default framebuffer and draw custom one over that
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	// clear all relevant buffers
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessary actually, since we won't be able to see behind the quad anyways)
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	screenShader.use();
-	glBindVertexArray(quadVAO);
-	glBindTexture(GL_TEXTURE_2D, textureColorbuffer);	// use the color attachment texture as the texture of the quad plane
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-
-
-	// draw UI
-	for(const auto& screen : loadedGUIs)
-	{
-		screen->draw(spriteShader, glyphShader);
-	}
-	
-	glEnable(GL_DEPTH_TEST); // re-enable depth testing
 
 	// check for errors
 	Util::glError();
@@ -206,10 +226,43 @@ void Outrospection::updateCamera()
 void Outrospection::registerCallbacks() const
 {
 	// Register OpenGL events
-	glfwSetFramebufferSizeCallback(gameWindow, framebuffer_size_callback);
-	glfwSetCursorPosCallback(gameWindow, mouse_callback);
-	glfwSetScrollCallback(gameWindow, scroll_callback);
-	glfwSetKeyCallback(gameWindow, key_callback);
+	glfwSetFramebufferSizeCallback(gameWindow, [](GLFWwindow*, const int width, const int height)
+    {
+        glViewport(0, 0, width, height);
+    });
+
+	glfwSetCursorPosCallback(gameWindow, [](GLFWwindow* window, const double xPosD, const double yPosD)
+	{
+		MouseMovedEvent event(xPosD, yPosD);
+		Outrospection::get().onEvent(event);
+	});
+
+	glfwSetMouseButtonCallback(gameWindow, [](GLFWwindow* window, const int button, const int action, const int mods)
+	{
+		switch (action)
+		{
+		case GLFW_PRESS:
+		{
+		    MouseButtonPressedEvent event(button);
+			Outrospection::get().onEvent(event);
+			break;
+		}
+		case GLFW_RELEASE:
+		{
+			MouseButtonReleasedEvent event(button);
+			Outrospection::get().onEvent(event);
+			break;
+		}
+		}
+	});
+
+	glfwSetScrollCallback(gameWindow, [](GLFWwindow* window, const double xDelta, const double yDelta)
+	{
+		MouseScrolledEvent event(xDelta, yDelta);
+		Outrospection::get().onEvent(event);
+	});
+
+	//glfwSetKeyCallback(gameWindow, key_callback);
 	glfwSetErrorCallback(error_callback);
 }
 
@@ -231,12 +284,6 @@ void Outrospection::createShaders()
 
 	glyphShader.use();
 	glyphShader.setMat4("projection", projection);
-}
-
-// set proper viewport size when window is resized
-void Outrospection::framebuffer_size_callback(GLFWwindow*, const int width, const int height)
-{
-	glViewport(0, 0, width, height);
 }
 
 void Outrospection::mouse_callback(GLFWwindow*, const double xPosD, const double yPosD)
@@ -268,39 +315,6 @@ void Outrospection::scroll_callback(GLFWwindow*, const double xoffset, const dou
 	orig.camera.changeDistBy(float(yoffset));
 }
 
-void Outrospection::key_callback(GLFWwindow*, const int key, const int scancode, const int action, const int mods)
-{
-	const GameSettings& gameSettings = get().gameSettings;
-	Controller& controller = get().controller;
-
-	if (action == GLFW_RELEASE)
-	{
-		if (key == gameSettings.keyBindForward.keyCode || key == gameSettings.keyBindBackward.keyCode)
-		{
-			controller.leftForward = 0.0;
-		}
-		if (key == gameSettings.keyBindRight.keyCode || key == gameSettings.keyBindLeft.keyCode)
-		{
-			controller.leftSide = 0.0;
-		}
-		if (key == gameSettings.keyBindJump.keyCode)
-		{
-			controller.jump = false;
-		}
-		if (key == gameSettings.keyBindExit.keyCode)
-		{
-			controller.pause = false;
-		}
-		if(key == gameSettings.keyBindTalk.keyCode)
-		{
-			controller.talk = false;
-		}
-		if(key == gameSettings.keyBindBreak.keyCode)
-		{
-			controller.debugBreak = false;
-		}
-	}
-}
 void Outrospection::error_callback(const int errorcode, const char* description)
 {
 	std::cout << "ERROR::GLFW code = " << errorcode << ". " << description << '\n';
@@ -323,8 +337,7 @@ void Outrospection::updateInput()
 			controller.isGamepad = true;
 
 #ifdef VERBOSE
-				std::cout << "Joystick " << glfwGetJoystickName(joystick)
-					<< " detected with ID " << joystick << "! ";
+			std::cout << "Joystick " << glfwGetJoystickName(joystick) << " detected with ID " << joystick << "! ";
 #endif
 
 			break;
@@ -336,7 +349,7 @@ void Outrospection::updateInput()
 		if (glfwJoystickIsGamepad(joystick)) // easy!
 		{
 #ifdef VERBOSE
-				std::cout << "It is a gamepad! Sweet! ";
+			std::cout << "It is a gamepad! Sweet! ";
 #endif
 			
 			GLFWgamepadstate gamepadState;
@@ -358,14 +371,14 @@ void Outrospection::updateInput()
 		else // have to manually set everything :c
 		{
 #ifdef VERBOSE
-				std::cout << "It is a non-mapped controller. Hrm. ";
+			std::cout << "It is a non-mapped controller. Hrm. ";
 #endif
 
 			int axesCount = -1;
 
 			const float* rawAxes = glfwGetJoystickAxes(joystick, &axesCount);
 
-			if (axesCount < 2) // no sticks, return for now?
+			if (axesCount < 2) // not enough sticks, return for now?
 			{
 				joystick = -1;
 			}
@@ -404,9 +417,7 @@ void Outrospection::updateInput()
 	
 	if (joystick == -1) // no *usable* controllers are present
 	{
-#ifdef VERBOSE
-			std::cout << "No usable controller is present. ";
-#endif
+		//LOG_DEBUG("No usable controller is present. ");
 
 		controller.isGamepad = false;
 
@@ -439,8 +450,4 @@ void Outrospection::updateInput()
 		setKey(controller.pause, gameSettings.keyBindExit.keyCode, gameWindow);
 		setKey(controller.debugBreak, gameSettings.keyBindBreak.keyCode, gameWindow);
 	}
-
-#ifdef VERBOSE
-		std::cout << std::endl;
-#endif
 }

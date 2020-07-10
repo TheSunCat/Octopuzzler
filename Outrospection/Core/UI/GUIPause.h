@@ -1,17 +1,16 @@
 #pragma once
-#include "GUIScreen.h"
+#include "GUILayer.h"
 #include "UIButton.h"
 
 class GUIPause :
-    public GUIScreen
+    public GUILayer
 {
 public:
 	GUIPause();
 
 	void tick() override;
 
-	void draw(Shader& shader, Shader& glyphShader) const override;
-
+	void draw() const override;
 private:
 	UIButton buttonResume;
 };

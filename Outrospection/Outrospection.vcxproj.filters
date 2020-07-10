@@ -121,9 +121,6 @@
     <ClInclude Include="Core\UI\UIComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\UI\GUIScreen.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Core\Rendering\FreeType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -152,6 +149,33 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Core\World\PlayerController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Events\EventBus.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Events\EventHandlerFunction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Events\Event.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Events\KeyEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Events\MouseEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\LayerStack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Layer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\UI\GUILayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -210,9 +234,6 @@
     <ClCompile Include="Core\UI\UIComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Core\UI\GUIScreen.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Core\UI\GUIIngame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -244,6 +265,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="External\stb_image.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\LayerStack.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\UI\GUILayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
