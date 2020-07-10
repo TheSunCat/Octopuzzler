@@ -73,7 +73,7 @@ void PlayerController::resolveCollision(Player& player, const std::vector<Triang
 	const float rayHitDistSq = playerRayHit.dist * playerRayHit.dist;
 	
 	const glm::vec3 colSphereOrigin = rayHitDistSq < playerGhostDistanceSq
-		                                   ? playerRayHit.point
+		                                   ? glm::normalize(playerRay.direction) * playerRayHit.dist
 		                                   : ghostPosition; // there's a tri we would skip over, so instead tp player to here
 
 	if(rayHitDistSq < playerGhostDistanceSq) // there's a tri we would skip over
@@ -218,7 +218,7 @@ void PlayerController::resolveCollision(Player& player, const std::vector<Triang
 
 			colResponseDelta += curCollisionShift;
 
-			Collision col{ pointToPlaneDist, intersectPoint, curTri, curCollisionShift };
+			Collision col{ pointToPlaneDist, intersectPoint, curCollisionShift };
 			wallCollisions.emplace_back(col);
 		}
 

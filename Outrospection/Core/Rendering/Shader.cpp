@@ -7,6 +7,8 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
+
+#include "Util.h"
 #include "Core/Camera.h"
 
 // TODO make this class... nicer
@@ -177,14 +179,16 @@ void Shader::setMat4(const std::string& name, const glm::mat4& mat) const
 
 GLint Shader::getUniformLocation(const char* uniformName) const
 {
-	const auto f = uniformCache.find(uniformName);
+	std::size_t hash = Util::hashBytes(uniformName, strlen(uniformName));
+
+	const auto f = uniformCache.find(hash);
 
 	GLint loc;
 
 	if (f == uniformCache.end()) {// get uniform location
 		loc = glGetUniformLocation(ID, uniformName);
 
-		std::pair<std::string, GLuint> newLoc(uniformName, loc);
+		std::pair<std::size_t, GLuint> newLoc(hash, loc);
 		uniformCache.insert(newLoc);
 	}
 	else

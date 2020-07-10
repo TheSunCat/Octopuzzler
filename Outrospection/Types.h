@@ -49,9 +49,7 @@ struct Ray
 struct Collision
 {
 	float dist;
-	glm::vec3 point;
 	Triangle tri;
-	glm::vec3 shiftBy;
 };
 
 struct FontCharacter

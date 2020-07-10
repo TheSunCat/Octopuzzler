@@ -40,6 +40,53 @@ void Util::split(const std::string& input, const char& delimiter, std::vector<st
 	out.emplace_back(&*start, next - start);
 }
 
+std::size_t Util::hashBytes(const char* data, std::size_t length)
+{
+#define get16bits(d) ((((uint32_t)(((const uint8_t *)(d))[1])) << 8) +(uint32_t)(((const uint8_t *)(d))[0]))
+
+	uint32_t hash = length;
+
+    if (length <= 0 || data == nullptr) return 0;
+
+	int rem = length & 3;
+	length >>= 2;
+
+	/* Main loop */
+	for (; length > 0; length--) {
+		hash += get16bits(data);
+		uint32_t tmp = (get16bits(data + 2) << 11) ^ hash;
+		hash = (hash << 16) ^ tmp;
+		data += 2 * sizeof(uint16_t);
+		hash += hash >> 11;
+	}
+
+	/* Handle end cases */
+	switch (rem) {
+	case 3: hash += get16bits(data);
+		hash ^= hash << 16;
+		hash ^= ((signed char)data[sizeof(uint16_t)]) << 18;
+		hash += hash >> 11;
+		break;
+	case 2: hash += get16bits(data);
+		hash ^= hash << 11;
+		hash += hash >> 17;
+		break;
+	case 1: hash += (signed char) * data;
+		hash ^= hash << 10;
+		hash += hash >> 1;
+	}
+
+	/* Force "avalanching" of final 127 bits */
+	hash ^= hash << 3;
+	hash += hash >> 5;
+	hash ^= hash << 4;
+	hash += hash >> 17;
+	hash ^= hash << 25;
+	hash += hash >> 6;
+
+	return hash;
+}
+
 glm::vec3 Util::rotToVec3(const float yaw, const float pitch)
 {
 	glm::vec3 ret;
@@ -81,17 +128,12 @@ const Collision NO_HIT = Collision{ INFINITY, glm::vec3(0.0) };
 // Cast a ray against finite triangle tri, and return the distance from the ray to the tri.
 Collision Util::rayCast(
 	const Ray& ray,
-	const Triangle& tri, bool bothSides)
+	const Triangle& tri, const bool bothSides)
 {
-	// get vertices from triangle
-	glm::vec3 v0 = tri.v0;
-	glm::vec3 v1 = tri.v1;
-	glm::vec3 v2 = tri.v2;
+	const glm::vec3 v0v1 = tri.v1 - tri.v0;
+	const glm::vec3 v0v2 = tri.v2 - tri.v0;
 
-	glm::vec3 v0v1 = v1 - v0;
-	glm::vec3 v0v2 = v2 - v0;
-
-	glm::vec3 pvec = cross(ray.direction, v0v2);
+	const glm::vec3 pvec = cross(ray.direction, v0v2);
 
 	float det = dot(v0v1, pvec);
 
@@ -101,14 +143,14 @@ Collision Util::rayCast(
 
 	float invDet = 1.0f / det;
 
-	glm::vec3 tvec = ray.origin - v0;
+	const glm::vec3 tvec = ray.origin - tri.v0;
 
 	float u = dot(tvec, pvec) * invDet;
 
 	if (u < 0 || u > 1)
 		return NO_HIT;
 
-	glm::vec3 qvec = cross(tvec, v0v1);
+	const glm::vec3 qvec = cross(tvec, v0v1);
 
 	float v = dot(ray.direction, qvec) * invDet;
 
@@ -120,9 +162,7 @@ Collision Util::rayCast(
 	if(ret < 0)
 		return NO_HIT;
 
-	glm::vec3 hitPos = glm::normalize(ray.direction) * ret;
-
-	return Collision { ret, hitPos, tri };
+	return Collision { ret, tri };
 }
 
 // Cast a ray against an infinite plane with the triangle's normal, return where ray hits plane or NaN if ray never hits
@@ -136,7 +176,7 @@ glm::vec3 Util::rayCastPlane(const Ray& r, const Triangle& plane) {
 
 Collision Util::rayCast(const Ray& r, const std::vector<Triangle>& tris, bool bothSides)
 {
-	auto closestHit = Collision{ INFINITY };
+	auto closestHit = NO_HIT;
 
 	for (const Triangle& tri : tris)
 	{
@@ -154,7 +194,7 @@ Collision Util::rayCast(const Ray& r, const std::vector<Triangle>& tris, bool bo
 
 Collision Util::rayCast(const Ray& r, const std::vector<std::vector<Triangle>::const_iterator>& tris, bool bothSides)
 {
-	auto closestHit = Collision{ INFINITY };
+	auto closestHit = NO_HIT;
 
 	for (const auto& tri : tris)
 	{
@@ -318,7 +358,7 @@ glm::vec3 Util::projectV3(const glm::vec3 a, const glm::vec3 b)
 
 float Util::valFromJoystickAxis(float axis)
 {
-	const float absxis = std::fabs(axis);
+	const float absxis = std::fabs(axis); // absolute axis. absxis.
 	if (absxis < STICK_DEADZONE)
 		axis = 0.0f;
 	else if (absxis > STICK_LIMITZONE)
