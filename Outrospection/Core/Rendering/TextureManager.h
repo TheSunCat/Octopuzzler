@@ -4,7 +4,7 @@
 
 #include <GLAD/glad.h>
 
-#include "Constants.h"
+#include "Core.h"
 #include "Resource.h"
 #include "Types.h"
 

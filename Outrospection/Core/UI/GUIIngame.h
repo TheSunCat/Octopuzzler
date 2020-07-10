@@ -1,15 +1,15 @@
 #pragma once
-#include "GUIScreen.h"
+#include "GUILayer.h"
 
 class GUIIngame :
-    public GUIScreen
+    public GUILayer
 {
 public:
 	GUIIngame();
 
 	void tick() override;
 
-	void draw(Shader& shader, Shader& glyphShader) const override;
+	void draw() const override;
 
 	DISALLOW_COPY_AND_ASSIGN(GUIIngame)
 private:
