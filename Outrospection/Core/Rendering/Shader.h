@@ -50,5 +50,5 @@ private:
 
 	GLint getUniformLocation(const char* uniformName) const;
 
-	mutable std::unordered_map<std::string, GLint> uniformCache;
+	mutable std::unordered_map<size_t, GLint> uniformCache;
 };

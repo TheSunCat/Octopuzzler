@@ -46,6 +46,8 @@ namespace Util
 		return startVal + difference * percent;
 	}
 
+	std::size_t hashBytes(const char* data, std::size_t length);
+
 	glm::vec3 rotToVec3(float yaw, float pitch = 0);
 
 	std::string vecToStr(const glm::vec3& vec);
