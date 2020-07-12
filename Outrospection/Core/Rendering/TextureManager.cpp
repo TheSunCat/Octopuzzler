@@ -1,6 +1,5 @@
 #include "TextureManager.h"
 
-#include <iostream>
 #include <sstream>
 
 #include "External/stb_image.h"
@@ -38,7 +37,7 @@ SimpleTexture TextureManager::loadTexture(Resource& r)
 		return texObj;
 	}
 	else {
-		std::cout << "Failed to generate texture ID for " << path << std::endl;
+		LOG_ERROR("Failed to generate texture ID for %s", path.c_str());
 
 		return missingTexture;
 	}
@@ -63,7 +62,7 @@ TickableTexture TextureManager::loadAnimatedTexture(Resource& r, unsigned int te
 			textureIds.push_back(currentTextureId);
 		}
 		else {
-			std::cerr << "Failed to generate texture ID for " << currentPath << std::endl;
+			LOG_ERROR("Failed to generate texture ID for animated texture frame %i at %s", textureFrameCount, currentPath.c_str());
 
 			textureIds.push_back(missingTexture.texId);
 		}
@@ -147,7 +146,7 @@ GLuint TextureManager::textureFromFile(const std::string& filename)
 	}
 	else
 	{
-		std::cout << "Texture failed to load at path: " << filename << std::endl;
+		LOG_ERROR("Texture failed to load at path: %s", filename.c_str());
 		stbi_image_free(data);
 
 		return INT_MAX;

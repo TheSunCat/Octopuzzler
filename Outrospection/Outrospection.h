@@ -19,6 +19,8 @@
 #include "Core/World/PlayerController.h"
 
 
+class MouseMovedEvent;
+class WindowCloseEvent;
 class Event;
 class Layer;
 
@@ -37,11 +39,8 @@ public:
 	void run();
     void onEvent(Event& e);
 
-    static void pauseGame();
-	static void unpauseGame();
-
 	void pushLayer(Layer* layer);
-	void pushOverlay(Layer* layer);
+	void pushOverlay(Layer* overlay);
 
 	void captureMouse(bool doCapture) const;
 
@@ -70,8 +69,8 @@ private:
 	void runTick();
 	void updateCamera();
 
-	std::unique_ptr<GUILayer> ingameGUI;
-	std::unique_ptr<GUILayer> pauseGUI;
+	GUILayer* ingameGUI;
+	GUILayer* pauseGUI;
 
 	// set to false when the game loop shouldn't run
 	bool running = false;
@@ -90,7 +89,8 @@ private:
 	Camera camera = Camera(glm::vec3(0.0f, 0.0f, 3.0f));
 	bool firstMouse = true;
 
-	static void mouse_callback(GLFWwindow* window, double xPosD, double yPosD);
+	bool onWindowClose(WindowCloseEvent& e);
+	bool onMouseMoved(MouseMovedEvent& e);
 	static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 	static void error_callback(int errorcode, const char* description);
 

@@ -3,6 +3,7 @@
 #include <chrono>
 #include <ctime>
 #include <iomanip>
+#include <iostream>
 
 // Platform detection using predefined macros
 #ifdef _WIN32
@@ -54,10 +55,7 @@ inline void win_change_attributes(const int foreground)
     // yeah, i know.. it's ugly, it's windows.
     static WORD defaultAttributes = 0;
 
-    // get terminal handle
-    HANDLE hTerminal = INVALID_HANDLE_VALUE;
-
-    hTerminal = GetStdHandle(STD_OUTPUT_HANDLE);
+    HANDLE hTerminal = GetStdHandle(STD_OUTPUT_HANDLE);
 
     // save default terminal attributes if it unsaved
     if (!defaultAttributes)
@@ -92,24 +90,29 @@ inline void win_change_attributes(const int foreground)
     SetConsoleTextAttribute(hTerminal, info.wAttributes);
 }
 
-#define CHANGE_COLOR(col) ""; win_change_attributes(col); std::cout 
+#define CHANGE_COLOR(col) win_change_attributes((col) == 0 ? -1 : (col));
 #else
-#define CHANGE_COLOR(col) "\033[" << col << 'm'
+#define CHANGE_COLOR(col) std::cout << "\033[" << (col) << 'm'
 #endif
 
-#define LOG(...) \
+#define LOG(...) {\
     const std::time_t now = std::time(nullptr); \
     std::cout << "[" << (now / (60 * 24)) % 24 << ":" << (now / 60) % 60 << "::" << now % 60 << "] "; \
-    std::cout << __VA_ARGS__ << std::endl;
+    printf(__VA_ARGS__); putchar('\n');}
 
 #ifdef DEBUG
-#define LOG_DEBUG(data) \
-    std::cout << CHANGE_COLOR(35); /* set color to magenta */ \
-    LOG(data); \
-    std::cout << CHANGE_COLOR(0);
+#define LOG_DEBUG(...) {\
+    CHANGE_COLOR(35); /* set color to magenta */ \
+    LOG(__VA_ARGS__); \
+    CHANGE_COLOR(0);}
 #else
-#define LOG_DEBUG(data)
+#define LOG_DEBUG(...)
 #endif
+
+#define LOG_ERROR(...) {\
+    CHANGE_COLOR(4); \
+    LOG(__VA_ARGS__); \
+    CHANGE_COLOR(0);}
 
 #define DISALLOW_COPY_AND_ASSIGN(TypeName) \
   TypeName(const TypeName&) = delete;   \
@@ -123,4 +126,4 @@ inline void win_change_attributes(const int foreground)
 
 #define BIT(x) (1 << (x))
 
-#define BIND_EVENT_FUNC(function) std::bind(&(function), this, std::placeholders::_1)
+#define BIND_EVENT_FUNC(function) std::bind(&function, this, std::placeholders::_1)

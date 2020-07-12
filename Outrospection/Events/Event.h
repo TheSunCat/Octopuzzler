@@ -12,7 +12,7 @@
 enum class EventType
 {
     None = 0,
-    //WindowClose, WindowResize, WindowFocus, WindowUnfocus, WindowMove,
+    WindowClose, WindowResize, WindowFocus, WindowUnfocus, WindowMove,
     KeyPressed, KeyReleased,
     MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
 };
@@ -30,20 +30,19 @@ class Event
 {
     friend class EventDispatcher;
 public:
+    virtual ~Event() = default;
+
     virtual EventType getEventType() const = 0;
     virtual const char* getName() const = 0;
     virtual int getCategoryFlags() const = 0;
 
     inline bool inCategory(const EventCategory category) const { return getCategoryFlags() & category; }
 
-protected:
     bool handled = false;
 };
 
 class EventDispatcher
 {
-    template<typename T>
-    using EventFn = std::function<bool(T&)>;
 
 public:
     EventDispatcher(Event& _event)
@@ -51,7 +50,7 @@ public:
 
 
     template<typename T>
-    bool dispatch(EventFn<T> func)
+    bool dispatch(std::function<bool(T&)> func)
     {
         if (event.getEventType() == T::getStaticType())
         {

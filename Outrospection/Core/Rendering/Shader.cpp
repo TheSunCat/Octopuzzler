@@ -1,13 +1,12 @@
 #include "Shader.h"
 
 #include <fstream>
-#include <iostream>
 #include <sstream>
 
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
-
+#include "Core.h"
 #include "Util.h"
 #include "Core/Camera.h"
 
@@ -47,7 +46,7 @@ Shader::Shader(const GLchar* vertexName, const GLchar* fragmentName)
 		fragmentCode = fShaderStream.str();
 	}
 	catch (std::ifstream::failure& e) {
-		std::cout << "Failed to read shader file \"" << vertexPath << "\" or \"" << fragmentPath << "\"! errno " << e.code() << std::endl;
+		LOG_ERROR("Failed to read shader file \"%s\" or \"%s\"! errno %s", vertexPath, fragmentPath, e.what());
 		return;
 	}
 
@@ -69,7 +68,7 @@ Shader::Shader(const GLchar* vertexName, const GLchar* fragmentName)
 	if (!success)
 	{
 		glGetShaderInfoLog(vertex, 512, nullptr, infoLog);
-		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+		LOG_ERROR("Vertex shader %s failed to compile, error log:\n%s", vertexPath, infoLog);
 	}
 
 	// fragment Shader
@@ -81,7 +80,7 @@ Shader::Shader(const GLchar* vertexName, const GLchar* fragmentName)
 	if (!success)
 	{
 		glGetShaderInfoLog(vertex, 512, nullptr, infoLog);
-		std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED (" << fragmentPath << "\n" << infoLog << std::endl;
+		LOG_ERROR("Fragment shader %s failed to compile, error log:\n%s", fragmentPath, infoLog);
 	}
 
 	// shader Program
@@ -95,7 +94,7 @@ Shader::Shader(const GLchar* vertexName, const GLchar* fragmentName)
 	if (!success)
 	{
 		glGetProgramInfoLog(ID, 512, nullptr, infoLog);
-		std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+		LOG_ERROR("Failed to link shader programs %s and %s, error log:\n%s", vertexPath, fragmentPath, infoLog);
 	}
 
 	// delete the shaders as they're linked into our program now and no longer necessary

@@ -1,13 +1,13 @@
 #include "Util.h"
 
 #include <charconv>
-#include <iostream>
 #include <sstream>
 
 #include <GLAD/glad.h>
 #include <glm/common.hpp>
 
 #include "Constants.h"
+#include "Core.h"
 #include "External/stb_image.h"
 
 bool Util::glError()
@@ -18,7 +18,7 @@ bool Util::glError()
 	{
 		ret = true;
 
-		std::cout << err << std::endl;
+		LOG_ERROR("%i", err);
 	}
 
 	return ret;
@@ -114,7 +114,7 @@ unsigned char* Util::dataFromFile(const char* path, const std::string& directory
 	}
 	else
 	{
-		std::cout << "Texture data failed to load at path: " << filename << std::endl;
+		LOG_ERROR("Texture data failed to load at path: %s", filename.c_str());
 		stbi_image_free(data);
 	}
 
