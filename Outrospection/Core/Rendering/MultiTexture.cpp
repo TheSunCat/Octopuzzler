@@ -1,6 +1,5 @@
 //#include "MultiTexture.h"
 //#include <fstream>
-//#include <iostream>
 //
 //MultiTexture::MultiTexture(std::string multiTextureFileName) {
 //	std::ifstream multiTexFile("./res/ObjectData/Characters/" + multiTextureFileName + ".gfi"); // GO FOR IT!

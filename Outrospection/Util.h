@@ -1,8 +1,8 @@
 #pragma once
 
-#include <iostream>
 #include <glm/glm.hpp>
 
+#include "Core.h"
 #include "Types.h"
 
 namespace Util
@@ -26,7 +26,7 @@ namespace Util
 	{
 		if (min > max)
 		{
-			std::cout << "ERROR: min is greater than max! min = " << min << ", max = " << max;
+			LOG_ERROR("min is greater than max! min = %f, max = %f", min, max);
 			return val;
 		}
 		

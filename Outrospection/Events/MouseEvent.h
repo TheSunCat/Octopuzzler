@@ -36,7 +36,7 @@ private:
 class MouseButtonEvent : public Event
 {
 public:
-    inline float getMouseButton() const { return button; }
+    inline int getMouseButton() const { return button; }
 
     EVENT_CLASS_CATEGORY(EventCategory::Mouse | EventCategory::Input)
 protected:

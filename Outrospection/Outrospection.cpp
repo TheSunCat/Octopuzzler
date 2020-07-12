@@ -6,11 +6,12 @@
 #include "Core/Layer.h"
 
 #include "Core/UI/GUIIngame.h"
-#include "Core/UI/GUIPause.h"
 #include "Core/UI/GUILayer.h"
+#include "Core/UI/GUIPause.h"
 #include "Events/Event.h"
 #include "Events/KeyEvent.h"
 #include "Events/MouseEvent.h"
+#include "Events/WindowEvent.h"
 
 void* operator new (size_t s)
 {
@@ -25,8 +26,8 @@ Outrospection::Outrospection()
 {
 	instance = this;
 
-	ingameGUI = std::make_unique<GUIIngame>();
-	pauseGUI = std::make_unique<GUIPause>();
+	ingameGUI = new GUIIngame();
+	pauseGUI = new GUIPause();
 	
 	gameWindow = opengl.gameWindow;
 	quadVAO = opengl.quadVAO;
@@ -41,7 +42,7 @@ Outrospection::Outrospection()
 	scene = Scene("TestLevel000");
 	player = Player(glm::vec3(0.0, 3.0, 0.0));
 
-	//setGUIScreen(ingameGUI.get());
+	pushOverlay(ingameGUI);
 }
 
 void Outrospection::run()
@@ -59,24 +60,18 @@ void Outrospection::run()
 void Outrospection::onEvent(Event& e)
 {
 	EventDispatcher dispatcher(e);
-	//dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FUNC(Outrospection::OnKeyPressed));
-	//dispatcher.dispatch<KeyReleasedEvent>(BIND_EVENT_FUNC(Outrospection::OnKeyReleased));
+	dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FUNC(Outrospection::onWindowClose));
+	//dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FUNC(Application::OnWindowResize));
+	dispatcher.dispatch<MouseMovedEvent>(BIND_EVENT_FUNC(Outrospection::onMouseMoved));
+
+	for (auto it = layerStack.rbegin(); it != layerStack.rend(); ++it)
+	{
+		if (e.handled)
+			break;
+		(*it)->onEvent(e);
+	}
 
 	LOG_DEBUG(e.getName());
-}
-
-void Outrospection::pauseGame()
-{
-	get().isGamePaused = true;
-
-	//get().setGUIScreen(get().pauseGUI.get());
-}
-
-void Outrospection::unpauseGame()
-{
-	get().isGamePaused = false;
-
-	//get().setGUIScreen(get().ingameGUI.get());
 }
 
 void Outrospection::pushLayer(Layer* layer)
@@ -85,10 +80,10 @@ void Outrospection::pushLayer(Layer* layer)
 	layer->onAttach();
 }
 
-void Outrospection::pushOverlay(Layer* layer)
+void Outrospection::pushOverlay(Layer* overlay)
 {
-	layerStack.pushOverlay(layer);
-	layer->onAttach();
+	layerStack.pushOverlay(overlay);
+	overlay->onAttach();
 }
 
 void Outrospection::captureMouse(const bool doCapture) const
@@ -100,8 +95,6 @@ void Outrospection::captureMouse(const bool doCapture) const
 		glfwSetInputMode(gameWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
 		glfwSetCursorPos(gameWindow, SCR_WIDTH / 2.0f, SCR_HEIGHT / 2.0f);
-
-		mouse_callback(gameWindow, SCR_WIDTH / 2.0f, SCR_HEIGHT / 2.0f);
 	}
 }
 
@@ -120,10 +113,10 @@ void Outrospection::runGameLoop()
 		// exit game on next loop iteration
 		if (controller.pause == 1)
 		{
-			if (isGamePaused)
-				unpauseGame();
-			else
-				pauseGame();
+			//if (isGamePaused)
+				//unpauseGame();
+			//else
+				//pauseGame();
 		}
 
 
@@ -286,18 +279,25 @@ void Outrospection::createShaders()
 	glyphShader.setMat4("projection", projection);
 }
 
-void Outrospection::mouse_callback(GLFWwindow*, const double xPosD, const double yPosD)
+bool Outrospection::onWindowClose(WindowCloseEvent& e)
+{
+	running = false;
+
+	return true;
+}
+
+bool Outrospection::onMouseMoved(MouseMovedEvent& e)
 {
 	Outrospection& orig = get();
 
-	const auto xPos = float(xPosD);
-	const auto yPos = float(yPosD);
+	const auto xPos = float(e.getX());
+	const auto yPos = float(e.getY());
 	
 	if (orig.firstMouse) {
 		orig.lastMousePos.x = xPos;
 		orig.lastMousePos.y = yPos;
 		orig.firstMouse = false;
-		return; // nothing to calculate because we technically didn't move the mouse
+		return true; // nothing to calculate because we technically didn't move the mouse
 	}
 
 	const float xOffset = xPos - orig.lastMousePos.x;
@@ -307,6 +307,8 @@ void Outrospection::mouse_callback(GLFWwindow*, const double xPosD, const double
 	orig.lastMousePos.y = yPos;
 
 	orig.camera.playerRotateCameraBy(xOffset, yOffset);
+
+	return false;
 }
 
 void Outrospection::scroll_callback(GLFWwindow*, const double xoffset, const double yoffset)
@@ -317,7 +319,7 @@ void Outrospection::scroll_callback(GLFWwindow*, const double xoffset, const dou
 
 void Outrospection::error_callback(const int errorcode, const char* description)
 {
-	std::cout << "ERROR::GLFW code = " << errorcode << ". " << description << '\n';
+	LOG_ERROR("GLFW error (%i): %s", errorcode, description);
 }
 
 void setKey(ControllerButton& button, const int keyCode, GLFWwindow* window)
@@ -336,9 +338,7 @@ void Outrospection::updateInput()
 
 			controller.isGamepad = true;
 
-#ifdef VERBOSE
-			std::cout << "Joystick " << glfwGetJoystickName(joystick) << " detected with ID " << joystick << "! ";
-#endif
+			LOG_DEBUG("Joystick %s detected with ID %i!", glfwGetJoystickName(joystick), joystick);
 
 			break;
 		}
@@ -348,9 +348,7 @@ void Outrospection::updateInput()
 		
 		if (glfwJoystickIsGamepad(joystick)) // easy!
 		{
-#ifdef VERBOSE
-			std::cout << "It is a gamepad! Sweet! ";
-#endif
+			LOG_DEBUG("It is a gamepad! Sweet!");
 			
 			GLFWgamepadstate gamepadState;
 			glfwGetGamepadState(joystick, &gamepadState);
@@ -370,9 +368,7 @@ void Outrospection::updateInput()
 		}
 		else // have to manually set everything :c
 		{
-#ifdef VERBOSE
-			std::cout << "It is a non-mapped controller. Hrm. ";
-#endif
+			LOG_DEBUG("It is a non-mapped controller. Hrm.");
 
 			int axesCount = -1;
 

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <iostream>
-
 #include <GLAD/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -13,7 +11,7 @@ public:
 	{
 		if (!glfwInit())
 		{
-			std::cout << "GLFW has not initialized properly! Aborting..." << std::endl;
+			LOG_ERROR("GLFW has not initialized properly!");
 			glfwTerminate();
 			return;
 		}
@@ -31,7 +29,7 @@ public:
 		gameWindow = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Outrospection", nullptr, nullptr);
 		if (gameWindow == nullptr)
 		{
-			std::cout << "Failed to create GLFW window" << std::endl;
+			LOG_ERROR("Failed to create GLFW window!");
 			glfwTerminate();
 			return;
 		}
@@ -48,7 +46,7 @@ public:
 		// load OGL function pointers
 		if (!gladLoadGLLoader(GLADloadproc(glfwGetProcAddress)))
 		{
-			std::cout << "Failed to initialize GLAD" << std::endl;
+			LOG_ERROR("Failed to initialize GLAD!");
 			return;
 		}
 
@@ -101,7 +99,7 @@ public:
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO); // now actually attach it
 		// now that we actually created the framebuffer and added all attachments we want to check if it is complete
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-			std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+			LOG_ERROR("Framebuffer is not complete!");
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 

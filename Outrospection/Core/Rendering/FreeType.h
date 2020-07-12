@@ -1,7 +1,6 @@
 #pragma once
 
 #include <ft2build.h>
-#include <iostream>
 
 #include FT_FREETYPE_H
 
@@ -14,13 +13,13 @@ public:
 	{
 		FT_Library ft;
 		if (FT_Init_FreeType(&ft)) {
-			std::cout << "Failed to initialize FreeType!" << std::endl;
+			LOG_ERROR("Failed to initialize FreeType!");
 			return;
 		}
 		
 		FT_Face face;
 		if (FT_New_Face(ft, "./res/ObjectData/UI/font.ttf", 0, &face)) {
-			std::cout << "Failed to load font.ttf!" << std::endl;
+			LOG_ERROR("Failed to load font.ttf!");
 			return;
 		}
 
@@ -33,7 +32,7 @@ public:
 			// load character glyph 
 			if (FT_Load_Char(face, c, FT_LOAD_RENDER))
 			{
-				std::cout << "FreeType failed to load glyph \'" << c << "\'!" << std::endl;
+				LOG_ERROR("FreeType failed to load glyph \'%c\'!", c);
 				continue;
 			}
 			

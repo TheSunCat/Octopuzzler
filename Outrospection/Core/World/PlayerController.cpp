@@ -1,9 +1,8 @@
 #include "PlayerController.h"
 
-#include <iostream>
-
 #include "Constants.h"
 #include "Controller.h"
+#include "Core.h"
 #include "Util.h"
 
 #include "Core/World/Player.h"
@@ -19,7 +18,7 @@ void PlayerController::acceleratePlayer(const Controller& controller, const floa
 	{
 		if (grounded || hacking) // cheat code hold left trigger to moonjump
 		{
-			std::cout << "jumping\n";
+			LOG_DEBUG("jumping");
 			
 			jumping = true;
 			velocity.y = 0.075f;
@@ -194,12 +193,12 @@ void PlayerController::resolveCollision(Player& player, const std::vector<Triang
 			// TODO fix where first time it does snap, maybe ledgeHitPoint isn't set?
 			if (Util::length2V3(ledgeHitPoint) && fabs(intersectYDiff) <= 0.075f)
 			{
-				std::cout << intersectYDiff << " skipping wall\n";
+				//LOG_DEBUG("%f skipping wall", intersectYDiff);
 				
-				continue;
+				//continue;
 			}
 
-			std::cout << intersectYDiff << '\n';
+			LOG_DEBUG("%f", intersectYDiff);
 			
 			// we need to correct by this
 			const float distancePastTri = (colSphereRadius - pointToPlaneDist);
@@ -313,13 +312,14 @@ void PlayerController::movePlayer(Player& player) const
 {
 	// NAN check
 	if (std::isnan(velocity.x))
-		std::cout << "ERROR: velocity is " << Util::vecToStr(velocity) << std::endl;
+	{
+		LOG_ERROR("velocity is NaN!");
+	}
+
+	if (std::isnan(colResponseDelta.x) || std::isnan(colResponseDelta.y) || std::isnan(colResponseDelta.z))
+		LOG_ERROR("colResponseDelta is NaN!");
 	
 	player.move(velocity + colResponseDelta);
-	
-	// NAN check	
-	if (std::isnan(player.position.x))
-		std::cout << "ERROR: position is " << Util::vecToStr(player.position) << std::endl;
 }
 
 bool PlayerController::isMoving() const

@@ -234,6 +234,7 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
     <ClInclude Include="Events\EventHandlerFunction.h" />
     <ClInclude Include="Events\KeyEvent.h" />
     <ClInclude Include="Events\MouseEvent.h" />
+    <ClInclude Include="Events\WindowEvent.h" />
     <ClInclude Include="GameSettings.h" />
     <ClInclude Include="KeyBinding.h" />
     <ClInclude Include="Outrospection.h" />
