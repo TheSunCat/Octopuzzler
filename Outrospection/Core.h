@@ -2,8 +2,10 @@
 
 #include <chrono>
 #include <ctime>
+#include <functional>
 #include <iomanip>
-#include <iostream>
+
+inline std::time_t curTime;
 
 // Platform detection using predefined macros
 #ifdef _WIN32
@@ -18,16 +20,14 @@
 
 #elif defined(__APPLE__) || defined(__MACH__)
     #include <TargetConditionals.h>
-    #if TARGET_IPHONE_SIMULATOR == 1
-        #error "IOS simulator is not supported!"
-    #elif TARGET_OS_IPHONE == 1
+    #if TARGET_OS_IPHONE == 1
         #define PLATFORM_IOS
-        #error "IOS is not supported!"
+        #error "iOS is not supported!"
     #elif TARGET_OS_MAC == 1
         #define PLATFORM_MACOS
         #error "MacOS is not supported!"
     #else
-        #error "Unknown Apple platform!"
+        #error "Unknown Apple platform (is probably not supported)!"
     #endif
 
 #elif defined(__ANDROID__)
@@ -45,6 +45,8 @@
 #define DEBUG
 
 #ifdef PLATFORM_WINDOWS
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
 #include "Windows.h"
 
 // stole from https://github.com/ikalnytskyi/termcolor/blob/master/include/termcolor/termcolor.hpp#L567, thanks!
@@ -92,37 +94,111 @@ inline void win_change_attributes(const int foreground)
 
 #define CHANGE_COLOR(col) win_change_attributes((col) == 0 ? -1 : (col));
 #else
-#define CHANGE_COLOR(col) std::cout << "\033[" << (col) << 'm'
+#define CHANGE_COLOR(col) printf("\033[%im", (col))
 #endif
 
-#define LOG(...) {\
-    const std::time_t now = std::time(nullptr); \
-    std::cout << "[" << (now / (60 * 24)) % 24 << ":" << (now / 60) % 60 << "::" << now % 60 << "] "; \
-    printf(__VA_ARGS__); putchar('\n');}
+#include <condition_variable>
+#include <mutex>
+#include <queue>
+#include <thread>
+
+template <typename T>
+class Queue
+{
+public:
+
+    T pop()
+    {
+        std::unique_lock<std::mutex> mlock(mutex);
+        while (queue.empty())
+        {
+            cond.wait(mlock);
+        }
+        auto item = queue.front();
+        queue.pop();
+        return item;
+    }
+
+    void pop(T& item)
+    {
+        std::unique_lock<std::mutex> mlock(mutex);
+        while (queue.empty())
+        {
+            cond.wait(mlock);
+        }
+        item = queue.front();
+        queue.pop();
+    }
+
+    void push(const T& item)
+    {
+        std::unique_lock<std::mutex> mlock(mutex);
+        queue.push(item);
+        mlock.unlock();
+        cond.notify_one();
+    }
+
+    void push(T&& item)
+    {
+        std::unique_lock<std::mutex> mlock(mutex);
+        queue.push(std::move(item));
+        mlock.unlock();
+        cond.notify_one();
+    }
+
+private:
+    std::queue<T> queue;
+    std::mutex mutex;
+    std::condition_variable cond;
+};
+
+inline Queue<std::function<void()>> loggerQueue;
+
+template <typename T>
+static decltype(auto) printf_transform(T const& arg)
+{
+    if constexpr (std::is_same_v<T, std::string>)
+    {
+        return arg.c_str();
+    }
+    else
+    {
+        static_assert(std::is_trivially_copyable_v<T>);
+        return arg;
+    }
+}
+
+struct smart_printf {
+    template <typename ...Ts>
+    void operator()(Ts const& ...args) const { printf(printf_transform(args)...); }
+};
+
+#define LOG(...) loggerQueue.push([args=std::make_tuple(__VA_ARGS__)] { std::apply(smart_printf{}, args); });
 
 #ifdef DEBUG
-#define LOG_DEBUG(...) {\
-    CHANGE_COLOR(35); /* set color to magenta */ \
-    LOG(__VA_ARGS__); \
-    CHANGE_COLOR(0);}
+#define LOG_DEBUG(...) loggerQueue.push([args=std::make_tuple(__VA_ARGS__)] { CHANGE_COLOR(35); /* set color to magenta */\
+        std::apply(smart_printf{}, args); \
+        CHANGE_COLOR(0);});
+
+#define PROFILE Util::Timer timer_##__COUNTER__(__func__)
 #else
 #define LOG_DEBUG(...)
+#define PROFILE
 #endif
 
-#define LOG_ERROR(...) {\
-    CHANGE_COLOR(4); \
-    LOG(__VA_ARGS__); \
-    CHANGE_COLOR(0);}
+#define LOG_ERROR(...) loggerQueue.push([args=std::make_tuple(__VA_ARGS__)] { CHANGE_COLOR(4); /* red error color */\
+        std::apply(smart_printf{}, args); \
+        CHANGE_COLOR(0);});
 
 #define DISALLOW_COPY_AND_ASSIGN(TypeName) \
-  TypeName(const TypeName&) = delete;   \
-  TypeName& operator=(const TypeName&) = delete;
+    TypeName(const TypeName&) = delete;   \
+    TypeName& operator=(const TypeName&) = delete;
 
 #define DISALLOW_COPY(TypeName) \
-  TypeName(const TypeName&) = delete;
+    TypeName(const TypeName&) = delete;
 
 #define DISALLOW_ASSIGN(TypeName) \
-  TypeName& operator=(const TypeName&) = delete;
+    TypeName& operator=(const TypeName&) = delete;
 
 #define BIT(x) (1 << (x))
 

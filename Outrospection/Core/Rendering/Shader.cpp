@@ -1,4 +1,5 @@
 #include "Shader.h"
+#include "Core.h"
 
 #include <fstream>
 #include <sstream>
@@ -6,7 +7,6 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
-#include "Core.h"
 #include "Util.h"
 #include "Core/Camera.h"
 
@@ -209,8 +209,7 @@ void Shader::checkCompileErrors(const GLuint shader, const std::string& type)
 		if (!success)
 		{
 			glGetShaderInfoLog(shader, 1024, nullptr, infoLog);
-			std::cout << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" << infoLog <<
-				"\n -- --------------------------------------------------- -- " << std::endl;
+			LOG_ERROR("Shader compilation error! Type: %s\n%s", type, infoLog);
 		}
 	}
 	else
@@ -219,8 +218,7 @@ void Shader::checkCompileErrors(const GLuint shader, const std::string& type)
 		if (!success)
 		{
 			glGetProgramInfoLog(shader, 1024, nullptr, infoLog);
-			std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog <<
-				"\n -- --------------------------------------------------- -- " << std::endl;
+			LOG_ERROR("Shader linking error! Type: %s\n%s", type, infoLog);
 		}
 	}
 }

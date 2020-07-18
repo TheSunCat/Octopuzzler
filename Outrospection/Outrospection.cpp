@@ -40,7 +40,7 @@ Outrospection::Outrospection()
 	createShaders();
 
 	scene = Scene("TestLevel000");
-	player = Player(glm::vec3(0.0, 3.0, 0.0));
+	player = Player(glm::vec3(0.0, 30.0, 0.0));
 
 	pushOverlay(ingameGUI);
 }
@@ -59,10 +59,11 @@ void Outrospection::run()
 
 void Outrospection::onEvent(Event& e)
 {
-	EventDispatcher dispatcher(e);
-	dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FUNC(Outrospection::onWindowClose));
+	PROFILE;
+
+	dispatchEvent<WindowCloseEvent>(e, BIND_EVENT_FUNC(Outrospection::onWindowClose));
 	//dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FUNC(Application::OnWindowResize));
-	dispatcher.dispatch<MouseMovedEvent>(BIND_EVENT_FUNC(Outrospection::onMouseMoved));
+	dispatchEvent<MouseMovedEvent>(e, BIND_EVENT_FUNC(Outrospection::onMouseMoved));
 
 	for (auto it = layerStack.rbegin(); it != layerStack.rend(); ++it)
 	{
@@ -71,7 +72,7 @@ void Outrospection::onEvent(Event& e)
 		(*it)->onEvent(e);
 	}
 
-	LOG_DEBUG(e.getName());
+	//LOG_DEBUG(e.getName());
 }
 
 void Outrospection::pushLayer(Layer* layer)

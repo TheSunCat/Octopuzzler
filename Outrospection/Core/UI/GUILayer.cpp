@@ -18,9 +18,8 @@ void GUILayer::onAttach()
 
 void GUILayer::onEvent(Event& event)
 {
-	EventDispatcher dispatcher(event);
-	dispatcher.dispatch<KeyPressedEvent>(std::bind(&GUILayer::onKeyPressed, this, std::placeholders::_1));
-	dispatcher.dispatch<KeyReleasedEvent>(std::bind(&GUILayer::onKeyReleased, this, std::placeholders::_1));
+	dispatchEvent<KeyPressedEvent>(event, std::bind(&GUILayer::onKeyPressed, this, std::placeholders::_1));
+	dispatchEvent<KeyReleasedEvent>(event, std::bind(&GUILayer::onKeyReleased, this, std::placeholders::_1));
 }
 
 bool GUILayer::onKeyPressed(KeyPressedEvent& event)

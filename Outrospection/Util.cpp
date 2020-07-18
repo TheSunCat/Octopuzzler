@@ -1,4 +1,5 @@
 #include "Util.h"
+#include "Core.h"
 
 #include <charconv>
 #include <sstream>
@@ -7,7 +8,6 @@
 #include <glm/common.hpp>
 
 #include "Constants.h"
-#include "Core.h"
 #include "External/stb_image.h"
 
 bool Util::glError()
@@ -114,7 +114,7 @@ unsigned char* Util::dataFromFile(const char* path, const std::string& directory
 	}
 	else
 	{
-		LOG_ERROR("Texture data failed to load at path: %s", filename.c_str());
+		LOG_ERROR("Texture data failed to load at path: %s", filename);
 		stbi_image_free(data);
 	}
 
@@ -125,7 +125,7 @@ unsigned char* Util::dataFromFile(const char* path, const std::string& directory
 
 const Collision NO_HIT = Collision{ INFINITY, glm::vec3(0.0) };
 
-// Cast a ray against finite triangle tri, and return the distance from the ray to the tri.
+// cast a ray against finite tri, ret distance from the ray to the tri
 Collision Util::rayCast(
 	const Ray& ray,
 	const Triangle& tri, const bool bothSides)
@@ -379,4 +379,16 @@ int Util::stoi(const std::string_view& str)
 	int ret;
 	std::from_chars(str.data(), str.data() + str.size(), ret);
 	return ret;
+}
+
+Util::Timer::Timer() : Timer::Timer("")	 { }
+
+Util::Timer::Timer(const char* _name) : begin(std::chrono::high_resolution_clock::now()),
+	name(_name) {}
+
+Util::Timer::~Timer()
+{
+	auto end = std::chrono::high_resolution_clock::now();
+	auto dur = std::chrono::duration_cast<std::chrono::microseconds>(end - begin);
+	LOG_DEBUG("%s took %lld musec", name, dur.count());
 }

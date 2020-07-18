@@ -37,7 +37,7 @@ SimpleTexture TextureManager::loadTexture(Resource& r)
 		return texObj;
 	}
 	else {
-		LOG_ERROR("Failed to generate texture ID for %s", path.c_str());
+		LOG_ERROR("Failed to generate texture ID for %s", path);
 
 		return missingTexture;
 	}
@@ -62,7 +62,7 @@ TickableTexture TextureManager::loadAnimatedTexture(Resource& r, unsigned int te
 			textureIds.push_back(currentTextureId);
 		}
 		else {
-			LOG_ERROR("Failed to generate texture ID for animated texture frame %i at %s", textureFrameCount, currentPath.c_str());
+			LOG_ERROR("Failed to generate texture ID for animated texture frame %i at %s", textureFrameCount, currentPath);
 
 			textureIds.push_back(missingTexture.texId);
 		}
@@ -146,7 +146,7 @@ GLuint TextureManager::textureFromFile(const std::string& filename)
 	}
 	else
 	{
-		LOG_ERROR("Texture failed to load at path: %s", filename.c_str());
+		LOG_ERROR("Texture failed to load at path: %s", filename);
 		stbi_image_free(data);
 
 		return INT_MAX;
