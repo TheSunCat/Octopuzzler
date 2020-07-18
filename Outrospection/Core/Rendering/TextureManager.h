@@ -1,10 +1,10 @@
 #pragma once
+#include "Core.h"
 
 #include <unordered_map>
 
 #include <GLAD/glad.h>
 
-#include "Core.h"
 #include "Resource.h"
 #include "Types.h"
 

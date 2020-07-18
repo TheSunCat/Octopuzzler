@@ -1,6 +1,4 @@
 #pragma once
-#include <functional>
-
 #include "Core.h"
 
 #define EVENT_CLASS_TYPE(type) static EventType getStaticType() { return EventType::##type; } \
@@ -41,26 +39,15 @@ public:
     bool handled = false;
 };
 
-class EventDispatcher
+
+template<typename T>
+bool dispatchEvent(Event& event, std::function<bool(T&)> func)
 {
-
-public:
-    EventDispatcher(Event& _event)
-        : event(_event) {}
-
-
-    template<typename T>
-    bool dispatch(std::function<bool(T&)> func)
+    if (event.getEventType() == T::getStaticType())
     {
-        if (event.getEventType() == T::getStaticType())
-        {
-            event.handled = func(*(T*)&event);
-            return true;
-        }
-
-        return false;
+        event.handled = func(*(T*)&event);
+        return true;
     }
 
-private:
-    Event& event;
-};
+    return false;
+}

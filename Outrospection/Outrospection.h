@@ -1,9 +1,10 @@
 #pragma once
+#include "Core.h"
 
+#include <thread>
 #include <glm/vec2.hpp>
 
 #include "Constants.h"
-#include "Core.h"
 #include "GameSettings.h"
 
 #include "Controller.h"
@@ -103,4 +104,28 @@ private:
 	LayerStack layerStack;
 
 	static Outrospection* instance;
+
+	std::thread timeThread{ [&]() -> void
+	{
+		while (true)
+		{
+			curTime = std::time(nullptr);
+			std::this_thread::sleep_for(std::chrono::seconds(1));
+		}
+	} };
+
+	std::thread loggerThread{ [&]() -> void
+	{
+		while (true)
+		{
+			const auto& log = loggerQueue.pop();
+			if (log != nullptr)
+			{
+				log();
+				std::putchar('\n');
+			}
+
+			std::this_thread::yield();
+		}
+	} };
 };

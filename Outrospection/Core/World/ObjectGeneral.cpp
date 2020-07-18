@@ -1,9 +1,8 @@
 #include "ObjectGeneral.h"
+#include "Core.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
-
-#include "Core.h"
 #include "Core/Rendering/ModelLoader.h"
 #include "Core/Rendering/Shader.h"
 
@@ -19,7 +18,7 @@ ObjectGeneral::ObjectGeneral(const std::string& _name, glm::vec3 _pos, glm::vec3
 	ModelLoader modelLoader;
 
 	if (!modelLoader.loadFile(modelPath)) {
-		LOG_ERROR("Failed to load %s!", modelPath.c_str());
+		LOG_ERROR("Failed to load %s!", modelPath);
 		return;
 	}
 

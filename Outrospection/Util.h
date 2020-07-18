@@ -1,8 +1,8 @@
 #pragma once
+#include "Core.h"
 
 #include <glm/glm.hpp>
 
-#include "Core.h"
 #include "Types.h"
 
 namespace Util
@@ -96,4 +96,14 @@ namespace Util
 	float stof(const std::string_view& str);
 
 	int stoi(const std::string_view& str);
+
+	class Timer {
+	public:
+		Timer();
+		Timer(const char* _name);
+		~Timer();
+	private:
+		std::chrono::time_point<std::chrono::high_resolution_clock> begin;
+		const char* name;
+	};
 }

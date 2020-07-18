@@ -1,12 +1,11 @@
 #include "Scene.h"
+#include "Core.h"
 
 #include <fstream>
 #include <utility>
 
 #include "External/stb_image.h"
 
-#include "Constants.h"
-#include "Core.h"
 #include "Util.h"
 
 #include "Core/Rendering/Shader.h"
@@ -304,7 +303,7 @@ GLuint Scene::loadCubemap(std::string name)
 		}
 		else
 		{
-			LOG_ERROR("Cubemap texture failed to load at path: %s", faces[i].c_str());
+			LOG_ERROR("Cubemap texture failed to load at path: %s", faces[i]);
 			stbi_image_free(data);
 		}
 	}
