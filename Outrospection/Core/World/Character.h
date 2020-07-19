@@ -10,16 +10,16 @@ class Shader;
 
 class Character {
 public:
-	Character() = default;
+    Character() = default;
 
-	Character(const std::string& _id, const glm::vec3& _pos);
+    Character(const std::string& _id, const glm::vec3& _pos);
 
-	void draw(Shader& _shader) const;
+    void draw(Shader& _shader) const;
 
-	glm::vec3 position{};
+    glm::vec3 position{};
 
 private:
-	std::string id;
+    std::string id;
 
-	Billboard billboard;
+    Billboard billboard;
 };

@@ -2,6 +2,6 @@
 
 int main()
 {
-	Outrospection().run();
-	return 0;
+    Outrospection().run();
+    return 0;
 }
