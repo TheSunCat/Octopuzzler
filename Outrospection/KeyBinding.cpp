@@ -2,5 +2,5 @@
 
 KeyBinding::KeyBinding(const int _keyCode)
 {
-	keyCode = _keyCode;
+    keyCode = _keyCode;
 }

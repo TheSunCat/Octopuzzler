@@ -7,19 +7,19 @@
 class SimpleTexture
 {
 public:
-	SimpleTexture() = default;
+    SimpleTexture() = default;
 
-	SimpleTexture(const GLuint& _texId, const std::string& _texPath);
+    SimpleTexture(const GLuint& _texId, const std::string& _texPath);
 
-	void bind() const;
+    void bind() const;
 
-	virtual void tick();
+    virtual void tick();
 
-	GLuint texId = 0;
+    GLuint texId = 0;
 
-	bool operator== (const SimpleTexture& st) const;
+    bool operator== (const SimpleTexture& st) const;
 
-	virtual ~SimpleTexture() = default;
+    virtual ~SimpleTexture() = default;
 private:
-	std::string texPath;
+    std::string texPath;
 };

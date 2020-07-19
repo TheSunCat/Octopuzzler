@@ -7,17 +7,17 @@ Player::Player(const glm::vec3& _startPos) : position(_startPos), character("deb
 
 void Player::move(const glm::vec3& deltaPos)
 {
-	position += deltaPos * moveSpeed;
+    position += deltaPos * moveSpeed;
 
-	character.position = position;
+    character.position = position;
 }
 
 //void Player::setAnimation(AnimType _animType)
 //{
-//	character.setAnimation(_animType);
+//    character.setAnimation(_animType);
 //}
 
 void Player::draw(Shader& _shader) const
 {
-	character.draw(_shader);
+    character.draw(_shader);
 }

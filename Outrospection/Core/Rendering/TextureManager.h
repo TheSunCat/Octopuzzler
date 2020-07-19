@@ -13,26 +13,26 @@
 
 class TextureManager {
 private:
-	std::unordered_map<Resource, SimpleTexture, Hashes> textures;
-	std::vector<TickableTexture> tickableTextures;
+    std::unordered_map<Resource, SimpleTexture, Hashes> textures;
+    std::vector<TickableTexture> tickableTextures;
 public:
-	TextureManager();
+    TextureManager();
 
-	SimpleTexture loadTexture(Resource& r);
+    SimpleTexture loadTexture(Resource& r);
 
-	TickableTexture loadAnimatedTexture(Resource& r, unsigned int textureTickLength, unsigned int textureFrameCount);
+    TickableTexture loadAnimatedTexture(Resource& r, unsigned int textureTickLength, unsigned int textureFrameCount);
 
-	void bindTexture(Resource& r);
+    void bindTexture(Resource& r);
 
-	SimpleTexture get(Resource& r);
+    SimpleTexture get(Resource& r);
 
-	void tickAllTextures();
+    void tickAllTextures();
 
-	static SimpleTexture missingTexture;
+    static SimpleTexture missingTexture;
 
-	DISALLOW_COPY_AND_ASSIGN(TextureManager)
+    DISALLOW_COPY_AND_ASSIGN(TextureManager)
 private:
-	static GLuint textureFromFile(const std::string& filename);
-	static void createTexture(const GLuint& texId, const unsigned char* data, const GLenum& format,
-	                          const unsigned int& width, const unsigned int& height);
+    static GLuint textureFromFile(const std::string& filename);
+    static void createTexture(const GLuint& texId, const unsigned char* data, const GLenum& format,
+                              const unsigned int& width, const unsigned int& height);
 };

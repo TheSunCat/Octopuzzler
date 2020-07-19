@@ -11,21 +11,21 @@ GUIIngame::GUIIngame() : GUILayer("Ingame GUI", true), healthDisplay("health", 0
 
 void GUIIngame::tick()
 {
-	Outrospection& instance = Outrospection::get();
-	posX.name = std::to_string(instance.player.position.x);
-	posY.name = std::to_string(instance.player.position.y);
-	posZ.name = std::to_string(instance.player.position.z);
-	
-	posX.tick();
-	posY.tick();
-	posZ.tick();
+    Outrospection& instance = Outrospection::get();
+    posX.name = std::to_string(instance.player.position.x);
+    posY.name = std::to_string(instance.player.position.y);
+    posZ.name = std::to_string(instance.player.position.z);
+    
+    posX.tick();
+    posY.tick();
+    posZ.tick();
 }
 
 void GUIIngame::draw() const
 {
-	healthDisplay.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
-	
-	posX.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
-	posY.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
-	posZ.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
+    healthDisplay.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
+    
+    posX.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
+    posY.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
+    posZ.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
 }

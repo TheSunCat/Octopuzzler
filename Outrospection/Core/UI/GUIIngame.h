@@ -5,17 +5,17 @@ class GUIIngame :
     public GUILayer
 {
 public:
-	GUIIngame();
+    GUIIngame();
 
-	void tick() override;
+    void tick() override;
 
-	void draw() const override;
+    void draw() const override;
 
-	DISALLOW_COPY_AND_ASSIGN(GUIIngame)
+    DISALLOW_COPY_AND_ASSIGN(GUIIngame)
 private:
-	UIComponent healthDisplay;
-	
-	UIComponent posX;
-	UIComponent posY;
-	UIComponent posZ;
+    UIComponent healthDisplay;
+    
+    UIComponent posX;
+    UIComponent posY;
+    UIComponent posZ;
 };

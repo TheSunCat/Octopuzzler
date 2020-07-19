@@ -6,11 +6,11 @@ class GUIPause :
     public GUILayer
 {
 public:
-	GUIPause();
+    GUIPause();
 
-	void tick() override;
+    void tick() override;
 
-	void draw() const override;
+    void draw() const override;
 private:
-	UIButton buttonResume;
+    UIButton buttonResume;
 };

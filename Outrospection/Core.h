@@ -9,12 +9,12 @@ inline std::time_t curTime;
 
 // Platform detection using predefined macros
 #ifdef _WIN32
-	/* Windows x64/x86 */
+    /* Windows x64/x86 */
     #ifdef _WIN64
-	    /* Windows x64  */
+        /* Windows x64  */
         #define PLATFORM_WINDOWS
     #else
-	    /* Windows x86 */
+        /* Windows x86 */
         #error "no using x86 in the halls"
     #endif
 
@@ -106,7 +106,6 @@ template <typename T>
 class Queue
 {
 public:
-
     T pop()
     {
         std::unique_lock<std::mutex> mlock(mutex);
