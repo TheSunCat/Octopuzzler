@@ -40,7 +40,7 @@ public:
 };
 
 
-template<typename T>
+template <typename T>
 bool dispatchEvent(Event& event, std::function<bool(T&)> func)
 {
     if (event.getEventType() == T::getStaticType())

@@ -12,7 +12,8 @@
 
 struct Vertex;
 
-struct Material {
+struct Material
+{
     Material(): colAmbient(0.0f), colDiffuse(0.0f), colSpecular(0.0f)
     {
         specularExponent = 0.0f;
@@ -36,7 +37,8 @@ struct Material {
     std::string mapSpecular;
 };
 
-class ModelLoader {
+class ModelLoader
+{
 public:
     // load new file, replacing all fields
     bool loadFile(const std::string& filePath);

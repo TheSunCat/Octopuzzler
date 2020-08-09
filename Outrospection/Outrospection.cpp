@@ -13,11 +13,11 @@
 #include "Events/MouseEvent.h"
 #include "Events/WindowEvent.h"
 
-void* operator new (size_t s)
+void* operator new(const size_t _Size)
 {
     //std::cout << s << '\n';
 
-    return malloc(s);
+    return malloc(_Size);
 }
 
 Outrospection* Outrospection::instance = nullptr;
@@ -28,7 +28,7 @@ Outrospection::Outrospection()
 
     ingameGUI = new GUIIngame();
     pauseGUI = new GUIPause();
-    
+
     gameWindow = opengl.gameWindow;
     quadVAO = opengl.quadVAO;
     framebuffer = opengl.framebuffer;
@@ -207,7 +207,7 @@ void Outrospection::runTick()
 
     if (controller.isGamepad)
         camera.playerRotateCameraBy(controller.rightSide * 12.5f, controller.rightForward * 10);
-    
+
     updateCamera();
 }
 
@@ -236,17 +236,17 @@ void Outrospection::registerCallbacks() const
         switch (action)
         {
         case GLFW_PRESS:
-        {
-            MouseButtonPressedEvent event(button);
-            Outrospection::get().onEvent(event);
-            break;
-        }
+            {
+                MouseButtonPressedEvent event(button);
+                Outrospection::get().onEvent(event);
+                break;
+            }
         case GLFW_RELEASE:
-        {
-            MouseButtonReleasedEvent event(button);
-            Outrospection::get().onEvent(event);
-            break;
-        }
+            {
+                MouseButtonReleasedEvent event(button);
+                Outrospection::get().onEvent(event);
+                break;
+            }
         }
     });
 
@@ -293,8 +293,9 @@ bool Outrospection::onMouseMoved(MouseMovedEvent& e)
 
     const auto xPos = float(e.getX());
     const auto yPos = float(e.getY());
-    
-    if (orig.firstMouse) {
+
+    if (orig.firstMouse)
+    {
         orig.lastMousePos.x = xPos;
         orig.lastMousePos.y = yPos;
         orig.firstMouse = false;
@@ -350,7 +351,7 @@ void Outrospection::updateInput()
         if (glfwJoystickIsGamepad(joystick)) // easy!
         {
             LOG_DEBUG("It is a gamepad! Sweet!");
-            
+
             GLFWgamepadstate gamepadState;
             glfwGetGamepadState(joystick, &gamepadState);
 
@@ -383,7 +384,6 @@ void Outrospection::updateInput()
             {
                 controller.leftForward = -Util::valFromJoystickAxis(rawAxes[STICK_LEFT_UP]);
                 controller.leftSide = Util::valFromJoystickAxis(rawAxes[STICK_LEFT_SIDE]);
-
             }
             else if (axesCount >= 4) // two sticks or more
             {
@@ -411,7 +411,7 @@ void Outrospection::updateInput()
             }
         }
     }
-    
+
     if (joystick == -1) // no *usable* controllers are present
     {
         //LOG_DEBUG("No usable controller is present. ");

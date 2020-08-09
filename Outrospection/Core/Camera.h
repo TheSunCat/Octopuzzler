@@ -21,7 +21,7 @@ public:
     glm::vec3 up{};
     glm::vec3 right{};
     glm::vec3 worldUp{};
-    
+
     // Euler angles
     float yaw;
     float pitch;
@@ -33,7 +33,7 @@ public:
     float desiredDistance = 5.0f;
     float maxDistance = desiredDistance;
     float dist = desiredDistance;
-    
+
     glm::vec3 offset{};
 
     explicit Camera(glm::vec3 _pos = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 _up = glm::vec3(0.0f, 1.0f, 0.0f),
@@ -49,7 +49,7 @@ public:
     void playerRotateCameraBy(float xoffset, float yoffset, bool applyCameraSpeed = true);
 
     void changeDistBy(float yoffset);
-    
+
     void zoomBy(float yoffset);
 
 private:
@@ -59,13 +59,13 @@ private:
     unsigned int framesSinceUserRotate = 0;
     unsigned int framesBeforeAutoCam = 120;
     unsigned int framesRemainingLerpingDist = 0;
-    
+
     float zoomVelocity = 0.0f;
     float zoomDrag = 0.8f;
 
     float yawVelocity = 0.0f;
     float yawDrag = 0.8f;
-    
+
     float pitchVelocity = 0.0f;
     float pitchDrag = 0.9f;
 };

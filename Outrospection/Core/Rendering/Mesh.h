@@ -11,7 +11,8 @@
 
 class Shader;
 
-class Mesh {
+class Mesh
+{
 public:
     std::string name;
     SimpleTexture texture;

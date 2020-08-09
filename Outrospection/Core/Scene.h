@@ -5,7 +5,8 @@
 
 class Shader;
 
-class Scene {
+class Scene
+{
 public:
     // default ctor
     Scene() = default;
@@ -16,14 +17,14 @@ public:
 
     void draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShader, Shader& _simpleShader);
 
-    enum class State {Obj, RailObj, Light, Sky, Chara, Col};
+    enum class State { Obj, RailObj, Light, Sky, Chara, Col };
 
     std::string name;
 
     std::vector<ObjectGeneral> objects;
     std::vector<ObjectGeneral> skies;
     std::vector<Character> characters;
-    
+
     std::vector<Triangle> collision;
     std::vector<std::vector<Triangle>::const_iterator> groundCollision;
     std::vector<std::vector<Triangle>::const_iterator> wallCollision;

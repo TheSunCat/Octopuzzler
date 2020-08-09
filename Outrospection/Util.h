@@ -10,13 +10,17 @@ namespace Util
     // Check for OpenGL errors and print them
     bool glError();
 
-    void split(const std::string& input, const char& delimiter, std::vector<std::string_view>& out, int startCut = 0, int endCut = 0);
-    void split(const std::string&& input, const char& delimiter, std::vector<std::string_view>& out, int startCut = 0, int endCut = 0) = delete;
-    void split(const std::string&& input, const char& delimiter, std::vector<std::string_view>& out, int startCut = 0) = delete;
+    void split(const std::string& input, const char& delimiter, std::vector<std::string_view>& out, int startCut = 0,
+               int endCut = 0);
+    void split(const std::string&& input, const char& delimiter, std::vector<std::string_view>& out, int startCut = 0,
+               int endCut = 0) = delete;
+    void split(const std::string&& input, const char& delimiter, std::vector<std::string_view>& out,
+               int startCut = 0) = delete;
     void split(const std::string&& input, const char& delimiter, std::vector<std::string_view>& out) = delete;
 
     template <typename T>
-    void push_all(std::vector<T>& input, std::vector<T>& add) {
+    void push_all(std::vector<T>& input, std::vector<T>& add)
+    {
         for (const T& o : add)
             input.emplace_back(o);
     }
@@ -29,7 +33,7 @@ namespace Util
             LOG_ERROR("min is greater than max! min = %f, max = %f", min, max);
             return val;
         }
-        
+
         if (val < min)
             return min;
         if (val > max)
@@ -61,16 +65,18 @@ namespace Util
     glm::vec3 rayCastPlane(const Ray& r, const Triangle& plane);
 
     Collision rayCast(const Ray& r, const std::vector<Triangle>& tris, bool bothSides = false);
-    
-    Collision rayCast(const Ray& r, const std::vector<std::vector<Triangle>::const_iterator>& tris, bool bothSides = false);
 
-    bool intersectRaySegmentSphere(const Ray& ray, glm::vec3 sphereOrigin, float sphereRadius2, glm::vec3& intersectPoint);
+    Collision rayCast(const Ray& r, const std::vector<std::vector<Triangle>::const_iterator>& tris,
+                      bool bothSides = false);
+
+    bool intersectRaySegmentSphere(const Ray& ray, glm::vec3 sphereOrigin, float sphereRadius2,
+                                   glm::vec3& intersectPoint);
 
     bool inTriangle(const glm::vec3& point, const Triangle& tri);
 
     // A test to see if P1 is on the same side as P2 of a line segment ab
     bool sameSide(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& a, const glm::vec3& b);
-    
+
     // 2D test for which side of a 2D line a 2D point lies on
     bool leftOf(const glm::vec2& a, const glm::vec2& b, const glm::vec2& p);
 
@@ -85,7 +91,7 @@ namespace Util
     float sumAbsV3(const glm::vec3& v);
 
     float angleBetweenV3(glm::vec3 a, glm::vec3 b);
-    
+
     float cosBetweenV3(glm::vec3 a, glm::vec3 b);
 
     glm::vec3 projectV3(glm::vec3 a, glm::vec3 b);
@@ -97,7 +103,8 @@ namespace Util
 
     int stoi(const std::string_view& str);
 
-    class Timer {
+    class Timer
+    {
     public:
         Timer();
         Timer(const char* _name);

@@ -7,20 +7,21 @@
 class Controller;
 class Player;
 
-class PlayerController {
+class PlayerController
+{
 public:
     void acceleratePlayer(const Controller& controller, float deltaTime, float yaw);
 
     void collidePlayer(Player& player, const std::vector<Triangle>& collisionData);
 
     void animatePlayer(Player& player);
-    
+
     void movePlayer(Player& player) const;
 
     bool isMoving() const;
 private:
     static glm::vec3 processInput(const Controller& controller, float yaw);
-    
+
     // Return true if a triangle was hit.
     void resolveCollision(Player& player, const std::vector<Triangle>& collisionData);
 

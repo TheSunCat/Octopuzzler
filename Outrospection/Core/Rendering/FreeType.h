@@ -12,13 +12,15 @@ public:
     FreeType()
     {
         FT_Library ft;
-        if (FT_Init_FreeType(&ft)) {
+        if (FT_Init_FreeType(&ft))
+        {
             LOG_ERROR("Failed to initialize FreeType!");
             return;
         }
-        
+
         FT_Face face;
-        if (FT_New_Face(ft, "./res/ObjectData/UI/font.ttf", 0, &face)) {
+        if (FT_New_Face(ft, "./res/ObjectData/UI/font.ttf", 0, &face))
+        {
             LOG_ERROR("Failed to load font.ttf!");
             return;
         }
@@ -35,7 +37,7 @@ public:
                 LOG_ERROR("FreeType failed to load glyph \'%c\'!", c);
                 continue;
             }
-            
+
             // create the texture for this character
             unsigned int texture;
             glGenTextures(1, &texture);
@@ -55,7 +57,7 @@ public:
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            
+
             FontCharacter character = {
                 texture,
                 glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),

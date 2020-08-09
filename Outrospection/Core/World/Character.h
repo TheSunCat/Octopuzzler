@@ -8,7 +8,8 @@
 
 class Shader;
 
-class Character {
+class Character
+{
 public:
     Character() = default;
 

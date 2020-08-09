@@ -6,7 +6,8 @@
 
 class Shader;
 
-class Billboard {
+class Billboard
+{
 public:
     Billboard() = default;
 

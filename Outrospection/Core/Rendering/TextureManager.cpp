@@ -36,7 +36,8 @@ SimpleTexture TextureManager::loadTexture(Resource& r)
 
         return texObj;
     }
-    else {
+    else
+    {
         LOG_ERROR("Failed to generate texture ID for %s", path);
 
         return missingTexture;
@@ -58,11 +59,14 @@ TickableTexture TextureManager::loadAnimatedTexture(Resource& r, unsigned int te
 
         GLuint currentTextureId = textureFromFile(currentPath);
 
-        if (currentTextureId != INT_MAX) {
+        if (currentTextureId != INT_MAX)
+        {
             textureIds.push_back(currentTextureId);
         }
-        else {
-            LOG_ERROR("Failed to generate texture ID for animated texture frame %i at %s", textureFrameCount, currentPath);
+        else
+        {
+            LOG_ERROR("Failed to generate texture ID for animated texture frame %i at %s", textureFrameCount,
+                      currentPath);
 
             textureIds.push_back(missingTexture.texId);
         }
@@ -87,10 +91,13 @@ SimpleTexture TextureManager::get(Resource& r)
 
     SimpleTexture tex;
 
-    if (f == textures.end()) { // resource not found in already existing storage, needs to be loaded
+    if (f == textures.end())
+    {
+        // resource not found in already existing storage, needs to be loaded
         tex = loadTexture(r);
     }
-    else {
+    else
+    {
         tex = (*f).second;
     }
 
@@ -100,7 +107,7 @@ SimpleTexture TextureManager::get(Resource& r)
 // Called every tick, calls tick on every tickable texture.
 void TextureManager::tickAllTextures()
 {
-    for(TickableTexture& tickableTexture : tickableTextures)
+    for (TickableTexture& tickableTexture : tickableTextures)
     {
         tickableTexture.tick();
     }
