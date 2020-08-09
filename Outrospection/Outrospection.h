@@ -78,8 +78,8 @@ private:
     bool running = false;
 
     // timing
-    float deltaTime = 0.0f; // Time between current frame and last frame
-    double lastFrame = 0.0f; // Time of last frame
+    double deltaTime = 0; // Time between current frame and last frame
+    time_t lastFrame = 0; // Time of last frame
 
     GLFWwindow* gameWindow;
 
@@ -93,14 +93,14 @@ private:
 
     bool onWindowClose(WindowCloseEvent& e);
     bool onMouseMoved(MouseMovedEvent& e);
-    static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+    void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
     static void error_callback(int errorcode, const char* description);
 
     void registerCallbacks() const;
     void createShaders();
     void updateInput();
 
-    bool isGamePaused{};
+    bool isGamePaused = false;
 
     LayerStack layerStack;
 
@@ -111,8 +111,10 @@ private:
         {
             while (true)
             {
-                curTime = std::time(nullptr);
-                std::this_thread::sleep_for(std::chrono::seconds(1));
+                auto t = std::chrono::system_clock::now();
+
+                curTime = std::chrono::time_point_cast<std::chrono::milliseconds>(t).time_since_epoch().count();
+                std::this_thread::yield();
             }
         }
     };

@@ -49,6 +49,7 @@ void Outrospection::run()
 {
     running = true;
 
+    lastFrame = curTime;
     while (running)
     {
         runGameLoop();
@@ -59,8 +60,6 @@ void Outrospection::run()
 
 void Outrospection::onEvent(Event& e)
 {
-    PROFILE;
-
     dispatchEvent<WindowCloseEvent>(e, BIND_EVENT_FUNC(Outrospection::onWindowClose));
     //dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FUNC(Application::OnWindowResize));
     dispatchEvent<MouseMovedEvent>(e, BIND_EVENT_FUNC(Outrospection::onMouseMoved));
@@ -71,8 +70,6 @@ void Outrospection::onEvent(Event& e)
             break;
         (*it)->onEvent(e);
     }
-
-    //LOG_DEBUG(e.getName());
 }
 
 void Outrospection::pushLayer(Layer* layer)
@@ -101,11 +98,11 @@ void Outrospection::captureMouse(const bool doCapture) const
 
 void Outrospection::runGameLoop()
 {
-    const double currentFrame = glfwGetTime();
-    deltaTime = float(currentFrame - lastFrame);
+    const auto currentFrame = curTime;
+    deltaTime = float(currentFrame - lastFrame) / 1000.0f;
     lastFrame = currentFrame;
 
-
+    //LOG_DEBUG("%i", deltaTime); // I don't understand wtp is up with deltaTime rn, but ok
     // Update game world
     {
         // fetch input into simplified controller class
@@ -289,34 +286,31 @@ bool Outrospection::onWindowClose(WindowCloseEvent& e)
 
 bool Outrospection::onMouseMoved(MouseMovedEvent& e)
 {
-    Outrospection& orig = get();
-
     const auto xPos = float(e.getX());
     const auto yPos = float(e.getY());
 
-    if (orig.firstMouse)
+    if (firstMouse)
     {
-        orig.lastMousePos.x = xPos;
-        orig.lastMousePos.y = yPos;
-        orig.firstMouse = false;
+        lastMousePos.x = xPos;
+        lastMousePos.y = yPos;
+        firstMouse = false;
         return true; // nothing to calculate because we technically didn't move the mouse
     }
 
-    const float xOffset = xPos - orig.lastMousePos.x;
-    const float yOffset = orig.lastMousePos.y - yPos;
+    const float xOffset = xPos - lastMousePos.x;
+    const float yOffset = lastMousePos.y - yPos;
 
-    orig.lastMousePos.x = xPos;
-    orig.lastMousePos.y = yPos;
+    lastMousePos.x = xPos;
+    lastMousePos.y = yPos;
 
-    orig.camera.playerRotateCameraBy(xOffset, yOffset);
+    camera.playerRotateCameraBy(xOffset, yOffset);
 
     return false;
 }
 
 void Outrospection::scroll_callback(GLFWwindow*, const double xoffset, const double yoffset)
 {
-    Outrospection& orig = get();
-    orig.camera.changeDistBy(float(yoffset));
+    camera.changeDistBy(float(yoffset));
 }
 
 void Outrospection::error_callback(const int errorcode, const char* description)

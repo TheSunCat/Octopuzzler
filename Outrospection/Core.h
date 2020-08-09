@@ -47,7 +47,9 @@ inline std::time_t curTime;
 #ifdef PLATFORM_WINDOWS
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
+#undef APIENTRY
 #include "Windows.h"
+#undef APIENTRY
 
 // stole from https://github.com/ikalnytskyi/termcolor/blob/master/include/termcolor/termcolor.hpp#L567, thanks!
 //! Change Windows Terminal colors attribute. If some
