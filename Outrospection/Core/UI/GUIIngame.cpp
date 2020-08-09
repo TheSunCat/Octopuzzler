@@ -15,7 +15,7 @@ void GUIIngame::tick()
     posX.name = std::to_string(instance.player.position.x);
     posY.name = std::to_string(instance.player.position.y);
     posZ.name = std::to_string(instance.player.position.z);
-    
+
     posX.tick();
     posY.tick();
     posZ.tick();
@@ -24,7 +24,7 @@ void GUIIngame::tick()
 void GUIIngame::draw() const
 {
     healthDisplay.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
-    
+
     posX.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
     posY.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
     posZ.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);

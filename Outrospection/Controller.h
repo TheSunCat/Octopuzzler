@@ -15,7 +15,7 @@ public:
     ControllerButton pause;
 
     ControllerButton debugBreak;
-    
+
     // L stick
     float leftForward;
     float leftSide;
@@ -26,5 +26,4 @@ public:
 
     // L trigger
     float leftTrigger;
-
 };

@@ -25,16 +25,17 @@ class WindowCloseEvent;
 class Event;
 class Layer;
 
-class Outrospection {
+class Outrospection
+{
     OpenGL opengl; // defined at the beginning so nothing gets initialized before this
     FreeType freetype;
-    
+
 public:
     inline static Outrospection& get()
     {
         return *instance;
     }
-    
+
     Outrospection();
 
     void run();
@@ -46,7 +47,7 @@ public:
     void captureMouse(bool doCapture) const;
 
     glm::vec2 lastMousePos = glm::vec2(SCR_HEIGHT / 2.0f, SCR_WIDTH / 2.0f);
-    
+
     Scene scene;
     Player player;
     PlayerController playerController;
@@ -77,7 +78,7 @@ private:
     bool running = false;
 
     // timing
-    float deltaTime = 0.0f;    // Time between current frame and last frame
+    float deltaTime = 0.0f; // Time between current frame and last frame
     double lastFrame = 0.0f; // Time of last frame
 
     GLFWwindow* gameWindow;
@@ -105,27 +106,31 @@ private:
 
     static Outrospection* instance;
 
-    std::thread timeThread{ [&]() -> void
-    {
-        while (true)
+    std::thread timeThread{
+        [&]() -> void
         {
-            curTime = std::time(nullptr);
-            std::this_thread::sleep_for(std::chrono::seconds(1));
-        }
-    } };
-
-    std::thread loggerThread{ [&]() -> void
-    {
-        while (true)
-        {
-            const auto& log = loggerQueue.pop();
-            if (log != nullptr)
+            while (true)
             {
-                log();
-                std::putchar('\n');
+                curTime = std::time(nullptr);
+                std::this_thread::sleep_for(std::chrono::seconds(1));
             }
-
-            std::this_thread::yield();
         }
-    } };
+    };
+
+    std::thread loggerThread{
+        [&]() -> void
+        {
+            while (true)
+            {
+                const auto& log = loggerQueue.pop();
+                if (log != nullptr)
+                {
+                    log();
+                    std::putchar('\n');
+                }
+
+                std::this_thread::yield();
+            }
+        }
+    };
 };

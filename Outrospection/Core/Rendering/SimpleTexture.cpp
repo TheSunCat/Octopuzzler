@@ -13,7 +13,7 @@ void SimpleTexture::bind() const
 
 void SimpleTexture::tick() {}
 
-bool SimpleTexture::operator== (const SimpleTexture& st) const
+bool SimpleTexture::operator==(const SimpleTexture& st) const
 {
     return texId == st.texId;
 }

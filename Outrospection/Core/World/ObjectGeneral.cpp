@@ -14,10 +14,11 @@ ObjectGeneral::ObjectGeneral(const std::string& _name, glm::vec3 _pos, glm::vec3
     scale = _scale;
 
     std::string modelPath = "./res/ObjectData/" + _name + "/" + _name + ".omd";
-    
+
     ModelLoader modelLoader;
 
-    if (!modelLoader.loadFile(modelPath)) {
+    if (!modelLoader.loadFile(modelPath))
+    {
         LOG_ERROR("Failed to load %s!", modelPath);
         return;
     }

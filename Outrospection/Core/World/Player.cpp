@@ -2,7 +2,6 @@
 
 Player::Player(const glm::vec3& _startPos) : position(_startPos), character("deborah", _startPos)
 {
-
 }
 
 void Player::move(const glm::vec3& deltaPos)

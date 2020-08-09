@@ -9,7 +9,7 @@
 #include "Core/Rendering/TextureManager.h"
 
 // get element at index position
-template<class T>
+template <class T>
 const T& getElement(const std::vector<T>& elements, std::string_view& indexStr)
 {
     int index = Util::stoi(indexStr);
@@ -48,7 +48,7 @@ bool ModelLoader::loadFile(const std::string& filePath)
     // controls whether the mesh has been named or not. name should be first 'o' or 'g'
     bool meshListening = false;
     std::string meshName;
-    
+
     bool matListening = false;
     Material tempMaterial;
 
@@ -58,265 +58,270 @@ bool ModelLoader::loadFile(const std::string& filePath)
         if (curLine.empty() || curLine[0] == '#')
             continue;
 
-        
-        switch (curLine[0]) {
-        case 'o': // generate a Mesh Object or Prepare for an object to be created
+
+        switch (curLine[0])
         {
-            if (!meshListening)
+        case 'o': // generate a Mesh Object or Prepare for an object to be created
             {
-                meshListening = true;
-
-                // name the mesh
-                meshName = curLine.substr(2);
-            }
-            else // if(meshListening)
-            {
-                // Generate the mesh to put into the array
-                if (!indices.empty() && !vertices.empty()) // if there are verts and indices
+                if (!meshListening)
                 {
-                    // create and insert Mesh
-                    loadedMeshes.emplace_back(meshName, vertices, indices);
+                    meshListening = true;
 
-                    // Cleanup
-                    vertices.clear();
-                    indices.clear();
-                    meshName.clear();
-
-                    meshName = curLine.substr(2);
-                }
-                else
-                {
                     // name the mesh
                     meshName = curLine.substr(2);
                 }
-            }
-            break;
-        }
-        case 'v': // Generate a Vertex Position
-        {
-            std::vector<std::string_view> vertPosStr;
-            Util::split(curLine, ' ', vertPosStr, 2);
-                
-            positions.emplace_back(Util::stof(vertPosStr[0]), Util::stof(vertPosStr[1]), Util::stof(vertPosStr[2]));
-
-            vertPosStr.clear();
-            break;
-        }
-        
-        case 't': // Generate a Vertex Texture Coordinate
-        {
-            std::vector<std::string_view> texCoordStr;
-            Util::split(curLine, ' ', texCoordStr, 2);
-
-            texCoords.emplace_back(Util::stof(texCoordStr[0]), Util::stof(texCoordStr[1]));
-
-            texCoordStr.clear();
-
-            break;
-        }
-        // Generate a Vertex Normal;
-        case 'n':
-        {
-            std::vector<std::string_view> vertNormStr;
-            Util::split(curLine, ' ', vertNormStr, 2);
-
-            normals.emplace_back(Util::stof(vertNormStr[0]), Util::stof(vertNormStr[1]), Util::stof(vertNormStr[2]));
-            vertNormStr.clear();
-            break;
-        }
-        // Generate a Face (vertices & indices)
-        case 'f':
-        {
-            // Generate the vertices
-            std::vector<Vertex> vertsFromFace;
-            verticesFromFaceString(vertsFromFace, positions, texCoords, normals, curLine);
-
-            // Add Vertices
-            for (Vertex& i : vertsFromFace)
-            {
-                vertices.emplace_back(i);
-            }
-
-            std::vector<GLuint> indicesVector;
-
-            verticesToIndicesTriangulated(indicesVector, vertsFromFace);
-
-            // Add Indices
-            for (GLuint i : indicesVector)
-            {
-                GLuint curIndex = static_cast<GLuint>(vertices.size() - vertsFromFace.size()) + i;
-                indices.push_back(curIndex);
-            }
-
-            vertsFromFace.clear();
-            break;
-        }
-
-        // MATERIAL
-        // --------
-        case 'm':
-        {
-            switch (curLine[1]) {
-            case 'u': // usemtl
-            {
-                meshMatNames.emplace_back(curLine.substr(3));
-
-                // Create new Mesh, if Material changes within a group
-                if (!indices.empty() && !vertices.empty())
+                else // if(meshListening)
                 {
-                    // Create Mesh
-                    loadedMeshes.emplace_back(meshName, vertices, indices);
+                    // Generate the mesh to put into the array
+                    if (!indices.empty() && !vertices.empty()) // if there are verts and indices
+                    {
+                        // create and insert Mesh
+                        loadedMeshes.emplace_back(meshName, vertices, indices);
 
-                    // check for duplicate names
-                    int sameNameCount = 0;
-                    for (const Mesh& m : loadedMeshes) {
-                        if (m.name.starts_with(meshName))
-                            sameNameCount++;
+                        // Cleanup
+                        vertices.clear();
+                        indices.clear();
+                        meshName.clear();
+
+                        meshName = curLine.substr(2);
+                    }
+                    else
+                    {
+                        // name the mesh
+                        meshName = curLine.substr(2);
+                    }
+                }
+                break;
+            }
+        case 'v': // Generate a Vertex Position
+            {
+                std::vector<std::string_view> vertPosStr;
+                Util::split(curLine, ' ', vertPosStr, 2);
+
+                positions.emplace_back(Util::stof(vertPosStr[0]), Util::stof(vertPosStr[1]), Util::stof(vertPosStr[2]));
+
+                vertPosStr.clear();
+                break;
+            }
+
+        case 't': // Generate a Vertex Texture Coordinate
+            {
+                std::vector<std::string_view> texCoordStr;
+                Util::split(curLine, ' ', texCoordStr, 2);
+
+                texCoords.emplace_back(Util::stof(texCoordStr[0]), Util::stof(texCoordStr[1]));
+
+                texCoordStr.clear();
+
+                break;
+            }
+            // Generate a Vertex Normal;
+        case 'n':
+            {
+                std::vector<std::string_view> vertNormStr;
+                Util::split(curLine, ' ', vertNormStr, 2);
+
+                normals.emplace_back(Util::stof(vertNormStr[0]), Util::stof(vertNormStr[1]),
+                                     Util::stof(vertNormStr[2]));
+                vertNormStr.clear();
+                break;
+            }
+            // Generate a Face (vertices & indices)
+        case 'f':
+            {
+                // Generate the vertices
+                std::vector<Vertex> vertsFromFace;
+                verticesFromFaceString(vertsFromFace, positions, texCoords, normals, curLine);
+
+                // Add Vertices
+                for (Vertex& i : vertsFromFace)
+                {
+                    vertices.emplace_back(i);
+                }
+
+                std::vector<GLuint> indicesVector;
+
+                verticesToIndicesTriangulated(indicesVector, vertsFromFace);
+
+                // Add Indices
+                for (GLuint i : indicesVector)
+                {
+                    GLuint curIndex = static_cast<GLuint>(vertices.size() - vertsFromFace.size()) + i;
+                    indices.push_back(curIndex);
+                }
+
+                vertsFromFace.clear();
+                break;
+            }
+
+            // MATERIAL
+            // --------
+        case 'm':
+            {
+                switch (curLine[1])
+                {
+                case 'u': // usemtl
+                    {
+                        meshMatNames.emplace_back(curLine.substr(3));
+
+                        // Create new Mesh, if Material changes within a group
+                        if (!indices.empty() && !vertices.empty())
+                        {
+                            // Create Mesh
+                            loadedMeshes.emplace_back(meshName, vertices, indices);
+
+                            // check for duplicate names
+                            int sameNameCount = 0;
+                            for (const Mesh& m : loadedMeshes)
+                            {
+                                if (m.name.starts_with(meshName))
+                                    sameNameCount++;
+                            }
+
+                            if (sameNameCount > 0)
+                                loadedMeshes.back().name = meshName + "_" + std::to_string(sameNameCount);
+                            else
+                                loadedMeshes.back().name = meshName;
+
+                            // cleanup
+                            vertices.clear();
+                            indices.clear();
+                        }
+                        break;
                     }
 
-                    if (sameNameCount > 0)
-                        loadedMeshes.back().name = meshName + "_" + std::to_string(sameNameCount);
-                    else
-                        loadedMeshes.back().name = meshName;
+                case 'n': // new material and material name
+                    {
+                        if (!matListening)
+                        {
+                            matListening = true;
 
-                    // cleanup
-                    vertices.clear();
-                    indices.clear();
+                            // name the mat
+                            if (curLine.size() > 3)
+                                tempMaterial.name = curLine.substr(3);
+                            else
+                                tempMaterial.name = "none";
+                        }
+                        else
+                        {
+                            // push the temp mat, to prepare for new mat
+                            loadedMaterials.push_back(tempMaterial);
+
+                            // reset temp mat
+                            tempMaterial = Material();
+
+                            // name the mat
+                            if (curLine.size() > 3)
+                                tempMaterial.name = curLine.substr(3);
+                            else
+                                tempMaterial.name = "none";
+                        }
+                        break;
+                    }
                 }
                 break;
             }
-
-            case 'n': // new material and material name
-            {
-                if (!matListening)
-                {
-                    matListening = true;
-
-                    // name the mat
-                    if (curLine.size() > 3)
-                        tempMaterial.name = curLine.substr(3);
-                    else
-                        tempMaterial.name = "none";
-                }
-                else
-                {
-                    // push the temp mat, to prepare for new mat
-                    loadedMaterials.push_back(tempMaterial);
-
-                    // reset temp mat
-                    tempMaterial = Material();
-
-                    // name the mat
-                    if (curLine.size() > 3)
-                        tempMaterial.name = curLine.substr(3);
-                    else
-                        tempMaterial.name = "none";
-                }
-                break;
-            }
-            }
-            break;
-        }
 
         case 'K':
-        {
-            switch (curLine[1]) {
-            case 'd': // Kd, Diffuse Color
             {
-                std::vector<std::string_view> temp;
-                Util::split(curLine, ' ', temp, 3);
+                switch (curLine[1])
+                {
+                case 'd': // Kd, Diffuse Color
+                    {
+                        std::vector<std::string_view> temp;
+                        Util::split(curLine, ' ', temp, 3);
 
-                if (temp.size() != 3)
-                    continue;
-                    
-                tempMaterial.colDiffuse.x = Util::stof(temp[0]);
-                tempMaterial.colDiffuse.y = Util::stof(temp[1]);
-                tempMaterial.colDiffuse.z = Util::stof(temp[2]);
+                        if (temp.size() != 3)
+                            continue;
 
-                temp.clear();
+                        tempMaterial.colDiffuse.x = Util::stof(temp[0]);
+                        tempMaterial.colDiffuse.y = Util::stof(temp[1]);
+                        tempMaterial.colDiffuse.z = Util::stof(temp[2]);
+
+                        temp.clear();
+                        break;
+                    }
+
+                    // Specular Color
+                case 's': // Ks, Specular Color
+                    {
+                        std::vector<std::string_view> temp;
+                        Util::split(curLine, ' ', temp, 3);
+
+                        if (temp.size() != 3)
+                            continue;
+
+                        tempMaterial.colSpecular.x = Util::stof(temp[0]);
+                        tempMaterial.colSpecular.y = Util::stof(temp[1]);
+                        tempMaterial.colSpecular.z = Util::stof(temp[2]);
+
+                        temp.clear();
+                        break;
+                    }
+
+                    // Ambient Color
+                case 'a':
+                    {
+                        std::vector<std::string_view> temp;
+                        Util::split(curLine, ' ', temp, 3);
+
+                        if (temp.size() != 3)
+                            continue;
+
+                        tempMaterial.colAmbient.x = Util::stof(temp[0]);
+                        tempMaterial.colAmbient.y = Util::stof(temp[1]);
+                        tempMaterial.colAmbient.z = Util::stof(temp[2]);
+
+                        temp.clear();
+                        break;
+                    }
+                }
+
                 break;
             }
 
-            // Specular Color
-            case 's': // Ks, Specular Color
-            {
-                std::vector<std::string_view> temp;
-                Util::split(curLine, ' ', temp, 3);
-
-                if (temp.size() != 3)
-                    continue;
-
-                tempMaterial.colSpecular.x = Util::stof(temp[0]);
-                tempMaterial.colSpecular.y = Util::stof(temp[1]);
-                tempMaterial.colSpecular.z = Util::stof(temp[2]);
-
-                temp.clear();
-                break;
-            }
-
-            // Ambient Color
-            case 'a':
-            {
-                std::vector<std::string_view> temp;
-                Util::split(curLine, ' ', temp, 3);
-
-                if (temp.size() != 3)
-                    continue;
-
-                tempMaterial.colAmbient.x = Util::stof(temp[0]);
-                tempMaterial.colAmbient.y = Util::stof(temp[1]);
-                tempMaterial.colAmbient.z = Util::stof(temp[2]);
-
-                temp.clear();
-                break;
-            }
-            }
-
-            break;
-        }
-
-        // Specular Exponent
+            // Specular Exponent
         case 's':
-        {
-            if (curLine[2] == 'o') // off
-                tempMaterial.specularExponent = 0;
-            else
-                tempMaterial.specularExponent = std::stof(curLine.substr(1));
-            break;
-        }
+            {
+                if (curLine[2] == 'o') // off
+                    tempMaterial.specularExponent = 0;
+                else
+                    tempMaterial.specularExponent = std::stof(curLine.substr(1));
+                break;
+            }
 
 
         case 'M':
-        {
-            switch (curLine[1])
             {
-                // Ambient Texture Map
-            case 'a': // map_Ka
-            {
-                tempMaterial.mapAmbient = curLine.substr(3);
-                break;
-            }
+                switch (curLine[1])
+                {
+                    // Ambient Texture Map
+                case 'a': // map_Ka
+                    {
+                        tempMaterial.mapAmbient = curLine.substr(3);
+                        break;
+                    }
 
-            // Diffuse Texture Map
-            case 'd':
-            {
-                tempMaterial.mapDiffuse = curLine.substr(3);
-                break;
-            }
+                    // Diffuse Texture Map
+                case 'd':
+                    {
+                        tempMaterial.mapDiffuse = curLine.substr(3);
+                        break;
+                    }
 
-            // Specular Texture Map
-            case 's':
-            {
-                tempMaterial.mapSpecular = curLine.substr(3);
-                break;
+                    // Specular Texture Map
+                case 's':
+                    {
+                        tempMaterial.mapSpecular = curLine.substr(3);
+                        break;
+                    }
+                }
             }
-            }
-        }
         }
     }
 
     file.close();
-    
+
     // Deal with last Mesh
     if (!vertices.empty() && !indices.empty())
     {
@@ -372,7 +377,7 @@ void ModelLoader::verticesFromFaceString(std::vector<Vertex>& outputVertices, co
     for (std::string_view& i : splitFaceStr)
     {
         std::string strToSplit(i.begin(), i.end());
-        
+
         std::vector<std::string_view> splitVertexStr;
         Util::split(strToSplit, '/', splitVertexStr);
 
@@ -413,41 +418,41 @@ void ModelLoader::verticesFromFaceString(std::vector<Vertex>& outputVertices, co
         switch (vertexType)
         {
         case 1: // P
-        {
-            vertex.pos = getElement(_positions, splitVertexStr[0]);
-            vertex.texCoord = glm::vec2(0, 0);
-            noNormal = true;
-            outputVertices.push_back(vertex);
-            break;
-        }
+            {
+                vertex.pos = getElement(_positions, splitVertexStr[0]);
+                vertex.texCoord = glm::vec2(0, 0);
+                noNormal = true;
+                outputVertices.push_back(vertex);
+                break;
+            }
         case 2: // P/T
-        {
-            vertex.pos = getElement(_positions, splitVertexStr[0]);
-            vertex.texCoord = getElement(_texCoords, splitVertexStr[1]);
-            noNormal = true;
-            outputVertices.push_back(vertex);
-            break;
-        }
+            {
+                vertex.pos = getElement(_positions, splitVertexStr[0]);
+                vertex.texCoord = getElement(_texCoords, splitVertexStr[1]);
+                noNormal = true;
+                outputVertices.push_back(vertex);
+                break;
+            }
         case 3: // P//N
-        {
-            vertex.pos = getElement(_positions, splitVertexStr[0]);
-            vertex.texCoord = glm::vec2(0, 0);
-            vertex.normal = getElement(_normals, splitVertexStr[2]);
-            outputVertices.push_back(vertex);
-            break;
-        }
+            {
+                vertex.pos = getElement(_positions, splitVertexStr[0]);
+                vertex.texCoord = glm::vec2(0, 0);
+                vertex.normal = getElement(_normals, splitVertexStr[2]);
+                outputVertices.push_back(vertex);
+                break;
+            }
         case 4: // P/T/N
-        {
-            vertex.pos = getElement(_positions, splitVertexStr[0]);
-            vertex.texCoord = getElement(_texCoords, splitVertexStr[1]);
-            vertex.normal = getElement(_normals, splitVertexStr[2]);
-            outputVertices.push_back(vertex);
-            break;
-        }
+            {
+                vertex.pos = getElement(_positions, splitVertexStr[0]);
+                vertex.texCoord = getElement(_texCoords, splitVertexStr[1]);
+                vertex.normal = getElement(_normals, splitVertexStr[2]);
+                outputVertices.push_back(vertex);
+                break;
+            }
         default:
-        {
-            break;
-        }
+            {
+                break;
+            }
         }
 
         splitVertexStr.clear();
@@ -493,9 +498,13 @@ void ModelLoader::verticesToIndicesTriangulated(std::vector<GLuint>& indicesOut,
         // For every vertex
         for (unsigned int vertexIndex = 0; vertexIndex < verticesVector.size(); vertexIndex++)
         {
-            Vertex prevVertex = vertexIndex == 0 ? verticesVector[verticesVector.size() - 1] : verticesVector[vertexIndex - 1];
+            Vertex prevVertex = vertexIndex == 0
+                                    ? verticesVector[verticesVector.size() - 1]
+                                    : verticesVector[vertexIndex - 1];
             Vertex curVertex = verticesVector[vertexIndex];
-            Vertex nextVertex = vertexIndex == verticesVector.size() - 1 ? verticesVector[0] : verticesVector[1 + vertexIndex];
+            Vertex nextVertex = vertexIndex == verticesVector.size() - 1
+                                    ? verticesVector[0]
+                                    : verticesVector[1 + vertexIndex];
 
             // 3 verts left means this is the last tri
             if (verticesVector.size() == 3)
@@ -559,7 +568,7 @@ void ModelLoader::verticesToIndicesTriangulated(std::vector<GLuint>& indicesOut,
 
             // if Vertex is not an interior vertex
             float angle = Util::angleBetweenV3(prevVertex.pos - curVertex.pos, nextVertex.pos - curVertex.pos)
-                                            * (180.0f / 3.14159265359f);
+                * (180.0f / 3.14159265359f);
             if (angle <= 0 && angle >= 180)
                 continue;
 
@@ -567,7 +576,7 @@ void ModelLoader::verticesToIndicesTriangulated(std::vector<GLuint>& indicesOut,
             bool inTri = false;
             for (const Vertex& vertex : _vertices)
             {
-                if (Util::inTriangle(vertex.pos, Triangle{ prevVertex.pos, curVertex.pos, nextVertex.pos })
+                if (Util::inTriangle(vertex.pos, Triangle{prevVertex.pos, curVertex.pos, nextVertex.pos})
                     && vertex.pos != prevVertex.pos
                     && vertex.pos != curVertex.pos
                     && vertex.pos != nextVertex.pos)

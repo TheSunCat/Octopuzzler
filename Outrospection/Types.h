@@ -71,12 +71,12 @@ typedef glm::vec3 Color;
 class Hashes
 {
 public:
-    size_t operator() (const SimpleTexture& st) const
+    size_t operator()(const SimpleTexture& st) const
     {
         return st.texId;
     }
 
-    size_t operator() (const Resource& r) const
+    size_t operator()(const Resource& r) const
     {
         const std::hash<std::string> strhash;
 

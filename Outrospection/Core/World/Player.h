@@ -6,7 +6,8 @@
 
 class Shader;
 
-class Player {
+class Player
+{
 public:
     Player() = default;
 

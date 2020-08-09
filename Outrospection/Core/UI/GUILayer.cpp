@@ -8,7 +8,6 @@
 GUILayer::GUILayer(std::string _name, const bool _captureMouse) : Layer(),
                                                                   name(std::move(_name)), captureMouse(_captureMouse)
 {
-    
 }
 
 void GUILayer::onAttach()

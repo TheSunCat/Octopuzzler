@@ -4,11 +4,15 @@
 
 #include "Outrospection.h"
 
-UIButton::UIButton(const std::string& _texName, const float posXPercent, const float posYPercent, const float widthPercent,
-                   const float heightPercent, std::function<void()> clickCallback) : UIComponent(_texName, posXPercent, posYPercent, widthPercent, heightPercent), onClick(
+UIButton::UIButton(const std::string& _texName, const float posXPercent, const float posYPercent,
+                   const float widthPercent,
+                   const float heightPercent, std::function<void()> clickCallback) : UIComponent(_texName, posXPercent,
+                                                                                                 posYPercent,
+                                                                                                 widthPercent,
+                                                                                                 heightPercent),
+                                                                                     onClick(
                                                                                          std::move(clickCallback))
 {
-    
 }
 
 bool UIButton::isOnButton(const glm::vec2& point) const

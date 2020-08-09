@@ -7,7 +7,8 @@
 
 class Camera;
 
-class Shader {
+class Shader
+{
 public:
     // the shader program's ID
     GLuint ID = 0;

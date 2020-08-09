@@ -39,6 +39,7 @@ void Billboard::draw(const Shader& _shader, const glm::vec3& _pos) const
 }
 
 constexpr glm::mat4 MODEL_MAT = glm::mat4(1.0);
+
 void Billboard::draw(const Shader& _shader, const glm::vec3& _pos, const SimpleTexture& _tex) const
 {
     _shader.use();
@@ -50,7 +51,7 @@ void Billboard::draw(const Shader& _shader, const glm::vec3& _pos, const SimpleT
 
     // Billboard rotation
     _shader.setVec3("billboard_Center", _pos);
-    
+
     glBindVertexArray(quadVAO);
     _shader.setMat4("model", MODEL_MAT);
     glDrawArrays(GL_TRIANGLES, 0, 6);

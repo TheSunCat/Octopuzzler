@@ -24,7 +24,9 @@ bool Util::glError()
     return ret;
 }
 
-void Util::split(const std::string& input, const char& delimiter, std::vector<std::string_view>& out, const int startCut, const int endCut) {
+void Util::split(const std::string& input, const char& delimiter, std::vector<std::string_view>& out,
+                 const int startCut, const int endCut)
+{
     auto start = input.begin() + startCut;
     const auto end = input.end() - endCut;
     auto next = std::find(start, end, delimiter);
@@ -44,7 +46,7 @@ std::size_t Util::hashBytes(const char* data, std::size_t length)
 {
 #define get16bits(d) ((((uint32_t)(((const uint8_t *)(d))[1])) << 8) +(uint32_t)(((const uint8_t *)(d))[0]))
 
-    uint32_t hash = length;
+    auto hash = uint32_t(length);
 
     if (length <= 0 || data == nullptr) return 0;
 
@@ -52,7 +54,8 @@ std::size_t Util::hashBytes(const char* data, std::size_t length)
     length >>= 2;
 
     /* Main loop */
-    for (; length > 0; length--) {
+    for (; length > 0; length--)
+    {
         hash += get16bits(data);
         uint32_t tmp = (get16bits(data + 2) << 11) ^ hash;
         hash = (hash << 16) ^ tmp;
@@ -61,7 +64,8 @@ std::size_t Util::hashBytes(const char* data, std::size_t length)
     }
 
     /* Handle end cases */
-    switch (rem) {
+    switch (rem)
+    {
     case 3: hash += get16bits(data);
         hash ^= hash << 16;
         hash ^= ((signed char)data[sizeof(uint16_t)]) << 18;
@@ -71,7 +75,7 @@ std::size_t Util::hashBytes(const char* data, std::size_t length)
         hash ^= hash << 11;
         hash += hash >> 17;
         break;
-    case 1: hash += (signed char) * data;
+    case 1: hash += (signed char)*data;
         hash ^= hash << 10;
         hash += hash >> 1;
     }
@@ -123,7 +127,7 @@ unsigned char* Util::dataFromFile(const char* path, const std::string& directory
 
 // partly based on https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/ray-triangle-intersection-geometric-solution
 
-const Collision NO_HIT = Collision{ INFINITY, glm::vec3(0.0) };
+const Collision NO_HIT = Collision{INFINITY, glm::vec3(0.0)};
 
 // cast a ray against finite tri, ret distance from the ray to the tri
 Collision Util::rayCast(
@@ -159,14 +163,15 @@ Collision Util::rayCast(
 
     float ret = dot(v0v2, qvec) * invDet;
 
-    if(ret < 0)
+    if (ret < 0)
         return NO_HIT;
 
-    return Collision { ret, tri };
+    return Collision{ret, tri};
 }
 
 // Cast a ray against an infinite plane with the triangle's normal, return where ray hits plane or NaN if ray never hits
-glm::vec3 Util::rayCastPlane(const Ray& r, const Triangle& plane) {
+glm::vec3 Util::rayCastPlane(const Ray& r, const Triangle& plane)
+{
     const glm::vec3 diff = r.origin - plane.v0;
     const float prod1 = glm::dot(diff, -plane.n);
     const float prod2 = glm::dot(r.direction, -plane.n);
@@ -188,7 +193,7 @@ Collision Util::rayCast(const Ray& r, const std::vector<Triangle>& tris, bool bo
             closestHit.tri = tri;
         }
     }
-    
+
     return closestHit;
 }
 
@@ -206,16 +211,17 @@ Collision Util::rayCast(const Ray& r, const std::vector<std::vector<Triangle>::c
             closestHit.tri = *tri;
         }
     }
-    
+
     return closestHit;
 }
 
 //https://gamedev.stackexchange.com/questions/96459/fast-ray-sphere-collision-code
-bool Util::intersectRaySegmentSphere(const Ray& ray, const glm::vec3 sphereOrigin, const float sphereRadius2, glm::vec3& intersectPoint)
+bool Util::intersectRaySegmentSphere(const Ray& ray, const glm::vec3 sphereOrigin, const float sphereRadius2,
+                                     glm::vec3& intersectPoint)
 {
     const glm::vec3 origin = ray.origin;
     glm::vec3 direction = ray.direction;
-    
+
     // manual normalization so we know the length
     const float rayLength = glm::length(direction);
     direction /= rayLength;
@@ -313,7 +319,8 @@ bool Util::pointInside(const glm::vec2 poly[], const int pcount, const glm::vec2
     return true;
 }
 
-glm::vec3 Util::genNormal(const Triangle& t) {
+glm::vec3 Util::genNormal(const Triangle& t)
+{
     const glm::vec3 u = t.v1 - t.v0;
     const glm::vec3 v = t.v2 - t.v0;
     const glm::vec3 normal = glm::cross(u, v);

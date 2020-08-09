@@ -11,10 +11,10 @@ public:
              std::function<void()> clickCallback = nullptr);
 
     bool isOnButton(const glm::vec2& point) const;
-    
+
     void tick() override;
 
     std::function<void()> onClick;
-    
+
     bool hovered = false;
 };

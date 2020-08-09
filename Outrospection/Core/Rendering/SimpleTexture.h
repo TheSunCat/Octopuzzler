@@ -17,7 +17,7 @@ public:
 
     GLuint texId = 0;
 
-    bool operator== (const SimpleTexture& st) const;
+    bool operator==(const SimpleTexture& st) const;
 
     virtual ~SimpleTexture() = default;
 private:

@@ -11,7 +11,8 @@
 #include "Core/Rendering/SimpleTexture.h"
 #include "Core/Rendering/TickableTexture.h"
 
-class TextureManager {
+class TextureManager
+{
 private:
     std::unordered_map<Resource, SimpleTexture, Hashes> textures;
     std::vector<TickableTexture> tickableTextures;

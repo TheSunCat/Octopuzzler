@@ -15,7 +15,7 @@ Scene::Scene(std::string _name) : name(std::move(_name))
     loadScene();
 
     // create skybox
-    
+
     float skyboxVertices[] = {
         // positions          
         -1.0f,  1.0f, -1.0f,
@@ -79,45 +79,58 @@ void Scene::loadScene()
     std::ifstream sceneFile("./res/StageData/" + name + "/" + name + ".lvl");
     State currentState = Scene::State::Obj;
 
-    for (std::string line; getline(sceneFile, line); )
+    for (std::string line; getline(sceneFile, line);)
     {
-        if (line.empty()) { // skip empty lines
+        if (line.empty())
+        {
+            // skip empty lines
             continue;
         }
-        if (line == "Obj") {
+        if (line == "Obj")
+        {
             currentState = Scene::State::Obj;
         }
-        /*else if (line.compare("RailObj") == 0) {
-            currentState = RailObj;
-        }*/
-        else if (line == "Light") {
+            /*else if (line.compare("RailObj") == 0) {
+                currentState = RailObj;
+            }*/
+        else if (line == "Light")
+        {
             currentState = Scene::State::Light;
         }
-        else if (line == "Sky") {
+        else if (line == "Sky")
+        {
             currentState = Scene::State::Sky;
         }
-        else if (line == "Chara") {
+        else if (line == "Chara")
+        {
             currentState = Scene::State::Chara;
         }
-        else if (line == "Col") {
+        else if (line == "Col")
+        {
             currentState = Scene::State::Col;
         }
-        else {
-            switch (currentState) {
-            case Scene::State::Obj: {
-                // parse object
-                objects.emplace_back(parseObj(line));
-                break;
-            }
-            case Scene::State::Sky: {
-                cubemapTexture = loadCubemap(line);
-                break;
-            }
-            case Scene::State::Chara: {
-                characters.emplace_back(parseChar(line));
-            }
-            case Scene::State::Col: {
-                parseCollision(line);
+        else
+        {
+            switch (currentState)
+            {
+            case Scene::State::Obj:
+                {
+                    // parse object
+                    objects.emplace_back(parseObj(line));
+                    break;
+                }
+            case Scene::State::Sky:
+                {
+                    cubemapTexture = loadCubemap(line);
+                    break;
+                }
+            case Scene::State::Chara:
+                {
+                    characters.emplace_back(parseChar(line));
+                }
+            case Scene::State::Col:
+                {
+                    parseCollision(line);
 
 #ifdef DEBUG
                 std::vector<Vertex> colVerticesVector;
@@ -135,7 +148,7 @@ void Scene::loadScene()
 
                 colMesh = Mesh("Collision model", colVerticesVector, indices);
 #endif
-            }
+                }
             } // end switch(currentState)
         } // end line compare else
     } // end for loop
@@ -154,7 +167,7 @@ void Scene::draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShade
     glDepthMask(GL_TRUE);
 
     _objShader.use();
-    
+
 
 #ifdef DEBUG
     _simpleShader.use();
@@ -182,14 +195,14 @@ DummyObj Scene::parseLine(const std::string& line)
     const size_t n = std::count(line.begin(), line.end(), '|');
 
     if (n == 0)
-        return  { line };
+        return {line};
 
     DummyObj ret;
 
     //Split string by property delimiter
     std::vector<std::string_view> splittedLine;
     Util::split(line, '|', splittedLine);
-    
+
     // Object name
     ret.name = splittedLine[0];
 
@@ -200,7 +213,7 @@ DummyObj Scene::parseLine(const std::string& line)
         std::string strToSplit = std::string(splittedLine[i + 1].begin(), splittedLine[i + 1].end());
         Util::split(strToSplit, ' ', v);
 
-        for(std::string_view str : v)
+        for (std::string_view str : v)
             ret.properties.push_back(Util::stof(str));
     }
 
@@ -225,7 +238,7 @@ Character Scene::parseChar(const std::string& line)
     DummyObj obj = parseLine(line);
 
     const glm::vec3 pos = glm::vec3(obj.properties[0], obj.properties[1], obj.properties[2]);
-    
+
     Character chara(obj.name, pos);
 
     return chara;
@@ -253,16 +266,16 @@ void Scene::parseCollision(const std::string& name)
             vertices.emplace_back(Util::stof(sStr[0]), Util::stof(sStr[1]), Util::stof(sStr[2]));
         }
 
-        collision.emplace_back(Triangle{ vertices[0], vertices[1], vertices[2] });
+        collision.emplace_back(Triangle{vertices[0], vertices[1], vertices[2]});
         collision.back().n = Util::genNormal(collision.back());
     }
 
     collisionFile.close();
 
-    for(auto iter = collision.begin(); iter != collision.end(); ++iter)
+    for (auto iter = collision.begin(); iter != collision.end(); ++iter)
     {
         Triangle curTri = *iter;
-        if(fabs(curTri.n.y) > 0.1f)
+        if (fabs(curTri.n.y) > 0.1f)
         {
             groundCollision.emplace_back(iter);
         }
@@ -297,7 +310,7 @@ GLuint Scene::loadCubemap(std::string name)
         if (data)
         {
             glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-                0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
+                         0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
             );
             stbi_image_free(data);
         }

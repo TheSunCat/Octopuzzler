@@ -14,7 +14,7 @@ public:
     DISALLOW_COPY_AND_ASSIGN(GUIIngame)
 private:
     UIComponent healthDisplay;
-    
+
     UIComponent posX;
     UIComponent posY;
     UIComponent posZ;
