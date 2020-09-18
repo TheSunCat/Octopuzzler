@@ -1,6 +1,7 @@
 ﻿#include "Outrospection.h"
 
 #include <glm/ext/matrix_clip_space.hpp>
+#include "irrKlang/irrKlang.h"
 
 #include "Util.h"
 #include "Core/Layer.h"
@@ -21,6 +22,8 @@ void* operator new(const size_t _Size)
 }
 
 Outrospection* Outrospection::instance = nullptr;
+
+irrklang::ISoundEngine* soundEngine = irrklang::createIrrKlangDevice();
 
 Outrospection::Outrospection()
 {
@@ -43,6 +46,8 @@ Outrospection::Outrospection()
     player = Player(glm::vec3(0.0, 30.0, 0.0));
 
     pushOverlay(ingameGUI);
+
+    soundEngine->play2D("./res/ObjectData/Sounds/taco.ogg", true);
 }
 
 void Outrospection::run()
