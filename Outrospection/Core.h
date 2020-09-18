@@ -174,12 +174,12 @@ struct smart_printf {
     void operator()(Ts const& ...args) const { printf(printf_transform(args)...); }
 };
 
-#define LOG(...) loggerQueue.push([args=std::make_tuple(__VA_ARGS__)] { std::apply(smart_printf{}, args); });
+#define LOG(...) loggerQueue.push([args=std::make_tuple(__VA_ARGS__)] { std::apply(smart_printf{}, args); })
 
 #ifdef DEBUG
 #define LOG_DEBUG(...) loggerQueue.push([args=std::make_tuple(__VA_ARGS__)] { CHANGE_COLOR(35); /* set color to magenta */\
         std::apply(smart_printf{}, args); \
-        CHANGE_COLOR(0);});
+        CHANGE_COLOR(0);})
 
 #define PROFILE Util::Timer timer_##__COUNTER__(__func__)
 #else

@@ -31,7 +31,7 @@ class Outrospection
     FreeType freetype;
 
 public:
-    inline static Outrospection& get()
+    constexpr static Outrospection& get()
     {
         return *instance;
     }
@@ -78,7 +78,7 @@ private:
     bool running = false;
 
     // timing
-    double deltaTime = 0; // Time between current frame and last frame
+    float deltaTime = 0; // Time between current frame and last frame
     time_t lastFrame = 0; // Time of last frame
 
     GLFWwindow* gameWindow;
