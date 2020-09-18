@@ -7,27 +7,28 @@
 class Controller;
 class Player;
 
-class PlayerController {
+class PlayerController
+{
 public:
-	void acceleratePlayer(const Controller& controller, float deltaTime, float yaw);
+    void acceleratePlayer(const Controller& controller, float deltaTime, float yaw);
 
-	void collidePlayer(Player& player, const std::vector<Triangle>& collisionData);
+    void collidePlayer(Player& player, const std::vector<Triangle>& collisionData);
 
-	void animatePlayer(Player& player);
-	
-	void movePlayer(Player& player) const;
+    void animatePlayer(Player& player);
 
-	bool isMoving() const;
+    void movePlayer(Player& player) const;
+
+    bool isMoving() const;
 private:
-	static glm::vec3 processInput(const Controller& controller, float yaw);
-	
-	// Return true if a triangle was hit.
-	void resolveCollision(Player& player, const std::vector<Triangle>& collisionData);
+    static glm::vec3 processInput(const Controller& controller, float yaw);
 
-	glm::vec3 velocity = glm::vec3(0.0f);
-	glm::vec3 colResponseDelta = glm::vec3(0.0f); // delta not carried over ticks
-	glm::vec3 ledgeHitPoint = glm::vec3(0.0f);
+    // Return true if a triangle was hit.
+    void resolveCollision(Player& player, const std::vector<Triangle>& collisionData);
 
-	bool grounded = false;
-	bool jumping = false;
+    glm::vec3 velocity = glm::vec3(0.0f);
+    glm::vec3 colResponseDelta = glm::vec3(0.0f); // delta not carried over ticks
+    glm::vec3 ledgeHitPoint = glm::vec3(0.0f);
+
+    bool grounded = false;
+    bool jumping = false;
 };

@@ -11,26 +11,27 @@ class Shader;
 class UIComponent
 {
 public:
-	UIComponent(const std::string& _texName, float posXPercent, float posYPercent, float widthPercent, float heightPercent);
-	
-	UIComponent(std::string _texName, const glm::vec2& _position, const glm::vec2& dimensions);
+    UIComponent(const std::string& _texName, float posXPercent, float posYPercent, float widthPercent,
+                float heightPercent);
 
-	virtual void draw(Shader& shader, const Shader& glyphShader) const;
-	
-	virtual void tick();
-	
-	std::string name;
-	glm::vec2 position;
-	float width = 10.0f, height = 10.0f;
-	glm::vec2 textOffset; // vector to offset text by
+    UIComponent(std::string _texName, const glm::vec2& _position, const glm::vec2& dimensions);
 
-	Color textColor;
+    virtual void draw(Shader& shader, const Shader& glyphShader) const;
 
-	virtual ~UIComponent() = default;
+    virtual void tick();
+
+    std::string name;
+    glm::vec2 position;
+    float width = 10.0f, height = 10.0f;
+    glm::vec2 textOffset; // vector to offset text by
+
+    Color textColor;
+
+    virtual ~UIComponent() = default;
 private:
-	virtual void drawText(const std::string& text, const Shader& glyphShader) const;
-	
-	SimpleTexture texture = TextureManager::missingTexture;
+    virtual void drawText(const std::string& text, const Shader& glyphShader) const;
 
-	static GLuint quadVAO;
+    SimpleTexture texture = TextureManager::missingTexture;
+
+    static GLuint quadVAO;
 };

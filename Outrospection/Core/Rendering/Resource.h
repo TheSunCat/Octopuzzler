@@ -5,11 +5,11 @@
 class Resource
 {
 public:
-	Resource(const std::string& path, const std::string& name);
-	
-	std::string getResourcePath() const;
+    Resource(const std::string& path, const std::string& name);
 
-	bool operator== (const Resource& r) const;
+    std::string getResourcePath() const;
 
-	const std::string fullPath;
+    bool operator==(const Resource& r) const;
+
+    const std::string fullPath;
 };

@@ -2,7 +2,7 @@
 //#include <string>
 //
 //class MultiTexture {
-//	MultiTexture(std::string multiTextureFileName);
+//    MultiTexture(std::string multiTextureFileName);
 //public:
 //
 //private:

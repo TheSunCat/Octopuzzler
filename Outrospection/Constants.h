@@ -1,15 +1,5 @@
 #pragma once
 
-#define DISALLOW_COPY_AND_ASSIGN(TypeName) \
-  TypeName(const TypeName&) = delete;   \
-  TypeName& operator=(const TypeName&) = delete;
-
-#define DISALLOW_COPY(TypeName) \
-  TypeName(const TypeName&) = delete;
-
-#define DISALLOW_ASSIGN(TypeName) \
-  TypeName& operator=(const TypeName&) = delete;
-
 // subtract from vertical velocity
 constexpr auto GRAVITY = -0.25f;
 
@@ -49,10 +39,3 @@ constexpr auto BUTTON_D_UP = 10;
 constexpr auto BUTTON_D_RIGHT = 11;
 constexpr auto BUTTON_D_DOWN = 12;
 constexpr auto BUTTON_D_LEFT = 13;
-
-
-#define DEBUG
-
-#ifdef DEBUG
-#define VERBOSE
-#endif

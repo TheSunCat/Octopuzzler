@@ -1,17 +1,16 @@
 #include "GUIPause.h"
 #include <Outrospection.h>
 
-GUIPause::GUIPause() : GUIScreen("Pause Menu", false), buttonResume("button", .45f, .45f, .1f, .1f, [&] {Outrospection::get().unpauseGame(); })
+GUIPause::GUIPause() : GUILayer("Pause Menu", false), buttonResume("button", .45f, .45f, .1f, .1f)
 {
-	
 }
 
 void GUIPause::tick()
 {
-	buttonResume.tick();
+    buttonResume.tick();
 }
 
-void GUIPause::draw(Shader& shader, Shader& glyphShader) const
+void GUIPause::draw() const
 {
-	buttonResume.draw(shader, glyphShader);
+    buttonResume.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
 }

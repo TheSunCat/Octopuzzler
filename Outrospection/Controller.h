@@ -6,25 +6,24 @@ typedef unsigned int ControllerButton;
 class Controller
 {
 public:
-	bool isGamepad;
+    bool isGamepad;
 
-	// INPUT
+    // INPUT
 
-	ControllerButton jump;
-	ControllerButton talk;
-	ControllerButton pause;
+    ControllerButton jump;
+    ControllerButton talk;
+    ControllerButton pause;
 
-	ControllerButton debugBreak;
-	
-	// L stick
-	float leftForward;
-	float leftSide;
+    ControllerButton debugBreak;
 
-	// R stick
-	float rightForward;
-	float rightSide;
+    // L stick
+    float leftForward;
+    float leftSide;
 
-	// L trigger
-	float leftTrigger;
+    // R stick
+    float rightForward;
+    float rightSide;
 
+    // L trigger
+    float leftTrigger;
 };
