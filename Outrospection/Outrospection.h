@@ -1,101 +1,138 @@
 #pragma once
+#include "Core.h"
+
+#include <thread>
+#include <glm/vec2.hpp>
 
 #include "Constants.h"
-#include "Controller.h"
 #include "GameSettings.h"
 
+#include "Controller.h"
+#include "Core/Camera.h"
+#include "Core/LayerStack.h"
+#include "Core/Scene.h"
 #include "Core/Rendering/FreeType.h"
 #include "Core/Rendering/OpenGL.h"
 #include "Core/Rendering/Shader.h"
 #include "Core/Rendering/TextureManager.h"
-
-#include "Core/Camera.h"
-#include "Core/Scene.h"
-#include "Core/UI/GUIIngame.h"
-#include "Core/UI/GUIPause.h"
-#include "Core/UI/GUIScreen.h"
+#include "Core/UI/GUILayer.h"
 #include "Core/World/Player.h"
 #include "Core/World/PlayerController.h"
 
-class Outrospection {
-	OpenGL opengl; // defined at the beginning so nothing gets initialized before this
-	FreeType freetype;
-	
+
+class MouseMovedEvent;
+class WindowCloseEvent;
+class Event;
+class Layer;
+
+class Outrospection
+{
+    OpenGL opengl; // defined at the beginning so nothing gets initialized before this
+    FreeType freetype;
+
 public:
-	inline static Outrospection& get()
-	{
-		return *instance;
-	}
-	
-	Outrospection();
+    constexpr static Outrospection& get()
+    {
+        return *instance;
+    }
 
-	void run();
+    Outrospection();
 
-	static void pauseGame();
-	static void unpauseGame();
+    void run();
+    void onEvent(Event& e);
 
-	void setGUIScreen(GUIScreen* screen, bool replace = true);
+    void pushLayer(Layer* layer);
+    void pushOverlay(Layer* overlay);
 
-	void captureMouse(bool doCapture) const;
+    void captureMouse(bool doCapture) const;
 
-	glm::vec2 lastMousePos = glm::vec2(SCR_HEIGHT / 2.0f, SCR_WIDTH / 2.0f);
-	
-	Scene scene;
-	Player player;
-	PlayerController playerController;
-	TextureManager textureManager;
-	GameSettings gameSettings;
-	Controller controller{};
+    glm::vec2 lastMousePos = glm::vec2(SCR_HEIGHT / 2.0f, SCR_WIDTH / 2.0f);
 
-	std::unordered_map<char, FontCharacter> fontCharacters;
+    Scene scene;
+    Player player;
+    PlayerController playerController;
+    TextureManager textureManager;
+    GameSettings gameSettings;
+    Controller controller{};
 
-	DISALLOW_COPY_AND_ASSIGN(Outrospection)
+    std::unordered_map<char, FontCharacter> fontCharacters;
+
+    Shader objectShader;
+    Shader billboardShader;
+    Shader skyShader;
+    Shader screenShader;
+    Shader simpleShader;
+    Shader spriteShader;
+    Shader glyphShader;
+
+    DISALLOW_COPY_AND_ASSIGN(Outrospection)
 private:
-	void runGameLoop();
-	void runTick();
-	void updateCamera();
+    void runGameLoop();
+    void runTick();
+    void updateCamera();
 
-	std::unique_ptr<GUIScreen> ingameGUI;
-	std::unique_ptr<GUIScreen> pauseGUI;
+    GUILayer* ingameGUI;
+    GUILayer* pauseGUI;
 
-	// set to false when the game loop shouldn't run
-	bool running = false;
+    // set to false when the game loop shouldn't run
+    bool running = false;
 
-	// timing
-	float deltaTime = 0.0f;	// Time between current frame and last frame
-	double lastFrame = 0.0f; // Time of last frame
+    // timing
+    float deltaTime = 0; // Time between current frame and last frame
+    time_t lastFrame = 0; // Time of last frame
 
-	GLFWwindow* gameWindow;
-	
-	Shader objectShader;
-	Shader billboardShader;
-	Shader skyShader;
-	Shader screenShader;
-	Shader simpleShader;
-	Shader spriteShader;
-	Shader glyphShader;
+    GLFWwindow* gameWindow;
 
-	GLuint framebuffer, intermediateFBO = 0;
-	GLuint textureColorbuffer;
-	GLuint quadVAO;
+    GLuint framebuffer, intermediateFBO = 0;
+    GLuint textureColorbuffer;
+    GLuint quadVAO;
 
-	// camera stuff
-	Camera camera = Camera(glm::vec3(0.0f, 0.0f, 3.0f));
-	bool firstMouse = true;
+    // camera stuff
+    Camera camera = Camera(glm::vec3(0.0f, 0.0f, 3.0f));
+    bool firstMouse = true;
 
-	static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-	static void mouse_callback(GLFWwindow* window, double xPosD, double yPosD);
-	static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
-	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
-	static void error_callback(int errorcode, const char* description);
+    bool onWindowClose(WindowCloseEvent& e);
+    bool onMouseMoved(MouseMovedEvent& e);
+    void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+    static void error_callback(int errorcode, const char* description);
 
-	void registerCallbacks() const;
-	void createShaders();
-	void updateInput();
+    void registerCallbacks() const;
+    void createShaders();
+    void updateInput();
 
-	bool isGamePaused{};
+    bool isGamePaused = false;
 
-	std::vector<GUIScreen*> loadedGUIs;
+    LayerStack layerStack;
 
-	static Outrospection* instance;
+    static Outrospection* instance;
+
+    std::thread timeThread{
+        [&]() -> void
+        {
+            while (true)
+            {
+                auto t = std::chrono::system_clock::now();
+
+                curTime = std::chrono::time_point_cast<std::chrono::milliseconds>(t).time_since_epoch().count();
+                std::this_thread::yield();
+            }
+        }
+    };
+
+    std::thread loggerThread{
+        [&]() -> void
+        {
+            while (true)
+            {
+                const auto& log = loggerQueue.pop();
+                if (log != nullptr)
+                {
+                    log();
+                    std::putchar('\n');
+                }
+
+                std::this_thread::yield();
+            }
+        }
+    };
 };

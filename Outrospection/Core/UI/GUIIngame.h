@@ -1,21 +1,21 @@
 #pragma once
-#include "GUIScreen.h"
+#include "GUILayer.h"
 
 class GUIIngame :
-    public GUIScreen
+    public GUILayer
 {
 public:
-	GUIIngame();
+    GUIIngame();
 
-	void tick() override;
+    void tick() override;
 
-	void draw(Shader& shader, Shader& glyphShader) const override;
+    void draw() const override;
 
-	DISALLOW_COPY_AND_ASSIGN(GUIIngame)
+    DISALLOW_COPY_AND_ASSIGN(GUIIngame)
 private:
-	UIComponent healthDisplay;
-	
-	UIComponent posX;
-	UIComponent posY;
-	UIComponent posZ;
+    UIComponent healthDisplay;
+
+    UIComponent posX;
+    UIComponent posY;
+    UIComponent posZ;
 };

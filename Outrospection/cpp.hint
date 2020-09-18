@@ -2,3 +2,6 @@
 // such as names of functions and macros.
 // For more information see https://go.microsoft.com/fwlink/?linkid=865984
 #define DISALLOW_COPY_AND_ASSIGN(TypeName) TypeName(const TypeName&); void operator=(const TypeName&);
+#define GLFW_PRESS
+#define EVENT_CLASS_TYPE(type) static EventType getStaticType() { return EventType::##type; } virtual EventType getEventType() const override { return getStaticType(); } virtual const char* getName() const override { return #type; }
+#define EVENT_CLASS_CATEGORY(categories) virtual int getCategoryFlags() const override { return (categories); }
