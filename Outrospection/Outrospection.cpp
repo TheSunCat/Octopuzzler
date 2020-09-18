@@ -102,7 +102,7 @@ void Outrospection::runGameLoop()
     deltaTime = float(currentFrame - lastFrame) / 1000.0f;
     lastFrame = currentFrame;
 
-    //LOG_DEBUG("%i", deltaTime); // I don't understand wtp is up with deltaTime rn, but ok
+    //LOG_DEBUG("%f", deltaTime);
     // Update game world
     {
         // fetch input into simplified controller class
@@ -112,9 +112,9 @@ void Outrospection::runGameLoop()
         if (controller.pause == 1)
         {
             //if (isGamePaused)
-                //unpauseGame();
+            //    unpauseGame();
             //else
-                //pauseGame();
+            //    pauseGame();
         }
 
 
@@ -340,7 +340,7 @@ void Outrospection::updateInput()
         }
     }
                                 
-    if (joystick != -1) {                     // there is a controller
+    if (joystick != -1) {                    // there is a controller
         
         if (glfwJoystickIsGamepad(joystick)) // easy!
         {
@@ -406,7 +406,8 @@ void Outrospection::updateInput()
         }
     }
 
-    if (joystick == -1) // no *usable* controllers are present
+    // we check this for zero because a fake controller may be plugged in. real controllers will usually never have zero
+    if (controller.leftForward == 0.0f || joystick == -1) // no *usable* controllers are present
     {
         //LOG_DEBUG("No usable controller is present. ");
 
@@ -415,11 +416,11 @@ void Outrospection::updateInput()
         float leftForwardInput = 0.0f;
         if (glfwGetKey(gameWindow, gameSettings.keyBindForward.keyCode) == GLFW_PRESS)
         {
-            leftForwardInput += 1.0;
+            leftForwardInput += 1.0f;
         }
         if (glfwGetKey(gameWindow, gameSettings.keyBindBackward.keyCode) == GLFW_PRESS)
         {
-            leftForwardInput += -1.0;
+            leftForwardInput += -1.0f;
         }
         controller.leftForward = leftForwardInput;
 
@@ -427,11 +428,11 @@ void Outrospection::updateInput()
         float leftSideInput = 0.0f;
         if (glfwGetKey(gameWindow, gameSettings.keyBindRight.keyCode) == GLFW_PRESS)
         {
-            leftSideInput += 1.0;
+            leftSideInput += 1.0f;
         }
         if (glfwGetKey(gameWindow, gameSettings.keyBindLeft.keyCode) == GLFW_PRESS)
         {
-            leftSideInput += -1.0;
+            leftSideInput += -1.0f;
         }
         controller.leftSide = leftSideInput;
 
