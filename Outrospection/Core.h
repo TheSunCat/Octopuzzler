@@ -42,7 +42,7 @@ inline std::time_t curTime;
     #error "Unknown platform!"
 #endif // End of platform detection
 
-#define DEBUG
+//#define DEBUG
 
 #ifdef PLATFORM_WINDOWS
 #define WIN32_LEAN_AND_MEAN
