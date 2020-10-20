@@ -237,6 +237,8 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
     <ClInclude Include="Events\WindowEvent.h" />
     <ClInclude Include="GameSettings.h" />
     <ClInclude Include="KeyBinding.h" />
+    <ClInclude Include="MeshSphere.h" />
+    <ClInclude Include="ObjectProcedural.h" />
     <ClInclude Include="Outrospection.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="Util.h" />

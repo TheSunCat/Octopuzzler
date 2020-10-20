@@ -319,13 +319,38 @@ bool Util::pointInside(const glm::vec2 poly[], const int pcount, const glm::vec2
     return true;
 }
 
+void Util::subdivide(glm::vec3& v1, glm::vec3& v2, glm::vec3& v3, long depth, std::vector<Vertex>& verts)
+{
+    glm::vec3 v12, v23, v31;
+
+    if (depth == 0) {
+        verts.emplace_back(Vertex{ v1 });
+        verts.emplace_back(Vertex{ v2 });
+        verts.emplace_back(Vertex{ v3 });
+        return;
+    }
+    for (int i = 0; i < 3; i++) {
+        v12[i] = v1[i] + v2[i];
+        v23[i] = v2[i] + v3[i];
+        v31[i] = v3[i] + v1[i];
+    }
+
+    glm::normalize(v12);
+    glm::normalize(v23);
+    glm::normalize(v31);
+    subdivide(v1, v12, v31, depth - 1, verts);
+    subdivide(v2, v23, v12, depth - 1, verts);
+    subdivide(v3, v31, v23, depth - 1, verts);
+    subdivide(v12, v23, v31, depth - 1, verts);
+}
+
 glm::vec3 Util::genNormal(const Triangle& t)
 {
     const glm::vec3 u = t.v1 - t.v0;
     const glm::vec3 v = t.v2 - t.v0;
     const glm::vec3 normal = glm::cross(u, v);
 
-    return normalize(normal);
+    return glm::normalize(normal);
 }
 
 float Util::length2V3(const glm::vec3& v)
