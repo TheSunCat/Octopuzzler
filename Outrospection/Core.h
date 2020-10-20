@@ -1,11 +1,11 @@
 #pragma once
 
 #include <chrono>
-#include <ctime>
 #include <functional>
 #include <iomanip>
 
-inline std::time_t curTime;
+inline time_t currentTimeMillis;
+inline time_t currentTimeSeconds;
 
 // Platform detection using predefined macros
 #ifdef _WIN32
@@ -42,7 +42,7 @@ inline std::time_t curTime;
     #error "Unknown platform!"
 #endif // End of platform detection
 
-//#define DEBUG
+#define DEBUG __DEBUG__
 
 #ifdef PLATFORM_WINDOWS
 #define WIN32_LEAN_AND_MEAN
@@ -102,7 +102,10 @@ inline void win_change_attributes(const int foreground)
 #include <condition_variable>
 #include <mutex>
 #include <queue>
+#include <string>
 #include <thread>
+#include <iostream>
+#include <ctime>
 
 template <typename T>
 class Queue
@@ -171,7 +174,12 @@ static decltype(auto) printf_transform(T const& arg)
 
 struct smart_printf {
     template <typename ...Ts>
-    void operator()(Ts const& ...args) const { printf(printf_transform(args)...); }
+    void operator()(Ts const& ...args) const
+    {
+        std::tm now_tm{};
+        localtime_s(&now_tm, &currentTimeSeconds);
+        std::cout << '[' << std::put_time(&now_tm, "%H:%M:%S") << '\'' << std::setfill('0') << std::setw(3) << currentTimeMillis % 1000 << "] ";  printf(printf_transform(args)...);
+    }
 };
 
 #define LOG(...) loggerQueue.push([args=std::make_tuple(__VA_ARGS__)] { std::apply(smart_printf{}, args); })

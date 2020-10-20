@@ -47,14 +47,14 @@ Outrospection::Outrospection()
 
     pushOverlay(ingameGUI);
 
-    soundEngine->play2D("./res/ObjectData/Sounds/taco.ogg", true);
+    soundEngine->play2D("./res/ObjectData/Sounds/taco.ogg", false);
 }
 
 void Outrospection::run()
 {
     running = true;
 
-    lastFrame = curTime;
+    lastFrame = currentTimeMillis;
     while (running)
     {
         runGameLoop();
@@ -103,7 +103,7 @@ void Outrospection::captureMouse(const bool doCapture) const
 
 void Outrospection::runGameLoop()
 {
-    const auto currentFrame = curTime;
+    const auto currentFrame = currentTimeMillis;
     deltaTime = float(currentFrame - lastFrame) / 1000.0f;
     lastFrame = currentFrame;
 
@@ -117,9 +117,9 @@ void Outrospection::runGameLoop()
         if (controller.pause == 1)
         {
             //if (isGamePaused)
-            //    unpauseGame();
+                //unpauseGame();
             //else
-            //    pauseGame();
+                //pauseGame();
         }
 
 
@@ -148,7 +148,7 @@ void Outrospection::runGameLoop()
 
         // set shader info
         objectShader.use();
-        objectShader.setVec3("viewPos", camera.position);
+        objectShader.setVec3("viewPos", camera.mPosition);
         objectShader.setFloat("shininess", 32.0f);
         objectShader.setVec3("lightPos", player.position + glm::vec3(0, 1.5f, 0));
         objectShader.doProjView(camera, SCR_WIDTH, SCR_HEIGHT, true);
@@ -202,7 +202,7 @@ void Outrospection::runGameLoop()
 
 void Outrospection::runTick()
 {
-    playerController.acceleratePlayer(controller, deltaTime, camera.yaw);
+    playerController.acceleratePlayer(controller, deltaTime, camera.mYaw);
     playerController.collidePlayer(player, scene.collision);
     playerController.animatePlayer(player);
     playerController.movePlayer(player);

@@ -9,24 +9,28 @@
 #include "Core/World/Player.h"
 
 Camera::Camera(const glm::vec3 _pos, const glm::vec3 _up, const float _yaw, const float _pitch)
-    : front(glm::vec3(0.0f, 0.0f, -1.0f)), rotationSpeed(ROT_SPEED), zoom(ZOOM)
+    : mFront(glm::vec3(0.0f, 0.0f, -1.0f)), mRotationSpeed(ROT_SPEED), mZoom(ZOOM)
 {
-    position = _pos;
-    worldUp = _up;
-    yaw = _yaw;
-    pitch = _pitch;
+    mPosition = _pos;
+    mWorldUp = _up;
+    mYaw = _yaw;
+    mPitch = _pitch;
     updateCameraVectors();
 }
 
 Camera::Camera(const float posX, const float posY, const float posZ, const float upX, const float upY, const float upZ,
                const float _yaw, const float _pitch)
-    : front(glm::vec3(0.0f, 0.0f, -1.0f)), rotationSpeed(ROT_SPEED), zoom(ZOOM)
+    : mFront(glm::vec3(0.0f, 0.0f, -1.0f)), mRotationSpeed(ROT_SPEED), mZoom(ZOOM)
 {
-    position = glm::vec3(posX, posY, posZ);
-    worldUp = glm::vec3(upX, upY, upZ);
-    yaw = _yaw;
-    pitch = _pitch;
+    mPosition = glm::vec3(posX, posY, posZ);
+    mWorldUp = glm::vec3(upX, upY, upZ);
+    mYaw = _yaw;
+    mPitch = _pitch;
     updateCameraVectors();
+}
+
+void Camera::pan_ahead_of_player(const Player& player) {
+    
 }
 
 void Camera::calculateCameraPosition(const Player& player, const Scene& scene, const bool shouldAutoCam)
@@ -36,13 +40,13 @@ void Camera::calculateCameraPosition(const Player& player, const Scene& scene, c
 
     if (zoomVelocity != 0.0f)
     {
-        if (desiredDistance != dist)
+        if (mDesiredDistance != mDist)
         {
-            desiredDistance = Util::clamp(dist + zoomVelocity, 1.0f, maxDistance);
+            mDesiredDistance = Util::clamp(mDist + zoomVelocity, 1.0f, maxDistance);
         }
         else
         {
-            desiredDistance = Util::clamp(desiredDistance + zoomVelocity, 1.0f, maxDistance);
+            mDesiredDistance = Util::clamp(mDesiredDistance + zoomVelocity, 1.0f, maxDistance);
         }
 
         zoomVelocity *= zoomDrag;
@@ -51,14 +55,14 @@ void Camera::calculateCameraPosition(const Player& player, const Scene& scene, c
     }
 
     // what the camera is looking at
-    const glm::vec3 newFocus = player.position + glm::vec3(0, player.eyeHeight, 0) + offset;
-    focus = newFocus;
+    const glm::vec3 newFocus = player.position + glm::vec3(0, player.eyeHeight, 0) + mOffset;
+    mFocus = glm::mix(mFocus, newFocus, 0.5f);
 
     // raycast backwards from the camera's focus
     std::array<Ray, 3> arRay = {
-        Ray{focus - right * 0.1f, -front},
-        Ray{focus, -front},
-        Ray{focus + right * 0.1f, -front}
+        Ray{mFocus - mRight * 0.1f, -mFront},
+        Ray{mFocus, -mFront},
+        Ray{mFocus + mRight * 0.1f, -mFront}
     };
 
     float closestDist = INFINITY;
@@ -75,11 +79,11 @@ void Camera::calculateCameraPosition(const Player& player, const Scene& scene, c
             closestDist = curDist;
     }
 
-    if (closestDist < desiredDistance) // camera collision!
+    if (closestDist < mDesiredDistance) // camera collision!
     {
         float correctedDist = closestDist * 0.9f;
                                                     // first time we detect collision
-        if (fabs(desiredDistance - dist) < 0.1f) // dist will change lots the next few times,
+        if (fabs(mDesiredDistance - mDist) < 0.1f) // dist will change lots the next few times,
             framesRemainingLerpingDist = 10;        // so this won't trigger
                                                     
         
@@ -87,19 +91,19 @@ void Camera::calculateCameraPosition(const Player& player, const Scene& scene, c
         {
             framesRemainingLerpingDist--;
 
-            dist = Util::lerp(dist, correctedDist, 0.6f);
+            mDist = Util::lerp(mDist, correctedDist, 0.6f);
         }
         else // we're already colliding, let's just follow the wall
         {
-            dist = correctedDist;
+            mDist = correctedDist;
         }
     }
     else // not colliding, we're free to move all the way out to desiredDistance
     {
-        if (desiredDistance - dist > 0.5f) // we're zooming out & it's a big diff so we want to avoid snap
-            dist = Util::lerp(dist, desiredDistance, 0.12f);
+        if (mDesiredDistance - mDist > 0.5f) // we're zooming out & it's a big diff so we want to avoid snap
+            mDist = Util::lerp(mDist, mDesiredDistance, 0.12f);
         else
-            dist = Util::lerp(dist, desiredDistance, 0.5f); // less snap
+            mDist = Util::lerp(mDist, mDesiredDistance, 0.5f); // less snap
     }
 
     bool autoCamming = (framesSinceUserRotate >= framesBeforeAutoCam) && shouldAutoCam;
@@ -116,14 +120,14 @@ void Camera::calculateCameraPosition(const Player& player, const Scene& scene, c
             if (whiskersHit >= maxWhiskerCount)
                 break;
 
-            Ray leftRay = Ray{focus, -Util::rotToVec3(yaw - float(30 * whiskersHit), pitch)};
-            Ray rightRay = Ray{focus, -Util::rotToVec3(yaw + float(30 * whiskersHit), pitch)};
+            Ray leftRay = Ray{mFocus, -Util::rotToVec3(mYaw - float(30 * whiskersHit), mPitch)};
+            Ray rightRay = Ray{mFocus, -Util::rotToVec3(mYaw + float(30 * whiskersHit), mPitch)};
 
             Collision leftCollision = Util::rayCast(leftRay, scene.wallCollision, false);
-            collidedLeft = leftCollision.dist < desiredDistance;
+            collidedLeft = leftCollision.dist < mDesiredDistance;
 
             Collision rightCollision = Util::rayCast(rightRay, scene.wallCollision, false);
-            collidedRight = rightCollision.dist < desiredDistance;
+            collidedRight = rightCollision.dist < mDesiredDistance;
 
             whiskersHit++;
         }
@@ -140,7 +144,7 @@ void Camera::calculateCameraPosition(const Player& player, const Scene& scene, c
 
     if (yawVelocity != 0.0f)
     {
-        yaw += yawVelocity;
+        mYaw += yawVelocity;
 
         yawVelocity *= yawDrag;
         if (fabs(yawVelocity) < 0.01f)
@@ -149,9 +153,9 @@ void Camera::calculateCameraPosition(const Player& player, const Scene& scene, c
 
     if (pitchVelocity != 0.0f)
     {
-        pitch += pitchVelocity;
+        mPitch += pitchVelocity;
 
-        pitch = Util::clamp(pitch, -65.0f, 70.0f);
+        mPitch = Util::clamp(mPitch, -65.0f, 70.0f);
 
         pitchVelocity *= pitchDrag;
         if (fabs(pitchVelocity) < 0.01f)
@@ -161,21 +165,21 @@ void Camera::calculateCameraPosition(const Player& player, const Scene& scene, c
     updateCameraVectors();
 
     // get camera position
-    const glm::vec3 newPos = focus - (front * dist);
-    position = newPos;
+    const glm::vec3 newPos = mFocus - (mFront * mDist);
+    mPosition = newPos;
 }
 
 glm::mat4 Camera::getViewMatrix() const
 {
-    return glm::lookAt(position, position + front, up);
+    return glm::lookAt(mPosition, mPosition + mFront, mUp);
 }
 
 void Camera::playerRotateCameraBy(float xoffset, float yoffset, const bool applyCameraSpeed)
 {
     if (applyCameraSpeed)
     {
-        xoffset *= rotationSpeed;
-        yoffset *= rotationSpeed;
+        xoffset *= mRotationSpeed;
+        yoffset *= mRotationSpeed;
     }
 
     yawVelocity = xoffset;
@@ -192,15 +196,15 @@ void Camera::changeDistBy(const float yoffset)
 
 void Camera::zoomBy(const float yoffset)
 {
-    zoom -= yoffset;
+    mZoom -= yoffset;
 
-    zoom = Util::clamp(zoom, 1.0f, 45.0f);
+    mZoom = Util::clamp(mZoom, 1.0f, 45.0f);
 }
 
 void Camera::updateCameraVectors()
 {
-    front = Util::rotToVec3(yaw, pitch);
+    mFront = Util::rotToVec3(mYaw, mPitch);
     // Also re-calculate the Right and Up vector
-    right = glm::normalize(glm::cross(front, worldUp));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
-    up = glm::normalize(glm::cross(right, front));
+    mRight = glm::normalize(glm::cross(mFront, mWorldUp));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
+    mUp = glm::normalize(glm::cross(mRight, mFront));
 }
