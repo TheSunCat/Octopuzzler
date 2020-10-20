@@ -28,7 +28,7 @@ public:
     // render the mesh
     void draw() const;
 
-private:
+protected:
     unsigned int indicesSize = 0;
     GLuint VBO = 0, VAO = 0, EBO = 0;
 };

@@ -4,6 +4,8 @@
 #include <fstream>
 #include <utility>
 
+
+#include "ObjectProcedural.h"
 #include "External/stb_image.h"
 
 #include "Util.h"
@@ -74,6 +76,10 @@ Scene::Scene(std::string _name) : name(std::move(_name))
 
 void Scene::loadScene()
 {
+    objects.emplace_back(ObjectGeneral("sphere", glm::vec3(0), glm::vec3(0), glm::vec3(1)));
+
+    return; // TODO not do this lol
+
     // parser code partly by MarkCangila
 
     std::ifstream sceneFile("./res/StageData/" + name + "/" + name + ".lvl");
@@ -166,7 +172,7 @@ void Scene::draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShade
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glDepthMask(GL_TRUE);
 
-    _objShader.use();
+    _simpleShader.use();
 
 
 #ifdef DEBUG
@@ -179,7 +185,7 @@ void Scene::draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShade
 #else
     for (const ObjectGeneral& object : objects)
     {
-        object.draw(_objShader);
+        object.draw(_simpleShader);
     }
 #endif
 

@@ -21,7 +21,7 @@ public:
 
     glm::vec3 getScale() const;
 
-private:
+protected:
     glm::vec3 pos{}, rot{}, scale{};
     std::vector<Mesh> meshes;
 

@@ -3,6 +3,8 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
+
+#include "MeshSphere.h"
 #include "Core/Rendering/ModelLoader.h"
 #include "Core/Rendering/Shader.h"
 
@@ -12,6 +14,10 @@ ObjectGeneral::ObjectGeneral(const std::string& _name, glm::vec3 _pos, glm::vec3
     pos = _pos;
     rot = _rot;
     scale = _scale;
+
+    meshes.push_back(MeshSphere(5.0f, 2));
+
+    return; // TODO not do this lol
 
     std::string modelPath = "./res/ObjectData/" + _name + "/" + _name + ".omd";
 
