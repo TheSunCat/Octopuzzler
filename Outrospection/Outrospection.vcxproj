@@ -198,6 +198,7 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
     <None Include="res\ShaderData\sky.vert" />
     <None Include="res\ShaderData\sprite.frag" />
     <None Include="res\ShaderData\sprite.vert" />
+    <None Include="res\ShaderData\wireframe.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Constants.h" />
@@ -272,6 +273,7 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
     <ClCompile Include="External\stb_image.cpp" />
     <ClCompile Include="GameSettings.cpp" />
     <ClCompile Include="KeyBinding.cpp" />
+    <ClCompile Include="MeshSphere.cpp" />
     <ClCompile Include="Outrospection.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Util.cpp" />

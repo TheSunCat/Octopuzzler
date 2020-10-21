@@ -15,10 +15,6 @@ ObjectGeneral::ObjectGeneral(const std::string& _name, glm::vec3 _pos, glm::vec3
     rot = _rot;
     scale = _scale;
 
-    meshes.push_back(MeshSphere(5.0f, 2));
-
-    return; // TODO not do this lol
-
     std::string modelPath = "./res/ObjectData/" + _name + "/" + _name + ".omd";
 
     ModelLoader modelLoader;
@@ -39,6 +35,16 @@ ObjectGeneral::ObjectGeneral(const std::string& _name, glm::vec3 _pos, glm::vec3
 
         modelLoader.loadedMeshes.pop_front();
     }
+}
+
+ObjectGeneral::ObjectGeneral(const std::string& _name, glm::vec3 _pos, glm::vec3 _rot, glm::vec3 _scale, Mesh& mesh)
+{
+    name = _name;
+    pos = _pos;
+    rot = _rot;
+    scale = _scale;
+
+    meshes.emplace_back(mesh);
 }
 
 void ObjectGeneral::draw(const Shader& shader) const

@@ -339,7 +339,7 @@ void Outrospection::updateInput()
 
             controller.isGamepad = true;
 
-            LOG_DEBUG("Joystick %s detected with ID %i!", glfwGetJoystickName(joystick), joystick);
+            //LOG_DEBUG("Joystick %s detected with ID %i!", glfwGetJoystickName(joystick), joystick);
 
             break;
         }
@@ -349,7 +349,7 @@ void Outrospection::updateInput()
         
         if (glfwJoystickIsGamepad(joystick)) // easy!
         {
-            LOG_DEBUG("It is a gamepad! Sweet!");
+            //LOG_DEBUG("It is a gamepad! Sweet!");
 
             GLFWgamepadstate gamepadState;
             glfwGetGamepadState(joystick, &gamepadState);
@@ -369,7 +369,7 @@ void Outrospection::updateInput()
         }
         else // have to manually set everything :c
         {
-            LOG_DEBUG("It is a non-mapped controller. Hrm.");
+            //LOG_DEBUG("It is a non-mapped controller. Hrm.");
 
             int axesCount = -1;
 

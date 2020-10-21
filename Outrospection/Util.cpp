@@ -2,6 +2,7 @@
 #include "Core.h"
 
 #include <charconv>
+#include <map>
 #include <sstream>
 
 #include <GLAD/glad.h>
@@ -134,8 +135,8 @@ Collision Util::rayCast(
     const Ray& ray,
     const Triangle& tri, const bool bothSides)
 {
-    const glm::vec3 v0v1 = tri.v1 - tri.v0;
-    const glm::vec3 v0v2 = tri.v2 - tri.v0;
+    const glm::vec3 v0v1 = tri.verts[1] - tri.verts[0];
+    const glm::vec3 v0v2 = tri.verts[2] - tri.verts[0];
 
     const glm::vec3 pvec = cross(ray.direction, v0v2);
 
@@ -147,7 +148,7 @@ Collision Util::rayCast(
 
     float invDet = 1.0f / det;
 
-    const glm::vec3 tvec = ray.origin - tri.v0;
+    const glm::vec3 tvec = ray.origin - tri.verts[0];
 
     float u = dot(tvec, pvec) * invDet;
 
@@ -172,7 +173,7 @@ Collision Util::rayCast(
 // Cast a ray against an infinite plane with the triangle's normal, return where ray hits plane or NaN if ray never hits
 glm::vec3 Util::rayCastPlane(const Ray& r, const Triangle& plane)
 {
-    const glm::vec3 diff = r.origin - plane.v0;
+    const glm::vec3 diff = r.origin - plane.verts[0];
     const float prod1 = glm::dot(diff, -plane.n);
     const float prod2 = glm::dot(r.direction, -plane.n);
     const float prod3 = prod1 / prod2;
@@ -258,8 +259,8 @@ bool Util::intersectRaySegmentSphere(const Ray& ray, const glm::vec3 sphereOrigi
 bool Util::inTriangle(const glm::vec3& point, const Triangle& tri)
 {
     // test to see if it is within an infinite prism that the triangle outlines
-    const bool withinTriPrism = sameSide(point, tri.v0, tri.v1, tri.v2) && sameSide(point, tri.v1, tri.v0, tri.v2)
-        && sameSide(point, tri.v2, tri.v0, tri.v1);
+    const bool withinTriPrism = sameSide(point, tri.verts[0], tri.verts[1], tri.verts[2]) && sameSide(point, tri.verts[1], tri.verts[0], tri.verts[2])
+        && sameSide(point, tri.verts[2], tri.verts[0], tri.verts[1]);
 
     // if it isn't it will never be on the triangle
     if (!withinTriPrism)
@@ -319,35 +320,60 @@ bool Util::pointInside(const glm::vec2 poly[], const int pcount, const glm::vec2
     return true;
 }
 
-void Util::subdivide(glm::vec3& v1, glm::vec3& v2, glm::vec3& v3, long depth, std::vector<Vertex>& verts)
+#include <array>
+
+GLuint vertex_for_edge(std::map<std::pair<GLuint, GLuint>, GLuint>& lookup, std::vector<glm::vec3>& vertices, GLuint first, GLuint second)
 {
-    glm::vec3 v12, v23, v31;
+    std::map<std::pair<GLuint, GLuint>, GLuint>::key_type key(first, second);
+    if (key.first > key.second)
+        std::swap(key.first, key.second);
 
-    if (depth == 0) {
-        verts.emplace_back(Vertex{ v1 });
-        verts.emplace_back(Vertex{ v2 });
-        verts.emplace_back(Vertex{ v3 });
-        return;
-    }
-    for (int i = 0; i < 3; i++) {
-        v12[i] = v1[i] + v2[i];
-        v23[i] = v2[i] + v3[i];
-        v31[i] = v3[i] + v1[i];
+    auto inserted = lookup.insert({ key, vertices.size() });
+    if (inserted.second)
+    {
+        auto& edge0 = vertices[first];
+        auto& edge1 = vertices[second];
+        auto point = glm::normalize(edge0 + edge1);
+        vertices.push_back(point);
     }
 
-    glm::normalize(v12);
-    glm::normalize(v23);
-    glm::normalize(v31);
-    subdivide(v1, v12, v31, depth - 1, verts);
-    subdivide(v2, v23, v12, depth - 1, verts);
-    subdivide(v3, v31, v23, depth - 1, verts);
-    subdivide(v12, v23, v31, depth - 1, verts);
+    return inserted.first->second;
+}
+
+std::vector<GLuint> Util::subdivide(std::vector<glm::vec3>& vertices,
+                                      const std::vector<GLuint>& triangles)
+{
+    std::map<std::pair<GLuint, GLuint>, GLuint> lookup;
+    std::vector<GLuint> result;
+
+    for (auto&& each : triangles)
+    {
+        std::array<GLuint, 3> mid{};
+        for (int edge = 0; edge < 3; ++edge)
+        {
+            mid[edge] = vertex_for_edge(lookup, vertices, vertices[each][edge], vertices[each][(edge + 1) % 3]);
+        }
+
+        vertices.emplace_back(vertices[each][0], mid[0], mid[2]);
+        result.emplace_back(vertices.size() - 1);
+
+        vertices.emplace_back(vertices[each][1], mid[1], mid[0]);
+        result.emplace_back(vertices.size() - 1);
+
+        vertices.emplace_back(vertices[each][2], mid[2], mid[1]);
+        result.emplace_back(vertices.size() - 1);
+
+        vertices.emplace_back(mid[0], mid[1], mid[2]);
+        result.emplace_back(vertices.size() - 1);
+    }
+
+    return result;
 }
 
 glm::vec3 Util::genNormal(const Triangle& t)
 {
-    const glm::vec3 u = t.v1 - t.v0;
-    const glm::vec3 v = t.v2 - t.v0;
+    const glm::vec3 u = t.verts[1] - t.verts[0];
+    const glm::vec3 v = t.verts[2] - t.verts[0];
     const glm::vec3 normal = glm::cross(u, v);
 
     return glm::normalize(normal);

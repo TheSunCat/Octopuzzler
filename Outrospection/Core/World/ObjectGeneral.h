@@ -13,6 +13,8 @@ class ObjectGeneral
 public:
     ObjectGeneral(const std::string& _name, glm::vec3 _pos, glm::vec3 _rot, glm::vec3 _scale);
 
+    ObjectGeneral(const std::string& _name, glm::vec3 _pos, glm::vec3 _rot, glm::vec3 _scale, Mesh& mesh);
+
     void draw(const Shader& shader) const;
 
     glm::vec3 getPos() const;

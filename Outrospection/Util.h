@@ -82,7 +82,8 @@ namespace Util
 
     bool pointInside(const glm::vec2 poly[], int pcount, const glm::vec2& v);
 
-    void subdivide(glm::vec3& v1, glm::vec3& v2, glm::vec3& v3, long depth, std::vector<Vertex>& verts);
+    std::vector<GLuint> subdivide(std::vector<glm::vec3>& vertices,
+                                    const std::vector<GLuint>& triangles);
 
     glm::vec3 genNormal(const Triangle& t);
 
