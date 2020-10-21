@@ -76,9 +76,10 @@ Scene::Scene(std::string _name) : name(std::move(_name))
 
 void Scene::loadScene()
 {
-    objects.emplace_back(ObjectGeneral("sphere", glm::vec3(0), glm::vec3(0), glm::vec3(1)));
+    MeshSphere sphere(6);
 
-    return; // TODO not do this lol
+    objects.emplace_back(ObjectGeneral("sphere", glm::vec3(0), glm::vec3(0), glm::vec3(20), sphere)); // TODO not do this lol
+
 
     // parser code partly by MarkCangila
 
@@ -141,9 +142,9 @@ void Scene::loadScene()
 #ifdef DEBUG
                 std::vector<Vertex> colVerticesVector;
                 for (const Triangle& t : collision) {
-                    colVerticesVector.push_back(Vertex{ t.v0, t.n });
-                    colVerticesVector.push_back(Vertex{ t.v1, t.n });
-                    colVerticesVector.push_back(Vertex{ t.v2, t.n });
+                    colVerticesVector.push_back(Vertex{ t.verts[0], t.n });
+                    colVerticesVector.push_back(Vertex{ t.verts[1], t.n });
+                    colVerticesVector.push_back(Vertex{ t.verts[2], t.n });
                 }
 
                 std::vector<GLuint> indices(colVerticesVector.size());
@@ -172,22 +173,22 @@ void Scene::draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShade
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glDepthMask(GL_TRUE);
 
-    _simpleShader.use();
+    _objShader.use();
 
 
-#ifdef DEBUG
-    _simpleShader.use();
-    
-    const glm::mat4 modelMat = glm::mat4(1.0f);
-    _simpleShader.setMat4("model", modelMat);
-
-    colMesh.draw();
-#else
+//#ifdef DEBUG
+//    _simpleShader.use();
+//    
+//    const glm::mat4 modelMat = glm::mat4(1.0f);
+//    _simpleShader.setMat4("model", modelMat);
+//
+//    colMesh.draw();
+//#else
     for (const ObjectGeneral& object : objects)
     {
-        object.draw(_simpleShader);
+        object.draw(_objShader);
     }
-#endif
+//#endif
 
     _billboardShader.use();
     for (const Character& chara : characters)

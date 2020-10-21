@@ -42,7 +42,7 @@ inline time_t currentTimeSeconds;
     #error "Unknown platform!"
 #endif // End of platform detection
 
-//#define DEBUG __DEBUG__
+#define DEBUG __DEBUG__
 
 #ifdef PLATFORM_WINDOWS
 #define WIN32_LEAN_AND_MEAN

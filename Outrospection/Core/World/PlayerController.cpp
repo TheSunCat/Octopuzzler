@@ -93,9 +93,9 @@ void PlayerController::resolveCollision(Player& player, const std::vector<Triang
         bool outsideAllEdges = false;
         bool fullyInsidePlane = false;
 
-        glm::vec3 v0 = curTri.v0;
-        glm::vec3 v1 = curTri.v1;
-        glm::vec3 v2 = curTri.v2;
+        glm::vec3 v0 = curTri.verts[0];
+        glm::vec3 v1 = curTri.verts[1];
+        glm::vec3 v2 = curTri.verts[2];
 
         float d = -glm::dot((v0 + v1 + v2) / 3.0f, curTri.n);
 
@@ -240,9 +240,9 @@ void PlayerController::resolveCollision(Player& player, const std::vector<Triang
         {
             glm::vec3 newPlayerPos = player.position + velocity + colResponseDelta;
 
-            const float y = ((curTri.n.x * (newPlayerPos.x - curTri.v0.x)
-                    + curTri.n.z * (newPlayerPos.z - curTri.v0.z)) / -curTri.n.y)
-                + curTri.v0.y;
+            const float y = ((curTri.n.x * (newPlayerPos.x - curTri.verts[0].x)
+                    + curTri.n.z * (newPlayerPos.z - curTri.verts[0].z)) / -curTri.n.y)
+                + curTri.verts[0].y;
 
             const float deltaY = y - player.position.y;
 

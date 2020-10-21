@@ -59,6 +59,9 @@
     <None Include="res\ShaderData\sprite.vert">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="res\ShaderData\wireframe.frag">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Camera.h">
@@ -280,6 +283,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Core\UI\GUILayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshSphere.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

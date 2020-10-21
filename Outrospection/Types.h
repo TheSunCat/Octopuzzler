@@ -34,9 +34,7 @@ struct Vertex
 
 struct Triangle
 {
-    glm::vec3 v0;
-    glm::vec3 v1;
-    glm::vec3 v2;
+    glm::vec3 verts[3];
     glm::vec3 n;
 };
 
