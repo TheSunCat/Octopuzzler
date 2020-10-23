@@ -38,7 +38,7 @@ MeshSphere::MeshSphere(unsigned int levels)
 
     int counter = 0;
 
-    for(int& index : (*(mIndices[levels - 1])))
+    for(int index : *mIndices[levels - 1])
     {
         Vertex& v = mVertices[index];
 
@@ -54,6 +54,7 @@ MeshSphere::MeshSphere(unsigned int levels)
         case 2:
                 v.texCoord = glm::vec2(1.0, 1.0);
         }
+
         counter++;
     }
 

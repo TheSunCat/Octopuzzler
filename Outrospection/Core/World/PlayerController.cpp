@@ -86,145 +86,81 @@ void PlayerController::resolveCollision(Player& player, const std::vector<Triang
 
     int numCollisions = 0;
 
+    auto intersectPoint = glm::vec3(0);
     for (const Triangle& curTri : collisionData)
     {
+        float pointToPlaneDist = 0;
+
         //bool outsidePlane = false;
-        bool outsideAllVerts = false;
-        bool outsideAllEdges = false;
-        bool fullyInsidePlane = false;
-
-        glm::vec3 v0 = curTri.verts[0];
-        glm::vec3 v1 = curTri.verts[1];
-        glm::vec3 v2 = curTri.verts[2];
-
-        float d = -glm::dot((v0 + v1 + v2) / 3.0f, curTri.n);
-
-        // the distance from the center of the collider sphere to the triangle
-        float pointToPlaneDist = glm::dot(curTri.n, colSphereOrigin) + d;
-
-
-        if (fabs(pointToPlaneDist) > colSphereRadius)
+        if (Util::intersectTriangleSphere(colliderOrigin, colSphereRadius, curTri, intersectPoint, pointToPlaneDist))
         {
-            // distance from center to plane is larger than sphere radius
-            continue;
-        }
+            // --------------------------------------------------
+            // we found a collision!
+            // push the character outside of the triangle we intersected
 
-        // build 3 rays (line segments) so we can do plane projection later
-        glm::vec3 v1v0 = v1 - v0;
-        glm::vec3 v2v1 = v2 - v1;
-        glm::vec3 v0v2 = v0 - v2;
-
-        // project to triangle plane (3D -> 2D) and see if we are within its bounds
-        glm::vec3 planeX = glm::normalize(v1v0);
-        glm::vec3 planeY = glm::normalize(glm::cross(curTri.n, v1v0));
-
-        // local function to do projection
-        auto project2D = [&](const glm::vec3& p) { return glm::vec2(glm::dot(p, planeX), glm::dot(p, planeY)); };
-
-        glm::vec2 planePos2D = project2D(colSphereOrigin);
-        glm::vec2 triangle2D[3] = {project2D(v0), project2D(v1), project2D(v2)};
-
-        if (Util::pointInside(triangle2D, 3, planePos2D))
-        {
-            fullyInsidePlane = true;
-        }
-
-
-        // check vertices
-        bool outsideV1 = (Util::length2V3(v0 - colSphereOrigin) > colSphereRadiusSquare);
-        bool outsideV2 = (Util::length2V3(v1 - colSphereOrigin) > colSphereRadiusSquare);
-        bool outsideV3 = (Util::length2V3(v2 - colSphereOrigin) > colSphereRadiusSquare);
-
-        if (outsideV1 && outsideV2 && outsideV3)
-        {
-            //sphere outside of of all triangle vertices
-            outsideAllVerts = true;
-        }
-
-
-        // check lines (rays)
-        glm::vec3 intersectPoint;
-
-        if (!Util::intersectRaySegmentSphere(Ray{v0, v1v0}, colSphereOrigin, colSphereRadiusSquare, intersectPoint) &&
-            !Util::intersectRaySegmentSphere(Ray{v1, v2v1}, colSphereOrigin, colSphereRadiusSquare, intersectPoint) &&
-            !Util::intersectRaySegmentSphere(Ray{v2, v0v2}, colSphereOrigin, colSphereRadiusSquare, intersectPoint))
-        {
-            //sphere outside of all triangle edges
-            outsideAllEdges = true;
-        }
-
-        if (outsideAllVerts && outsideAllEdges && !fullyInsidePlane)
-        {
-            continue;
-        }
-
-
-        // --------------------------------------------------
-        // we found a collision!
-        // push the character outside of the triangle we intersected
-
-        if (fabs(curTri.n.y) > 0.1) // we are colliding with ground
-        {
-            // check if ground is actually under us or not
-            Ray downRay = Ray{ghostPosition + glm::vec3(0, 999, 0), glm::vec3(0, -1, 0)};
-            Collision downCollision = Util::rayCast(downRay, curTri, true);
-
-            // check if we're on a ledge, therefore need special treatment due to sphere collider not being flat on bottom
-            ledgeHitPoint = (downCollision.dist == INFINITY && (intersectPoint.y - player.position.y) <
-                                colSphereRadiusSquare / 1.5f)
-                                ? intersectPoint
-                                : glm::vec3(0.0f);
-
-            if ((downCollision.dist != INFINITY) || Util::length2V3(ledgeHitPoint))
+            if (fabs(curTri.n.y) > 0.1) // we are colliding with ground
             {
-                groundCollisions.emplace_back(curTri);
+                // check if ground is actually under us or not
+                Ray downRay = Ray{ ghostPosition + glm::vec3(0, 999, 0), glm::vec3(0, -1, 0) };
+                Collision downCollision = Util::rayCast(downRay, curTri, true);
 
-                if (jumping)
-                    jumping = false;
+                // check if we're on a ledge, therefore need special treatment due to sphere collider not being flat on bottom
+                ledgeHitPoint = (downCollision.dist == INFINITY && (intersectPoint.y - player.position.y) <
+                    colSphereRadiusSquare / 1.5f)
+                    ? intersectPoint
+                    : glm::vec3(0.0f);
 
-                grounded = true;
+                if ((downCollision.dist != INFINITY) || Util::length2V3(ledgeHitPoint))
+                {
+                    groundCollisions.emplace_back(curTri);
+
+                    if (jumping)
+                        jumping = false;
+
+                    grounded = true;
+                }
             }
-        }
-        else // handle wall collisions
-        {
-            float playerFollowsNorm = glm::dot(velocity, curTri.n);
-            if (playerFollowsNorm > 0)
-                continue;
-
-            float intersectYDiff = intersectPoint.y - player.position.y;
-
-            // TODO fix where first time it does snap, maybe ledgeHitPoint isn't set?
-            if (Util::length2V3(ledgeHitPoint) && fabs(intersectYDiff) <= 0.075f)
+            else // handle wall collisions
             {
-                //LOG_DEBUG("%f skipping wall", intersectYDiff);
+                float playerFollowsNorm = glm::dot(velocity, curTri.n);
+                if (playerFollowsNorm > 0)
+                    continue;
 
-                //continue;
+                float intersectYDiff = intersectPoint.y - player.position.y;
+
+                // TODO fix where first time it does snap, maybe ledgeHitPoint isn't set?
+                if (Util::length2V3(ledgeHitPoint) && fabs(intersectYDiff) <= 0.075f)
+                {
+                    //LOG_DEBUG("%f skipping wall", intersectYDiff);
+
+                    //continue;
+                }
+
+                LOG_DEBUG("%f", intersectYDiff);
+
+                // we need to correct by this
+                const float distancePastTri = (colSphereRadius - pointToPlaneDist);
+
+                glm::vec3 dirNoY = glm::vec3(direction.x, 0, direction.z);
+                if (Util::length2V3(dirNoY) == 0.0f)
+                    dirNoY = -curTri.n;
+
+                // angle at which we run into
+                const float cosine = 1.0f - fabs(Util::cosBetweenV3(dirNoY, curTri.n));
+
+                const float hypotenuse = distancePastTri, adjacentSide = cosine * hypotenuse;
+                const float oppositeSide = sqrt(pow(hypotenuse, 2) - pow(adjacentSide, 2));
+
+                glm::vec3 curCollisionShift = curTri.n * (oppositeSide);
+
+                colResponseDelta += curCollisionShift;
+
+                Collision col{ pointToPlaneDist, intersectPoint, curCollisionShift };
+                wallCollisions.emplace_back(col);
             }
 
-            LOG_DEBUG("%f", intersectYDiff);
-
-            // we need to correct by this
-            const float distancePastTri = (colSphereRadius - pointToPlaneDist);
-
-            glm::vec3 dirNoY = glm::vec3(direction.x, 0, direction.z);
-            if (Util::length2V3(dirNoY) == 0.0f)
-                dirNoY = -curTri.n;
-
-            // angle at which we run into
-            const float cosine = 1.0f - fabs(Util::cosBetweenV3(dirNoY, curTri.n));
-
-            const float hypotenuse = distancePastTri, adjacentSide = cosine * hypotenuse;
-            const float oppositeSide = sqrt(pow(hypotenuse, 2) - pow(adjacentSide, 2));
-
-            glm::vec3 curCollisionShift = curTri.n * (oppositeSide);
-
-            colResponseDelta += curCollisionShift;
-
-            Collision col{pointToPlaneDist, intersectPoint, curCollisionShift};
-            wallCollisions.emplace_back(col);
+            numCollisions++;
         }
-
-        numCollisions++;
     }
 
     if (numCollisions != 0 || !groundCollisions.empty())
