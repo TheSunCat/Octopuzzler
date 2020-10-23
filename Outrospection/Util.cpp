@@ -279,6 +279,81 @@ bool Util::inTriangle(const glm::vec3& point, const Triangle& tri)
         return false;
 }
 
+bool Util::intersectTriangleSphere(const glm::vec3& spherePos, float sphereRadius, const Triangle& tri, glm::vec3& intersectPoint, float& pointToPlaneDist)
+{
+    float sphereRadiusSquare = sphereRadius * sphereRadius;
+
+    bool outsideAllVerts = false;
+    bool outsideAllEdges = false;
+    bool fullyInsidePlane = false;
+
+    glm::vec3 v0 = tri.verts[0];
+    glm::vec3 v1 = tri.verts[1];
+    glm::vec3 v2 = tri.verts[2];
+
+    float d = -glm::dot((v0 + v1 + v2) / 3.0f, tri.n);
+
+    // the distance from the center of the collider sphere to the triangle
+    pointToPlaneDist = glm::dot(tri.n, spherePos) + d;
+
+
+    if (fabs(pointToPlaneDist) > sphereRadius)
+    {
+        // distance from center to plane is larger than sphere radius
+        return false;
+    }
+
+    // build 3 rays (line segments) so we can do plane projection later
+    glm::vec3 v1v0 = v1 - v0;
+    glm::vec3 v2v1 = v2 - v1;
+    glm::vec3 v0v2 = v0 - v2;
+
+    // project to triangle plane (3D -> 2D) and see if we are within its bounds
+    glm::vec3 planeX = glm::normalize(v1v0);
+    glm::vec3 planeY = glm::normalize(glm::cross(tri.n, v1v0));
+
+    // local function to do projection
+    auto project2D = [&](const glm::vec3& p) { return glm::vec2(glm::dot(p, planeX), glm::dot(p, planeY)); };
+
+    glm::vec2 planePos2D = project2D(spherePos);
+    glm::vec2 triangle2D[3] = { project2D(v0), project2D(v1), project2D(v2) };
+
+    if (Util::pointInside(triangle2D, 3, planePos2D))
+    {
+        fullyInsidePlane = true;
+    }
+
+
+    // check vertices
+    bool outsideV1 = (Util::length2V3(v0 - spherePos) > sphereRadiusSquare);
+    bool outsideV2 = (Util::length2V3(v1 - spherePos) > sphereRadiusSquare);
+    bool outsideV3 = (Util::length2V3(v2 - spherePos) > sphereRadiusSquare);
+
+    if (outsideV1 && outsideV2 && outsideV3)
+    {
+        //sphere outside of of all triangle vertices
+        outsideAllVerts = true;
+    }
+
+
+    // check lines (rays)
+
+    if (!Util::intersectRaySegmentSphere(Ray{ v0, v1v0 }, spherePos, sphereRadiusSquare, intersectPoint) &&
+        !Util::intersectRaySegmentSphere(Ray{ v1, v2v1 }, spherePos, sphereRadiusSquare, intersectPoint) &&
+        !Util::intersectRaySegmentSphere(Ray{ v2, v0v2 }, spherePos, sphereRadiusSquare, intersectPoint))
+    {
+        //sphere outside of all triangle edges
+        outsideAllEdges = true;
+    }
+
+    if (outsideAllVerts && outsideAllEdges && !fullyInsidePlane)
+    {
+        return false;
+    }
+
+    return true;
+}
+
 bool Util::sameSide(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& a, const glm::vec3& b)
 {
     const glm::vec3 cp1 = glm::cross(b - a, p1 - a);
