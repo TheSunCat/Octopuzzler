@@ -9,6 +9,7 @@
 #include "Core/UI/GUIIngame.h"
 #include "Core/UI/GUILayer.h"
 #include "Core/UI/GUIPause.h"
+#include "Core/World/PhysicsValues.h"
 #include "Events/Event.h"
 #include "Events/KeyEvent.h"
 #include "Events/MouseEvent.h"
@@ -43,7 +44,7 @@ Outrospection::Outrospection()
     createShaders();
 
     scene = Scene("TestLevel000");
-    player = Player(glm::vec3(0.0, 30.0, 0.0));
+    player = Player(glm::vec3(30.0, 0.0, 0.0));
 
     pushOverlay(ingameGUI);
 
@@ -106,6 +107,11 @@ void Outrospection::runGameLoop()
     const auto currentFrame = currentTimeMillis;
     deltaTime = float(currentFrame - lastFrame) / 1000.0f;
     lastFrame = currentFrame;
+
+    if(deltaTime == 0.0f)
+    {
+        deltaTime = 1.0f / 60.0f;
+    }
 
     //LOG_DEBUG("%f", deltaTime);
     // Update game world
@@ -200,23 +206,38 @@ void Outrospection::runGameLoop()
     glfwPollEvents();
 }
 
+float largestDist = 0.0f;
 void Outrospection::runTick()
 {
-    playerController.acceleratePlayer(controller, deltaTime, camera.mYaw);
-    playerController.collidePlayer(player, scene.collision);
+    // update gravity direction & strength
+    gravity = glm::normalize(glm::vec3(0) - player.position);
+    //gravityStrength = 9.8f;
+
+
+    playerController.acceleratePlayer(player, controller, glm::cross(gravity, camera.mRight), -camera.mUp, deltaTime);
+    playerController.collidePlayer(player, scene.collision, deltaTime);
     playerController.animatePlayer(player);
-    playerController.movePlayer(player);
+    playerController.movePlayer(player, deltaTime);
 
     if (controller.isGamepad)
-        camera.playerRotateCameraBy(controller.rightSide * 12.5f, controller.rightForward * 10);
+        camera.playerRotateCameraBy(controller.rStickX * 12.5f, controller.rStickY * 10);
 
     updateCamera();
+
+    float dist = glm::distance(glm::vec3(0, 0, 0), player.position) - 20.0f;
+
+    if(dist > largestDist)
+    {
+        //LOG_DEBUG("New largest distance %f", dist);
+
+        largestDist = dist;
+    }
 }
 
 void Outrospection::updateCamera()
 {
     // TODO need a better way to determine whether the camera should be auto-updated or not
-    camera.calculateCameraPosition(player, scene, playerController.isMoving());
+    camera.calculateCameraPosition(player, scene, deltaTime, playerController.isMoving());
 }
 
 void Outrospection::registerCallbacks() const
@@ -355,11 +376,11 @@ void Outrospection::updateInput()
             glfwGetGamepadState(joystick, &gamepadState);
 
             // make negative bc flipped!
-            controller.leftForward = -Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_LEFT_Y]);
-            controller.leftSide = Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_LEFT_X]);
+            controller.lStickY = -Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_LEFT_Y]);
+            controller.lStickX = Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_LEFT_X]);
 
-            controller.rightForward = -Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y]);
-            controller.rightSide = Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_RIGHT_X]);
+            controller.rStickY = -Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y]);
+            controller.rStickX = Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_RIGHT_X]);
 
             controller.leftTrigger = Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_LEFT_TRIGGER]);
 
@@ -381,16 +402,16 @@ void Outrospection::updateInput()
             }
             else if (axesCount == 2) // one stick! assumed to be left so we can move around
             {
-                controller.leftForward = -Util::valFromJoystickAxis(rawAxes[STICK_LEFT_UP]);
-                controller.leftSide = Util::valFromJoystickAxis(rawAxes[STICK_LEFT_SIDE]);
+                controller.lStickY = -Util::valFromJoystickAxis(rawAxes[STICK_LEFT_UP]);
+                controller.lStickX = Util::valFromJoystickAxis(rawAxes[STICK_LEFT_SIDE]);
             }
             else if (axesCount >= 4) // two sticks or more
             {
-                controller.rightForward = -Util::valFromJoystickAxis(rawAxes[STICK_LEFT_UP]);
-                controller.rightSide = Util::valFromJoystickAxis(rawAxes[STICK_LEFT_SIDE]);
+                controller.rStickY = -Util::valFromJoystickAxis(rawAxes[STICK_LEFT_UP]);
+                controller.rStickX = Util::valFromJoystickAxis(rawAxes[STICK_LEFT_SIDE]);
 
-                controller.leftForward = -Util::valFromJoystickAxis(rawAxes[STICK_LEFT_UP]);
-                controller.leftSide = Util::valFromJoystickAxis(rawAxes[STICK_LEFT_SIDE]);
+                controller.lStickY = -Util::valFromJoystickAxis(rawAxes[STICK_LEFT_UP]);
+                controller.lStickX = Util::valFromJoystickAxis(rawAxes[STICK_LEFT_SIDE]);
             }
 
 
@@ -412,7 +433,7 @@ void Outrospection::updateInput()
     }
 
     // we check this for zero because a fake controller may be plugged in. real controllers will usually never have zero
-    if (controller.leftForward == 0.0f || joystick == -1) // no *usable* controllers are present
+    if (controller.lStickY == 0.0f || joystick == -1) // no *usable* controllers are present
     {
         //LOG_DEBUG("No usable controller is present. ");
 
@@ -427,7 +448,7 @@ void Outrospection::updateInput()
         {
             leftForwardInput += -1.0f;
         }
-        controller.leftForward = leftForwardInput;
+        controller.lStickY = leftForwardInput;
 
 
         float leftSideInput = 0.0f;
@@ -439,7 +460,7 @@ void Outrospection::updateInput()
         {
             leftSideInput += -1.0f;
         }
-        controller.leftSide = leftSideInput;
+        controller.lStickX = leftSideInput;
 
 
         setKey(controller.jump, gameSettings.keyBindJump.keyCode, gameWindow);

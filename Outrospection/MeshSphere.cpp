@@ -38,7 +38,7 @@ MeshSphere::MeshSphere(unsigned int levels)
 
     int counter = 0;
 
-    for(int index : *mIndices[levels - 1])
+    for(int index : *mIndices[levels - 1]) // peck this, TODO support 0 res later
     {
         Vertex& v = mVertices[index];
 
@@ -61,7 +61,7 @@ MeshSphere::MeshSphere(unsigned int levels)
     name = "sphere";
     indicesSize = static_cast<unsigned int>((mIndices[levels - 1])->size());
 
-    Resource res = Resource("Textures/", "testSS00.png");
+    Resource res = Resource("Textures/", "TestSS03.png");
     texture = Outrospection::get().textureManager.get(res);
 
     // create buffers and arrays

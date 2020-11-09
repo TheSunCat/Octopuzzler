@@ -34,6 +34,15 @@ struct Vertex
 
 struct Triangle
 {
+    //Triangle (const Vertex& a, const Vertex& b, const Vertex& c)
+    //{
+    //    verts[0] = a.pos;
+    //    verts[1] = b.pos;
+    //    verts[2] = c.pos;
+
+    //    n = (a.normal + b.normal + c.normal) / 3.0f;
+    //}
+
     glm::vec3 verts[3];
     glm::vec3 n;
 };

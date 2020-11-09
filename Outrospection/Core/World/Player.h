@@ -22,6 +22,10 @@ public:
     glm::vec3 position{};
     Character character;
 
+    //Collider& collider;
+
     float eyeHeight = 0.7f;
-    float moveSpeed = 1.5f;
+    float moveSpeed = 1.0f;
+
+    float jumpStrength = 9.8f;
 };

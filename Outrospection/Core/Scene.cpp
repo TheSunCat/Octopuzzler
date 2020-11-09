@@ -76,10 +76,39 @@ Scene::Scene(std::string _name) : name(std::move(_name))
 
 void Scene::loadScene()
 {
-    MeshSphere sphere(6);
+#define SPHERE_SIZE 50.0f
 
-    objects.emplace_back(ObjectGeneral("sphere", glm::vec3(0), glm::vec3(0), glm::vec3(20), sphere)); // TODO not do this lol
+    MeshSphere sphere(5);
 
+    objects.emplace_back(ObjectGeneral("sphere", glm::vec3(0), glm::vec3(0), glm::vec3(SPHERE_SIZE), sphere)); // TODO not do this lol
+
+    auto& indices = sphere.mIndices[4];
+
+    for (int i = 0; i < (*indices).size(); i += 3)
+    {
+        Triangle tri = Triangle{ sphere.mVertices[(*indices)[i + 0]].pos * SPHERE_SIZE, sphere.mVertices[(*indices)[i + 1]].pos * SPHERE_SIZE, sphere.mVertices[(*indices)[i + 2]].pos * SPHERE_SIZE };
+
+        tri.n = -Util::genNormal(tri);
+
+        collision.push_back(tri);
+    }
+
+#ifdef DEBUG
+    std::vector<Vertex> colVerticesVector;
+    for (const Triangle& t : collision) {
+        colVerticesVector.push_back(Vertex{ t.verts[0], t.n });
+        colVerticesVector.push_back(Vertex{ t.verts[1], t.n });
+        colVerticesVector.push_back(Vertex{ t.verts[2], t.n });
+    }
+
+    std::vector<GLuint> indices2(colVerticesVector.size());
+    for (unsigned int i = 0; i < colVerticesVector.size(); i++)
+    {
+        indices2[i] = i;
+    }
+
+    colMesh = Mesh("Collision model", colVerticesVector, indices2);
+#endif
 
     // parser code partly by MarkCangila
 
@@ -177,12 +206,12 @@ void Scene::draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShade
 
 
 //#ifdef DEBUG
-//    _simpleShader.use();
-//    
-//    const glm::mat4 modelMat = glm::mat4(1.0f);
-//    _simpleShader.setMat4("model", modelMat);
-//
-//    colMesh.draw();
+    //_simpleShader.use();
+    //
+    //const glm::mat4 modelMat = glm::mat4(1.0f);
+    //_simpleShader.setMat4("model", modelMat);
+
+    //colMesh.draw();
 //#else
     for (const ObjectGeneral& object : objects)
     {

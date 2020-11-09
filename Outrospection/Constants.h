@@ -1,8 +1,5 @@
 #pragma once
 
-// subtract from vertical velocity
-constexpr auto GRAVITY = -0.25f;
-
 // divide velocity by this to slow down
 constexpr auto FRICTION = 1.35f;
 

@@ -6,7 +6,7 @@ Player::Player(const glm::vec3& _startPos) : position(_startPos), character("deb
 
 void Player::move(const glm::vec3& deltaPos)
 {
-    position += deltaPos * moveSpeed;
+    position += deltaPos;// *moveSpeed; // TODO not have deltaTime here
 
     character.position = position;
 }

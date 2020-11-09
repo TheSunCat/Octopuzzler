@@ -228,6 +228,7 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
     <ClInclude Include="Core\World\CollisionMesh.h" />
     <ClInclude Include="Core\World\ObjectGeneral.h" />
     <ClInclude Include="Core\World\ObjectRail.h" />
+    <ClInclude Include="Core\World\PhysicsValues.h" />
     <ClInclude Include="Core\World\Player.h" />
     <ClInclude Include="Core\World\PlayerController.h" />
     <ClInclude Include="Events\Event.h" />

@@ -29,11 +29,7 @@ Camera::Camera(const float posX, const float posY, const float posZ, const float
     updateCameraVectors();
 }
 
-void Camera::pan_ahead_of_player(const Player& player) {
-    
-}
-
-void Camera::calculateCameraPosition(const Player& player, const Scene& scene, const bool shouldAutoCam)
+void Camera::calculateCameraPosition(const Player& player, const Scene& scene, float deltaTime, const bool shouldAutoCam)
 {
     if (framesSinceUserRotate < framesBeforeAutoCam)
         framesSinceUserRotate++;
@@ -56,7 +52,7 @@ void Camera::calculateCameraPosition(const Player& player, const Scene& scene, c
 
     // what the camera is looking at
     const glm::vec3 newFocus = player.position + glm::vec3(0, player.eyeHeight, 0) + mOffset;
-    mFocus = glm::mix(mFocus, newFocus, 0.5f);
+    mFocus = newFocus; //glm::mix(mFocus, newFocus, pow(0.5f, deltaTime * 60));
 
     // raycast backwards from the camera's focus
     std::array<Ray, 3> arRay = {
