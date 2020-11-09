@@ -10,25 +10,19 @@ class Player;
 class PlayerController
 {
 public:
-    void acceleratePlayer(const Controller& controller, float deltaTime, float yaw);
+    void acceleratePlayer(Player& player, const Controller& controller, glm::vec3 forward, glm::vec3 down, float deltaTime);
 
-    void collidePlayer(Player& player, const std::vector<Triangle>& collisionData);
+    void collidePlayer(Player& player, const std::vector<Triangle>& collisionData, float deltaTime);
 
     void animatePlayer(Player& player);
 
-    void movePlayer(Player& player) const;
+    void movePlayer(Player& player, float deltaTime) const;
 
     bool isMoving() const;
 private:
-    static glm::vec3 processInput(const Controller& controller, float yaw);
-
-    // Return true if a triangle was hit.
-    void resolveCollision(Player& player, const std::vector<Triangle>& collisionData);
-
     glm::vec3 velocity = glm::vec3(0.0f);
-    glm::vec3 colResponseDelta = glm::vec3(0.0f); // delta not carried over ticks
-    glm::vec3 ledgeHitPoint = glm::vec3(0.0f);
+    glm::vec3 frameDelta = glm::vec3(0.0f);
 
-    bool grounded = false;
+    const Triangle* groundTri = nullptr;
     bool jumping = false;
 };

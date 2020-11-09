@@ -8,6 +8,7 @@
 #include "GameSettings.h"
 
 #include "Controller.h"
+#include "Util.h"
 #include "Core/Camera.h"
 #include "Core/LayerStack.h"
 #include "Core/Scene.h"
@@ -16,6 +17,7 @@
 #include "Core/Rendering/Shader.h"
 #include "Core/Rendering/TextureManager.h"
 #include "Core/UI/GUILayer.h"
+#include "Core/World/PhysicsValues.h"
 #include "Core/World/Player.h"
 #include "Core/World/PlayerController.h"
 
@@ -115,7 +117,6 @@ private:
 
                 currentTimeSeconds = std::chrono::system_clock::to_time_t(now);
                 currentTimeMillis = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
-                
 
                 std::this_thread::yield();
             }
@@ -135,6 +136,60 @@ private:
                 }
 
                 std::this_thread::yield();
+            }
+        }
+    };
+
+    std::thread inputThread{
+        [&]() -> void
+        {
+            char input[512];
+
+            while(true)
+            {
+                std::cin.getline(input, sizeof(input));
+
+                size_t size = strlen(input);
+
+                if(size > 0)
+                {
+                    char start = input[0];
+                    if(start == '/') // is a command
+                    {
+                        std::string command = &input[1];
+                        
+
+                        if(command.starts_with("gravity"))
+                        {
+                            if(command.length() == strlen("gravity"))
+                            {
+                                LOG("Gravity is %f.", gravityStrength);
+                            }
+                            else if (command.length() > strlen("gravity "))
+                            {
+
+                                float newGravity = Util::stof(command.substr(strlen("gravity ")));
+
+                                gravityStrength = newGravity;
+
+                                LOG("Set gravity to %f.", newGravity);
+                            }
+                        }
+                        else if (command.length() > strlen("resolution ") && command.starts_with("resolution "))
+                        {
+                            int newRes = Util::stoi(command.substr(strlen("resolution ")));
+
+                            gSphereResolution = newRes;
+                        }
+                        else {
+                            LOG_ERROR("Unknown command %s!", input);
+                        }
+
+                    } else // is a chat message
+                    {
+                        LOG("<John> %s", input);
+                    }
+                }
             }
         }
     };

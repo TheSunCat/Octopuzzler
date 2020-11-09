@@ -17,12 +17,12 @@ public:
     ControllerButton debugBreak;
 
     // L stick
-    float leftForward;
-    float leftSide;
+    float lStickX;
+    float lStickY;
 
     // R stick
-    float rightForward;
-    float rightSide;
+    float rStickX;
+    float rStickY;
 
     // L trigger
     float leftTrigger;
