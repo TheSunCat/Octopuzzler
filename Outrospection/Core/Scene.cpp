@@ -76,17 +76,21 @@ Scene::Scene(std::string _name) : name(std::move(_name))
 
 void Scene::loadScene()
 {
-#define SPHERE_SIZE 50.0f
+#define SPHERE_SIZE 1.0f
 
-    MeshSphere sphere(5);
+    MeshSphere sphere(2);
 
     objects.emplace_back(ObjectGeneral("sphere", glm::vec3(0), glm::vec3(0), glm::vec3(SPHERE_SIZE), sphere)); // TODO not do this lol
 
-    auto& indices = sphere.mIndices[4];
+    auto& indices = sphere.mIndices[1];
 
     for (int i = 0; i < (*indices).size(); i += 3)
     {
         Triangle tri = Triangle{ sphere.mVertices[(*indices)[i + 0]].pos * SPHERE_SIZE, sphere.mVertices[(*indices)[i + 1]].pos * SPHERE_SIZE, sphere.mVertices[(*indices)[i + 2]].pos * SPHERE_SIZE };
+
+        tri.verts[0] *= 50 + 5 * sin(tri.verts[0].y * 10);
+        tri.verts[1] *= 50 + 5 * sin(tri.verts[1].y * 10);
+        tri.verts[2] *= 50 + 5 * sin(tri.verts[2].y * 10);
 
         tri.n = -Util::genNormal(tri);
 
@@ -206,17 +210,17 @@ void Scene::draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShade
 
 
 //#ifdef DEBUG
-    //_simpleShader.use();
-    //
-    //const glm::mat4 modelMat = glm::mat4(1.0f);
-    //_simpleShader.setMat4("model", modelMat);
+    _simpleShader.use();
+    
+    const glm::mat4 modelMat = glm::mat4(1.0f);
+    _simpleShader.setMat4("model", modelMat);
 
-    //colMesh.draw();
+    colMesh.draw();
 //#else
-    for (const ObjectGeneral& object : objects)
-    {
-        object.draw(_objShader);
-    }
+    //for (const ObjectGeneral& object : objects)
+    //{
+    //    object.draw(_objShader);
+    //}
 //#endif
 
     _billboardShader.use();

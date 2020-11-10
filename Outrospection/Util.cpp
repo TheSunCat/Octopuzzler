@@ -11,6 +11,11 @@
 #include "Constants.h"
 #include "External/stb_image.h"
 
+glm::vec3 operator*(const int& lhs, const glm::vec3& vec)
+{
+    return glm::vec3(vec.x * lhs, vec.y * lhs, vec.z * lhs);
+}
+
 bool Util::glError()
 {
     bool ret = false;
@@ -302,6 +307,8 @@ bool Util::intersectTriangleSphere(const glm::vec3& spherePos, float sphereRadiu
         // distance from center to plane is larger than sphere radius
         return false;
     }
+
+    LOG_DEBUG("thang");
 
     // build 3 rays (line segments) so we can do plane projection later
     glm::vec3 v1v0 = v1 - v0;

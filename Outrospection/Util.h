@@ -5,6 +5,8 @@
 
 #include "Types.h"
 
+glm::vec3 operator*(const int& lhs, const glm::vec3& vec);
+
 namespace Util
 {
     // Check for OpenGL errors and print them

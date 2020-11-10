@@ -75,22 +75,33 @@ void PlayerController::collidePlayer(Player& player, const std::vector<Triangle>
             // we need to correct by this
             const float distancePastTri = (playerCollisionRadius - pointToPlaneDist);
 
+
             // angle at which we run into
             const float cosine = 1.0f - fabs(Util::cosBetweenV3(glm::normalize(velocity), tri.n));
+
+            if (cosine < 0)
+                continue;
 
             const float hypotenuse = distancePastTri, adjacentSide = cosine * hypotenuse;
             const float oppositeSide = sqrt(pow(hypotenuse, 2) - pow(adjacentSide, 2));
 
 
-            velocity += tri.n * oppositeSide;
+            glm::vec3 thing = glm::abs(glm::normalize((player.position + glm::vec3(0, 0.5, 0)) - intersectPoint));
 
-            // When I wrote this, only god and I knew the meaning.
-            // Now, only god knows.
+            glm::vec3 inverseThing = 1.0f - thing;
+
+            velocity += oppositeSide * tri.n;
+
+
+            //velocity += tri.n * oppositeSide;
+
+            //velocity *= glm::length(velocity) - pointToPlaneDist;
+            
             frameDelta = velocity * deltaTime;
 
             groundTri = &tri;
 
-            LOG_DEBUG("Colliding! %f", distancePastTri);
+            LOG_DEBUG("Colliding! %s", Util::vecToStr(thing));
         }
     }
 }
