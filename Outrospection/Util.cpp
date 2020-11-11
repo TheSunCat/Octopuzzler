@@ -278,7 +278,7 @@ bool Util::inTriangle(const glm::vec3& point, const Triangle& tri)
     const glm::vec3 proj = Util::projectV3(point, n);
 
     // if the distance from the triangle to the point is 0
-    if (Util::length2V3(proj) == 0)
+    if (Util::length2(proj) == 0)
         return true;
     else
         return false;
@@ -286,79 +286,78 @@ bool Util::inTriangle(const glm::vec3& point, const Triangle& tri)
 
 bool Util::intersectTriangleSphere(const glm::vec3& spherePos, float sphereRadius, const Triangle& tri, glm::vec3& intersectPoint, float& pointToPlaneDist)
 {
-    float sphereRadiusSquare = sphereRadius * sphereRadius;
-
-    bool outsideAllVerts = false;
-    bool outsideAllEdges = false;
-    bool fullyInsidePlane = false;
-
     glm::vec3 v0 = tri.verts[0];
     glm::vec3 v1 = tri.verts[1];
     glm::vec3 v2 = tri.verts[2];
 
-    float d = -glm::dot((v0 + v1 + v2) / 3.0f, tri.n);
+    v0 = v0 - spherePos;
+    v1 = v1 - spherePos;
+    v2 = v2 - spherePos;
+    float sphereRadiusSquare = sphereRadius * sphereRadius;
 
-    // the distance from the center of the collider sphere to the triangle
-    pointToPlaneDist = glm::dot(tri.n, spherePos) + d;
+    // Check if sphere collides with infinite triangle plane
 
+    float d = abs(glm::dot(v0, tri.n));
+    bool outsideOfPlane = d > sphereRadius;
 
-    if (fabs(pointToPlaneDist) > sphereRadius)
-    {
-        // distance from center to plane is larger than sphere radius
+    if (outsideOfPlane)
         return false;
-    }
 
-    LOG_DEBUG("thang");
+    pointToPlaneDist = d;
+
+
+    // Test if sphere is outside of each vert of the triangle
+
+    float v0dotv0 = glm::dot(v0, v0);
+    float v0dotv1 = glm::dot(v0, v1);
+    float v0dotv2 = glm::dot(v0, v2);
+    float v1dotv1 = glm::dot(v1, v1);
+    float v1dotv2 = glm::dot(v1, v2);
+    float v2dotv2 = glm::dot(v2, v2);
+
+
+    bool outOfVert0 = (v0dotv0 > sphereRadiusSquare) && (v0dotv1 > v0dotv0) && (v0dotv2 > v0dotv0);
+    bool outOfVert1 = (v1dotv1 > sphereRadiusSquare) && (v0dotv1 > v1dotv1) && (v1dotv2 > v1dotv1);
+    bool outOfVert2 = (v2dotv2 > sphereRadiusSquare) && (v0dotv2 > v2dotv2) && (v1dotv2 > v2dotv2);
+
+    bool outsideOfVerts = outOfVert0 && outOfVert1 && outOfVert2;
+
+    if (outsideOfVerts)
+        return false;
+
 
     // build 3 rays (line segments) so we can do plane projection later
     glm::vec3 v1v0 = v1 - v0;
     glm::vec3 v2v1 = v2 - v1;
     glm::vec3 v0v2 = v0 - v2;
 
-    // project to triangle plane (3D -> 2D) and see if we are within its bounds
-    glm::vec3 planeX = glm::normalize(v1v0);
-    glm::vec3 planeY = glm::normalize(glm::cross(tri.n, v1v0));
+    //float d1 = v0dotv1 - v0dotv0;
+    //float d2 = v1dotv2 - v1dotv1;
+    //float d3 = v0dotv2 - v2dotv2;
 
-    // local function to do projection
-    auto project2D = [&](const glm::vec3& p) { return glm::vec2(glm::dot(p, planeX), glm::dot(p, planeY)); };
+    //float e1 = glm::dot(v1v0, v1v0);
+    //float e2 = glm::dot(v2v1, v2v1);
+    //float e3 = glm::dot(v0v2, v0v2);
+    //glm::vec3 Q1 = v0 * e1 - d1 * v1v0;
+    //glm::vec3 Q2 = v1 * e2 - d2 * v2v1;
+    //glm::vec3 Q3 = v2 * e3 - d3 * v0v2;
+    //glm::vec3 QC = v2 * e1 - Q1;
+    //glm::vec3 QA = v0 * e2 - Q2;
+    //glm::vec3 QB = v1 * e3 - Q3;
 
-    glm::vec2 planePos2D = project2D(spherePos);
-    glm::vec2 triangle2D[3] = { project2D(v0), project2D(v1), project2D(v2) };
+    //bool outOfEdge0 = (glm::dot(Q1, Q1) > sphereRadiusSquare * e1 * e1) && (glm::dot(Q1, QC) > 0);
+    //bool outOfEdge1 = (glm::dot(Q2, Q2) > sphereRadiusSquare * e2 * e2) && (glm::dot(Q2, QA) > 0);
+    //bool outOfEdge2 = (glm::dot(Q3, Q3) > sphereRadiusSquare * e3 * e3) && (glm::dot(Q3, QB) > 0);
 
-    if (Util::pointInside(triangle2D, 3, planePos2D))
-    {
-        fullyInsidePlane = true;
-    }
+    bool outOfEdge0 = Util::intersectRaySegmentSphere(Ray{ v0, v1v0 }, spherePos, sphereRadiusSquare, intersectPoint);
+    bool outOfEdge1 = Util::intersectRaySegmentSphere(Ray{ v1, v2v1 }, spherePos, sphereRadiusSquare, intersectPoint);
+    bool outOfEdge2 = Util::intersectRaySegmentSphere(Ray{ v2, v0v2 }, spherePos, sphereRadiusSquare, intersectPoint);
 
+    bool outsideOfEdges = outOfEdge0 && outOfEdge1 && outOfEdge2;
 
-    // check vertices
-    bool outsideV1 = (Util::length2V3(v0 - spherePos) > sphereRadiusSquare);
-    bool outsideV2 = (Util::length2V3(v1 - spherePos) > sphereRadiusSquare);
-    bool outsideV3 = (Util::length2V3(v2 - spherePos) > sphereRadiusSquare);
+    bool separated = outsideOfPlane || outsideOfVerts || outsideOfEdges;
 
-    if (outsideV1 && outsideV2 && outsideV3)
-    {
-        //sphere outside of of all triangle vertices
-        outsideAllVerts = true;
-    }
-
-
-    // check lines (rays)
-
-    if (!Util::intersectRaySegmentSphere(Ray{ v0, v1v0 }, spherePos, sphereRadiusSquare, intersectPoint) &&
-        !Util::intersectRaySegmentSphere(Ray{ v1, v2v1 }, spherePos, sphereRadiusSquare, intersectPoint) &&
-        !Util::intersectRaySegmentSphere(Ray{ v2, v0v2 }, spherePos, sphereRadiusSquare, intersectPoint))
-    {
-        //sphere outside of all triangle edges
-        outsideAllEdges = true;
-    }
-
-    if (outsideAllVerts && outsideAllEdges && !fullyInsidePlane)
-    {
-        return false;
-    }
-
-    return true;
+    return !separated; // together ♥
 }
 
 bool Util::sameSide(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& a, const glm::vec3& b)
@@ -400,6 +399,30 @@ bool Util::pointInside(const glm::vec2 poly[], const int pcount, const glm::vec2
             return false;
     }
     return true;
+}
+
+bool Util::pointInTriangle(const glm::vec3& point, const Triangle& tri)
+{
+    glm::vec3 e10 = tri.verts[1] - tri.verts[0];
+    glm::vec3 e20 = tri.verts[2] - tri.verts[0];
+
+    float a = glm::dot(e10, e10);
+    float b = glm::dot(e10, e20);
+    float c = glm::dot(e20, e20);
+
+    float ac_bb = (a * c) - (b * b);
+
+    glm::vec3 vp(point.x - tri.verts[0].x, point.y - tri.verts[0].y, point.z - tri.verts[2].z);
+
+    float d = glm::dot(vp, e10);
+    float e = glm::dot(vp, e20);
+
+    float x = (d * c) - (e * b);
+    float y = (e * a) - (d * b);
+    float z = x + y - ac_bb;
+
+
+    return ((uint32_t(z) & ~(uint32_t(x) | uint32_t(y))) & 0x80000000);
 }
 
 #include <array>
@@ -461,7 +484,12 @@ glm::vec3 Util::genNormal(const Triangle& t)
     return glm::normalize(normal);
 }
 
-float Util::length2V3(const glm::vec3& v)
+float Util::dist2(const glm::vec3& v0, const glm::vec3& v1)
+{
+    return pow(v0.x - v1.x, 2) + pow(v0.y - v1.y, 2) + pow(v0.z - v1.z, 2);
+}
+
+float Util::length2(const glm::vec3& v)
 {
     return (v.x * v.x) + (v.y * v.y) + (v.z * v.z);
 }
@@ -494,6 +522,38 @@ glm::vec3 Util::projectV3(const glm::vec3 a, const glm::vec3 b)
 {
     const glm::vec3 bn = b / glm::length(b);
     return bn * glm::dot(a, bn);
+}
+
+bool Util::lowestRoot(float a, float b, float c, float maxRoot, float& root)
+{
+    float determinant = b * b - (4.0f * a * c); // b² - 4ac
+
+    if (determinant < 0.0f) // negative sqrt = no solutions
+        return false;
+
+    float sqrtD = sqrt(determinant);
+    float r0 = (-b - sqrtD) / (2 * a);
+    float r1 = (-b + sqrtD) / (2 * a);
+
+    if(r0 > r1)
+        Util::swap(r0, r1);
+
+    // get lowest root
+    if(r0 > 0 && r0 < maxRoot)
+    {
+        root = r0;
+        return true;
+    }
+
+    // if r0 < 0, we want r1
+    if(r1 > 0 && r1 < maxRoot)
+    {
+        root = r1;
+        return true;
+    }
+
+    // no valid solutions
+    return false;
 }
 
 float Util::valFromJoystickAxis(float axis)

@@ -1,4 +1,4 @@
-#include "PlayerController.h"
+﻿#include "PlayerController.h"
 #include "Core.h"
 
 #include "Constants.h"
@@ -56,52 +56,185 @@ void PlayerController::collidePlayer(Player& player, const std::vector<Triangle>
 {
     const float playerCollisionRadius = 0.5f;
 
-    glm::vec3 ghostPosition = player.position + glm::vec3(0, 0.5, 0) + frameDelta;
+    glm::vec3 basePoint = player.position + glm::vec3(0, 0.5, 0);
 
     groundTri = nullptr;
 
-    auto intersectPoint = glm::vec3(0);
-    float pointToPlaneDist = 0;
+    glm::vec3 normalizedVelocity = glm::normalize(velocity);
+
+    float closestCollision = INFINITY;
+    glm::vec3 intersectionPoint;
+    bool collided = false;
+
     for(const Triangle& tri : collisionData)
     {
-        bool colliding = Util::intersectTriangleSphere(ghostPosition, playerCollisionRadius, tri, intersectPoint, pointToPlaneDist);
+        // thanks to https://peroxide.dk/papers/collision/collision.pdf for code inspiration
+
+        auto plane = Plane(tri);
+
+        if (!plane.isFrontFacingTo(normalizedVelocity))
+            continue; // we are going in the direction of the normal
+
+        
+
+        float t0, t1;
+        bool embeddedInPlane = false;
+
+        float signedDistToPlane = plane.signedDistanceTo(basePoint);
 
 
-        if (colliding)
+        float normalDotVelocity = glm::dot(plane.n, frameDelta);
+
+        if (normalDotVelocity == 0.0f) // we are perpendicular to the plane
+        {
+            if (abs(signedDistToPlane) >= 1.0f) // not embedded in plane
+            {
+                continue;
+            } else
+            {
+                // embedded in plane
+                // we intersect it the whole time
+                embeddedInPlane = true;
+                t0 = 0;
+                t1 = 1;
+            }
+        } else 
+        {
+            t0 = ( 1.0f - signedDistToPlane) / normalDotVelocity;
+            t1 = (-1.0f - signedDistToPlane) / normalDotVelocity;
+
+            if(t0 > t1) // swap them 
+            {
+                Util::swap(t0, t1);
+            }
+
+            if(t0 > 1.0f || t1 < 0.0f)
+            {
+                // both values are out of range [0, 1]
+                continue;
+            }
+
+            t0 = Util::clamp(t0, 0.0f, 1.0f);
+            t1 = Util::clamp(t1, 0.0f, 1.0f);
+        }
+
+
+        // OK, at this point we have two time values t0 and t1
+        // between which our swept sphere intersects with the plane.
+        // If any collision is to occur, it will happen between t0 and t1.
+
+
+        glm::vec3 collisionPoint;
+        bool foundCollision = false;
+        float t = 1.0f;
+
+        // Check for collision inside triangle.
+        // must be at time = t0
+        if(!embeddedInPlane)
+        {
+            glm::vec3 planeIntersectPoint = (basePoint - plane.n) + (t0 * frameDelta);
+
+            if(Util::pointInTriangle(planeIntersectPoint, tri))
+            {
+                foundCollision = true;
+                t = t0;
+                collisionPoint = planeIntersectPoint;
+            }
+        }
+
+
+
+        // swept sphere against points and edges
+        // scary
+        if(!foundCollision)
+        {
+            float velocityLength2 = Util::length2(frameDelta);
+
+            float a, b, c; // quadratic equation
+            float newT;
+
+            // solve a*t² + b*t + c = 0
+            a = velocityLength2;
+
+            // check verts
+            for (auto vert : tri.verts)
+            {
+                b = 2.0f * glm::dot(frameDelta, basePoint - vert);
+                c = Util::length2(vert - basePoint) - 1.0f;
+                if (Util::lowestRoot(a, b, c, t, newT))
+                {
+                    t = newT;
+                    foundCollision = true;
+                    collisionPoint = vert;
+                }
+            }
+
+
+            // check against edges
+            for (unsigned int i = 0; i < 3; i++)
+            {
+                glm::vec3 edge = tri.verts[(i + 1) % 3] - tri.verts[i];
+                glm::vec3 baseToVert = tri.verts[i] - basePoint;
+
+                float edgeLength2 = Util::length2(edge);
+                float edgeDotVelocity = glm::dot(edge, frameDelta);
+                float edgeDotBaseToVert = glm::dot(edge, baseToVert);
+
+                a = edgeLength2 * velocityLength2 + (edgeDotVelocity * edgeDotVelocity);
+                b = edgeLength2 * (2.0f * glm::dot(frameDelta, baseToVert)) - 2.0f * edgeDotVelocity * edgeDotBaseToVert;
+                c = edgeLength2 * (1.0f - Util::length2(baseToVert)) + edgeDotBaseToVert * edgeDotBaseToVert;
+
+                // does the swept sphere collide against infinite edge?
+                if (Util::lowestRoot(a, b, c, t, newT))
+                {
+                    // check if intersection is actually within segment
+                    float f = (edgeDotVelocity * newT - edgeDotBaseToVert) / edgeLength2;
+                    if (f >= 0 && f <= 1)
+                    { // intersection is within segment
+                        t = newT;
+                        foundCollision = true;
+                        collisionPoint = tri.verts[i] + f * edge;
+                    }
+                }
+            }
+
+            // finally done!
+            if(foundCollision)
+            {
+                // t = time of collision
+                float distToCollision = t * glm::length(frameDelta);
+
+                // is this the closest hit or nah
+                if(distToCollision < closestCollision)
+                {
+                    closestCollision = distToCollision;
+                    intersectionPoint = collisionPoint;
+                    collided = foundCollision;
+                    
+                }
+            }
+        }
+
+
+
+
+        if (collided) // TODO response
         {
 
-            glm::vec3 normalComponent = glm::cross(tri.n, velocity);
-
-            // we need to correct by this
-            const float distancePastTri = (playerCollisionRadius - pointToPlaneDist);
+            LOG_DEBUG("COLLIDING");
 
 
-            // angle at which we run into
-            const float cosine = 1.0f - fabs(Util::cosBetweenV3(glm::normalize(velocity), tri.n));
-
-            if (cosine < 0)
-                continue;
-
-            const float hypotenuse = distancePastTri, adjacentSide = cosine * hypotenuse;
-            const float oppositeSide = sqrt(pow(hypotenuse, 2) - pow(adjacentSide, 2));
+            // I suggest we add smart stuff under here
 
 
-            glm::vec3 thing = glm::abs(glm::normalize((player.position + glm::vec3(0, 0.5, 0)) - intersectPoint));
 
-            glm::vec3 inverseThing = 1.0f - thing;
+            // And above here
 
-            velocity += oppositeSide * tri.n;
-
-
-            //velocity += tri.n * oppositeSide;
-
-            //velocity *= glm::length(velocity) - pointToPlaneDist;
+            // velocity = infinity;
             
             frameDelta = velocity * deltaTime;
 
             groundTri = &tri;
-
-            LOG_DEBUG("Colliding! %s", Util::vecToStr(thing));
         }
     }
 }
@@ -124,5 +257,5 @@ void PlayerController::movePlayer(Player& player, float deltaTime) const
 
 bool PlayerController::isMoving() const
 {
-    return Util::length2V3(velocity) != 0.0f;
+    return Util::length2(velocity) != 0.0f;
 }
