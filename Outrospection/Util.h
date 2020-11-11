@@ -28,6 +28,14 @@ namespace Util
     }
 
     template <typename T>
+    void swap(T& a, T& b)
+    {
+        T temp = a;
+        b = a;
+        a = temp;
+    }
+
+    template <typename T>
     T clamp(const T& val, const T& min, const T& max)
     {
         if (min > max)
@@ -86,12 +94,16 @@ namespace Util
 
     bool pointInside(const glm::vec2 poly[], int pcount, const glm::vec2& v);
 
+    bool pointInTriangle(const glm::vec3& point, const Triangle& tri);
+
     std::vector<GLuint> subdivide(std::vector<glm::vec3>& vertices,
                                     const std::vector<GLuint>& triangles);
 
     glm::vec3 genNormal(const Triangle& t);
 
-    float length2V3(const glm::vec3& v);
+    float dist2(const glm::vec3& v0, const glm::vec3& v1);
+
+    float length2(const glm::vec3& v);
 
     bool isZeroV3(const glm::vec3& v);
 
@@ -102,6 +114,8 @@ namespace Util
     float cosBetweenV3(glm::vec3 a, glm::vec3 b);
 
     glm::vec3 projectV3(glm::vec3 a, glm::vec3 b);
+
+    bool lowestRoot(float a, float b, float c, float maxRoot, float& root);
 
     // return input depending on constant deadzones and limitzones
     float valFromJoystickAxis(float axis);
