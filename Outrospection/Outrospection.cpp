@@ -44,7 +44,7 @@ Outrospection::Outrospection()
     createShaders();
 
     scene = Scene("TestLevel000");
-    player = Player(glm::vec3(30.0, 0.0, 0.0));
+    player = Player(glm::vec3(0.0, 60.0, 0.0));
 
     pushOverlay(ingameGUI);
 
@@ -210,14 +210,12 @@ float largestDist = 0.0f;
 void Outrospection::runTick()
 {
     // update gravity direction & strength
-    gravity = glm::normalize(glm::vec3(0) - player.position);
+    Physics::gravity = glm::normalize(glm::vec3(0) - player.position);
     //gravityStrength = 9.8f;
 
 
-    playerController.acceleratePlayer(player, controller, glm::cross(gravity, camera.mRight), -camera.mUp, deltaTime);
-    playerController.collidePlayer(player, scene.collision, deltaTime);
-    playerController.animatePlayer(player);
-    playerController.movePlayer(player, deltaTime);
+    playerController.acceleratePlayer(player, controller, glm::cross(Physics::gravity, camera.mRight), -camera.mUp, deltaTime);
+    playerController.collidePlayer(player, Physics::gravity * -Physics::gravityStrength * deltaTime, scene.collision);
 
     if (controller.isGamepad)
         camera.playerRotateCameraBy(controller.rStickX * 12.5f, controller.rStickY * 10);

@@ -264,9 +264,6 @@
     <ClCompile Include="Core\World\Character.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Core\World\CollisionMesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Core\World\ObjectGeneral.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -289,6 +286,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MeshSphere.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\World\CollisionMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

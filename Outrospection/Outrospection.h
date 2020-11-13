@@ -163,14 +163,14 @@ private:
                         {
                             if(command.length() == strlen("gravity"))
                             {
-                                LOG("Gravity is %f.", gravityStrength);
+                                LOG("Gravity is %f.", Physics::gravityStrength);
                             }
                             else if (command.length() > strlen("gravity "))
                             {
 
                                 float newGravity = Util::stof(command.substr(strlen("gravity ")));
 
-                                gravityStrength = newGravity;
+                                Physics::gravityStrength = newGravity;
 
                                 LOG("Set gravity to %f.", newGravity);
                             }
@@ -179,7 +179,7 @@ private:
                         {
                             int newRes = Util::stoi(command.substr(strlen("resolution ")));
 
-                            gSphereResolution = newRes;
+                            Physics::gSphereResolution = newRes;
                         }
                         else {
                             LOG_ERROR("Unknown command %s!", input);

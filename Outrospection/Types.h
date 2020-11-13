@@ -47,6 +47,25 @@ struct Triangle
     glm::vec3 n;
 };
 
+struct CollisionPackage
+{
+    glm::vec3 eRadius; // elipsoid radius
+
+    glm::vec3 R3Velocity;
+    glm::vec3 R3Position;
+
+    // info in eSpace
+    glm::vec3 velocity;
+    glm::vec3 normalizedVelocity;
+    glm::vec3 basePoint;
+
+    // Collision info
+    bool foundCollision;
+    float nearestDistance;
+    glm::vec3 intersectionPoint;
+
+};
+
 struct Plane
 {
     float equation[4]{};

@@ -84,22 +84,28 @@ void Scene::loadScene()
 
     auto& indices = sphere.mIndices[1];
 
+    std::vector<Triangle> colTris;
+
     for (int i = 0; i < (*indices).size(); i += 3)
     {
-        Triangle tri = Triangle{ sphere.mVertices[(*indices)[i + 0]].pos * SPHERE_SIZE, sphere.mVertices[(*indices)[i + 1]].pos * SPHERE_SIZE, sphere.mVertices[(*indices)[i + 2]].pos * SPHERE_SIZE };
+        Triangle tri = Triangle{
+            sphere.mVertices[(*indices)[i + 0]].pos * SPHERE_SIZE,
+            sphere.mVertices[(*indices)[i + 1]].pos * SPHERE_SIZE, sphere.mVertices[(*indices)[i + 2]].pos * SPHERE_SIZE
+        };
 
         tri.verts[0] *= 50 + 5 * sin(tri.verts[0].y * 10);
         tri.verts[1] *= 50 + 5 * sin(tri.verts[1].y * 10);
         tri.verts[2] *= 50 + 5 * sin(tri.verts[2].y * 10);
 
-        tri.n = -Util::genNormal(tri);
+        tri.n = Util::genNormal(tri);
 
-        collision.push_back(tri);
+        colTris.push_back(tri);
     }
+
 
 #ifdef DEBUG
     std::vector<Vertex> colVerticesVector;
-    for (const Triangle& t : collision) {
+    for (const Triangle& t : colTris) {
         colVerticesVector.push_back(Vertex{ t.verts[0], t.n });
         colVerticesVector.push_back(Vertex{ t.verts[1], t.n });
         colVerticesVector.push_back(Vertex{ t.verts[2], t.n });
@@ -113,6 +119,10 @@ void Scene::loadScene()
 
     colMesh = Mesh("Collision model", colVerticesVector, indices2);
 #endif
+
+    std::string __name("Planet");
+
+    collision.emplace_back(__name, colTris);
 
     // parser code partly by MarkCangila
 
@@ -173,20 +183,20 @@ void Scene::loadScene()
                     parseCollision(line);
 
 #ifdef DEBUG
-                std::vector<Vertex> colVerticesVector;
-                for (const Triangle& t : collision) {
-                    colVerticesVector.push_back(Vertex{ t.verts[0], t.n });
-                    colVerticesVector.push_back(Vertex{ t.verts[1], t.n });
-                    colVerticesVector.push_back(Vertex{ t.verts[2], t.n });
-                }
+                //std::vector<Vertex> colVerticesVector;
+                //for (const Triangle& t : collision) {
+                //    colVerticesVector.push_back(Vertex{ t.verts[0], t.n });
+                //    colVerticesVector.push_back(Vertex{ t.verts[1], t.n });
+                //    colVerticesVector.push_back(Vertex{ t.verts[2], t.n });
+                //}
 
-                std::vector<GLuint> indices(colVerticesVector.size());
-                for (unsigned int i = 0; i < colVerticesVector.size(); i++)
-                {
-                    indices[i] = i;
-                }
+                //std::vector<GLuint> indices(colVerticesVector.size());
+                //for (unsigned int i = 0; i < colVerticesVector.size(); i++)
+                //{
+                //    indices[i] = i;
+                //}
 
-                colMesh = Mesh("Collision model", colVerticesVector, indices);
+                //colMesh = Mesh("Collision model", colVerticesVector, indices);
 #endif
                 }
             } // end switch(currentState)
@@ -287,6 +297,8 @@ Character Scene::parseChar(const std::string& line)
 void Scene::parseCollision(const std::string& name)
 {
     std::ifstream collisionFile("./res/ObjectData/" + name + "/" + name + ".ocl");
+    std::vector<Triangle> colData;
+
     for (std::string line; getline(collisionFile, line);)
     {
         if (line.empty() || line[0] == '#')
@@ -306,13 +318,13 @@ void Scene::parseCollision(const std::string& name)
             vertices.emplace_back(Util::stof(sStr[0]), Util::stof(sStr[1]), Util::stof(sStr[2]));
         }
 
-        collision.emplace_back(Triangle{vertices[0], vertices[1], vertices[2]});
-        collision.back().n = Util::genNormal(collision.back());
+        colData.emplace_back(Triangle{vertices[0], vertices[1], vertices[2]});
+        colData.back().n = Util::genNormal(colData.back());
     }
 
     collisionFile.close();
 
-    for (auto iter = collision.begin(); iter != collision.end(); ++iter)
+    for (auto iter = colData.begin(); iter != colData.end(); ++iter)
     {
         Triangle curTri = *iter;
         if (fabs(curTri.n.y) > 0.1f)
@@ -324,6 +336,10 @@ void Scene::parseCollision(const std::string& name)
             wallCollision.emplace_back(iter);
         }
     }
+
+    std::string __name = name;
+
+    collision.push_back(CollisionMesh(__name, colData));
 }
 
 GLuint Scene::loadCubemap(std::string name)
