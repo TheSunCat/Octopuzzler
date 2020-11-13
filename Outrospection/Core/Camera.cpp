@@ -31,6 +31,7 @@ Camera::Camera(const float posX, const float posY, const float posZ, const float
 
 void Camera::calculateCameraPosition(const Player& player, const Scene& scene, float deltaTime, const bool shouldAutoCam)
 {
+
     if (framesSinceUserRotate < framesBeforeAutoCam)
         framesSinceUserRotate++;
 
@@ -55,7 +56,7 @@ void Camera::calculateCameraPosition(const Player& player, const Scene& scene, f
     mFocus = newFocus; //glm::mix(mFocus, newFocus, pow(0.5f, deltaTime * 60));
 
     // raycast backwards from the camera's focus
-    std::array<Ray, 3> arRay = {
+    /*std::array<Ray, 3> arRay = {
         Ray{mFocus - mRight * 0.1f, -mFront},
         Ray{mFocus, -mFront},
         Ray{mFocus + mRight * 0.1f, -mFront}
@@ -94,7 +95,7 @@ void Camera::calculateCameraPosition(const Player& player, const Scene& scene, f
             mDist = correctedDist;
         }
     }
-    else // not colliding, we're free to move all the way out to desiredDistance
+    else*/ // not colliding, we're free to move all the way out to desiredDistance
     {
         if (mDesiredDistance - mDist > 0.5f) // we're zooming out & it's a big diff so we want to avoid snap
             mDist = Util::lerp(mDist, mDesiredDistance, 0.12f);

@@ -13,7 +13,9 @@ public:
 
     explicit Player(const glm::vec3& _startPos);
 
-    void move(const glm::vec3& deltaPos);
+    void moveBy(const glm::vec3& deltaPos);
+
+    void moveTo(const glm::vec3& newPos);
 
     //void setAnimation(AnimType _animType);
 

@@ -4,9 +4,16 @@ Player::Player(const glm::vec3& _startPos) : position(_startPos), character("deb
 {
 }
 
-void Player::move(const glm::vec3& deltaPos)
+void Player::moveBy(const glm::vec3& deltaPos)
 {
     position += deltaPos;// *moveSpeed; // TODO not have deltaTime here
+
+    character.position = position;
+}
+
+void Player::moveTo(const glm::vec3& newPos)
+{
+    position = newPos;
 
     character.position = position;
 }

@@ -115,6 +115,8 @@ namespace Util
 
     glm::vec3 projectV3(glm::vec3 a, glm::vec3 b);
 
+    void setLength(glm::vec3& v, float length);
+
     bool lowestRoot(float a, float b, float c, float maxRoot, float& root);
 
     // return input depending on constant deadzones and limitzones

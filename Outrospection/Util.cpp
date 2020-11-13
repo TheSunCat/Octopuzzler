@@ -524,6 +524,11 @@ glm::vec3 Util::projectV3(const glm::vec3 a, const glm::vec3 b)
     return bn * glm::dot(a, bn);
 }
 
+void Util::setLength(glm::vec3& v, float length)
+{
+    v = glm::normalize(v) * length;
+}
+
 bool Util::lowestRoot(float a, float b, float c, float maxRoot, float& root)
 {
     float determinant = b * b - (4.0f * a * c); // b² - 4ac

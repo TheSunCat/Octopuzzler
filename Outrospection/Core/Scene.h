@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/World/Character.h"
+#include "Core/World/CollisionMesh.h"
 #include "Core/World/ObjectGeneral.h"
 
 class Shader;
@@ -25,7 +26,7 @@ public:
     std::vector<ObjectGeneral> skies;
     std::vector<Character> characters;
 
-    std::vector<Triangle> collision;
+    std::vector<CollisionMesh> collision;
     std::vector<std::vector<Triangle>::const_iterator> groundCollision;
     std::vector<std::vector<Triangle>::const_iterator> wallCollision;
 private:
