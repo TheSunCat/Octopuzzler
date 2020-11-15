@@ -44,7 +44,7 @@ Outrospection::Outrospection()
     createShaders();
 
     scene = Scene("TestLevel000");
-    player = Player(glm::vec3(0.0, 60.0, 0.0));
+    player = Player(glm::vec3(1.0, 60.0, 0.0));
 
     pushOverlay(ingameGUI);
 

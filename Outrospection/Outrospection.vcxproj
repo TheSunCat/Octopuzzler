@@ -242,6 +242,7 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
     <ClInclude Include="MeshSphere.h" />
     <ClInclude Include="ObjectProcedural.h" />
     <ClInclude Include="Outrospection.h" />
+    <ClInclude Include="RigidBody.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="Util.h" />
   </ItemGroup>
@@ -276,6 +277,7 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
     <ClCompile Include="KeyBinding.cpp" />
     <ClCompile Include="MeshSphere.cpp" />
     <ClCompile Include="Outrospection.cpp" />
+    <ClCompile Include="RigidBody.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Util.cpp" />
   </ItemGroup>

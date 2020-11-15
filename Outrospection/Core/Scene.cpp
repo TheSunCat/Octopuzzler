@@ -77,12 +77,13 @@ Scene::Scene(std::string _name) : name(std::move(_name))
 void Scene::loadScene()
 {
 #define SPHERE_SIZE 1.0f
+#define SPHERE_RES 4
 
-    MeshSphere sphere(2);
+    MeshSphere sphere(SPHERE_RES);
 
     objects.emplace_back(ObjectGeneral("sphere", glm::vec3(0), glm::vec3(0), glm::vec3(SPHERE_SIZE), sphere)); // TODO not do this lol
 
-    auto& indices = sphere.mIndices[1];
+    auto& indices = sphere.mIndices[SPHERE_RES - 1];
 
     std::vector<Triangle> colTris;
 
@@ -93,9 +94,9 @@ void Scene::loadScene()
             sphere.mVertices[(*indices)[i + 1]].pos * SPHERE_SIZE, sphere.mVertices[(*indices)[i + 2]].pos * SPHERE_SIZE
         };
 
-        tri.verts[0] *= 50 + 5 * sin(tri.verts[0].y * 10);
-        tri.verts[1] *= 50 + 5 * sin(tri.verts[1].y * 10);
-        tri.verts[2] *= 50 + 5 * sin(tri.verts[2].y * 10);
+        tri.verts[0] *= 50 + 5 * sin(tri.verts[0].x * 10);
+        tri.verts[1] *= 50 + 5 * sin(tri.verts[1].x * 10);
+        tri.verts[2] *= 50 + 5 * sin(tri.verts[2].x * 10);
 
         tri.n = Util::genNormal(tri);
 
