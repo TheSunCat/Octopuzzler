@@ -28,7 +28,11 @@ void CollisionMesh::collidesWith(CollisionPackage& package, const Triangle& tri)
     {
         //return; // we are going in the direction of the normal
         //tri.n = -tri.n;
-        plane = Plane(tri);;
+        Triangle newTri = Triangle(tri);
+        newTri.n = -newTri.n;
+
+        plane = Plane(newTri);
+        
 
     }
 
@@ -49,7 +53,6 @@ void CollisionMesh::collidesWith(CollisionPackage& package, const Triangle& tri)
         }
         else
         {
-            LOG_DEBUG("checking collision with %s", Util::vecToStr(tri.n));
             // embedded in plane
             // we intersect it the whole time
             embeddedInPlane = true;
@@ -175,7 +178,6 @@ void CollisionMesh::collidesWith(CollisionPackage& package, const Triangle& tri)
             package.nearestDistance = distToCollision;
             package.intersectionPoint = collisionPoint;
             package.foundCollision = foundCollision;
-
         }
     }
 }

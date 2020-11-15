@@ -35,15 +35,15 @@ void PlayerController::acceleratePlayer(Player& player, const Controller& contro
         {
             jumping = true;
 
-            LOG_DEBUG("jumping!");
+            //LOG_DEBUG("jumping!");
 
-            velocity += (-Physics::gravity * (player.jumpStrength));
+            velocity = (-Physics::gravity * (player.jumpStrength));
         }
     }
 
     velocity += Physics::gravity * Physics::gravityStrength * deltaTime;
 
-    LOG("Velocity = %sm/s", Util::vecToStr(velocity));
+    //LOG("Velocity = %sm/s", Util::vecToStr(velocity));
 
     velocity *= deltaTime;
 }
@@ -52,7 +52,7 @@ void PlayerController::collidePlayer(Player& player, const glm::vec3& gravity, c
 {
     package.eRadius = glm::vec3(1, 1, 1);
 
-    package.R3Position = player.position;
+    package.R3Position = player.position;// + glm::vec3(0, 0.5, 0);
     package.R3Velocity = velocity;
 
     // calc position and velocity in eSpace
@@ -64,7 +64,7 @@ void PlayerController::collidePlayer(Player& player, const glm::vec3& gravity, c
 
     glm::vec3 finalPosition = collideWithWorld(eSpacePos, eSpaceVel, collision);
 
-
+    LOG_DEBUG("%i", collisionRecursionDepth);
     // the gravity of the situation
 
     // convert back from eSpace into R3
@@ -86,7 +86,7 @@ void PlayerController::collidePlayer(Player& player, const glm::vec3& gravity, c
 
 glm::vec3 PlayerController::collideWithWorld(const glm::vec3& pos, const glm::vec3& vel, const std::vector<CollisionMesh>& collision)
 {
-    float veryCloseDistance = 0.0005f;
+    float veryCloseDistance = 0.005f;
 
     // do we need to be :worried:
     if (collisionRecursionDepth > 5)
@@ -97,6 +97,7 @@ glm::vec3 PlayerController::collideWithWorld(const glm::vec3& pos, const glm::ve
     package.normalizedVelocity = glm::normalize(vel);
     package.basePoint = pos;
     package.foundCollision = false;
+    package.nearestDistance = INFINITY;
 
     // check collision!
     for(const CollisionMesh& col : collision)
@@ -109,8 +110,6 @@ glm::vec3 PlayerController::collideWithWorld(const glm::vec3& pos, const glm::ve
     {
         return pos + vel;
     }
-
-    LOG_ERROR("Colliding!--------------------------------------------------------------");
 
 
     // if we did collide
