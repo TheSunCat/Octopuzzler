@@ -198,6 +198,11 @@ void Camera::zoomBy(const float yoffset)
     mZoom = Util::clamp(mZoom, 1.0f, 45.0f);
 }
 
+void Camera::setDownVector(glm::vec3 vec)
+{
+    mWorldUp = -vec;
+}
+
 void Camera::updateCameraVectors()
 {
     mFront = Util::rotToVec3(mYaw, mPitch);

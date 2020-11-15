@@ -49,6 +49,7 @@ public:
     void changeDistBy(float yoffset);
 
     void zoomBy(float yoffset);
+    void setDownVector(glm::vec3 vec);
 
 private:
     // calculate front, right, and up vectors from camera angles
