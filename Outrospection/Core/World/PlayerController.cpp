@@ -50,35 +50,17 @@ void PlayerController::acceleratePlayer(Player& player, const Controller& contro
 
 void PlayerController::collidePlayer(Player& player, const glm::vec3& gravity, const std::vector<CollisionMesh>& collision)
 {
-    package.eRadius = glm::vec3(1, 1, 1);
+    constexpr float sphereRadius = 50;
+    constexpr float sphereRadiusSq = sphereRadius * sphereRadius;
 
-    package.R3Position = player.position;// + glm::vec3(0, 0.5, 0);
-    package.R3Velocity = velocity;
-
-    // calc position and velocity in eSpace
-    glm::vec3 eSpacePos = package.R3Position / package.eRadius;
-    glm::vec3 eSpaceVel = package.R3Velocity / package.eRadius;
-
-    // Do collision detection
-    collisionRecursionDepth = 0;
-
-    glm::vec3 finalPosition = collideWithWorld(eSpacePos, eSpaceVel, collision);
-
-    LOG_DEBUG("%i", collisionRecursionDepth);
-    // the gravity of the situation
-
-    // convert back from eSpace into R3
-    //package.R3Position = finalPosition * package.eRadius;
-    //package.R3Velocity = gravity;
-
-    //eSpaceVel = gravity / package.eRadius;
-    //collisionRecursionDepth = 0;
-
-    //finalPosition = collideWithWorld(finalPosition, eSpaceVel, collision);
+    glm::vec3 finalPosition = player.position + velocity;
+    if(Util::dist2(finalPosition, glm::vec3(0)) < sphereRadiusSq)
+    {
+        velocity = glm::vec3(0);// gravity;
+        finalPosition = player.position + velocity;
+    }
 
 
-    // convert final result back to R3
-    finalPosition *= package.eRadius;
 
     // TODO move the player
     player.moveTo(finalPosition);

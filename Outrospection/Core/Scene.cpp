@@ -94,9 +94,9 @@ void Scene::loadScene()
             sphere.mVertices[(*indices)[i + 1]].pos * SPHERE_SIZE, sphere.mVertices[(*indices)[i + 2]].pos * SPHERE_SIZE
         };
 
-        tri.verts[0] *= 50 + 5 * sin(tri.verts[0].x * 10);
-        tri.verts[1] *= 50 + 5 * sin(tri.verts[1].x * 10);
-        tri.verts[2] *= 50 + 5 * sin(tri.verts[2].x * 10);
+        tri.verts[0] *= 50;// +5 * sin(tri.verts[0].x * 10);
+        tri.verts[1] *= 50;// +5 * sin(tri.verts[1].x * 10);
+        tri.verts[2] *= 50;// +5 * sin(tri.verts[2].x * 10);
 
         tri.n = Util::genNormal(tri);
 
