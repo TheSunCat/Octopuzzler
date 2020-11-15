@@ -15,6 +15,11 @@ void GUILayer::onAttach()
     Outrospection::get().captureMouse(captureMouse);
 }
 
+void GUILayer::onDetach()
+{
+    Outrospection::get().captureMouse(!captureMouse);
+}
+
 void GUILayer::onEvent(Event& event)
 {
     dispatchEvent<KeyPressedEvent>(event, std::bind(&GUILayer::onKeyPressed, this, std::placeholders::_1));

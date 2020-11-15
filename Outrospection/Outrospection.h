@@ -46,7 +46,10 @@ public:
     void pushLayer(Layer* layer);
     void pushOverlay(Layer* overlay);
 
-    void captureMouse(bool doCapture) const;
+    void popLayer(Layer* layer);
+    void popOverlay(Layer* overlay);
+
+    void captureMouse(bool doCapture);
 
     glm::vec2 lastMousePos = glm::vec2(SCR_HEIGHT / 2.0f, SCR_WIDTH / 2.0f);
 
@@ -75,6 +78,7 @@ private:
 
     GUILayer* ingameGUI;
     GUILayer* pauseGUI;
+    GUILayer* inventoryGUI;
 
     // set to false when the game loop shouldn't run
     bool running = false;
@@ -103,6 +107,9 @@ private:
     void updateInput();
 
     bool isGamePaused = false;
+
+    bool doMoveCamera = true;
+    
 
     LayerStack layerStack;
 

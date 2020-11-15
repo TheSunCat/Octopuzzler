@@ -1,6 +1,8 @@
 ﻿#include "Outrospection.h"
 
 #include <glm/ext/matrix_clip_space.hpp>
+
+#include "GUIInventory.h"
 #include "irrKlang/irrKlang.h"
 
 #include "Util.h"
@@ -32,6 +34,7 @@ Outrospection::Outrospection()
 
     ingameGUI = new GUIIngame();
     pauseGUI = new GUIPause();
+    inventoryGUI = new GUIInventory();
 
     gameWindow = opengl.gameWindow;
     quadVAO = opengl.quadVAO;
@@ -90,17 +93,36 @@ void Outrospection::pushOverlay(Layer* overlay)
     overlay->onAttach();
 }
 
-void Outrospection::captureMouse(const bool doCapture) const
+void Outrospection::popLayer(Layer* layer)
 {
-    if (doCapture)
+    layerStack.popLayer(layer);
+    layer->onDetach();
+}
+
+void Outrospection::popOverlay(Layer* overlay)
+{
+    layerStack.popOverlay(overlay);
+    overlay->onDetach();
+}
+
+void Outrospection::captureMouse(const bool doCapture)
+{
+    if (doCapture) {
         glfwSetInputMode(gameWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+        doMoveCamera = true;
+    }
     else
     {
         glfwSetInputMode(gameWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
         glfwSetCursorPos(gameWindow, SCR_WIDTH / 2.0f, SCR_HEIGHT / 2.0f);
+
+        doMoveCamera = false;
     }
 }
+
+bool inInventory = false;
 
 void Outrospection::runGameLoop()
 {
@@ -119,15 +141,18 @@ void Outrospection::runGameLoop()
         // fetch input into simplified controller class
         updateInput();
 
-        // exit game on next loop iteration
+
         if (controller.pause == 1)
         {
-            //if (isGamePaused)
-                //unpauseGame();
-            //else
-                //pauseGame();
+            if (!inInventory)
+                pushOverlay(inventoryGUI);
+            else
+                popOverlay(inventoryGUI);
+
+            inInventory = !inInventory;
         }
 
+        LOG_DEBUG("%i", controller.jump);
 
         if (!isGamePaused)
         {
@@ -206,7 +231,6 @@ void Outrospection::runGameLoop()
     glfwPollEvents();
 }
 
-float largestDist = 0.0f;
 void Outrospection::runTick()
 {
     // update gravity direction & strength
@@ -217,23 +241,17 @@ void Outrospection::runTick()
     playerController.acceleratePlayer(player, controller, glm::cross(Physics::gravity, camera.mRight), -camera.mUp, deltaTime);
     playerController.collidePlayer(player, Physics::gravity * -Physics::gravityStrength * deltaTime, scene.collision);
 
-    if (controller.isGamepad)
+
+    if (doMoveCamera && controller.isGamepad)
         camera.playerRotateCameraBy(controller.rStickX * 12.5f, controller.rStickY * 10);
 
     updateCamera();
-
-    float dist = glm::distance(glm::vec3(0, 0, 0), player.position) - 20.0f;
-
-    if(dist > largestDist)
-    {
-        //LOG_DEBUG("New largest distance %f", dist);
-
-        largestDist = dist;
-    }
 }
 
 void Outrospection::updateCamera()
 {
+    camera.setDownVector(Physics::gravity);
+
     // TODO need a better way to determine whether the camera should be auto-updated or not
     camera.calculateCameraPosition(player, scene, deltaTime, playerController.isMoving());
 }
@@ -327,7 +345,8 @@ bool Outrospection::onMouseMoved(MouseMovedEvent& e)
     lastMousePos.x = xPos;
     lastMousePos.y = yPos;
 
-    camera.playerRotateCameraBy(xOffset, yOffset);
+    if(doMoveCamera)
+        camera.playerRotateCameraBy(xOffset, yOffset);
 
     return false;
 }
@@ -349,89 +368,94 @@ void setKey(ControllerButton& button, const int keyCode, GLFWwindow* window)
 
 void Outrospection::updateInput()
 {
-    int joystick = -1;
-    for (int i = GLFW_JOYSTICK_1; i < GLFW_JOYSTICK_LAST; i++)
+    // controller support
+    /*if (controllerIn)
     {
-        if (glfwJoystickPresent(i) == GLFW_TRUE)
+        int joystick = -1;
+        for (int i = GLFW_JOYSTICK_1; i < GLFW_JOYSTICK_LAST; i++)
         {
-            joystick = i;
+            if (glfwJoystickPresent(i) == GLFW_TRUE)
+            {
+                joystick = i;
 
-            controller.isGamepad = true;
+                controller.isGamepad = true;
 
-            //LOG_DEBUG("Joystick %s detected with ID %i!", glfwGetJoystickName(joystick), joystick);
+                //LOG_DEBUG("Joystick %s detected with ID %i!", glfwGetJoystickName(joystick), joystick);
 
-            break;
+                break;
+            }
+        }
+
+        if (joystick != -1) {                    // there is a controller
+
+            if (glfwJoystickIsGamepad(joystick)) // easy!
+            {
+                //LOG_DEBUG("It is a gamepad! Sweet!");
+
+                GLFWgamepadstate gamepadState;
+                glfwGetGamepadState(joystick, &gamepadState);
+
+                // make negative bc flipped!
+                controller.lStickY = -Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_LEFT_Y]);
+                controller.lStickX = Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_LEFT_X]);
+
+                controller.rStickY = -Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y]);
+                controller.rStickX = Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_RIGHT_X]);
+
+                controller.leftTrigger = Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_LEFT_TRIGGER]);
+
+                controller.jump = gamepadState.buttons[GLFW_GAMEPAD_BUTTON_A] ? controller.jump + 1 : false;
+                controller.talk = gamepadState.buttons[GLFW_GAMEPAD_BUTTON_X] ? controller.talk + 1 : false;
+                controller.pause = gamepadState.buttons[GLFW_GAMEPAD_BUTTON_START] ? controller.pause + 1 : false;
+            }
+            else // have to manually set everything :c
+            {
+                LOG_DEBUG("It is a non-mapped controller. Hrm.");
+
+                int axesCount = -1;
+
+                const float* rawAxes = glfwGetJoystickAxes(joystick, &axesCount);
+
+                if (axesCount < 2) // not enough sticks, return for now?
+                {
+                    joystick = -1;
+                }
+                else if (axesCount == 2) // one stick! assumed to be left so we can move around
+                {
+                    controller.lStickY = -Util::valFromJoystickAxis(rawAxes[STICK_LEFT_UP]);
+                    controller.lStickX = Util::valFromJoystickAxis(rawAxes[STICK_LEFT_SIDE]);
+                }
+                else if (axesCount >= 4) // two sticks or more
+                {
+                    controller.rStickY = -Util::valFromJoystickAxis(rawAxes[STICK_LEFT_UP]);
+                    controller.rStickX = Util::valFromJoystickAxis(rawAxes[STICK_LEFT_SIDE]);
+
+                    controller.lStickY = -Util::valFromJoystickAxis(rawAxes[STICK_LEFT_UP]);
+                    controller.lStickX = Util::valFromJoystickAxis(rawAxes[STICK_LEFT_SIDE]);
+                }
+
+
+                int buttonCount = -1;
+                const unsigned char* rawButtons = glfwGetJoystickButtons(joystick, &buttonCount);
+
+                if (buttonCount < 4) // not enough buttons for us
+                {
+                    joystick = -1;
+                }
+                else
+                {
+                    controller.jump = rawButtons[BUTTON_A] ? controller.jump + 1 : false;
+                    controller.talk = rawButtons[BUTTON_X] ? controller.talk + 1 : false;
+                    controller.pause = rawButtons[BUTTON_START] ? controller.pause + 1 : false;
+                    // TODO add more controls lol
+                }
+            }
         }
     }
-                                
-    if (joystick != -1) {                    // there is a controller
-        
-        if (glfwJoystickIsGamepad(joystick)) // easy!
-        {
-            //LOG_DEBUG("It is a gamepad! Sweet!");
-
-            GLFWgamepadstate gamepadState;
-            glfwGetGamepadState(joystick, &gamepadState);
-
-            // make negative bc flipped!
-            controller.lStickY = -Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_LEFT_Y]);
-            controller.lStickX = Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_LEFT_X]);
-
-            controller.rStickY = -Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y]);
-            controller.rStickX = Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_RIGHT_X]);
-
-            controller.leftTrigger = Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_LEFT_TRIGGER]);
-
-            controller.jump  = gamepadState.buttons[GLFW_GAMEPAD_BUTTON_A]     ? controller.jump  + 1 : false;
-            controller.talk  = gamepadState.buttons[GLFW_GAMEPAD_BUTTON_X]     ? controller.talk  + 1 : false;
-            controller.pause = gamepadState.buttons[GLFW_GAMEPAD_BUTTON_START] ? controller.pause + 1 : false;
-        }
-        else // have to manually set everything :c
-        {
-            //LOG_DEBUG("It is a non-mapped controller. Hrm.");
-
-            int axesCount = -1;
-
-            const float* rawAxes = glfwGetJoystickAxes(joystick, &axesCount);
-
-            if (axesCount < 2) // not enough sticks, return for now?
-            {
-                joystick = -1;
-            }
-            else if (axesCount == 2) // one stick! assumed to be left so we can move around
-            {
-                controller.lStickY = -Util::valFromJoystickAxis(rawAxes[STICK_LEFT_UP]);
-                controller.lStickX = Util::valFromJoystickAxis(rawAxes[STICK_LEFT_SIDE]);
-            }
-            else if (axesCount >= 4) // two sticks or more
-            {
-                controller.rStickY = -Util::valFromJoystickAxis(rawAxes[STICK_LEFT_UP]);
-                controller.rStickX = Util::valFromJoystickAxis(rawAxes[STICK_LEFT_SIDE]);
-
-                controller.lStickY = -Util::valFromJoystickAxis(rawAxes[STICK_LEFT_UP]);
-                controller.lStickX = Util::valFromJoystickAxis(rawAxes[STICK_LEFT_SIDE]);
-            }
-
-
-            int buttonCount = -1;
-            const unsigned char* rawButtons = glfwGetJoystickButtons(joystick, &buttonCount);
-
-            if (buttonCount < 4) // not enough buttons for us
-            {
-                joystick = -1;
-            }
-            else
-            {
-                controller.jump = rawButtons[BUTTON_A] ? controller.jump + 1 : false;
-                controller.talk = rawButtons[BUTTON_X] ? controller.talk + 1 : false;
-                controller.pause = rawButtons[BUTTON_START] ? controller.pause + 1 : false;
-                // TODO add more controls lol
-            }
-        }
-    }
+    else {*/
 
     // we check this for zero because a fake controller may be plugged in. real controllers will usually never have zero
-    if (controller.lStickY == 0.0f || joystick == -1) // no *usable* controllers are present
+    if (true)// || joystick == -1) // no *usable* controllers are present
     {
         //LOG_DEBUG("No usable controller is present. ");
 
