@@ -11,6 +11,8 @@
 #include "Util.h"
 #include "Core/Camera.h"
 #include "Core/LayerStack.h"
+#include "Core/PreInitialization.h"
+#include "Core/Registry.h"
 #include "Core/Scene.h"
 #include "Core/Rendering/FreeType.h"
 #include "Core/Rendering/OpenGL.h"
@@ -20,6 +22,7 @@
 #include "Core/World/PhysicsValues.h"
 #include "Core/World/Player.h"
 #include "Core/World/PlayerController.h"
+#include "Item/Item.h"
 
 
 class MouseMovedEvent;
@@ -29,6 +32,10 @@ class Layer;
 
 class Outrospection
 {
+    static void initItems();
+
+    PreInitialization preInit;
+
     OpenGL opengl; // defined at the beginning so nothing gets initialized before this
     FreeType freetype;
 
@@ -69,6 +76,9 @@ public:
     Shader simpleShader;
     Shader spriteShader;
     Shader glyphShader;
+
+    Registry<ItemID, Item> itemRegistry;
+    inline static ItemStack noItem = ItemStack(0);
 
     DISALLOW_COPY_AND_ASSIGN(Outrospection)
 private:
@@ -163,30 +173,69 @@ private:
                     char start = input[0];
                     if(start == '/') // is a command
                     {
-                        std::string command = &input[1];
+                        std::string_view rawCommand = &input[1];
+
+                        std::vector<std::string_view> args;
+
+                        size_t spaceIndex = 0;// rawCommand.find(' ');
+                        while((spaceIndex = rawCommand.find(' ', spaceIndex + 1)) != std::string::npos)
+                        {
+                            args.push_back(rawCommand.substr(spaceIndex + 1, rawCommand.find_first_of(' ', spaceIndex + 1)));
+                        }
+
+                        std::string_view command = rawCommand.substr(0, rawCommand.find(' '));
+
                         
 
-                        if(command.starts_with("gravity"))
+                        if(command == "gravity")
                         {
-                            if(command.length() == strlen("gravity"))
+                            if(args.empty())
                             {
                                 LOG("Gravity is %f.", Physics::gravityStrength);
                             }
-                            else if (command.length() > strlen("gravity "))
+                            else
                             {
-
-                                float newGravity = Util::stof(command.substr(strlen("gravity ")));
+                                float newGravity = Util::stof(args[0]);
 
                                 Physics::gravityStrength = newGravity;
 
                                 LOG("Set gravity to %f.", newGravity);
                             }
                         }
-                        else if (command.length() > strlen("resolution ") && command.starts_with("resolution "))
+                        else if (command == "give")
                         {
-                            int newRes = Util::stoi(command.substr(strlen("resolution ")));
+                            if(!args.empty())
+                            {
+                                std::string_view itemToGive = args[0];
 
-                            Physics::gSphereResolution = newRes;
+                                if (Util::isAllDigits(itemToGive))
+                                {
+
+                                    ItemID itemID = Util::stoi(itemToGive);
+
+                                    if (!HAS_ITEM(itemID))
+                                    {
+                                        LOG_ERROR("give: item with ID %i does not exist in registry!", itemID);
+                                    }
+                                    else
+                                    {
+                                        unsigned int count = 1;
+                                        if (args.size() >= 2)
+                                            count = Util::stoi(args[1]);
+
+                                        ItemStack stack(itemID);
+                                        stack.count = count;
+
+                                        Outrospection::get().player.inventory.addItem(stack);
+                                    }
+                                } else
+                                {
+                                    LOG_ERROR("give: please use numerical item IDs");
+                                }
+                            } else
+                            {
+                                LOG_ERROR("give: please provide item ID to give");
+                            }
                         }
                         else {
                             LOG_ERROR("Unknown command %s!", input);

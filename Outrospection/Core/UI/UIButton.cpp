@@ -24,6 +24,4 @@ void UIButton::tick()
 {
     glm::vec2 mousePos = Outrospection::get().lastMousePos;
     hovered = isOnButton(mousePos);
-
-    name = std::to_string(hovered);
 }

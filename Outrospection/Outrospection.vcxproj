@@ -207,6 +207,8 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
     <ClInclude Include="Core\Camera.h" />
     <ClInclude Include="Core\Layer.h" />
     <ClInclude Include="Core\LayerStack.h" />
+    <ClInclude Include="Core\PreInitialization.h" />
+    <ClInclude Include="Core\Registry.h" />
     <ClInclude Include="Core\Rendering\FreeType.h" />
     <ClInclude Include="Core\Rendering\TickableTexture.h" />
     <ClInclude Include="Core\Rendering\Billboard.h" />
@@ -224,6 +226,7 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
     <ClInclude Include="Core\UI\GUILayer.h" />
     <ClInclude Include="Core\UI\UIButton.h" />
     <ClInclude Include="Core\UI\UIComponent.h" />
+    <ClInclude Include="Core\UI\UIItemSlot.h" />
     <ClInclude Include="Core\World\Character.h" />
     <ClInclude Include="Core\World\CollisionMesh.h" />
     <ClInclude Include="Core\World\ObjectGeneral.h" />
@@ -239,6 +242,9 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
     <ClInclude Include="Events\WindowEvent.h" />
     <ClInclude Include="GameSettings.h" />
     <ClInclude Include="GUIInventory.h" />
+    <ClInclude Include="Inventory.h" />
+    <ClInclude Include="Item\Item.h" />
+    <ClInclude Include="Item\ItemStack.h" />
     <ClInclude Include="KeyBinding.h" />
     <ClInclude Include="MeshSphere.h" />
     <ClInclude Include="ObjectProcedural.h" />
@@ -266,6 +272,7 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
     <ClCompile Include="Core\UI\GUILayer.cpp" />
     <ClCompile Include="Core\UI\UIButton.cpp" />
     <ClCompile Include="Core\UI\UIComponent.cpp" />
+    <ClCompile Include="Core\UI\UIItemSlot.cpp" />
     <ClCompile Include="Core\World\Character.cpp" />
     <ClCompile Include="Core\World\CollisionMesh.cpp" />
     <ClCompile Include="Core\World\ObjectGeneral.cpp" />
@@ -276,6 +283,9 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
     <ClCompile Include="External\stb_image.cpp" />
     <ClCompile Include="GameSettings.cpp" />
     <ClCompile Include="GUIInventory.cpp" />
+    <ClCompile Include="Inventory.cpp" />
+    <ClCompile Include="Item\Item.cpp" />
+    <ClCompile Include="Item\ItemStack.cpp" />
     <ClCompile Include="KeyBinding.cpp" />
     <ClCompile Include="MeshSphere.cpp" />
     <ClCompile Include="Outrospection.cpp" />

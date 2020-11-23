@@ -18,11 +18,6 @@ void Player::moveTo(const glm::vec3& newPos)
     character.position = position;
 }
 
-//void Player::setAnimation(AnimType _animType)
-//{
-//    character.setAnimation(_animType);
-//}
-
 void Player::draw(Shader& _shader) const
 {
     character.draw(_shader);

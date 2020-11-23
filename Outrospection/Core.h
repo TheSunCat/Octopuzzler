@@ -212,3 +212,6 @@ struct smart_printf {
 #define BIT(x) (1 << (x))
 
 #define BIND_EVENT_FUNC(function) std::bind(&function, this, std::placeholders::_1)
+
+#define GET_ITEM(item) Outrospection::get().itemRegistry.get(item)
+#define HAS_ITEM(item) Outrospection::get().itemRegistry.has(item)

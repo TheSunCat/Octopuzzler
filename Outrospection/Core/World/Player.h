@@ -2,6 +2,8 @@
 
 #include <glm/glm.hpp>
 
+
+#include "Inventory.h"
 #include "Core/World/Character.h"
 
 class Shader;
@@ -23,6 +25,8 @@ public:
 
     glm::vec3 position{};
     Character character;
+
+    Inventory inventory;
 
     //Collider& collider;
 

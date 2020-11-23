@@ -122,6 +122,8 @@ namespace Util
     // return input depending on constant deadzones and limitzones
     float valFromJoystickAxis(float axis);
 
+    bool isAllDigits(const std::string_view& str, bool allowDecimals = false);
+
     float stof(const std::string_view& str);
 
     int stoi(const std::string_view& str);
