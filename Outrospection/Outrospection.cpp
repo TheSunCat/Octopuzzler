@@ -32,9 +32,8 @@ Outrospection::Outrospection()
 {
     instance = this;
 
-    ingameGUI = new GUIIngame();
-    pauseGUI = new GUIPause();
-    inventoryGUI = new GUIInventory();
+    preInit = PreInitialization(initItems);
+
 
     gameWindow = opengl.gameWindow;
     quadVAO = opengl.quadVAO;
@@ -48,6 +47,10 @@ Outrospection::Outrospection()
 
     scene = Scene("TestLevel000");
     player = Player(glm::vec3(1.0, 60.0, 0.0));
+
+    ingameGUI = new GUIIngame();
+    pauseGUI = new GUIPause();
+    inventoryGUI = new GUIInventory(player.inventory);
 
     pushOverlay(ingameGUI);
 
@@ -124,6 +127,20 @@ void Outrospection::captureMouse(const bool doCapture)
 
 bool inInventory = false;
 
+void Outrospection::initItems()
+{
+    auto& itemRegistry = Outrospection::get().itemRegistry;
+
+    itemRegistry.add(0, Item("entropy"));
+    itemRegistry.add(100, Item("iron"));
+    itemRegistry.add(101, Item("copper"));
+    itemRegistry.add(102, Item("aluminum"));
+    itemRegistry.add(103, Item("titanium"));
+    itemRegistry.add(104, Item("magnetite"));
+    itemRegistry.add(105, Item("methane"));
+    itemRegistry.add(106, Item("oxygen"));
+}
+
 void Outrospection::runGameLoop()
 {
     const auto currentFrame = currentTimeMillis;
@@ -151,8 +168,6 @@ void Outrospection::runGameLoop()
 
             inInventory = !inInventory;
         }
-
-        LOG_DEBUG("%i", controller.jump);
 
         if (!isGamePaused)
         {

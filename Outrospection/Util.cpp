@@ -572,6 +572,13 @@ float Util::valFromJoystickAxis(float axis)
     return axis;
 }
 
+bool Util::isAllDigits(const std::string_view& str, bool allowDecimals)
+{
+    const char* allowedChars = allowDecimals ? "0123456789,. " : "0123456789 ";
+
+    return str.find_first_not_of(allowedChars) == std::string::npos;
+}
+
 float Util::stof(const std::string_view& str)
 {
     float ret;
