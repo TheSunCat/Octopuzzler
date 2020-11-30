@@ -131,14 +131,14 @@ void Outrospection::initItems()
 {
     auto& itemRegistry = Outrospection::get().itemRegistry;
 
-    itemRegistry.add(0, Item("entropy"));
+    itemRegistry.add(0, Item("entropy", 0));
     itemRegistry.add(100, Item("iron"));
     itemRegistry.add(101, Item("copper"));
     itemRegistry.add(102, Item("aluminum"));
     itemRegistry.add(103, Item("titanium"));
     itemRegistry.add(104, Item("magnetite"));
-    itemRegistry.add(105, Item("methane"));
-    itemRegistry.add(106, Item("oxygen"));
+    itemRegistry.add(105, Item("methane", 32));
+    itemRegistry.add(106, Item("oxygen", 32));
 }
 
 void Outrospection::runGameLoop()

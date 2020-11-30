@@ -7,7 +7,7 @@ Inventory::Inventory(unsigned int size)
 {
     for(unsigned int i = 0; i < size; i++)
     {
-        theInventoryItself.push_back(Outrospection::noItem);
+        theInventoryItself.push_back(Outrospection::get().noItem);
     }
 }
 
@@ -15,7 +15,7 @@ ItemStack& Inventory::getItemAtIndex(unsigned int index)
 {
     if(index >= theInventoryItself.size())
     {
-        return Outrospection::noItem;
+        return Outrospection::get().noItem;
     }
 
     return theInventoryItself[index];
@@ -29,7 +29,7 @@ void Inventory::addItem(ItemStack itemStack, unsigned int index)
         {
             ItemStack& curItmStack = theInventoryItself[i];
 
-            if(curItmStack.item == 0 || curItmStack.item == itemStack.item)
+            if(curItmStack.isEntropy() || curItmStack.isSameItem(itemStack))
             {
                 index = i;
                 break;
@@ -43,15 +43,15 @@ void Inventory::addItem(ItemStack itemStack, unsigned int index)
 
     ItemStack& itemAtIndex = theInventoryItself[index];
 
-    if(itemAtIndex.item == 0)
+    if(itemAtIndex.isEntropy())
     {
         theInventoryItself[index] = itemStack;
-    } else if(itemAtIndex.item == itemStack.item)
+    } else if(itemAtIndex.isSameItem(itemStack))
     {
-        itemAtIndex.count += itemStack.count;
+        itemAtIndex += itemStack;
     } else
     {
-        LOG_ERROR("Tried to insert item (ID: %i) at index %i where an item (ID: %i) was already stored.", itemStack.item, index, itemAtIndex.item);
+        LOG_ERROR("Tried to insert item (ID: %i) at index %i where an item (ID: %i) was already stored.", itemStack.getItemID(), index, itemAtIndex.getItemID());
     }
 }
 

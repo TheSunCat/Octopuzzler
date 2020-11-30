@@ -10,7 +10,6 @@
 #include "Util.h"
 #include "Core/Camera.h"
 
-// TODO make this class... nicer
 Shader::Shader(const GLchar* vertexName, const GLchar* fragmentName)
 {
     std::string vName(vertexName);

@@ -77,7 +77,7 @@ void UIComponent::draw(Shader& shader, const Shader& glyphShader) const
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
 
-    if (!name.empty()) // TODO drawing item name for now, need a text class from other branch
+    if (!name.empty()) // TODO text class myself
     {
         drawText(name, glyphShader);
     }
