@@ -214,4 +214,4 @@ struct smart_printf {
 #define BIND_EVENT_FUNC(function) std::bind(&function, this, std::placeholders::_1)
 
 #define GET_ITEM(item) Outrospection::get().itemRegistry.get(item)
-#define HAS_ITEM(item) Outrospection::get().itemRegistry.has(item)
+#define ITEM_EXISTS(item) Outrospection::get().itemRegistry.has(item)

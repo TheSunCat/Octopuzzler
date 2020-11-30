@@ -61,8 +61,6 @@ void PlayerController::collidePlayer(Player& player, const glm::vec3& gravity, c
     }
 
 
-
-    // TODO move the player
     player.moveTo(finalPosition);
 }
 

@@ -331,6 +331,7 @@ bool Util::intersectTriangleSphere(const glm::vec3& spherePos, float sphereRadiu
     glm::vec3 v2v1 = v2 - v1;
     glm::vec3 v0v2 = v0 - v2;
 
+    // TODO fix this
     //float d1 = v0dotv1 - v0dotv0;
     //float d2 = v1dotv2 - v1dotv1;
     //float d3 = v0dotv2 - v2dotv2;
@@ -433,8 +434,8 @@ GLuint vertex_for_edge(std::map<std::pair<GLuint, GLuint>, GLuint>& lookup, std:
     if (key.first > key.second)
         std::swap(key.first, key.second);
 
-    auto inserted = lookup.insert({ key, vertices.size() });
-    if (inserted.second)
+    auto [fst, snd] = lookup.insert({ key, vertices.size() });
+    if (snd)
     {
         auto& edge0 = vertices[first];
         auto& edge1 = vertices[second];
@@ -442,7 +443,7 @@ GLuint vertex_for_edge(std::map<std::pair<GLuint, GLuint>, GLuint>& lookup, std:
         vertices.push_back(point);
     }
 
-    return inserted.first->second;
+    return fst->second;
 }
 
 std::vector<GLuint> Util::subdivide(std::vector<glm::vec3>& vertices,

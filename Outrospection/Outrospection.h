@@ -77,7 +77,7 @@ public:
     Shader spriteShader;
     Shader glyphShader;
 
-    Registry<ItemID, Item> itemRegistry;
+    inline static Registry<ItemID, Item> itemRegistry;
     inline static ItemStack noItem = ItemStack(0);
 
     DISALLOW_COPY_AND_ASSIGN(Outrospection)
@@ -213,7 +213,7 @@ private:
 
                                     ItemID itemID = Util::stoi(itemToGive);
 
-                                    if (!HAS_ITEM(itemID))
+                                    if (!ITEM_EXISTS(itemID))
                                     {
                                         LOG_ERROR("give: item with ID %i does not exist in registry!", itemID);
                                     }
@@ -224,7 +224,7 @@ private:
                                             count = Util::stoi(args[1]);
 
                                         ItemStack stack(itemID);
-                                        stack.count = count;
+                                        stack.setCount(count);
 
                                         Outrospection::get().player.inventory.addItem(stack);
                                     }

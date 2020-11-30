@@ -6,10 +6,12 @@
 class UIItemSlot : public UIButton
 {
 public:
-    UIItemSlot(glm::vec2 positionPercent, glm::vec2 scalePercent);
+    UIItemSlot(glm::vec2 positionPercent, glm::vec2 scalePercent, ItemID id = 0);
 
     void updateItem(ItemStack& newItemStack);
 
 private:
-    ItemStack& itemStack = Outrospection::noItem;
+    void updateName();
+
+    ItemStack& itemStack = Outrospection::get().noItem;
 };
