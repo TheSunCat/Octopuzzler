@@ -4,7 +4,7 @@
 
 #include "External/stb_image.h"
 
-SimpleTexture TextureManager::missingTexture(-1, "missing_texture");
+SimpleTexture TextureManager::missingTexture(-1);
 
 TextureManager::TextureManager()
 {
@@ -24,13 +24,13 @@ TextureManager::TextureManager()
 
 SimpleTexture TextureManager::loadTexture(Resource& r)
 {
-    const std::string path = r.getResourcePath();
+    const std::string path = r.getResourcePath() + ".png";
 
     const GLuint texId = textureFromFile(path);
 
     if (texId != INT_MAX)
     {
-        SimpleTexture texObj(texId, path);
+        SimpleTexture texObj(texId);
 
         textures.insert(std::pair<Resource, SimpleTexture>(r, texObj));
 
@@ -80,12 +80,12 @@ TickableTexture TextureManager::loadAnimatedTexture(Resource& r, unsigned int te
 
 void TextureManager::bindTexture(Resource& r)
 {
-    const SimpleTexture tex = get(r);
+    const SimpleTexture& tex = get(r);
 
     tex.bind();
 }
 
-SimpleTexture TextureManager::get(Resource& r)
+SimpleTexture& TextureManager::get(Resource& r)
 {
     const auto f = textures.find(r);
 

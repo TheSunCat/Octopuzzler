@@ -321,9 +321,6 @@
     <ClCompile Include="GUIInventory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Item\Item.cpp">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="Core\UI\UIItemSlot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -331,6 +328,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Inventory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Item\Item.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

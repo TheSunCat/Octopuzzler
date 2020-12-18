@@ -61,8 +61,9 @@ MeshSphere::MeshSphere(unsigned int levels)
     name = "sphere";
     indicesSize = static_cast<unsigned int>((mIndices[levels - 1])->size());
 
-    Resource res = Resource("Textures/", "TestSS03.png");
-    texture = Outrospection::get().textureManager.get(res);
+    Resource res = Resource("Textures/", "TestSS03");
+    TextureManager& tm = Outrospection::get().textureManager;
+    texture = tm.get(res);
 
     // create buffers and arrays
     glGenVertexArrays(1, &VAO);

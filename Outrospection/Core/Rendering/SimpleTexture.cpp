@@ -1,9 +1,8 @@
 #include "SimpleTexture.h"
 
-SimpleTexture::SimpleTexture(const GLuint& _texId, const std::string& _texPath)
+SimpleTexture::SimpleTexture(const GLuint& _texId)
 {
     texId = _texId;
-    texPath = _texPath;
 }
 
 void SimpleTexture::bind() const

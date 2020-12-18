@@ -25,7 +25,7 @@ public:
 
     void bindTexture(Resource& r);
 
-    SimpleTexture get(Resource& r);
+    SimpleTexture& get(Resource& r);
 
     void tickAllTextures();
 

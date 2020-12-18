@@ -8,7 +8,7 @@ Character::Character(const std::string& _id, const glm::vec3& _pos) : position(_
 {
     id = _id;
 
-    Resource r("Characters/" + id + "/idle/", "idle0.png");
+    Resource r("Characters/" + id + "/idle/", "idle0");
 
     const SimpleTexture texture = Outrospection::get().textureManager.loadTexture(r);
 
