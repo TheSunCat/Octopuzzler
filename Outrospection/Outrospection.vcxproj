@@ -103,9 +103,13 @@
       </Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>mkdir $(OutDir)res
-xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
+    <PreLinkEvent>
+      <Command>
+      </Command>
+    </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -125,9 +129,13 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
       </Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>mkdir $(OutDir)res
-xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
+    <PreLinkEvent>
+      <Command>
+      </Command>
+    </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -151,9 +159,13 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
       </Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>mkdir $(OutDir)res
-xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
+    <PreLinkEvent>
+      <Command>
+      </Command>
+    </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -177,9 +189,13 @@ xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
       </Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>mkdir $(OutDir)res
-xcopy /y /s $(ProjectDir)res  $(OutDir)res</Command>
+      <Command>
+      </Command>
     </PreBuildEvent>
+    <PreLinkEvent>
+      <Command>
+      </Command>
+    </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

@@ -1,5 +1,6 @@
 #pragma once
-#include <unordered_map>
+
+#include "Core/Rendering/SimpleTexture.h"
 
 typedef unsigned int ItemID;
 
@@ -13,4 +14,7 @@ public:
     unsigned int maxStack;
 
     float mass;
+
+private:
+    SimpleTexture* texture;
 };

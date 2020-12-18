@@ -138,4 +138,32 @@ namespace Util
         std::chrono::time_point<std::chrono::high_resolution_clock> begin;
         const char* name;
     };
+
+    class Perlin
+    {
+    public:
+        static float noise(float x);
+
+        static float noise(float x, float y);
+        static float noise(glm::vec2& coord);
+
+        static float noise(float x, float y, float z);
+        static float noise(glm::vec3& coord);
+
+        static float fbm(float x, int octave);
+
+        static float fbm(glm::vec2& coord, int octave);
+        static float fbm(float x, float y, int octave);
+
+        static float fbm(glm::vec3& coord, int octave);
+        static float fbm(float x, float y, float z, int octave);
+
+        static float fade(float t);
+
+        static float grad(int hash, float x);
+        static float grad(int hash, float x, float y);
+        static float grad(int hash, float x, float y, float z);
+    private:
+        static const int* perm;
+    };
 }

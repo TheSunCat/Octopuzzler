@@ -21,7 +21,7 @@ UIComponent::UIComponent(std::string _texName, const glm::vec2& _position, const
       textOffset(0.0f, height / 2), textColor(0.0f)
 {
     TextureManager& textureManager = Outrospection::get().textureManager;
-    Resource r("UI/", name + ".png");
+    Resource r("UI/", name);
     texture = textureManager.get(r);
 
     // we need to create our quad the first time!

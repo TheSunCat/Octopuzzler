@@ -9,7 +9,7 @@ class SimpleTexture
 public:
     SimpleTexture() = default;
 
-    SimpleTexture(const GLuint& _texId, const std::string& _texPath);
+    SimpleTexture(const GLuint& _texId);
 
     void bind() const;
 
@@ -20,6 +20,4 @@ public:
     bool operator==(const SimpleTexture& st) const;
 
     virtual ~SimpleTexture() = default;
-private:
-    std::string texPath;
 };

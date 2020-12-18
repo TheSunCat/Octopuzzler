@@ -2,7 +2,7 @@
 
 TickableTexture::TickableTexture(const std::vector<GLuint>& texIds, const std::string& _texPath,
                                  const unsigned int _frameLength)
-    : SimpleTexture(texIds.at(0), _texPath), textures(texIds), frameLength(_frameLength)
+    : SimpleTexture(texIds.at(0)), textures(texIds), frameLength(_frameLength)
 {
 }
 
