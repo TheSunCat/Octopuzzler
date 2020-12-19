@@ -77,7 +77,7 @@ Scene::Scene(std::string _name) : name(std::move(_name))
 void Scene::loadScene()
 {
 #define SPHERE_SIZE 1.0f
-#define SPHERE_RES 4
+#define SPHERE_RES 6
 
     MeshSphere sphere(SPHERE_RES);
 
@@ -94,9 +94,9 @@ void Scene::loadScene()
             sphere.mVertices[(*indices)[i + 1]].pos * SPHERE_SIZE, sphere.mVertices[(*indices)[i + 2]].pos * SPHERE_SIZE
         };
 
-        tri.verts[0] *= 50;// +5 * sin(tri.verts[0].x * 10);
-        tri.verts[1] *= 50;// +5 * sin(tri.verts[1].x * 10);
-        tri.verts[2] *= 50;// +5 * sin(tri.verts[2].x * 10);
+        tri.verts[0] *= 50 + 15 * Util::Perlin::noise(tri.verts[0]);
+        tri.verts[1] *= 50 + 15 * Util::Perlin::noise(tri.verts[1]);
+        tri.verts[2] *= 50 + 15 * Util::Perlin::noise(tri.verts[2]);
 
         tri.n = Util::genNormal(tri);
 
