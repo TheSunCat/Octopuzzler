@@ -75,6 +75,7 @@ void Outrospection::onEvent(Event& e)
     dispatchEvent<WindowCloseEvent>(e, BIND_EVENT_FUNC(Outrospection::onWindowClose));
     //dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FUNC(Application::OnWindowResize));
     dispatchEvent<MouseMovedEvent>(e, BIND_EVENT_FUNC(Outrospection::onMouseMoved));
+    //dispatchEvent<MouseScrolledEvent>(e, BIND_EVENT_FUNC(Outrospection::onMouseScrolled));
 
     for (auto it = layerStack.rbegin(); it != layerStack.rend(); ++it)
     {
@@ -249,7 +250,7 @@ void Outrospection::runGameLoop()
 void Outrospection::runTick()
 {
     // update gravity direction & strength
-    Physics::gravity = glm::normalize(glm::vec3(0) - player.position);
+    Physics::gravity = glm::normalize(glm::vec3(0) - glm::vec3(0, 1, 0));
     //gravityStrength = 9.8f;
 
 
@@ -369,6 +370,10 @@ bool Outrospection::onMouseMoved(MouseMovedEvent& e)
 void Outrospection::scroll_callback(GLFWwindow*, const double xoffset, const double yoffset)
 {
     camera.changeDistBy(float(yoffset));
+
+    scene.cubeThreshold += yoffset;
+
+    LOG("threshold: %f", scene.cubeThreshold);
 }
 
 void Outrospection::error_callback(const int errorcode, const char* description)

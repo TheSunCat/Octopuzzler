@@ -686,7 +686,7 @@ float Util::Perlin::noise(float x, float y, float z)
             Util::lerp(grad(perm[AB + 1], x, y - 1, z - 1), grad(perm[BB + 1], x - 1, y - 1, z - 1), u), v), w);
 }
 
-float Util::Perlin::noise(glm::vec3& coord)
+float Util::Perlin::noise(const glm::vec3& coord)
 {
     return noise(coord.x, coord.y, coord.z);
 }

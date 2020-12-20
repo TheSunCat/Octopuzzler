@@ -67,6 +67,7 @@ void ObjectGeneral::draw(const Shader& shader) const
     }
 
     shader.setMat4("model", modelMat);
+    shader.setFloat("debugColor", debugColor);
 
     for (const Mesh& m : meshes)
     {

@@ -5,7 +5,6 @@
 #include <utility>
 
 
-
 #include "MeshCube.h"
 #include "ObjectProcedural.h"
 #include "External/stb_image.h"
@@ -86,7 +85,18 @@ void Scene::loadScene()
         {
             for (int z = 0; z < 11; z++)
             {
-                objects.emplace_back(ObjectGeneral("sphere", glm::vec3(x * 2, y * 2, z * 2), glm::vec3(0), glm::vec3(1), cube)); // TODO not do this lol
+                ObjectGeneral obj = ObjectGeneral("sphere", 
+                    glm::vec3(x, y, z) * 4.0f, 
+                    glm::vec3(0),
+                    glm::vec3(1), cube);
+
+                float noise = Util::Perlin::noise(glm::vec3(x, y, z) / 5.0f); // TODO add command to change seed by translating along noise
+
+                LOG("%f", noise);
+
+                obj.debugColor = noise;
+
+                objects.emplace_back(obj); // TODO not do this lol
             }
         }
     }
@@ -236,7 +246,8 @@ void Scene::draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShade
 #else
     for (const ObjectGeneral& object : objects)
     {
-        object.draw(_objShader);
+        if(object.debugColor > cubeThreshold)
+            object.draw(_objShader);
     }
 #endif
 

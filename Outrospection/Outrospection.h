@@ -237,6 +237,20 @@ private:
                                 LOG_ERROR("give: please provide item ID to give");
                             }
                         }
+                        else if (command == "cube")
+                        {
+                            if(!args.empty())
+                            {
+                                std::string_view threshold = args[0];
+
+                                if (Util::isAllDigits(threshold, true))
+                                {
+                                    scene.cubeThreshold = Util::stof(threshold);
+
+                                    LOG("New threshold: %f", scene.cubeThreshold);
+                                }
+                            }
+                        }
                         else {
                             LOG_ERROR("Unknown command %s!", input);
                         }
