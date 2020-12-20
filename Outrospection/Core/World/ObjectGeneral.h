@@ -17,9 +17,10 @@ public:
 
     void draw(const Shader& shader) const;
 
-    glm::vec3& getPos() const;
-    glm::vec3& getRot() const;
-    glm::vec3& getScale() const;
+    glm::vec3& getPos();
+    glm::vec3 getRot() const;
+    glm::vec3& getRotRad();
+    glm::vec3& getScale();
 
     void setPos(const glm::vec3& _pos);
     void setRot(const glm::vec3& _rot);

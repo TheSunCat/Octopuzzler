@@ -74,17 +74,22 @@ void ObjectGeneral::draw(const Shader& shader) const
     }
 }
 
-glm::vec3& ObjectGeneral::getPos() const
+glm::vec3& ObjectGeneral::getPos()
 {
     return pos;
 }
 
-glm::vec3& ObjectGeneral::getRot() const
+glm::vec3 ObjectGeneral::getRot() const
 {
     return glm::degrees(rotRad);
 }
 
-glm::vec3& ObjectGeneral::getScale() const
+glm::vec3& ObjectGeneral::getRotRad()
+{
+    return rotRad;
+}
+
+glm::vec3& ObjectGeneral::getScale()
 {
     return scale;
 }
