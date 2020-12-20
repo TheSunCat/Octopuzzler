@@ -1,7 +1,6 @@
 ﻿#include "PlayerController.h"
 #include "Core.h"
 
-#include "Constants.h"
 #include "Controller.h"
 #include "Util.h"
 
@@ -15,33 +14,26 @@ void PlayerController::acceleratePlayer(Player& player, const Controller& contro
 {
     velocity /= deltaTime;
 
-    const bool hacking = (controller.leftTrigger >= 0.85f || controller.talk);
-    // apparently, hacking is a side effect of debug mode - someone unimportant
-
     glm::vec3 inputMoveVector(0);
 
     const glm::vec3 right = glm::cross(forward, down);
 
     inputMoveVector += -forward * controller.lStickY;
     inputMoveVector += right * controller.lStickX;
+    velocity *= pow(0.8f, deltaTime * 60); // friXion
 
-    velocity += inputMoveVector * (hacking ? 5.0f : 1.0f);
+    velocity += inputMoveVector * 1.0f;
 
-    //velocity *= pow(0.99f, deltaTime * 60); // friXion
 
     if (controller.jump && controller.jump < 10) // can jump for 10 frames after hitting jump
     {
-        if (groundTri || hacking) // cheat code hold left trigger to moonjump
-        {
-            jumping = true;
-
-            //LOG_DEBUG("jumping!");
-
-            velocity = (-Physics::gravity * (player.jumpStrength));
-        }
+        velocity = (-Physics::gravity * (player.jumpStrength));
     }
 
-    velocity += Physics::gravity * Physics::gravityStrength * deltaTime;
+    if (controller.talk && controller.talk < 10) // can jump for 10 frames after hitting jump
+    {
+        velocity = (Physics::gravity * (player.jumpStrength));
+    }
 
     //LOG("Velocity = %sm/s", Util::vecToStr(velocity));
 
