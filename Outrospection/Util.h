@@ -148,7 +148,7 @@ namespace Util
         static float noise(glm::vec2& coord);
 
         static float noise(float x, float y, float z);
-        static float noise(glm::vec3& coord);
+        static float noise(const glm::vec3& coord);
 
         static float fbm(float x, int octave);
 

@@ -29,6 +29,8 @@ public:
     std::vector<CollisionMesh> collision;
     std::vector<std::vector<Triangle>::const_iterator> groundCollision;
     std::vector<std::vector<Triangle>::const_iterator> wallCollision;
+
+    float cubeThreshold = 0.24f;
 private:
     static DummyObj parseLine(const std::string& line);
 
