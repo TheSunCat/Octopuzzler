@@ -1,8 +1,6 @@
 #pragma once
 #include "Outrospection.h"
-#include "Util.h"
 #include "Core/Rendering/Mesh.h"
-#include "Core/Rendering/TextureManager.h"
 
 class MeshSphere : public Mesh
 {

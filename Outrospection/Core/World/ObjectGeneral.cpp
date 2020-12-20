@@ -3,7 +3,6 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-
 #include "MeshSphere.h"
 #include "Core/Rendering/ModelLoader.h"
 #include "Core/Rendering/Shader.h"
@@ -12,7 +11,7 @@ ObjectGeneral::ObjectGeneral(const std::string& _name, glm::vec3 _pos, glm::vec3
 {
     name = _name;
     pos = _pos;
-    rot = _rot;
+    rotRad = _rot;
     scale = _scale;
 
     std::string modelPath = "./res/ObjectData/" + _name + "/" + _name + ".omd";
@@ -41,7 +40,7 @@ ObjectGeneral::ObjectGeneral(const std::string& _name, glm::vec3 _pos, glm::vec3
 {
     name = _name;
     pos = _pos;
-    rot = _rot;
+    rotRad = _rot;
     scale = _scale;
 
     meshes.emplace_back(mesh);
@@ -49,18 +48,23 @@ ObjectGeneral::ObjectGeneral(const std::string& _name, glm::vec3 _pos, glm::vec3
 
 void ObjectGeneral::draw(const Shader& shader) const
 {
-    glm::mat4 modelMat = glm::mat4(1.0f);
+    if (dirtyTransform)
+    {
+        modelMat = glm::mat4(1.0f);
 
-    // Scale model
-    modelMat = glm::scale(modelMat, scale);
+        // Scale model
+        modelMat = glm::scale(modelMat, scale);
 
-    // rotate each axis individually bc ogl dum
-    modelMat = glm::rotate(modelMat, glm::radians(rot.x), glm::vec3(1, 0, 0));
-    modelMat = glm::rotate(modelMat, glm::radians(rot.y), glm::vec3(0, 1, 0));
-    modelMat = glm::rotate(modelMat, glm::radians(rot.z), glm::vec3(0, 0, 1));
+        // rotate each axis individually bc ogl dum
+        modelMat = glm::rotate(modelMat, rotRad.x, glm::vec3(1, 0, 0));
+        modelMat = glm::rotate(modelMat, rotRad.y, glm::vec3(0, 1, 0));
+        modelMat = glm::rotate(modelMat, rotRad.z, glm::vec3(0, 0, 1));
 
-    // Translate model
-    modelMat = glm::translate(modelMat, pos);
+        // Translate model
+        modelMat = glm::translate(modelMat, pos);
+
+        dirtyTransform = false;
+    }
 
     shader.setMat4("model", modelMat);
 
@@ -70,17 +74,38 @@ void ObjectGeneral::draw(const Shader& shader) const
     }
 }
 
-glm::vec3 ObjectGeneral::getPos() const
+glm::vec3& ObjectGeneral::getPos() const
 {
     return pos;
 }
 
-glm::vec3 ObjectGeneral::getRot() const
+glm::vec3& ObjectGeneral::getRot() const
 {
-    return rot;
+    return glm::degrees(rotRad);
 }
 
-glm::vec3 ObjectGeneral::getScale() const
+glm::vec3& ObjectGeneral::getScale() const
 {
     return scale;
+}
+
+void ObjectGeneral::setPos(const glm::vec3& _pos)
+{
+    pos = _pos;
+
+    dirtyTransform = true;
+}
+
+void ObjectGeneral::setRot(const glm::vec3& _rot)
+{
+    rotRad = glm::radians(_rot);
+
+    dirtyTransform = true;
+}
+
+void ObjectGeneral::setScale(const glm::vec3& _scl)
+{
+    scale = _scl;
+
+    dirtyTransform = true;
 }

@@ -17,14 +17,20 @@ public:
 
     void draw(const Shader& shader) const;
 
-    glm::vec3 getPos() const;
+    glm::vec3& getPos() const;
+    glm::vec3& getRot() const;
+    glm::vec3& getScale() const;
 
-    glm::vec3 getRot() const;
-
-    glm::vec3 getScale() const;
+    void setPos(const glm::vec3& _pos);
+    void setRot(const glm::vec3& _rot);
+    void setScale(const glm::vec3& _scl);
 
 protected:
-    glm::vec3 pos{}, rot{}, scale{};
+    glm::vec3 pos{}, rotRad{}, scale{};
+
+    mutable glm::mat4 modelMat;
+    mutable bool dirtyTransform = true;
+
     std::vector<Mesh> meshes;
 
     std::string name;
