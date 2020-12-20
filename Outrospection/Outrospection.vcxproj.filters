@@ -217,6 +217,9 @@
     <ClInclude Include="Inventory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MeshCube.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Rendering\TextureManager.cpp">
@@ -331,6 +334,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Item\Item.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshCube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

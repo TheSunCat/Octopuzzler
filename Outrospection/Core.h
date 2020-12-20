@@ -42,7 +42,7 @@ inline time_t currentTimeSeconds;
     #error "Unknown platform!"
 #endif // End of platform detection
 
-#define DEBUG __DEBUG__
+#define DEBUG false//__DEBUG__
 
 #ifdef PLATFORM_WINDOWS
 #define WIN32_LEAN_AND_MEAN
@@ -184,7 +184,7 @@ struct smart_printf {
 
 #define LOG(...) loggerQueue.push([args=std::make_tuple(__VA_ARGS__)] { std::apply(smart_printf{}, args); })
 
-#ifdef DEBUG
+#if DEBUG
 #define LOG_DEBUG(...) loggerQueue.push([args=std::make_tuple(__VA_ARGS__)] { CHANGE_COLOR(35); /* set color to magenta */\
         std::apply(smart_printf{}, args); \
         CHANGE_COLOR(0);})

@@ -262,6 +262,7 @@
     <ClInclude Include="Item\Item.h" />
     <ClInclude Include="Item\ItemStack.h" />
     <ClInclude Include="KeyBinding.h" />
+    <ClInclude Include="MeshCube.h" />
     <ClInclude Include="MeshSphere.h" />
     <ClInclude Include="ObjectProcedural.h" />
     <ClInclude Include="Outrospection.h" />
@@ -303,6 +304,7 @@
     <ClCompile Include="Item\Item.cpp" />
     <ClCompile Include="Item\ItemStack.cpp" />
     <ClCompile Include="KeyBinding.cpp" />
+    <ClCompile Include="MeshCube.cpp" />
     <ClCompile Include="MeshSphere.cpp" />
     <ClCompile Include="Outrospection.cpp" />
     <ClCompile Include="RigidBody.cpp" />

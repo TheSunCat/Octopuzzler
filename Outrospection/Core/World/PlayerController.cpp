@@ -54,11 +54,12 @@ void PlayerController::collidePlayer(Player& player, const glm::vec3& gravity, c
     constexpr float sphereRadiusSq = sphereRadius * sphereRadius;
 
     glm::vec3 finalPosition = player.position + velocity;
-    if(Util::dist2(finalPosition, glm::vec3(0)) < sphereRadiusSq)
-    {
-        velocity = glm::vec3(0);// gravity;
-        finalPosition = player.position + velocity;
-    }
+
+    //if(Util::dist2(finalPosition, glm::vec3(0)) < sphereRadiusSq)
+    //{
+    //    velocity = glm::vec3(0);// gravity;
+    //    finalPosition = player.position + velocity;
+    //}
 
 
     player.moveTo(finalPosition);
