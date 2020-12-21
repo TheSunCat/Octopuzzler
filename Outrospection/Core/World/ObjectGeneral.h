@@ -27,6 +27,8 @@ public:
     void setScale(const glm::vec3& _scl);
 
     float debugColor;
+
+    bool hidden = false;
 protected:
     glm::vec3 pos{}, rotRad{}, scale{};
 

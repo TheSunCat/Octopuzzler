@@ -22,7 +22,9 @@ public:
 
     std::string name;
 
-    std::vector<ObjectGeneral> objects;
+    
+    
+    std::unordered_map<std::string, std::vector<ObjectGeneral>> objects;
     std::vector<ObjectGeneral> skies;
     std::vector<Character> characters;
 

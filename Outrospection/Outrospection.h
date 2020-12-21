@@ -237,7 +237,7 @@ private:
                                 LOG_ERROR("give: please provide item ID to give");
                             }
                         }
-                        else if (command == "cube")
+                        else if (command == "threshold")
                         {
                             if(!args.empty())
                             {
@@ -249,6 +249,18 @@ private:
 
                                     LOG("New threshold: %f", scene.cubeThreshold);
                                 }
+                            }
+                        } else if (command == "cubes")
+                        {
+                            if(!args.empty())
+                            {
+                                bool hidden = args[0] == "false";
+                                
+
+                                for (auto& cube : scene.objects["debugCubes"])
+                                    cube.hidden = hidden;
+
+                                LOG("Successfully hid/unhid cubes.");
                             }
                         }
                         else {
