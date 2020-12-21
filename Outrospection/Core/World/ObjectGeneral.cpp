@@ -48,6 +48,9 @@ ObjectGeneral::ObjectGeneral(const std::string& _name, glm::vec3 _pos, glm::vec3
 
 void ObjectGeneral::draw(const Shader& shader) const
 {
+    if (hidden)
+        return;
+    
     if (dirtyTransform)
     {
         modelMat = glm::mat4(1.0f);
@@ -63,6 +66,7 @@ void ObjectGeneral::draw(const Shader& shader) const
         // Translate model
         modelMat = glm::translate(modelMat, pos);
 
+        
         dirtyTransform = false;
     }
 

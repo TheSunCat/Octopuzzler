@@ -79,24 +79,25 @@ void Scene::loadScene()
 {
     MeshCube cube = MeshCube();
 
-    for (int x = 0; x < 11; x++)
+    
+    objects.insert(std::make_pair("debugCubes", std::vector<ObjectGeneral>()));
+    
+    for (int x = 0; x < 22; x++)
     {
-        for (int y = 0; y < 11; y++)
+        for (int y = 0; y < 22; y++)
         {
-            for (int z = 0; z < 11; z++)
+            for (int z = 0; z < 22; z++)
             {
-                ObjectGeneral obj = ObjectGeneral("sphere", 
+                ObjectGeneral obj = ObjectGeneral("cube", 
                     glm::vec3(x, y, z) * 4.0f, 
                     glm::vec3(0),
                     glm::vec3(1), cube);
-
+                
                 float noise = Util::Perlin::noise(glm::vec3(x, y, z) / 5.0f); // TODO add command to change seed by translating along noise
-
-                LOG("%f", noise);
 
                 obj.debugColor = noise;
 
-                objects.emplace_back(obj); // TODO not do this lol
+                objects["debugCubes"].emplace_back(obj); // TODO not do this lol
             }
         }
     }
@@ -183,7 +184,7 @@ void Scene::loadScene()
             case Scene::State::Obj:
                 {
                     // parse object
-                    objects.emplace_back(parseObj(line));
+                    objects["Stage"].emplace_back(parseObj(line));
                     break;
                 }
             case Scene::State::Sky:
@@ -244,10 +245,12 @@ void Scene::draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShade
 
     colMesh.draw();
 #else
-    for (const ObjectGeneral& object : objects)
+    for (const auto& [fst, snd] : objects)
     {
-        if(object.debugColor > cubeThreshold)
-            object.draw(_objShader);
+        for (const auto& object : snd) {
+            if (object.debugColor > cubeThreshold)
+                object.draw(_objShader);
+        }
     }
 #endif
 
