@@ -1,8 +1,6 @@
 ﻿#include "UIComponent.h"
 
 #include <utility>
-#include <glm/ext/matrix_transform.inl>
-
 
 #include "Outrospection.h"
 #include "Util.h"

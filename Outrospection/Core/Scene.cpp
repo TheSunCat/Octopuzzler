@@ -77,10 +77,13 @@ Scene::Scene(std::string _name) : name(std::move(_name))
 
 void Scene::loadScene()
 {
-    MeshCube cube = MeshCube();
+    auto sphere = MeshSphere(5);
 
+
+    float voxelSize = 4.0f;
     
     objects.insert(std::make_pair("debugCubes", std::vector<ObjectGeneral>()));
+    objects.insert(std::make_pair("Scene", std::vector<ObjectGeneral>()));
     
     for (int x = 0; x < 22; x++)
     {
@@ -88,10 +91,10 @@ void Scene::loadScene()
         {
             for (int z = 0; z < 22; z++)
             {
-                ObjectGeneral obj = ObjectGeneral("cube", 
-                    glm::vec3(x, y, z) * 4.0f, 
+                ObjectGeneral obj = ObjectGeneral("debugDot", 
+                    glm::vec3(x, y, z) * voxelSize, 
                     glm::vec3(0),
-                    glm::vec3(1), cube);
+                    glm::vec3(0.5), sphere);
                 
                 float noise = Util::Perlin::noise(glm::vec3(x, y, z) / 5.0f); // TODO add command to change seed by translating along noise
 
@@ -100,6 +103,53 @@ void Scene::loadScene()
                 objects["debugCubes"].emplace_back(obj); // TODO not do this lol
             }
         }
+    }
+
+    MeshCube cube;
+    
+    for(int x = 0; x < 11; x++)
+    {
+        for (int y = 0; y < 11; y++)
+        {
+            for (int z = 0; z < 11; z++)
+            {
+                float* points = new float[8];
+                
+                points[0] = Util::Perlin::noise(glm::vec3(x         , y - 1.0f, z         ) / 5.0f);
+                points[1] = Util::Perlin::noise(glm::vec3(x - 1.0f, y - 1.0f, z         ) / 5.0f);
+                points[2] = Util::Perlin::noise(glm::vec3(x         , y - 1.0f, z - 1.0f) / 5.0f);
+                points[3] = Util::Perlin::noise(glm::vec3(x - 1.0f, y - 1.0f, z - 1.0f) / 5.0f);
+                points[4] = Util::Perlin::noise(glm::vec3(x         , y         , z - 1.0f) / 5.0f);
+                points[5] = Util::Perlin::noise(glm::vec3(x - 1.0f, y         , z - 1.0f) / 5.0f);
+                points[6] = Util::Perlin::noise(glm::vec3(x         , y         , z         ) / 5.0f);
+                points[7] = Util::Perlin::noise(glm::vec3(x - 1.0f, y         , z         ) / 5.0f);
+
+
+                ObjectGeneral marchingCube = ObjectGeneral("marchingCube",
+                    glm::vec3(x, y, z) + 0.5f * voxelSize,
+                    glm::vec3(0),
+                    glm::vec3(voxelSize / 2), cube);
+
+
+                marchingCube.debugColor = points[0];
+            	
+                bool isExist = false;
+                for(int i = 0; i < 8; i++)
+                {
+                    float p = points[i];
+
+                    if (p > cubeThreshold)
+                        isExist = true;
+                }
+
+
+                if (!isExist)
+                    marchingCube.hidden = true;
+
+                objects["Stage"].emplace_back(marchingCube);
+            }
+        }
+            
     }
 
     std::vector<Triangle> colTris;

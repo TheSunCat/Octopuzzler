@@ -3,6 +3,7 @@
 #include <string>
 
 #include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 #include "Core/Rendering/Mesh.h"
 
@@ -31,6 +32,7 @@ public:
     bool hidden = false;
 protected:
     glm::vec3 pos{}, rotRad{}, scale{};
+    glm::quat rot;
 
     mutable glm::mat4 modelMat;
     mutable bool dirtyTransform = true;
