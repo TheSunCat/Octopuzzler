@@ -2,6 +2,7 @@
 #include "Core.h"
 
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 #include "MeshSphere.h"
 #include "Core/Rendering/ModelLoader.h"
@@ -10,9 +11,9 @@
 ObjectGeneral::ObjectGeneral(const std::string& _name, glm::vec3 _pos, glm::vec3 _rot, glm::vec3 _scale)
 {
     name = _name;
-    pos = _pos;
-    rotRad = _rot;
-    scale = _scale;
+    setPos(_pos);
+    setRot(_rot);
+    setScale(_scale);
 
     std::string modelPath = "./res/ObjectData/" + _name + "/" + _name + ".omd";
 
@@ -39,9 +40,9 @@ ObjectGeneral::ObjectGeneral(const std::string& _name, glm::vec3 _pos, glm::vec3
 ObjectGeneral::ObjectGeneral(const std::string& _name, glm::vec3 _pos, glm::vec3 _rot, glm::vec3 _scale, Mesh& mesh)
 {
     name = _name;
-    pos = _pos;
-    rotRad = _rot;
-    scale = _scale;
+    setPos(_pos);
+    setRot(_rot);
+    setScale(_scale);
 
     meshes.emplace_back(mesh);
 }
@@ -55,16 +56,16 @@ void ObjectGeneral::draw(const Shader& shader) const
     {
         modelMat = glm::mat4(1.0f);
 
-        // Scale model
-        modelMat = glm::scale(modelMat, scale);
-
-        // rotate each axis individually bc ogl dum
-        modelMat = glm::rotate(modelMat, rotRad.x, glm::vec3(1, 0, 0));
-        modelMat = glm::rotate(modelMat, rotRad.y, glm::vec3(0, 1, 0));
-        modelMat = glm::rotate(modelMat, rotRad.z, glm::vec3(0, 0, 1));
+        // TODO figure out the order to do this mess in
 
         // Translate model
         modelMat = glm::translate(modelMat, pos);
+
+        // Rotate model by quaternion
+        modelMat *= glm::toMat4(rot);
+
+        // Scale model
+        modelMat = glm::scale(modelMat, scale);
 
         
         dirtyTransform = false;
@@ -109,6 +110,8 @@ void ObjectGeneral::setPos(const glm::vec3& _pos)
 void ObjectGeneral::setRot(const glm::vec3& _rot)
 {
     rotRad = glm::radians(_rot);
+
+    rot = glm::quat(rotRad);
 
     dirtyTransform = true;
 }
