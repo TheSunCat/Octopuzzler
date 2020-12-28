@@ -1,5 +1,7 @@
 ﻿#include "Outrospection.h"
 
+
+#include <csignal>
 #include <glm/ext/matrix_clip_space.hpp>
 
 #include "GUIInventory.h"
@@ -64,6 +66,7 @@ void Outrospection::run()
     startTimeThread();
     startLoggerThread();
     startConsoleThread();
+    startDiscordThread();
 
     lastFrame = currentTimeMillis;
     while (running)
@@ -134,8 +137,6 @@ bool inInventory = false;
 
 void Outrospection::initItems()
 {
-    auto& itemRegistry = Outrospection::get().itemRegistry;
-
     itemRegistry.add(0, Item("entropy", 0));
     itemRegistry.add(100, Item("iron"));
     itemRegistry.add(101, Item("copper"));
@@ -676,6 +677,53 @@ void Outrospection::startConsoleThread()
                     }
                 }
             }
+        }
+    };
+}
+
+volatile bool discordInterrupted{ false };
+
+void Outrospection::startDiscordThread()
+{
+    discordThread = std::thread {
+        [&]() -> void {
+            discord::Core* discordCore;
+        	
+            auto result = discord::Core::Create(793250268099641386, DiscordCreateFlags_Default, &discordCore);
+
+            if (!discordCore)
+            {
+                LOG_ERROR("Discord: Failed to instantiate Discord core! Error %i", int(result));
+                return;
+            }
+
+            discordCore->SetLogHook(discord::LogLevel::Debug, [](discord::LogLevel level, const char* message)
+            {
+                LOG("Discord: Log(%i): %s", uint32_t(level), message);
+            });
+
+            discord::Activity activity{};
+            activity.SetDetails("Ingame");
+            activity.SetState("Marching cubes");
+            //activity.GetAssets().SetSmallImage("smallimage");
+            //activity.GetAssets().SetSmallText("smalltext");
+            activity.GetAssets().SetLargeImage("fishlady");
+            // activity.GetAssets().SetLargeText("Oh, hi there!");
+            activity.SetType(discord::ActivityType::Playing);
+
+            discordCore->ActivityManager().UpdateActivity(activity, [](discord::Result result) {
+                LOG("%s to update activity!", (result == discord::Result::Ok) ? "Succeeded" : "Failed");
+            });
+            
+            
+        	
+            std::signal(SIGINT, [](int) {
+                discordInterrupted = true;
+            });
+            do {
+                discordCore->RunCallbacks();
+                std::this_thread::sleep_for(std::chrono::milliseconds(16));
+            } while (!discordInterrupted);
         }
     };
 }

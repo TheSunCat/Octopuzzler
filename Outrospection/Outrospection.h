@@ -3,6 +3,7 @@
 
 #include <thread>
 #include <glm/vec2.hpp>
+#include "discord/discord.h"
 
 #include "Constants.h"
 #include "GameSettings.h"
@@ -133,4 +134,7 @@ private:
     
     std::thread consoleThread;
     void startConsoleThread();
+
+    std::thread discordThread;
+    void startDiscordThread();
 };
