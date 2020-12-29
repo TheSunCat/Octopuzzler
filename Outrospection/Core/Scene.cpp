@@ -98,7 +98,7 @@ void Scene::loadScene()
                 
                 float noise = Util::Perlin::noise(glm::vec3(x, y, z) / 5.0f); // TODO add command to change seed by translating along noise
 
-                obj.debugColor = noise;
+                obj.debugColor = 0.5;//noise;
 
                 objects["debugCubes"].emplace_back(obj); // TODO not do this lol
             }
@@ -126,21 +126,21 @@ void Scene::loadScene()
 
 
                 ObjectGeneral marchingCube = ObjectGeneral("marchingCube",
-                    glm::vec3(x, y, z) + 0.5f * voxelSize,
+                    (glm::vec3(x, y, z) * 2.0f + 0.5f) * voxelSize,
                     glm::vec3(0),
                     glm::vec3(voxelSize / 2), cube);
 
 
-                marchingCube.debugColor = points[0];
+                marchingCube.debugColor = 1.0f;//points[0];
             	
-                bool isExist = false;
-                for(int i = 0; i < 8; i++)
+                bool isExist = true;
+                /*for(int i = 0; i < 8; i++)
                 {
                     float p = points[i];
 
                     if (p > cubeThreshold)
                         isExist = true;
-                }
+                }*/
 
 
                 if (!isExist)
@@ -148,8 +148,7 @@ void Scene::loadScene()
 
                 objects["Stage"].emplace_back(marchingCube);
             }
-        }
-            
+        } 
     }
 
     std::vector<Triangle> colTris;
