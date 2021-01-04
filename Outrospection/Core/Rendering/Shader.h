@@ -18,7 +18,7 @@ public:
     // constructor reads and builds the shader
     Shader(const GLchar* vertexName, const GLchar* fragmentName);
 
-    void doProjView(Camera& _camera, int _width, int _height, bool doPos) const;
+    void sendViewProjMat(Camera& _camera, bool doPos) const;
 
     // activate the shader
     void use() const;

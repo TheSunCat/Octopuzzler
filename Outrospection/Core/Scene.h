@@ -16,7 +16,7 @@ public:
 
     void loadScene();
 
-    void draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShader, Shader& _simpleShader);
+    void draw(const Camera& cam, Shader& _objShader, Shader& _billboardShader, Shader& _skyShader, Shader& _simpleShader);
 
     enum class State { Obj, RailObj, Light, Sky, Chara, Col };
 

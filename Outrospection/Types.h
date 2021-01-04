@@ -1,6 +1,7 @@
 #pragma once
 
 #include <unordered_map>
+#include <array>
 
 #include <glm/glm.hpp>
 
@@ -66,8 +67,47 @@ struct CollisionPackage
 
 };
 
+struct AABB
+{
+    AABB() : AABB(glm::vec3(-0.5f), glm::vec3(0.5f)) {} // default to 1x1x1 bbox
+
+    AABB(glm::vec3 _min, glm::vec3 _max) : min(_min), max(_max),
+                                           center((_min + _max) / 2.0f),
+                                           size(max - min),
+                                           halfSize(size / 2.0f) {}
+
+    glm::vec3 min;
+    glm::vec3 max;
+
+    glm::vec3 center;
+    glm::vec3 size; // aka extent
+    glm::vec3 halfSize;
+
+    AABB operator* (const glm::mat4& a) const
+    {
+        AABB tmp(glm::vec4(min, 1) * a, glm::vec4(max, 1) * a);
+
+        return tmp;
+    }
+
+    void operator*= (const glm::mat4& a)
+    {
+        min = glm::vec4(min, 1) * a;
+        max = glm::vec4(min, 1) * a;
+
+        center = (min + max) / 2.0f;
+        size = max - min;
+        halfSize = size / 2.0f;
+    }
+};
+
+
+
 struct Plane
 {
+    Plane() = default;
+
+    // Ax + By + Cz + D = 0
     float equation[4]{};
 
     // two things needed to define any plane:
@@ -95,6 +135,19 @@ struct Plane
         equation[1] = n.y;
         equation[2] = n.z;
         equation[3] = -(n.x * orig.x + n.y * orig.y + n.z * orig.z);
+    }
+
+    Plane(float eqA, float eqB, float eqC, float eqD)
+    {
+        float len = sqrt(eqA * eqA + eqB * eqB + eqC * eqC);
+
+        equation[0] = eqA / len;
+        equation[1] = eqB / len;
+        equation[2] = eqC / len;
+        equation[3] = eqD / len;
+
+        n = glm::vec3(equation[0], equation[1], equation[2]);
+        orig = glm::vec3(0, -equation[3] / equation[1], 0); // if X and Z = 0, find Y
     }
 
     bool isFrontFacingTo(const glm::vec3& dir) const

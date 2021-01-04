@@ -129,6 +129,12 @@ namespace Util
     bool intersectRaySegmentSphere(const Ray& ray, glm::vec3 sphereOrigin, float sphereRadius2,
                                    glm::vec3& intersectPoint);
 
+    bool intersectAABB(const AABB& a, const AABB& b);
+
+    bool intersectFrustumAABB(const Plane* planes, const AABB& aabb);
+
+    void getFrustumFromViewProj(const glm::mat4& viewProj, Plane* frustum);
+
     bool inTriangle(const glm::vec3& point, const Triangle& tri);
 
     bool intersectTriangleSphere(const glm::vec3& spherePos, float sphereRadius, const Triangle& tri, glm::vec3& intersectPoint, float& pointToPlaneDist);

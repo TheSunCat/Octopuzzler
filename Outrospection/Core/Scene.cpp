@@ -273,7 +273,7 @@ void Scene::loadScene()
     sceneFile.close();
 }
 
-void Scene::draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShader, Shader& _simpleShader)
+void Scene::draw(const Camera& cam, Shader& _objShader, Shader& _billboardShader, Shader& _skyShader, Shader& _simpleShader)
 {
     // render sky
     _skyShader.use();
@@ -294,16 +294,17 @@ void Scene::draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShade
 
     colMesh.draw();
 #else
-    for (const auto& [fst, snd] : objects)
+    for (auto& [group, objs] : objects)
     {
-        for (const auto& object : snd) {
+        for (auto& object : objs) {
             if (object.debugColor > cubeThreshold)
-                object.draw(_objShader);
+                object.draw(_objShader, cam);
         }
     }
 #endif
 
     _billboardShader.use();
+    _billboardShader.setVec3("cameraRight", cam.mRight);
     for (const Character& chara : characters)
     {
         chara.draw(_billboardShader);
@@ -312,7 +313,7 @@ void Scene::draw(Shader& _objShader, Shader& _billboardShader, Shader& _skyShade
 
 DummyObj Scene::parseLine(const std::string& line)
 {
-    const size_t n = std::count(line.begin(), line.end(), '|');
+    const size_t n = std::ranges::count(line, '|');
 
     if (n == 0)
         return {line};

@@ -29,10 +29,13 @@ public:
          unsigned int indSize, const SimpleTexture& _texture);
 
     Mesh(std::string _name, GLuint _VAO);
-
+    
     // render the mesh
     void draw() const;
+    
+    AABB bbox{};
 protected:
+
     unsigned int indicesSize = 0;
     GLuint VBO = 0, VAO = 0, EBO = 0;
 };
