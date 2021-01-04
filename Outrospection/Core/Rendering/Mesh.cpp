@@ -26,6 +26,30 @@ Mesh::Mesh(const std::string& _name, const Vertex* _vertices, unsigned int vertS
     indicesSize = unsigned int(indSize);
     texture = _texture;
 
+    // calculate bounding box
+    auto min = glm::vec3(-INFINITY);
+    auto max = glm::vec3( INFINITY);
+    
+    for(unsigned int i = 0; i < vertSize; i++)
+    {
+        const Vertex& v = _vertices[i];
+
+        if (v.pos.x < bbox.min.x)
+            bbox.min.x = v.pos.x;
+        if (v.pos.y < bbox.min.y)
+            bbox.min.y = v.pos.y;
+        if (v.pos.z < bbox.min.z)
+            bbox.min.z = v.pos.z;
+        if (v.pos.x > bbox.max.x)
+            bbox.max.x = v.pos.x;
+        if (v.pos.y < bbox.max.y)
+            bbox.max.y = v.pos.y;
+        if (v.pos.z < bbox.max.z)
+            bbox.max.z = v.pos.z;
+    }
+
+    bbox = AABB(min, max);
+
     // create buffers and arrays
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);

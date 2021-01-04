@@ -197,27 +197,32 @@ void Outrospection::runGameLoop()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f); // background color
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        // make sure we have the latest data in the camera fields
+        camera.updateCameraData();
 
         // set shader info
         objectShader.use();
         objectShader.setVec3("viewPos", camera.mPosition);
         objectShader.setFloat("shininess", 32.0f);
         objectShader.setVec3("lightPos", player.position + glm::vec3(0, 1.5f, 0));
-        objectShader.doProjView(camera, SCR_WIDTH, SCR_HEIGHT, true);
+        objectShader.sendViewProjMat(camera, true);
 
         billboardShader.use();
-        billboardShader.doProjView(camera, SCR_WIDTH, SCR_HEIGHT, true);
+        billboardShader.sendViewProjMat(camera, true);
 
         skyShader.use();
-        skyShader.doProjView(camera, SCR_WIDTH, SCR_HEIGHT, false);
+        skyShader.sendViewProjMat(camera, false);
 
         simpleShader.use();
-        simpleShader.doProjView(camera, SCR_WIDTH, SCR_HEIGHT, true);
+        simpleShader.sendViewProjMat(camera, true);
 
-        // draw stuffs
-        scene.draw(objectShader, billboardShader, skyShader, simpleShader);
+        culled = 0;
+
+        // draw stuff
+        scene.draw(camera, objectShader, billboardShader, skyShader, simpleShader);
         player.draw(billboardShader);
 
+        LOG("Culled %i objects.", culled);
 
         glDisable(GL_DEPTH_TEST); // disable depth test so stuff near camera isn't clipped
 

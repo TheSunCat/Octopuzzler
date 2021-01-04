@@ -1,6 +1,5 @@
 #include "Camera.h"
 
-#include <array>
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "Util.h"
@@ -8,25 +7,21 @@
 #include "Core/Scene.h"
 #include "Core/World/Player.h"
 
-Camera::Camera(const glm::vec3 _pos, const glm::vec3 _up, const float _yaw, const float _pitch)
-    : mFront(glm::vec3(0.0f, 0.0f, -1.0f)), mRotationSpeed(ROT_SPEED), mZoom(ZOOM)
+Camera::Camera(const glm::vec3 _pos, const glm::vec3 _up, const float _yaw, const float _pitch, const float screenWidth, const float screenHeight)
+    : Camera(_pos.x, _pos.y, _pos.z, _up.x, _up.y, _up.z, _yaw, _pitch, screenWidth, screenHeight)
 {
-    mPosition = _pos;
-    mWorldUp = _up;
-    mYaw = _yaw;
-    mPitch = _pitch;
-    updateCameraVectors();
+    
 }
 
 Camera::Camera(const float posX, const float posY, const float posZ, const float upX, const float upY, const float upZ,
-               const float _yaw, const float _pitch)
-    : mFront(glm::vec3(0.0f, 0.0f, -1.0f)), mRotationSpeed(ROT_SPEED), mZoom(ZOOM)
+               const float _yaw, const float _pitch, const float screenWidth, const float screenHeight)
+    : mFront(glm::vec3(0.0f, 0.0f, -1.0f)), mRotationSpeed(ROT_SPEED), mZoom(ZOOM), screenSize(screenWidth, screenHeight)
 {
     mPosition = glm::vec3(posX, posY, posZ);
     mWorldUp = glm::vec3(upX, upY, upZ);
     mYaw = _yaw;
     mPitch = _pitch;
-    updateCameraVectors();
+    updateCameraData();
 }
 
 void Camera::calculateCameraPosition(const Player& player, const Scene& scene, float deltaTime, const bool shouldAutoCam)
@@ -159,16 +154,11 @@ void Camera::calculateCameraPosition(const Player& player, const Scene& scene, f
             pitchVelocity = 0.0f;
     }
 
-    updateCameraVectors();
+    updateCameraData();
 
     // get camera position
     const glm::vec3 newPos = mFocus - (mFront * mDist);
     mPosition = newPos;
-}
-
-glm::mat4 Camera::getViewMatrix() const
-{
-    return glm::lookAt(mPosition, mPosition + mFront, mUp);
 }
 
 void Camera::playerRotateCameraBy(float xoffset, float yoffset, const bool applyCameraSpeed)
@@ -203,10 +193,20 @@ void Camera::setDownVector(glm::vec3 vec)
     mWorldUp = -vec;
 }
 
-void Camera::updateCameraVectors()
+void Camera::updateCameraData()
 {
     mFront = Util::rotToVec3(mYaw, mPitch);
-    // Also re-calculate the Right and Up vector
-    mRight = glm::normalize(glm::cross(mFront, mWorldUp));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
+    mRight = glm::normalize(glm::cross(mFront, mWorldUp));
     mUp = glm::normalize(glm::cross(mRight, mFront));
+
+    // calculate matrices
+    proj = glm::perspective(glm::radians(mZoom), float(screenSize.x) / float(screenSize.y),
+        0.1f, 1000.0f); // zNear and zFar
+
+    view = glm::lookAt(mPosition, mPosition + mFront, mUp);
+
+    viewProj = proj * view;
+
+    // store frustum
+    Util::getFrustumFromViewProj(viewProj, frustum);
 }

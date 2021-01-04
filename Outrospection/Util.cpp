@@ -211,6 +211,93 @@ bool Util::intersectRaySegmentSphere(const Ray& ray, const glm::vec3 sphereOrigi
     return true;
 }
 
+bool Util::intersectAABB(const AABB& a, const AABB& b)
+{
+    if (a.min.x < b.min.x)
+        return false;
+    if (a.min.y < b.min.y)
+        return false;
+    if (a.min.z < b.min.z)
+        return false;
+    if (a.max.x < b.max.x)
+        return false;
+    if (a.max.x < b.max.x)
+        return false;
+    if (a.max.x < b.max.x)
+        return false;
+
+    return true;
+}
+
+bool Util::intersectFrustumAABB(const Plane* planes, const AABB& aabb) {
+
+    int result = true; // INSIDE
+    for (unsigned int i = 0; i < 6; i++) {
+        const auto& plane = planes[i];
+
+        float d = glm::dot(aabb.center, plane.n);
+        float r = glm::dot(aabb.halfSize, abs(plane.n));
+
+        if (d + r < -plane.equation[3]) {
+            return false; // OUTSIDE
+        }
+
+        if (d - r < -plane.equation[3]) {
+            result = true; // INTERSECT
+        }
+    }
+
+    return result;
+}
+
+void Util::getFrustumFromViewProj(const glm::mat4& viewProj, Plane* frustum)
+{
+
+
+    // Left Frustum Plane
+    // Add first column of the matrix to the fourth column
+    frustum[0] = Plane(viewProj[3][0] + viewProj[0][0],
+                    viewProj[3][1] + viewProj[0][1],
+                    viewProj[3][2] + viewProj[0][2],
+                    viewProj[3][3] + viewProj[0][3]);
+
+    // Right Frustum Plane
+    // Subtract first column of matrix from the fourth column
+    frustum[1] = Plane(viewProj[3][0] - viewProj[0][0],
+                    viewProj[3][1] - viewProj[0][1],
+                    viewProj[3][2] - viewProj[0][2],
+                    viewProj[3][3] - viewProj[0][3]);
+
+    // Top Frustum Plane
+    // Subtract second column of matrix from the fourth column
+    frustum[2] = Plane(viewProj[3][0] - viewProj[1][0],
+                    viewProj[3][1] - viewProj[1][1],
+                    viewProj[3][2] - viewProj[1][2],
+                    viewProj[3][3] - viewProj[1][3]);
+
+    // Bottom Frustum Plane
+    // Add second column of the matrix to the fourth column
+    frustum[3] = Plane(viewProj[3][0] + viewProj[1][0],
+                    viewProj[3][1] + viewProj[1][1],
+                    viewProj[3][2] + viewProj[1][2],
+                    viewProj[3][3] + viewProj[1][3]);
+
+    // Near Frustum Plane
+    // We could add the third column to the fourth column to get the near plane,
+    // but we don't have to do this because the third column IS the near plane
+    frustum[4] = Plane(viewProj[2][0],
+                    viewProj[2][1],
+                    viewProj[2][2],
+                    viewProj[2][3]);
+
+    // Far Frustum Plane
+    // Subtract third column of matrix from the fourth column
+    frustum[5] = Plane(viewProj[3][1] - viewProj[2][0],
+                    viewProj[3][1] - viewProj[2][1],
+                    viewProj[3][2] - viewProj[2][2],
+                    viewProj[3][3] - viewProj[2][3]);
+}
+
 // returns whether a glm::vec3 is within a Triangle
 bool Util::inTriangle(const glm::vec3& point, const Triangle& tri)
 {

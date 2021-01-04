@@ -80,6 +80,7 @@ public:
 
     inline static Registry<ItemID, Item> itemRegistry;
     inline static ItemStack noItem = ItemStack(0);
+    inline static unsigned int culled = 0;
 
     DISALLOW_COPY_AND_ASSIGN(Outrospection)
 private:

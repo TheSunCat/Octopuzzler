@@ -2,6 +2,10 @@
 
 #include <glm/glm.hpp>
 
+
+#include "Constants.h"
+#include "Types.h"
+
 class Player;
 class Scene;
 
@@ -19,6 +23,10 @@ public:
     glm::vec3 mUp{};
     glm::vec3 mRight{};
     glm::vec3 mWorldUp{};
+    glm::mat4 view{};
+    glm::mat4 proj{};
+    glm::mat4 viewProj{};
+    Plane* frustum = new Plane[6];
 
     // Euler angles
     float mYaw;
@@ -35,14 +43,12 @@ public:
     glm::vec3 mOffset{};
 
     explicit Camera(glm::vec3 _pos = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 _up = glm::vec3(0.0f, 1.0f, 0.0f),
-                    float _yaw = YAW, float _pitch = PITCH);
+                    float _yaw = YAW, float _pitch = PITCH, float screenWidth = SCR_WIDTH, float screenHeight = SCR_HEIGHT);
 
     // same ctor but w/ scalar args
-    Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float _yaw, float _pitch);
+    Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float _yaw, float _pitch, float screenWidth, float screenHeight);
 
     void calculateCameraPosition(const Player& player, const Scene& scene, float deltaTime, bool shouldAutoCam);
-
-    glm::mat4 getViewMatrix() const;
 
     void playerRotateCameraBy(float xoffset, float yoffset, bool applyCameraSpeed = true);
 
@@ -51,9 +57,10 @@ public:
     void zoomBy(float yoffset);
     void setDownVector(glm::vec3 vec);
 
-private:
     // calculate front, right, and up vectors from camera angles
-    void updateCameraVectors();
+    void updateCameraData();
+
+private:
 
     unsigned int framesSinceUserRotate = 0;
     unsigned int framesBeforeAutoCam = 120;
@@ -67,4 +74,6 @@ private:
 
     float pitchVelocity = 0.0f;
     float pitchDrag = 0.9f;
+
+    glm::vec2 screenSize;
 };

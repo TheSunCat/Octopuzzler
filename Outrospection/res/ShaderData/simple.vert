@@ -2,16 +2,15 @@
 layout (location = 0) in vec3 aPos;
 
 uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+uniform mat4 viewProj;
 
 out vec3 col;
 
 void main()
 {
-    vec4 modelView = view * model * vec4(aPos, 1.0);
+    vec4 modelViewProj = viewProj * model * vec4(aPos, 1.0);
     
-    col = vec3(-modelView.z / 96.0) + 0.1;
+    col = vec3(1);//vec3(-modelViewProj.z / 96.0) + 0.1; // TODO not actually depth (need modelView, w/o proj)
 
-    gl_Position = projection * modelView;
+    gl_Position = modelViewProj;
 }

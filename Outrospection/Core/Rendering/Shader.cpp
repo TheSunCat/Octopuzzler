@@ -58,7 +58,7 @@ Shader::Shader(const GLchar* vertexName, const GLchar* fragmentName)
     // 2. compile shaders
     GLuint vertex, fragment;
     int success;
-    char infoLog[512];
+    char errorLog[512];
 
     // vertex Shader
     vertex = glCreateShader(GL_VERTEX_SHADER);
@@ -68,8 +68,8 @@ Shader::Shader(const GLchar* vertexName, const GLchar* fragmentName)
     glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
     if (!success)
     {
-        glGetShaderInfoLog(vertex, 512, nullptr, infoLog);
-        LOG_ERROR("Vertex shader %s failed to compile, error log:\n%s", vertexPath, infoLog);
+        glGetShaderInfoLog(vertex, 512, nullptr, errorLog);
+        LOG_ERROR("Vertex shader %s failed to compile, error log:\n%s", vertexPath, errorLog);
     }
 
     // fragment Shader
@@ -80,8 +80,8 @@ Shader::Shader(const GLchar* vertexName, const GLchar* fragmentName)
     glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
     if (!success)
     {
-        glGetShaderInfoLog(fragment, 512, nullptr, infoLog);
-        LOG_ERROR("Fragment shader %s failed to compile, error log:\n%s", fragmentPath, infoLog);
+        glGetShaderInfoLog(fragment, 512, nullptr, errorLog);
+        LOG_ERROR("Fragment shader %s failed to compile, error log:\n%s", fragmentPath, errorLog);
     }
 
     // shader Program
@@ -94,8 +94,8 @@ Shader::Shader(const GLchar* vertexName, const GLchar* fragmentName)
     glGetProgramiv(ID, GL_LINK_STATUS, &success);
     if (!success)
     {
-        glGetProgramInfoLog(ID, 512, nullptr, infoLog);
-        LOG_ERROR("Failed to link shader programs %s and %s, error log:\n%s", vertexPath, fragmentPath, infoLog);
+        glGetProgramInfoLog(ID, 512, nullptr, errorLog);
+        LOG_ERROR("Failed to link shader programs %s and %s, error log:\n%s", vertexPath, fragmentPath, errorLog);
     }
 
     // delete the shaders as they're linked into our program now and no longer necessary
@@ -103,19 +103,16 @@ Shader::Shader(const GLchar* vertexName, const GLchar* fragmentName)
     glDeleteShader(fragment);
 }
 
-void Shader::doProjView(Camera& _camera, const int _width, const int _height, const bool doPos) const
+void Shader::sendViewProjMat(Camera& _camera, const bool doPos) const
 {
-    const glm::mat4 projection = glm::perspective(glm::radians(_camera.mZoom), float(_width) / float(_height),
-                                                                                                            0.1f, 1000.0f); // zNear and zFar
-
-    glm::mat4 view;
     if (doPos)
-        view = _camera.getViewMatrix();
+        setMat4("viewProj", _camera.viewProj);
     else
-        view = glm::lookAt(glm::vec3(0.0), _camera.mFront, _camera.mUp);
+    {
+        glm::mat4 view = glm::lookAt(glm::vec3(0.0), _camera.mFront, _camera.mUp);
 
-    setMat4("projection", projection);
-    setMat4("view", view);
+        setMat4("viewProj", _camera.proj * view);
+    }
 }
 
 // use/activate the shader
