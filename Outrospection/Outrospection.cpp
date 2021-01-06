@@ -222,7 +222,7 @@ void Outrospection::runGameLoop()
         scene.draw(camera, objectShader, billboardShader, skyShader, simpleShader);
         player.draw(billboardShader);
 
-        LOG("Culled %i objects.", culled);
+        //LOG("Culled %i objects.", culled);
 
         glDisable(GL_DEPTH_TEST); // disable depth test so stuff near camera isn't clipped
 

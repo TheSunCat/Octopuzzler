@@ -223,6 +223,12 @@
     <ClInclude Include="MeshCube.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Rendering\MeshMarchedCube.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Rendering\MarchingCubesData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Rendering\TextureManager.cpp">
@@ -383,6 +389,9 @@
     </ClCompile>
     <ClCompile Include="..\Libraries\include\discord\voice_manager.cpp">
       <Filter>Source Files\Discord</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Rendering\MeshMarchedCube.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

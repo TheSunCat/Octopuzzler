@@ -10,6 +10,7 @@
 #include "External/stb_image.h"
 
 #include "Util.h"
+#include "Core/Rendering/MeshMarchedCube.h"
 
 #include "Core/Rendering/Shader.h"
 
@@ -98,14 +99,13 @@ void Scene::loadScene()
                 
                 float noise = Util::Perlin::noise(glm::vec3(x, y, z) / 5.0f); // TODO add command to change seed by translating along noise
 
-                obj.debugColor = 0.5;//noise;
+                obj.debugColor = noise;
+                voxelWorld[x][y][z] = noise;
 
                 objects["debugCubes"].emplace_back(obj); // TODO not do this lol
             }
         }
     }
-
-    MeshCube cube;
     
     for(int x = 0; x < 11; x++)
     {
@@ -113,22 +113,20 @@ void Scene::loadScene()
         {
             for (int z = 0; z < 11; z++)
             {
-                float* points = new float[8];
-                
-                points[0] = Util::Perlin::noise(glm::vec3(x         , y - 1.0f, z         ) / 5.0f);
-                points[1] = Util::Perlin::noise(glm::vec3(x - 1.0f, y - 1.0f, z         ) / 5.0f);
-                points[2] = Util::Perlin::noise(glm::vec3(x         , y - 1.0f, z - 1.0f) / 5.0f);
-                points[3] = Util::Perlin::noise(glm::vec3(x - 1.0f, y - 1.0f, z - 1.0f) / 5.0f);
-                points[4] = Util::Perlin::noise(glm::vec3(x         , y         , z - 1.0f) / 5.0f);
-                points[5] = Util::Perlin::noise(glm::vec3(x - 1.0f, y         , z - 1.0f) / 5.0f);
-                points[6] = Util::Perlin::noise(glm::vec3(x         , y         , z         ) / 5.0f);
-                points[7] = Util::Perlin::noise(glm::vec3(x - 1.0f, y         , z         ) / 5.0f);
-
+                MeshMarchedCube marchedCube = MeshMarchedCube(&voxelWorld[x][y][z],
+                    &voxelWorld[x + 1][y][z],
+                    &voxelWorld[x + 1][y][z + 1],
+                    &voxelWorld[x][y][z + 1],
+                    &voxelWorld[x][y + 1][z],
+                    &voxelWorld[x + 1][y + 1][z],
+                    &voxelWorld[x + 1][y + 1][z + 1],
+                    &voxelWorld[x][y + 1][z + 1]);
+                marchedCube.update(cubeThreshold);
 
                 ObjectGeneral marchingCube = ObjectGeneral("marchingCube",
                     (glm::vec3(x, y, z) * 2.0f + 0.5f) * voxelSize,
                     glm::vec3(0),
-                    glm::vec3(voxelSize / 2), cube);
+                    glm::vec3(voxelSize / 2), marchedCube);
 
 
                 marchingCube.debugColor = 1.0f;//points[0];

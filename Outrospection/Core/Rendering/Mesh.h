@@ -8,6 +8,7 @@
 #include "Types.h"
 
 #include "Core/Rendering/SimpleTexture.h"
+#include "Core/Rendering/TextureManager.h"
 
 class Shader;
 
@@ -19,11 +20,8 @@ public:
 
     Mesh() = default;
 
-    // create a mesh with no texture
-    Mesh(const std::string& _name, const std::vector<Vertex>& _vertices, const std::vector<GLuint>& _indices);
-
     Mesh(const std::string& _name, const std::vector<Vertex>& _vertices, const std::vector<GLuint>& _indices,
-         const SimpleTexture& _texture);
+         const SimpleTexture& _texture = TextureManager::missingTexture);
 
     Mesh(const std::string& _name, const Vertex* _vertices, unsigned int vertSize, const GLuint* _indices,
          unsigned int indSize, const SimpleTexture& _texture);
@@ -35,6 +33,7 @@ public:
     
     AABB bbox{};
 protected:
+    bool hidden = false; // TODO debug
 
     unsigned int indicesSize = 0;
     GLuint VBO = 0, VAO = 0, EBO = 0;
