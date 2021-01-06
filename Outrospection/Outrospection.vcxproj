@@ -226,6 +226,8 @@
     <ClInclude Include="Core\PreInitialization.h" />
     <ClInclude Include="Core\Registry.h" />
     <ClInclude Include="Core\Rendering\FreeType.h" />
+    <ClInclude Include="Core\Rendering\MarchingCubesData.h" />
+    <ClInclude Include="Core\Rendering\MeshMarchedCube.h" />
     <ClInclude Include="Core\Rendering\TickableTexture.h" />
     <ClInclude Include="Core\Rendering\Billboard.h" />
     <ClInclude Include="Core\Rendering\Mesh.h" />
@@ -288,6 +290,7 @@
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Core\Camera.cpp" />
     <ClCompile Include="Core\LayerStack.cpp" />
+    <ClCompile Include="Core\Rendering\MeshMarchedCube.cpp" />
     <ClCompile Include="Core\Rendering\TickableTexture.cpp" />
     <ClCompile Include="Core\Rendering\Billboard.cpp" />
     <ClCompile Include="Core\Rendering\Mesh.cpp" />

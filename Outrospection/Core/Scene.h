@@ -32,6 +32,8 @@ public:
     std::vector<std::vector<Triangle>::const_iterator> groundCollision;
     std::vector<std::vector<Triangle>::const_iterator> wallCollision;
 
+    float voxelWorld[22][22][22];
+
     float cubeThreshold = 0.24f;
 private:
     static DummyObj parseLine(const std::string& line);

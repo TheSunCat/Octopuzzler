@@ -5,13 +5,6 @@
 #include <utility>
 
 #include "Outrospection.h"
-#include "Core/Rendering/TextureManager.h"
-
-Mesh::Mesh(const std::string& _name, const std::vector<Vertex>& _vertices,
-           const std::vector<GLuint>& _indices)
-    : Mesh(_name, _vertices, _indices, TextureManager::missingTexture)
-{
-}
 
 Mesh::Mesh(const std::string& _name, const std::vector<Vertex>& _vertices, const std::vector<GLuint>& _indices,
            const SimpleTexture& _texture) : Mesh(_name, &_vertices[0], _vertices.size(), &_indices[0], _indices.size(), _texture)
@@ -90,6 +83,9 @@ Mesh::Mesh(std::string _name, GLuint _VAO) : name(std::move(_name)), VAO(_VAO) {
 // render the mesh
 void Mesh::draw() const
 {
+    if (hidden)
+        return;
+
     glActiveTexture(GL_TEXTURE0);
     texture.bind();
 

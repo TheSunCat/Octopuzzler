@@ -1,4 +1,7 @@
 #pragma once
+#include <glad/glad.h>
+
+#include "Types.h"
 
 // divide velocity by this to slow down
 constexpr auto FRICTION = 1.35f;
@@ -36,3 +39,30 @@ constexpr auto BUTTON_D_UP = 10;
 constexpr auto BUTTON_D_RIGHT = 11;
 constexpr auto BUTTON_D_DOWN = 12;
 constexpr auto BUTTON_D_LEFT = 13;
+
+constexpr std::array<Vertex, 8> cubeVerts = { {
+        // positions          
+       {{ 0.5, 0.5, 0.5}}, // 000 1
+       {{ 0.5, 0.5,-0.5}}, // 001 2
+       {{ 0.5,-0.5, 0.5}}, // 010 3
+       {{ 0.5,-0.5,-0.5}}, // 011 4
+       {{-0.5,-0.5, 0.5}}, // 110 5
+       {{-0.5,-0.5,-0.5}}, // 111 6
+       {{-0.5, 0.5, 0.5}}, // 100 7
+       {{-0.5, 0.5,-0.5}}, // 101 8
+    } };
+
+constexpr std::array<GLuint, 36> cubeIndices = {
+    0, 1, 3,
+    0, 2, 3,
+    2, 3, 5,
+    2, 4, 5,
+    4, 6, 7,
+    4, 5, 7,
+    6, 7, 1,
+    6, 0, 1,
+    2, 4, 6,
+    2, 0, 6,
+    5, 3, 1,
+    5, 7, 1,
+};
