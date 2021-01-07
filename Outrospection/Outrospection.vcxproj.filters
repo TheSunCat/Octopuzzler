@@ -187,19 +187,7 @@
     <ClInclude Include="Events\WindowEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectProcedural.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshSphere.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Core\World\PhysicsValues.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="RigidBody.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GUIInventory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Item\Item.h">
@@ -217,16 +205,37 @@
     <ClInclude Include="Core\PreInitialization.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Inventory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MeshCube.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Core\Rendering\MeshMarchedCube.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Core\Rendering\MarchingCubesData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\UI\GUIInventory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\World\Inventory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Rendering\MeshCube.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Rendering\MeshSphere.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Rendering\ObjectProcedural.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\World\CollisionObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\World\RigidBody.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\World\Collider.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\World\SphereCollider.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -321,16 +330,7 @@
     <ClCompile Include="Core\UI\GUILayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MeshSphere.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Core\World\CollisionMesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RigidBody.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GUIInventory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Core\UI\UIItemSlot.cpp">
@@ -339,13 +339,7 @@
     <ClCompile Include="Item\ItemStack.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Inventory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Item\Item.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MeshCube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Libraries\include\discord\achievement_manager.cpp">
@@ -391,6 +385,30 @@
       <Filter>Source Files\Discord</Filter>
     </ClCompile>
     <ClCompile Include="Core\Rendering\MeshMarchedCube.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\UI\GUIInventory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\World\Inventory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Rendering\MeshCube.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Rendering\MeshSphere.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\World\CollisionObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\World\RigidBody.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\World\Collider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\World\SphereCollider.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

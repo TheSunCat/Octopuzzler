@@ -12,7 +12,7 @@ public:
     // default ctor
     Scene() = default;
 
-    explicit Scene(std::string _name);
+    explicit Scene(const std::string& _name);
 
     void loadScene();
 
@@ -22,7 +22,7 @@ public:
 
     std::string name;
 
-    
+    //PhysicsWorld physics;
     
     std::unordered_map<std::string, std::vector<ObjectGeneral>> objects;
     std::vector<ObjectGeneral> skies;

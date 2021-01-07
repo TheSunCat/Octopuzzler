@@ -4,13 +4,13 @@
 #include <csignal>
 #include <glm/ext/matrix_clip_space.hpp>
 
-#include "GUIInventory.h"
 #include "irrKlang/irrKlang.h"
 
 #include "Util.h"
 #include "Core/Layer.h"
 
 #include "Core/UI/GUIIngame.h"
+#include "Core/UI/GUIInventory.h"
 #include "Core/UI/GUILayer.h"
 #include "Core/UI/GUIPause.h"
 #include "Core/World/PhysicsValues.h"

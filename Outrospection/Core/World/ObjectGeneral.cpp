@@ -4,7 +4,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#include "MeshSphere.h"
+#include "Core/Rendering/MeshSphere.h"
 #include "Core/Rendering/ModelLoader.h"
 #include "Core/Rendering/Shader.h"
 
