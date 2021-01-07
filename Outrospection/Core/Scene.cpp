@@ -5,8 +5,8 @@
 #include <utility>
 
 
-#include "MeshCube.h"
-#include "ObjectProcedural.h"
+#include "Core/Rendering/MeshCube.h"
+#include "Core/Rendering/ObjectProcedural.h"
 #include "External/stb_image.h"
 
 #include "Util.h"
@@ -14,7 +14,7 @@
 
 #include "Core/Rendering/Shader.h"
 
-Scene::Scene(std::string _name) : name(std::move(_name))
+Scene::Scene(const std::string& _name) : name(_name)
 {
     loadScene();
 

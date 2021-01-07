@@ -4,6 +4,7 @@
 #include <array>
 
 #include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 #include "Core/Rendering/Resource.h"
 #include "Core/Rendering/SimpleTexture.h"
@@ -21,6 +22,13 @@
 //    {AnimType::jump, "jump"},
 //    {AnimType::fall, "fall"}
 //});
+
+struct Transform
+{
+    glm::vec3 pos;
+    glm::vec3 scale;
+    glm::quat rot;
+};
 
 struct Vertex
 {

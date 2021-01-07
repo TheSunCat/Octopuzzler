@@ -9,6 +9,7 @@
 #include <glm/common.hpp>
 
 #include "Constants.h"
+#include "Core/World/SphereCollider.h"
 #include "External/stb_image.h"
 
 glm::vec3 operator*(const int& lhs, const glm::vec3& vec)
@@ -399,6 +400,40 @@ bool Util::intersectTriangleSphere(const glm::vec3& spherePos, float sphereRadiu
     return !separated; // together ♥
 }
 
+CollisionPoints Util::intersectSphereSphere(const SphereCollider* a, const Transform* transA,
+                                            const SphereCollider* b, const Transform* transB)
+{
+    glm::vec3 aPos = a->mCenter + transA->pos;
+    glm::vec3 bPos = b->mCenter + transB->pos;
+
+    float aRad = a->mRadius * Util::major(transA->scale);
+    float bRad = b->mRadius * Util::major(transB->scale);
+
+    float distSq = (aRad + bRad) * (aRad + bRad);
+
+    glm::vec3 aToB = bPos - aPos;
+    glm::vec3 bToA = aPos - bPos;
+
+    if(Util::length2(aToB) > distSq)
+    {
+        return {};
+    }
+
+    aPos += glm::normalize(aToB) * aRad;
+    bPos += glm::normalize(bToA) * bRad;
+
+    aToB = bPos - aPos;
+
+    return
+    {
+        aPos,
+        bPos,
+        glm::normalize(aToB),
+        glm::length(aToB),
+        true
+    };
+}
+
 bool Util::sameSide(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& a, const glm::vec3& b)
 {
     const glm::vec3 cp1 = glm::cross(b - a, p1 - a);
@@ -541,6 +576,23 @@ bool Util::isZeroV3(const glm::vec3& v)
 float Util::sumAbsV3(const glm::vec3& v)
 {
     return abs(v.x) + abs(v.y) + abs(v.z);
+}
+
+float Util::major(const glm::vec3& v)
+{
+    if(v.x > v.y)
+    {
+        if (v.x > v.z)
+            return v.x;
+        else
+            return v.z;
+    } else
+    {
+        if (v.y > v.z)
+            return v.y;
+        else
+            return v.z;
+    }
 }
 
 float Util::angleBetweenV3(const glm::vec3 a, const glm::vec3 b)
