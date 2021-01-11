@@ -1,5 +1,6 @@
 #pragma once
-#include <glad/glad.h>
+#include <array>
+#include <GLAD/glad.h>
 
 #include "Types.h"
 

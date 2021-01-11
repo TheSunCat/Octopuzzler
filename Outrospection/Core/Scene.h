@@ -1,20 +1,21 @@
 #pragma once
 
 #include "Core/World/Character.h"
-#include "Core/World/CollisionMesh.h"
 #include "Core/World/ObjectGeneral.h"
+#include "Core/World/PhysicsWorld.h"
 
 class Shader;
 
 class Scene
 {
 public:
-    // default ctor
     Scene() = default;
 
     explicit Scene(const std::string& _name);
 
     void loadScene();
+
+    void step(float deltaTime);
 
     void draw(const Camera& cam, Shader& _objShader, Shader& _billboardShader, Shader& _skyShader, Shader& _simpleShader);
 
@@ -22,15 +23,11 @@ public:
 
     std::string name;
 
-    //PhysicsWorld physics;
+    PhysicsWorld physicsWorld;
     
-    std::unordered_map<std::string, std::vector<ObjectGeneral>> objects;
+    std::unordered_map<std::string, std::vector<ObjectGeneral*>> objects;
     std::vector<ObjectGeneral> skies;
     std::vector<Character> characters;
-
-    std::vector<CollisionMesh> collision;
-    std::vector<std::vector<Triangle>::const_iterator> groundCollision;
-    std::vector<std::vector<Triangle>::const_iterator> wallCollision;
 
     float voxelWorld[22][22][22];
 
@@ -38,7 +35,7 @@ public:
 private:
     static DummyObj parseLine(const std::string& line);
 
-    [[nodiscard]] static ObjectGeneral parseObj(const std::string& line);
+    [[nodiscard]] static ObjectGeneral* parseObj(const std::string& line);
     [[nodiscard]] static Character parseChar(const std::string& line);
 
     void parseCollision(const std::string& name);

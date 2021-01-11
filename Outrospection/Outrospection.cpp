@@ -1,6 +1,5 @@
 ﻿#include "Outrospection.h"
 
-
 #include <csignal>
 #include <glm/ext/matrix_clip_space.hpp>
 
@@ -30,7 +29,7 @@ Outrospection* Outrospection::instance = nullptr;
 
 irrklang::ISoundEngine* soundEngine = irrklang::createIrrKlangDevice();
 
-Outrospection::Outrospection()
+Outrospection::Outrospection() : playerController(player)
 {
     instance = this;
 
@@ -49,6 +48,8 @@ Outrospection::Outrospection()
 
     scene = Scene("TestLevel000");
     player = Player(glm::vec3(1.0, 60.0, 0.0));
+
+    scene.physicsWorld.addCollisionObject(&playerController.playerBody);
 
     ingameGUI = new GUIIngame();
     pauseGUI = new GUIPause();
@@ -263,10 +264,10 @@ void Outrospection::runTick()
     Physics::gravity = glm::normalize(glm::vec3(0) - glm::vec3(0, 1, 0));
     //gravityStrength = 9.8f;
 
-
     playerController.acceleratePlayer(player, controller, glm::cross(Physics::gravity, camera.mRight), -camera.mUp, deltaTime);
-    playerController.collidePlayer(player, Physics::gravity * -Physics::gravityStrength * deltaTime, scene.collision);
+    //TODO player controls
 
+    scene.step(deltaTime);
 
     if (doMoveCamera && controller.isGamepad)
         camera.playerRotateCameraBy(controller.rStickX * 12.5f, controller.rStickY * 10);
@@ -665,8 +666,8 @@ void Outrospection::startConsoleThread()
                                 bool hidden = args[0] == "false";
 
 
-                                for (auto& cube : scene.objects["debugCubes"])
-                                    cube.hidden = hidden;
+                                for (auto cube : scene.objects["debugCubes"])
+                                    cube->hidden = hidden;
 
                                 LOG("Successfully hid/unhid cubes.");
                             }

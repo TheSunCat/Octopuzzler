@@ -1,4 +1,6 @@
 #pragma once
+#include <array>
+
 #include "Core/Rendering/Mesh.h"
 
 class MeshMarchedCube : public Mesh

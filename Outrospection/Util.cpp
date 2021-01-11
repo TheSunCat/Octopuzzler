@@ -400,14 +400,14 @@ bool Util::intersectTriangleSphere(const glm::vec3& spherePos, float sphereRadiu
     return !separated; // together ♥
 }
 
-CollisionPoints Util::intersectSphereSphere(const SphereCollider* a, const Transform* transA,
+ManifoldPoints Util::intersectSphereSphere(const SphereCollider* a, const Transform* transA,
                                             const SphereCollider* b, const Transform* transB)
 {
-    glm::vec3 aPos = a->mCenter + transA->pos;
-    glm::vec3 bPos = b->mCenter + transB->pos;
+    glm::vec3 aPos = a->mCenter + transA->pos().get();
+    glm::vec3 bPos = b->mCenter + transB->pos().get();
 
-    float aRad = a->mRadius * Util::major(transA->scale);
-    float bRad = b->mRadius * Util::major(transB->scale);
+    float aRad = a->mRadius * Util::major(transA->scl());
+    float bRad = b->mRadius * Util::major(transB->scl());
 
     float distSq = (aRad + bRad) * (aRad + bRad);
 

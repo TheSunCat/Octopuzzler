@@ -30,6 +30,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
+    <EnableASAN>false</EnableASAN>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -37,12 +38,14 @@
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
+    <EnableASAN>false</EnableASAN>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
+    <EnableASAN>false</EnableASAN>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -50,6 +53,7 @@
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
+    <EnableASAN>false</EnableASAN>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -93,6 +97,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\Libraries\include;$(ProjectDir)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>opengl32.lib;glfw3.lib;freetype.lib;irrKlang.lib;discord_game_sdk.dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -119,6 +124,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\Libraries\include;$(ProjectDir)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>opengl32.lib;glfw3.lib;freetype.lib;irrKlang.lib;discord_game_sdk.dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -147,6 +153,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\Libraries\include;$(ProjectDir)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -177,6 +184,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)\Libraries\include;$(ProjectDir)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -251,15 +259,17 @@
     <ClInclude Include="Core\UI\UIItemSlot.h" />
     <ClInclude Include="Core\World\Character.h" />
     <ClInclude Include="Core\World\Collider.h" />
-    <ClInclude Include="Core\World\CollisionMesh.h" />
-    <ClInclude Include="Core\World\CollisionObject.h" />
     <ClInclude Include="Core\World\Inventory.h" />
+    <ClInclude Include="Core\World\Manifold.h" />
     <ClInclude Include="Core\World\ObjectGeneral.h" />
     <ClInclude Include="Core\World\ObjectRail.h" />
     <ClInclude Include="Core\World\PhysicsValues.h" />
+    <ClInclude Include="Core\World\PhysicsWorld.h" />
     <ClInclude Include="Core\World\Player.h" />
     <ClInclude Include="Core\World\PlayerController.h" />
-    <ClInclude Include="Core\World\RigidBody.h" />
+    <ClInclude Include="Core\World\PositionSolver.h" />
+    <ClInclude Include="Core\World\Rigidbody.h" />
+    <ClInclude Include="Core\World\Solver.h" />
     <ClInclude Include="Core\World\SphereCollider.h" />
     <ClInclude Include="Events\Event.h" />
     <ClInclude Include="Events\EventBus.h" />
@@ -272,6 +282,7 @@
     <ClInclude Include="Item\ItemStack.h" />
     <ClInclude Include="KeyBinding.h" />
     <ClInclude Include="Outrospection.h" />
+    <ClInclude Include="Tracker.h" />
     <ClInclude Include="Types.h" />
     <ClInclude Include="Util.h" />
   </ItemGroup>
@@ -315,14 +326,14 @@
     <ClCompile Include="Core\UI\UIItemSlot.cpp" />
     <ClCompile Include="Core\World\Character.cpp" />
     <ClCompile Include="Core\World\Collider.cpp" />
-    <ClCompile Include="Core\World\CollisionMesh.cpp" />
-    <ClCompile Include="Core\World\CollisionObject.cpp" />
     <ClCompile Include="Core\World\Inventory.cpp" />
     <ClCompile Include="Core\World\ObjectGeneral.cpp" />
     <ClCompile Include="Core\World\ObjectRail.cpp" />
+    <ClCompile Include="Core\World\PhysicsWorld.cpp" />
     <ClCompile Include="Core\World\Player.cpp" />
     <ClCompile Include="Core\World\PlayerController.cpp" />
-    <ClCompile Include="Core\World\RigidBody.cpp" />
+    <ClCompile Include="Core\World\PositionSolver.cpp" />
+    <ClCompile Include="Core\World\Rigidbody.cpp" />
     <ClCompile Include="Core\World\SphereCollider.cpp" />
     <ClCompile Include="External\glad.c" />
     <ClCompile Include="External\stb_image.cpp" />

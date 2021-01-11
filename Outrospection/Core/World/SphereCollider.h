@@ -13,12 +13,12 @@ public:
 
     glm::vec3 findFurthestPoint(const Transform* transform, glm::vec3 direction) const override;
 
-    CollisionPoints testCollision(
+    ManifoldPoints testCollision(
         const Transform* transform,
         const Collider* collider,
         const Transform* colliderTransform) const override;
 
-    CollisionPoints testCollision(
+    ManifoldPoints testCollision(
         const Transform* transform,
         const SphereCollider* collider,
         const Transform* colliderTransform) const override;

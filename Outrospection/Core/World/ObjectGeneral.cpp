@@ -1,19 +1,25 @@
 #include "ObjectGeneral.h"
 #include "Core.h"
 
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/quaternion.hpp>
-
 #include "Core/Rendering/MeshSphere.h"
 #include "Core/Rendering/ModelLoader.h"
 #include "Core/Rendering/Shader.h"
 
-ObjectGeneral::ObjectGeneral(const std::string& _name, glm::vec3 _pos, glm::vec3 _rot, glm::vec3 _scale)
+ObjectGeneral::ObjectGeneral(const glm::vec3& _pos, const glm::vec3& _rot, const glm::vec3& _scale, Collider* _collider) : collider(_collider)
+{
+    name = "empty";
+    transform.setPos(_pos);
+    transform.setRot(_rot);
+    transform.setScl(_scale);
+}
+
+ObjectGeneral::ObjectGeneral(const std::string& _name, const glm::vec3& _pos, const glm::vec3& _rot, const glm::vec3& _scale, Collider* _collider)
+        : collider(_collider)
 {
     name = _name;
-    setPos(_pos);
-    setRot(_rot);
-    setScale(_scale);
+    transform.setPos(_pos);
+    transform.setRot(_rot);
+    transform.setScl(_scale);
 
     std::string modelPath = "./res/ObjectData/" + _name + "/" + _name + ".omd";
 
@@ -37,12 +43,13 @@ ObjectGeneral::ObjectGeneral(const std::string& _name, glm::vec3 _pos, glm::vec3
     }
 }
 
-ObjectGeneral::ObjectGeneral(const std::string& _name, glm::vec3 _pos, glm::vec3 _rot, glm::vec3 _scale, Mesh& mesh)
+ObjectGeneral::ObjectGeneral(const std::string& _name, const glm::vec3& _pos, const glm::vec3& _rot, const glm::vec3& _scale, Mesh& mesh, Collider* _collider)
+        : collider(_collider)
 {
     name = _name;
-    setPos(_pos);
-    setRot(_rot);
-    setScale(_scale);
+    transform.setPos(_pos);
+    transform.setRot(_rot);
+    transform.setScl(_scale);
 
     meshes.emplace_back(mesh);
 }
@@ -53,25 +60,8 @@ void ObjectGeneral::draw(const Shader& shader, const Camera& cam) const
 {
     if (hidden)
         return;
-    
-    if (dirtyTransform)
-    {
-        modelMat = glm::mat4(1.0f);
 
-        // Translate model
-        modelMat = glm::translate(modelMat, pos);
-
-        // Rotate model by quaternion
-        modelMat *= glm::toMat4(rot);
-
-        // Scale model
-        modelMat = glm::scale(modelMat, scale);
-
-        
-        dirtyTransform = false;
-    }
-
-    shader.setMat4("model", modelMat);
+    shader.setMat4("model", transform.mat());
     shader.setFloat("debugColor", debugColor);
 
     //MVP = cam.viewProj * modelMat;
@@ -92,47 +82,4 @@ void ObjectGeneral::draw(const Shader& shader, const Camera& cam) const
 
         m.draw();
     }
-}
-
-const glm::vec3& ObjectGeneral::getPos() const
-{
-    return pos;
-}
-
-glm::vec3 ObjectGeneral::getRot() const
-{
-    return glm::degrees(rotRad);
-}
-
-const glm::vec3& ObjectGeneral::getRotRad() const
-{
-    return rotRad;
-}
-
-const glm::vec3& ObjectGeneral::getScale() const
-{
-    return scale;
-}
-
-void ObjectGeneral::setPos(const glm::vec3& _pos)
-{
-    pos = _pos;
-
-    dirtyTransform = true;
-}
-
-void ObjectGeneral::setRot(const glm::vec3& _rot)
-{
-    rotRad = glm::radians(_rot);
-
-    rot = glm::quat(rotRad);
-
-    dirtyTransform = true;
-}
-
-void ObjectGeneral::setScale(const glm::vec3& _scl)
-{
-    scale = _scl;
-
-    dirtyTransform = true;
 }

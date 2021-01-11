@@ -100,7 +100,8 @@ void Camera::calculateCameraPosition(const Player& player, const Scene& scene, f
 
     bool autoCamming = (framesSinceUserRotate >= framesBeforeAutoCam) && shouldAutoCam;
 
-    if (autoCamming) { // rotate camera to avoid occluding the player
+    // TODO re-enable this w/ new physics
+    /*if (autoCamming) { // rotate camera to avoid occluding the player
         const unsigned int maxWhiskerCount = 10;
 
         // thanks to "50 Game Camera Mistakes" from GDC 2014
@@ -132,7 +133,7 @@ void Camera::calculateCameraPosition(const Player& player, const Scene& scene, f
 
         if (collidedLeft)
             yawVelocity += correctBy;
-    }
+    }*/
 
     if (yawVelocity != 0.0f)
     {

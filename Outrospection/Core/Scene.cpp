@@ -10,7 +10,7 @@
 #include "External/stb_image.h"
 
 #include "Util.h"
-#include "Core/Rendering/MeshMarchedCube.h"
+#include "Core/World/SphereCollider.h"
 
 #include "Core/Rendering/Shader.h"
 
@@ -83,71 +83,75 @@ void Scene::loadScene()
 
     float voxelSize = 4.0f;
     
-    objects.insert(std::make_pair("debugCubes", std::vector<ObjectGeneral>()));
-    objects.insert(std::make_pair("Scene", std::vector<ObjectGeneral>()));
+    objects.insert(std::make_pair("debugCubes", std::vector<ObjectGeneral*>()));
+    objects.insert(std::make_pair("Scene", std::vector<ObjectGeneral*>()));
     
-    for (int x = 0; x < 22; x++)
+    for (int x = 0; x < 10; x++)
     {
-        for (int y = 0; y < 22; y++)
+        for (int y = 0; y < 10; y++)
         {
-            for (int z = 0; z < 22; z++)
+            for (int z = 0; z < 10; z++)
             {
-                ObjectGeneral obj = ObjectGeneral("debugDot", 
-                    glm::vec3(x, y, z) * voxelSize, 
-                    glm::vec3(0),
-                    glm::vec3(0.5), sphere);
+                auto* obj = new ObjectGeneral("debugDot", 
+                                              glm::vec3(x, y, z) * voxelSize, 
+                                              glm::vec3(0),
+                                              glm::vec3(0.5), sphere, new SphereCollider());
                 
                 float noise = Util::Perlin::noise(glm::vec3(x, y, z) / 5.0f); // TODO add command to change seed by translating along noise
 
-                obj.debugColor = noise;
+                obj->debugColor = noise;
                 voxelWorld[x][y][z] = noise;
 
                 objects["debugCubes"].emplace_back(obj); // TODO not do this lol
+
+                physicsWorld.addCollisionObject(obj);
             }
         }
     }
-    
-    for(int x = 0; x < 11; x++)
-    {
-        for (int y = 0; y < 11; y++)
-        {
-            for (int z = 0; z < 11; z++)
-            {
-                MeshMarchedCube marchedCube = MeshMarchedCube(&voxelWorld[x][y][z],
-                    &voxelWorld[x + 1][y][z],
-                    &voxelWorld[x + 1][y][z + 1],
-                    &voxelWorld[x][y][z + 1],
-                    &voxelWorld[x][y + 1][z],
-                    &voxelWorld[x + 1][y + 1][z],
-                    &voxelWorld[x + 1][y + 1][z + 1],
-                    &voxelWorld[x][y + 1][z + 1]);
-                marchedCube.update(cubeThreshold);
-
-                ObjectGeneral marchingCube = ObjectGeneral("marchingCube",
-                    (glm::vec3(x, y, z) * 2.0f + 0.5f) * voxelSize,
-                    glm::vec3(0),
-                    glm::vec3(voxelSize / 2), marchedCube);
 
 
-                marchingCube.debugColor = 1.0f;//points[0];
-            	
-                bool isExist = true;
-                /*for(int i = 0; i < 8; i++)
-                {
-                    float p = points[i];
+    /*
+    //for(int x = 0; x < 5; x++)
+    //{
+    //    for (int y = 0; y < 5; y++)
+    //    {
+    //        for (int z = 0; z < 5; z++)
+    //        {
+    //            MeshMarchedCube marchedCube = MeshMarchedCube(&voxelWorld[x][y][z],
+    //                &voxelWorld[x + 1][y][z],
+    //                &voxelWorld[x + 1][y][z + 1],
+    //                &voxelWorld[x][y][z + 1],
+    //                &voxelWorld[x][y + 1][z],
+    //                &voxelWorld[x + 1][y + 1][z],
+    //                &voxelWorld[x + 1][y + 1][z + 1],
+    //                &voxelWorld[x][y + 1][z + 1]);
+    //            marchedCube.update(cubeThreshold);
 
-                    if (p > cubeThreshold)
-                        isExist = true;
-                }*/
+    //            ObjectGeneral marchingCube = ObjectGeneral("marchingCube",
+    //                (glm::vec3(x, y, z) * 2.0f + 0.5f) * voxelSize,
+    //                glm::vec3(0),
+    //                glm::vec3(voxelSize / 2), marchedCube);
 
 
-                if (!isExist)
-                    marchingCube.hidden = true;
+    //            marchingCube.debugColor = 1.0f;//points[0];
+    //        	
+    //            bool isExist = true;
+    //            for(int i = 0; i < 8; i++)
+    //            {
+    //                float p = points[i];
 
-                objects["Stage"].emplace_back(marchingCube);
-            }
-        } 
-    }
+    //                if (p > cubeThreshold)
+    //                    isExist = true;
+    //            }
+
+
+    //            if (!isExist)
+    //                marchingCube.hidden = true;
+
+    //            objects["Stage"].emplace_back(marchingCube);
+    //        }
+    //    } 
+    //}
 
     std::vector<Triangle> colTris;
 
@@ -166,6 +170,7 @@ void Scene::loadScene()
 
     //    colTris.push_back(tri);
     //}
+    */
 
 
 #if DEBUG
@@ -187,7 +192,7 @@ void Scene::loadScene()
 
     std::string __name("Planet");
 
-    collision.emplace_back(__name, colTris);
+    //collision.emplace_back(__name, colTris);
 
     // parser code partly by MarkCangila
 
@@ -271,6 +276,11 @@ void Scene::loadScene()
     sceneFile.close();
 }
 
+void Scene::step(float deltaTime)
+{
+    physicsWorld.step(deltaTime);
+}
+
 void Scene::draw(const Camera& cam, Shader& _objShader, Shader& _billboardShader, Shader& _skyShader, Shader& _simpleShader)
 {
     // render sky
@@ -294,9 +304,9 @@ void Scene::draw(const Camera& cam, Shader& _objShader, Shader& _billboardShader
 #else
     for (auto& [group, objs] : objects)
     {
-        for (auto& object : objs) {
-            if (object.debugColor > cubeThreshold)
-                object.draw(_objShader, cam);
+        for (auto* object : objs) {
+            if (object->debugColor > cubeThreshold)
+                object->draw(_objShader, cam);
         }
     }
 #endif
@@ -339,7 +349,7 @@ DummyObj Scene::parseLine(const std::string& line)
     return ret;
 }
 
-ObjectGeneral Scene::parseObj(const std::string& line)
+ObjectGeneral* Scene::parseObj(const std::string& line)
 {
     DummyObj obj = parseLine(line);
 
@@ -349,7 +359,7 @@ ObjectGeneral Scene::parseObj(const std::string& line)
     const glm::vec3 rot(obj.properties[3], obj.properties[4], obj.properties[5]);
     const glm::vec3 scl(obj.properties[6], obj.properties[7], obj.properties[8]);
 
-    return ObjectGeneral(std::string(objName), pos, rot, scl);
+    return new ObjectGeneral(std::string(objName), pos, rot, scl);
 }
 
 Character Scene::parseChar(const std::string& line)
@@ -393,22 +403,22 @@ void Scene::parseCollision(const std::string& name)
 
     collisionFile.close();
 
-    for (auto iter = colData.begin(); iter != colData.end(); ++iter)
-    {
-        Triangle curTri = *iter;
-        if (fabs(curTri.n.y) > 0.1f)
-        {
-            groundCollision.emplace_back(iter);
-        }
-        else
-        {
-            wallCollision.emplace_back(iter);
-        }
-    }
+    //for (auto iter = colData.begin(); iter != colData.end(); ++iter)
+    //{
+    //    Triangle curTri = *iter;
+    //    if (fabs(curTri.n.y) > 0.1f)
+    //    {
+    //        groundCollision.emplace_back(iter);
+    //    }
+    //    else
+    //    {
+    //        wallCollision.emplace_back(iter);
+    //    }
+    //}
 
-    std::string __name = name;
+    //std::string __name = name;
 
-    collision.push_back(CollisionMesh(__name, colData));
+    //collision.push_back(CollisionMesh(__name, colData));
 }
 
 GLuint Scene::loadCubemap(std::string name)

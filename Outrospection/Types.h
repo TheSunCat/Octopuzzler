@@ -1,11 +1,12 @@
 #pragma once
 
 #include <unordered_map>
-#include <array>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
 
+#include "Tracker.h"
 #include "Core/Rendering/Resource.h"
 #include "Core/Rendering/SimpleTexture.h"
 
@@ -25,9 +26,84 @@
 
 struct Transform
 {
-    glm::vec3 pos;
-    glm::vec3 scale;
-    glm::quat rot;
+    Transform(const glm::vec3& position = glm::vec3(1.0), const glm::vec3& scale = glm::vec3(1.0), const glm::quat& rotation = glm::quat())
+        : position(position),
+          scale(scale),
+          rotation(rotation),
+          matrix(1.0),
+          dirtyTransform(true)
+    {}
+
+    const glm::mat4& mat() const
+    {
+        if (position.dirty || scale.dirty)
+            dirtyTransform = true;
+
+        if (dirtyTransform)
+        {
+            matrix = glm::mat4(1.0f);
+
+            // Translate
+            matrix = glm::translate(matrix, position.get());
+
+            // Rotate by quaternion
+            matrix *= glm::toMat4(rotation);
+
+            // Scale
+            matrix = glm::scale(matrix, scale.get());
+
+            dirtyTransform = false;
+        }
+
+        return matrix;
+    }
+
+    tracker<glm::vec3>& pos()
+    {
+        return position;
+    }
+
+    const tracker<glm::vec3>& pos() const
+    {
+        return position;
+    }
+
+    void setPos(const glm::vec3& newPos)
+    {
+        position = newPos;
+        dirtyTransform = true;
+    }
+
+    const tracker<glm::vec3>& scl() const
+    {
+        return scale;
+    }
+
+    void setScl(const glm::vec3& newScl)
+    {
+        scale = newScl;
+        dirtyTransform = true;
+    }
+
+    glm::vec3 rot() const
+    {
+        return glm::eulerAngles(rotation);
+    }
+
+    void setRot(const glm::vec3& newRot)
+    {
+        rotation = glm::quat(newRot);
+        dirtyTransform = true;
+    }
+
+protected:
+    tracker<glm::vec3> position;
+    tracker<glm::vec3> scale;
+    glm::quat rotation;
+
+    mutable glm::mat4 matrix;
+
+    mutable bool dirtyTransform;
 };
 
 struct Vertex
@@ -54,25 +130,6 @@ struct Triangle
 
     glm::vec3 verts[3];
     glm::vec3 n;
-};
-
-struct CollisionPackage
-{
-    glm::vec3 eRadius; // elipsoid radius
-
-    glm::vec3 R3Velocity;
-    glm::vec3 R3Position;
-
-    // info in eSpace
-    glm::vec3 velocity;
-    glm::vec3 normalizedVelocity;
-    glm::vec3 basePoint;
-
-    // Collision info
-    bool foundCollision;
-    float nearestDistance;
-    glm::vec3 intersectionPoint;
-
 };
 
 struct AABB
