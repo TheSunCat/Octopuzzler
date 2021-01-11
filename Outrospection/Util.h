@@ -140,7 +140,7 @@ namespace Util
 
     bool intersectTriangleSphere(const glm::vec3& spherePos, float sphereRadius, const Triangle& tri, glm::vec3& intersectPoint, float& pointToPlaneDist);
 
-    CollisionPoints intersectSphereSphere(const SphereCollider* a, const Transform* transA,
+    ManifoldPoints intersectSphereSphere(const SphereCollider* a, const Transform* transA,
                                           const SphereCollider* b, const Transform* transB);
 
     // A test to see if P1 is on the same side as P2 of a line segment ab

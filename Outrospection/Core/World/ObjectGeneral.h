@@ -7,36 +7,34 @@
 
 #include "Core/Rendering/Mesh.h"
 
+class Collider;
 class Camera;
 class Shader;
 
 class ObjectGeneral
 {
 public:
-    ObjectGeneral(const std::string& _name, glm::vec3 _pos, glm::vec3 _rot, glm::vec3 _scale);
+    ObjectGeneral(const glm::vec3& _pos, const glm::vec3& _rot, const glm::vec3& _scale, Collider* _collider = nullptr);
 
-    ObjectGeneral(const std::string& _name, glm::vec3 _pos, glm::vec3 _rot, glm::vec3 _scale, Mesh& mesh);
+    ObjectGeneral(const std::string& _name, const glm::vec3& _pos, const glm::vec3& _rot, const glm::vec3& _scale, Collider* _collider = nullptr);
+
+    ObjectGeneral(const std::string& _name, const glm::vec3& _pos, const glm::vec3& _rot, const glm::vec3& _scale, Mesh& mesh, Collider* _collider = nullptr);
 
     void draw(const Shader& shader, const Camera& cam) const;
 
-    const glm::vec3& getPos() const;
-    glm::vec3 getRot() const;
-    const glm::vec3& getRotRad() const;
-    const glm::vec3& getScale() const;
-
-    void setPos(const glm::vec3& _pos);
-    void setRot(const glm::vec3& _rot);
-    void setScale(const glm::vec3& _scl);
+    bool isRigidbody = false;
+    bool isStatic = false;
 
     float debugColor = 0.0f;
 
     bool hidden = false;
-protected:
-    glm::vec3 pos{}, rotRad{}, scale{};
-    glm::quat rot{};
 
-    mutable glm::mat4 modelMat{};
-    mutable bool dirtyTransform = true;
+    Collider* collider;
+    Transform transform;
+
+
+    virtual ~ObjectGeneral() = default;
+protected:
 
     std::vector<Mesh> meshes;
 

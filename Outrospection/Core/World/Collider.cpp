@@ -2,10 +2,6 @@
 
 #include "Types.h"
 
-Collider::Collider()
-{
-}
-
 Transform Collider::trans() const
 {
     return {};
