@@ -39,7 +39,7 @@ Rigidbody::Rigidbody(const std::string& _name, const glm::vec3& _pos, const glm:
 
 void Rigidbody::applyForce(const glm::vec3& _force)
 {
-    force += force;
+    force += _force;
 }
 
 void Rigidbody::applyGravity()

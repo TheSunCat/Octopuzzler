@@ -13,17 +13,18 @@
 #include "Core/UI/GUILayer.h"
 #include "Core/UI/GUIPause.h"
 #include "Core/World/PhysicsValues.h"
+#include "Core/World/PositionSolver.h"
 #include "Events/Event.h"
 #include "Events/KeyEvent.h"
 #include "Events/MouseEvent.h"
 #include "Events/WindowEvent.h"
 
-void* operator new(const size_t _Size)
-{
-    //std::cout << s << '\n';
-
-    return malloc(_Size);
-}
+//void* operator new(const size_t _Size)
+//{
+//    //std::cout << s << '\n';
+//
+//    return malloc(_Size);
+//}
 
 Outrospection* Outrospection::instance = nullptr;
 
@@ -46,10 +47,11 @@ Outrospection::Outrospection() : playerController(player)
     registerCallbacks();
     createShaders();
 
-    scene = Scene("TestLevel000");
+    scene = new Scene("TestLevel000");
     player = Player(glm::vec3(1.0, 60.0, 0.0));
 
-    scene.physicsWorld.addCollisionObject(&playerController.playerBody);
+    scene->physicsWorld.addCollisionObject(&playerController.playerBody);
+    scene->physicsWorld.addSolver(new PositionSolver());
 
     ingameGUI = new GUIIngame();
     pauseGUI = new GUIPause();
@@ -220,7 +222,7 @@ void Outrospection::runGameLoop()
         culled = 0;
 
         // draw stuff
-        scene.draw(camera, objectShader, billboardShader, skyShader, simpleShader);
+        scene->draw(camera, objectShader, billboardShader, skyShader, simpleShader);
         player.draw(billboardShader);
 
         //LOG("Culled %i objects.", culled);
@@ -267,7 +269,7 @@ void Outrospection::runTick()
     playerController.acceleratePlayer(player, controller, glm::cross(Physics::gravity, camera.mRight), -camera.mUp, deltaTime);
     //TODO player controls
 
-    scene.step(deltaTime);
+    scene->step(deltaTime);
 
     if (doMoveCamera && controller.isGamepad)
         camera.playerRotateCameraBy(controller.rStickX * 12.5f, controller.rStickY * 10);
@@ -280,7 +282,7 @@ void Outrospection::updateCamera()
     camera.setDownVector(Physics::gravity);
 
     // TODO need a better way to determine whether the camera should be auto-updated or not
-    camera.calculateCameraPosition(player, scene, deltaTime, playerController.isMoving());
+    camera.calculateCameraPosition(player, *scene, deltaTime, playerController.isMoving());
 }
 
 void Outrospection::registerCallbacks() const
@@ -382,9 +384,9 @@ void Outrospection::scroll_callback(GLFWwindow*, const double xoffset, const dou
 {
     camera.changeDistBy(float(yoffset));
 
-    scene.cubeThreshold += yoffset;
+    scene->cubeThreshold += yoffset;
 
-    LOG("threshold: %f", scene.cubeThreshold);
+    LOG("threshold: %f", scene->cubeThreshold);
 }
 
 void Outrospection::error_callback(const int errorcode, const char* description)
@@ -653,9 +655,9 @@ void Outrospection::startConsoleThread()
 
                                 if (Util::isAllDigits(threshold, true))
                                 {
-                                    scene.cubeThreshold = Util::stof(threshold);
+                                    scene->cubeThreshold = Util::stof(threshold);
 
-                                    LOG("New threshold: %f", scene.cubeThreshold);
+                                    LOG("New threshold: %f", scene->cubeThreshold);
                                 }
                             }
                         }
@@ -666,7 +668,7 @@ void Outrospection::startConsoleThread()
                                 bool hidden = args[0] == "false";
 
 
-                                for (auto cube : scene.objects["debugCubes"])
+                                for (auto* cube : scene->objects["debugCubes"])
                                     cube->hidden = hidden;
 
                                 LOG("Successfully hid/unhid cubes.");

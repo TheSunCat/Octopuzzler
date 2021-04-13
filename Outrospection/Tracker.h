@@ -17,8 +17,8 @@ public:
 
     T const& get() const { return value; }
 
-    operator T() const { return value; }
-    operator T() { return value; }
+    operator const T&() const { return value; }
+    operator T&() { return value; }
 
     template <typename U>
     requires (requires (T& t, U const& u) { t = u; })
