@@ -177,7 +177,7 @@ void PhysicsWorld::resolveConstraints(
 
             ManifoldPoints points = a->collider->testCollision(&a->transform, b->collider, &b->transform);
             if (points.hasCollision) {
-                /*// establish more formal rules for what can collide with what
+                // establish more formal rules for what can collide with what
                 //if (a->IsTrigger()
                 //	|| b->IsTrigger())
                 //{
@@ -186,7 +186,7 @@ void PhysicsWorld::resolveConstraints(
 
                 //else {
                     manifolds.emplace_back(a, b, points);
-                //}*/
+                //}
             }
         }
     }

@@ -403,33 +403,34 @@ bool Util::intersectTriangleSphere(const glm::vec3& spherePos, float sphereRadiu
 ManifoldPoints Util::intersectSphereSphere(const SphereCollider* a, const Transform* transA,
                                             const SphereCollider* b, const Transform* transB)
 {
-    glm::vec3 aPos = a->mCenter + transA->pos().get();
-    glm::vec3 bPos = b->mCenter + transB->pos().get();
+    const glm::vec3& aPos = /*a->mCenter + */transA->pos().get();
+    const glm::vec3& bPos = /*b->mCenter + */transB->pos().get();
 
     float aRad = a->mRadius * Util::major(transA->scl());
     float bRad = b->mRadius * Util::major(transB->scl());
 
-    float distSq = (aRad + bRad) * (aRad + bRad);
 
     glm::vec3 aToB = bPos - aPos;
-    glm::vec3 bToA = aPos - bPos;
 
+    float distSq = (aRad + bRad) * (aRad + bRad);
     if(Util::length2(aToB) > distSq)
     {
         return {};
     }
 
-    aPos += glm::normalize(aToB) * aRad;
-    bPos += glm::normalize(bToA) * bRad;
+    float aToB_len = glm::length(aToB);
+    glm::vec3 aToB_norm = aToB / aToB_len;
 
-    aToB = bPos - aPos;
+    // we just shifted a and b away from each other by the radii
+    // direction from a to b is still the same
+    float new_aToB_len = aToB_len + aRad + bRad;
 
     return
     {
-        aPos,
-        bPos,
-        glm::normalize(aToB),
-        glm::length(aToB),
+        aPos + aToB_norm * aRad,
+        bPos + aToB_norm * -bRad,
+        aToB_norm,
+        new_aToB_len,
         true
     };
 }
@@ -580,19 +581,7 @@ float Util::sumAbsV3(const glm::vec3& v)
 
 float Util::major(const glm::vec3& v)
 {
-    if(v.x > v.y)
-    {
-        if (v.x > v.z)
-            return v.x;
-        else
-            return v.z;
-    } else
-    {
-        if (v.y > v.z)
-            return v.y;
-        else
-            return v.z;
-    }
+    return std::max(std::max(v.x, v.y), v.z);
 }
 
 float Util::angleBetweenV3(const glm::vec3 a, const glm::vec3 b)

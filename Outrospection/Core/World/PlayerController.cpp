@@ -30,7 +30,10 @@ void PlayerController::acceleratePlayer(Player& player, const Controller& contro
     if (controller.jump && (controller.jump < 10 || controller.talk)) // can jump for 10 frames after hitting jump
     {
         playerBody.applyForce(-Physics::gravity * (player.jumpStrength));
+        LOG("JUMP");
     }
+
+    LOG("%f, %f, %f", playerBody.force.x, playerBody.force.y, playerBody.force.z);
 }
 
 bool PlayerController::isMoving() const

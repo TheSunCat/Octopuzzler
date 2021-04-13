@@ -61,7 +61,7 @@ public:
 
     glm::vec2 lastMousePos = glm::vec2(SCR_HEIGHT / 2.0f, SCR_WIDTH / 2.0f);
 
-    Scene scene;
+    Scene* scene;
     Player player;
     PlayerController playerController;
     TextureManager textureManager;
