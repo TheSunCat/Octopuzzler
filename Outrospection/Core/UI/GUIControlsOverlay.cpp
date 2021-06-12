@@ -6,6 +6,7 @@ void controlClick(UIButton& button, float mouseX, float mouseY)
     LOG("You pressed button %s", button.name);
 	
     Outrospection& o = Outrospection::get();
+    
 	switch(button.name[0])
 	{
     case 'U':
@@ -21,6 +22,8 @@ void controlClick(UIButton& button, float mouseX, float mouseY)
         o.keyBinds.emplace_back(o.getEye(), Control::MOVE_RIGHT);
         break;
 	}
+
+    button.name[button.name.length() - 2] = char(o.getEye());
 }
 
 GUIControlsOverlay::GUIControlsOverlay() : GUILayer("Controls Overlay", false),

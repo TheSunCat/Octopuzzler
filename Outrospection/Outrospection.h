@@ -55,7 +55,7 @@ public:
 
 	// stores the letter and sets the mouse image
     void setEye(Eye letter);
-    Eye getEye();
+    Eye getEye() const;
 
     glm::vec2 lastMousePos = glm::vec2(SCR_HEIGHT / 2.0f, SCR_WIDTH / 2.0f);
 
@@ -102,6 +102,7 @@ private:
     bool onWindowClose(WindowCloseEvent& e);
     bool onMouseMoved(MouseMovedEvent& e);
     void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+    static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
     static void error_callback(int errorcode, const char* description);
 
     void registerCallbacks() const;

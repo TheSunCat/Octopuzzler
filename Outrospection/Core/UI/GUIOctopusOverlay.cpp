@@ -1,24 +1,30 @@
 #include "GUIOctopusOverlay.h"
 #include "Outrospection.h"
 
-void eyeClick(UIButton& button, float mouseX, float mouseY)
+void eyeClick(UIButton& button, int mouseButton)
 {
-    LOG("<Octopus> ouch. you pressed eye %s", button.name);
+    LOG("<Octopus> ouch. you poked me on my %s eye!", button.name);
+	
     button.setAnimation("blink");
     Util::doLater([&button]() { button.setAnimation("default"); }, 300);
 
+    Eye theEyeThatWasPoked;
+	
 	switch(button.name[8])
 	{
     case 'C':
-        Outrospection::get().setEye(Eye::CIRCLE);
+        theEyeThatWasPoked = Eye::CIRCLE;
         break;
     case 'S':
-        Outrospection::get().setEye(Eye::SQUARE);
+        theEyeThatWasPoked = Eye::SQUARE;
         break;
     case 'T':
-        Outrospection::get().setEye(Eye::TRIANGLE);
+        theEyeThatWasPoked = Eye::TRIANGLE;
         break;  
 	}
+
+	// TODO do something with mouse button. Left = do action, Right = set mouse Eye
+    Outrospection::get().setEye(theEyeThatWasPoked);
 }
 
 GUIOctopusOverlay::GUIOctopusOverlay() : GUILayer("Octopus Overlay", false),

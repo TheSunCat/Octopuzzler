@@ -7,7 +7,7 @@
 class UIButton :
     public UIComponent
 {
-    typedef std::function<void(UIButton&, float, float)> ButtonCallback;
+    typedef std::function<void(UIButton&, int)> ButtonCallback;
 	
 public:
     UIButton(const std::string& _texName, float posXPercent, float posYPercent,

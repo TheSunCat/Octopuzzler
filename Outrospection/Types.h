@@ -18,10 +18,10 @@ enum class Control
 
 enum class Eye
 {
-	NONE,
-    CIRCLE,
-    SQUARE,
-    TRIANGLE
+	NONE = ' ',
+    CIRCLE = 'O',
+    SQUARE = 'D',
+    TRIANGLE = 'V'
 };
 
 struct Transform
