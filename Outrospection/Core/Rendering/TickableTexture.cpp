@@ -4,6 +4,7 @@ TickableTexture::TickableTexture(const std::vector<GLuint>& texIds, const std::s
                                  const unsigned int _frameLength)
     : SimpleTexture(texIds.at(0)), textures(texIds), frameLength(_frameLength)
 {
+    texId = textures[0];
 }
 
 void TickableTexture::tick()

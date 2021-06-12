@@ -2,6 +2,7 @@
 #include "Core.h"
 
 #include <fstream>
+#include <ranges>
 #include <utility>
 
 
@@ -278,7 +279,7 @@ void Scene::loadScene()
 
 void Scene::step(float deltaTime)
 {
-    physicsWorld.step(deltaTime);
+    //physicsWorld.step(deltaTime);
 }
 
 void Scene::draw(const Camera& cam, Shader& _objShader, Shader& _billboardShader, Shader& _skyShader, Shader& _simpleShader)
@@ -302,7 +303,7 @@ void Scene::draw(const Camera& cam, Shader& _objShader, Shader& _billboardShader
 
     colMesh.draw();
 #else
-    for (auto& [group, objs] : objects)
+    for (auto& objs : objects | std::views::values)
     {
         for (auto* object : objs) {
             if (object->debugColor > cubeThreshold)

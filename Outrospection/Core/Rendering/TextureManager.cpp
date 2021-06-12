@@ -1,5 +1,6 @@
 #include "TextureManager.h"
 
+#include <ranges>
 #include <sstream>
 
 #include "External/stb_image.h"
@@ -22,7 +23,7 @@ TextureManager::TextureManager()
     missingTexture.texId = missingTexId;
 }
 
-SimpleTexture TextureManager::loadTexture(Resource& r)
+SimpleTexture& TextureManager::loadTexture(const Resource& r)
 {
     const std::string path = r.getResourcePath() + ".png";
 
@@ -32,9 +33,9 @@ SimpleTexture TextureManager::loadTexture(Resource& r)
     {
         SimpleTexture texObj(texId);
 
-        textures.insert(std::pair<Resource, SimpleTexture>(r, texObj));
+        textures.insert(std::pair(r, std::make_unique<SimpleTexture>(texObj)));
 
-        return texObj;
+        return *textures[r];
     }
     else
     {
@@ -44,8 +45,8 @@ SimpleTexture TextureManager::loadTexture(Resource& r)
     }
 }
 
-TickableTexture TextureManager::loadAnimatedTexture(Resource& r, unsigned int textureTickLength,
-                                                    const unsigned int textureFrameCount)
+SimpleTexture& TextureManager::loadAnimatedTexture(const Resource& r, unsigned int textureTickLength,
+    const unsigned int textureFrameCount)
 {
     std::string path = r.getResourcePath();
 
@@ -53,8 +54,8 @@ TickableTexture TextureManager::loadAnimatedTexture(Resource& r, unsigned int te
 
     for (unsigned int i = 0; i < textureFrameCount; i++)
     {
-        std::stringstream ss(path);
-        ss << i << ".png";
+        std::stringstream ss;
+        ss << path << i << ".png";
         std::string currentPath = ss.str();
 
         GLuint currentTextureId = textureFromFile(currentPath);
@@ -66,16 +67,15 @@ TickableTexture TextureManager::loadAnimatedTexture(Resource& r, unsigned int te
         else
         {
             LOG_ERROR("Failed to generate texture ID for animated texture frame %i at %s", textureFrameCount,
-                      currentPath);
+                currentPath);
 
             textureIds.push_back(missingTexture.texId);
         }
     }
+    
+    auto [it, success] = textures.insert(std::pair(r, std::make_unique<TickableTexture>(textureIds, path, textureTickLength)));
 
-    tickableTextures.emplace_back(textureIds, path, textureTickLength);
-    textures.insert(std::pair<Resource, TickableTexture>(r, tickableTextures.back()));
-
-    return tickableTextures.back();
+    return *(it->second);
 }
 
 void TextureManager::bindTexture(Resource& r)
@@ -85,31 +85,27 @@ void TextureManager::bindTexture(Resource& r)
     tex.bind();
 }
 
-SimpleTexture& TextureManager::get(Resource& r)
+SimpleTexture& TextureManager::get(const Resource& r)
 {
     const auto f = textures.find(r);
-
-    SimpleTexture tex;
 
     if (f == textures.end())
     {
         // resource not found in already existing storage, needs to be loaded
-        tex = loadTexture(r);
+        return loadTexture(r);
     }
     else
     {
-        tex = (*f).second;
+        return *(*f).second;
     }
-
-    return tex;
 }
 
 // Called every tick, calls tick on every tickable texture.
 void TextureManager::tickAllTextures()
 {
-    for (TickableTexture& tickableTexture : tickableTextures)
+    for (auto& val : textures | std::views::values)
     {
-        tickableTexture.tick();
+        val->tick();
     }
 }
 

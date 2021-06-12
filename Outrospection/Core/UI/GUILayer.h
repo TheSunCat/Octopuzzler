@@ -1,9 +1,12 @@
 ﻿#pragma once
 #include <string>
 
-#include "UIComponent.h"
 #include "Core/Layer.h"
-#include "Events/KeyEvent.h"
+
+class UIButton;
+class KeyPressedEvent;
+class KeyReleasedEvent;
+class MouseButtonPressedEvent;
 
 class GUILayer : public Layer
 {
@@ -17,7 +20,12 @@ public:
 
     virtual bool onKeyPressed(KeyPressedEvent& event);
     virtual bool onKeyReleased(KeyReleasedEvent& event);
-private:
-    std::string name;
+    virtual bool onMousePressed(MouseButtonPressedEvent& event);
+
+protected:
+    std::vector<std::unique_ptr<UIButton>> buttons;
     bool captureMouse = false;
+private:
+	
+    std::string name;
 };

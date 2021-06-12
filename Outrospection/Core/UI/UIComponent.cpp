@@ -15,13 +15,15 @@ UIComponent::UIComponent(const std::string& _texName, const float posXPercent, c
 }
 
 UIComponent::UIComponent(std::string _texName, const glm::vec2& _position, const glm::vec2& dimensions)
-    : name(std::move(_texName)), position(_position), width(dimensions.x), height(dimensions.y),
-      textOffset(0.0f, height / 2), textColor(0.0f)
+    : UIComponent(std::move(_texName), (Outrospection::get().textureManager.get({ "UI/", _texName })), _position, dimensions)
 {
-    TextureManager& textureManager = Outrospection::get().textureManager;
-    Resource r("UI/", name);
-    texture = textureManager.get(r);
+    
+}
 
+UIComponent::UIComponent(std::string _name, SimpleTexture& _tex, const glm::vec2& _position, const glm::vec2& dimensions)
+	: name(std::move(_name)), position(_position), width(dimensions.x), height(dimensions.y), textOffset(0.0f, height / 2),
+    textColor(0.0f), texture(&_tex)
+{
     // we need to create our quad the first time!
     if (quadVAO == 0)
     {
@@ -69,7 +71,7 @@ void UIComponent::draw(Shader& shader, const Shader& glyphShader) const
     shader.setMat4("model", model);
 
     glActiveTexture(GL_TEXTURE0);
-    texture.bind();
+    texture->bind();
 
     glBindVertexArray(quadVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -77,7 +79,7 @@ void UIComponent::draw(Shader& shader, const Shader& glyphShader) const
 
     if (!name.empty()) // TODO text class myself
     {
-        drawText(name, glyphShader);
+        //drawText(name, glyphShader);
     }
 }
 

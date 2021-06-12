@@ -88,9 +88,7 @@ private:
     void runTick();
     void updateCamera();
 
-    GUILayer* ingameGUI;
-    GUILayer* pauseGUI;
-    GUILayer* inventoryGUI;
+    GUILayer* octopusOverlay;
 
     // set to false when the game loop shouldn't run
     bool running = false;
