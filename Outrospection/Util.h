@@ -7,6 +7,12 @@
 #include "Core/World/Collider.h"
 
 glm::vec3 operator*(const int& lhs, const glm::vec3& vec);
+glm::vec2 operator*(int i, const glm::vec2& vec);
+glm::vec2 operator*(const glm::vec2& vec, int i);
+
+// proxy functions that are shorter than the usual huge call
+SimpleTexture& animatedTexture(const Resource& resource, int tickLength, int frameCount);
+SimpleTexture& simpleTexture(const Resource& resource);
 
 namespace Util
 {
@@ -199,9 +205,6 @@ namespace Util
     float stof(const std::string_view& str);
 
     int stoi(const std::string_view& str);
-
-    glm::vec2 operator*(int i, const glm::vec2& vec);
-    glm::vec2 operator*(const glm::vec2& vec, int i);
 
     class Timer
     {

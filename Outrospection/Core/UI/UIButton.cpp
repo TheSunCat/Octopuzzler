@@ -25,6 +25,12 @@ UIButton::UIButton(const std::string& _name, SimpleTexture& tex, const float pos
     onClick(std::move(clickCallback)),
 	buttonBounds(bounds)
 {
+	// assume default bounds
+	if(buttonBounds.shape == BoundsShape::None)
+	{
+		buttonBounds = Bounds(BoundsShape::AABB, { posXPercent, posYPercent, widthPercent, heightPercent });
+	}
+
 }
 
 bool UIButton::isOnButton(const glm::vec2& point) const

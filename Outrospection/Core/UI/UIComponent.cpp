@@ -92,9 +92,9 @@ void UIComponent::draw(Shader& shader, const Shader& glyphShader) const
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
 
-    if (!name.empty()) // TODO text class myself
+    if (showText && !name.empty()) // TODO text class myself
     {
-        //drawText(name, glyphShader);
+        drawText(name, glyphShader);
     }
 }
 
@@ -105,7 +105,7 @@ void UIComponent::drawText(const std::string& text, const Shader& glyphShader) c
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(quadVAO);
 
-    float textScale = 1.0f;
+    float textScale = 0.5f;
 
     float textX = position.x + textOffset.x;
     float textY = position.y + textOffset.y;
@@ -120,8 +120,8 @@ void UIComponent::drawText(const std::string& text, const Shader& glyphShader) c
         // calculate model matrix
         glm::mat4 charModel = glm::mat4(1.0f);
 
-        float xPos = textX + fontCharacter.bearing.x * textScale;
-        float yPos = textY - fontCharacter.bearing.y * textScale;
+        float xPos = textX + fontCharacter.bearing.x * textScale + 10;
+        float yPos = textY - fontCharacter.bearing.y * textScale + 10; // TODO these +s at the end shouldn't be needed
         charModel = glm::translate(charModel, glm::vec3(xPos, yPos, 0.0f));
 
         float width = (fontCharacter.size.x) * textScale;

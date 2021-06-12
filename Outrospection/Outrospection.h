@@ -90,6 +90,7 @@ private:
     void updateCamera();
 
     GUILayer* octopusOverlay;
+    GUILayer* controlsOverlay;
 
     // set to false when the game loop shouldn't run
     bool running = false;

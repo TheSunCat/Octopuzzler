@@ -18,6 +18,26 @@ glm::vec3 operator*(const int& lhs, const glm::vec3& vec)
     return glm::vec3(vec.x * lhs, vec.y * lhs, vec.z * lhs);
 }
 
+glm::vec2 operator*(int i, const glm::vec2& vec)
+{
+    return vec * float(i);
+}
+
+glm::vec2 operator*(const glm::vec2& vec, int i)
+{
+    return i * vec;
+}
+
+SimpleTexture& animatedTexture(const Resource& resource, int tickLength, int frameCount)
+{
+    return Outrospection::get().textureManager.loadAnimatedTexture(resource, tickLength, frameCount);
+}
+
+SimpleTexture& simpleTexture(const Resource& resource)
+{
+    return Outrospection::get().textureManager.loadTexture(resource);
+}
+
 bool Util::glError()
 {
     bool ret = false;
@@ -682,16 +702,6 @@ int Util::stoi(const std::string_view& str)
     int ret;
     std::from_chars(str.data(), str.data() + str.size(), ret);
     return ret;
-}
-
-glm::vec2 Util::operator*(int i, const glm::vec2& vec)
-{
-    return vec * float(i);
-}
-
-glm::vec2 Util::operator*(const glm::vec2& vec, int i)
-{
-    return i * vec;
 }
 
 Util::Timer::Timer() : Timer::Timer("")     { }

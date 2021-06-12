@@ -28,8 +28,9 @@ public:
     std::string name;
     glm::vec2 position;
     float width = 10.0f, height = 10.0f;
+	
     glm::vec2 textOffset; // vector to offset text by
-
+    bool showText = false;
     Color textColor;
 
     virtual ~UIComponent() = default;
