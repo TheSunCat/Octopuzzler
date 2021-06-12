@@ -1,6 +1,6 @@
 #include "KeyBinding.h"
 
-KeyBinding::KeyBinding(const int _keyCode)
+KeyBinding::KeyBinding(Eye eye, Control control) : m_eye(eye), m_control(control)
 {
-    keyCode = _keyCode;
+	
 }

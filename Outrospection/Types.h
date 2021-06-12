@@ -8,6 +8,22 @@
 #include "Core/Rendering/Resource.h"
 #include "Core/Rendering/SimpleTexture.h"
 
+enum class Control
+{
+    MOVE_UP,
+    MOVE_DOWN,
+    MOVE_RIGHT,
+    MOVE_LEFT
+};
+
+enum class Eye
+{
+	NONE,
+    CIRCLE,
+    SQUARE,
+    TRIANGLE
+};
+
 struct Transform
 {
     Transform(const glm::vec3& position = glm::vec3(1.0), const glm::vec3& scale = glm::vec3(1.0), const glm::quat& rotation = glm::quat())

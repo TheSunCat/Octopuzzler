@@ -25,8 +25,7 @@ Outrospection::Outrospection()
 {
     instance = this;
 
-    preInit = PreInitialization(initItems);
-
+    preInit = PreInitialization();
 
     gameWindow = opengl.gameWindow;
     quadVAO = opengl.quadVAO;
@@ -37,7 +36,11 @@ Outrospection::Outrospection()
 
     registerCallbacks();
     createShaders();
+    createCursors();
     
+
+    glfwSetCursor(gameWindow, cursorNone);
+	
     octopusOverlay = new GUIOctopusOverlay();
     controlsOverlay = new GUIControlsOverlay();
 
@@ -118,19 +121,34 @@ void Outrospection::captureMouse(const bool doCapture)
     }
 }
 
-bool inInventory = false;
-
-void Outrospection::initItems()
+void Outrospection::setEye(Eye letter)
 {
-    //itemRegistry.add(0, Item("entropy", 0));
-    //itemRegistry.add(100, Item("iron"));
-    //itemRegistry.add(101, Item("copper"));
-    //itemRegistry.add(102, Item("aluminum"));
-    //itemRegistry.add(103, Item("titanium"));
-    //itemRegistry.add(104, Item("magnetite"));
-    //itemRegistry.add(105, Item("methane", 32));
-    //itemRegistry.add(106, Item("oxygen", 32));
+    eye = letter;
+
+	switch(eye)
+	{
+    case Eye::NONE:
+        glfwSetCursor(gameWindow, cursorNone);
+        break;
+    case Eye::CIRCLE:
+        glfwSetCursor(gameWindow, cursorCircle);
+        break;
+    case Eye::SQUARE:
+        glfwSetCursor(gameWindow, cursorSquare);
+        break;
+    case Eye::TRIANGLE:
+        glfwSetCursor(gameWindow, cursorTriangle);
+        break;
+	}
+	
 }
+
+Eye Outrospection::getEye()
+{
+    return eye;
+}
+
+bool inInventory = false;
 
 void Outrospection::runGameLoop()
 {
@@ -305,6 +323,32 @@ void Outrospection::createShaders()
     glyphShader.setMat4("projection", projection);
 }
 
+void Outrospection::createCursors()
+{
+    GLFWimage cursorImage;
+    int width = 10, height = 10;
+
+    unsigned char* data = TextureManager::readImageBytes("./res/ObjectData/Textures/cursorNone.png", width, height);
+    cursorImage.pixels = data; cursorImage.width = width; cursorImage.height = height;
+    cursorNone = glfwCreateCursor(&cursorImage, 0, 0);
+    TextureManager::free(data);
+
+    data = TextureManager::readImageBytes("./res/ObjectData/Textures/cursorCircle.png", width, height);
+    cursorImage.pixels = data; cursorImage.width = width; cursorImage.height = height;
+    cursorCircle = glfwCreateCursor(&cursorImage, 0, 0);
+    TextureManager::free(data);
+
+    data = TextureManager::readImageBytes("./res/ObjectData/Textures/cursorSquare.png", width, height);
+    cursorImage.pixels = data; cursorImage.width = width; cursorImage.height = height;
+    cursorSquare = glfwCreateCursor(&cursorImage, 0, 0);
+    TextureManager::free(data);
+
+    data = TextureManager::readImageBytes("./res/ObjectData/Textures/cursorTriangle.png", width, height);
+    cursorImage.pixels = data; cursorImage.width = width; cursorImage.height = height;
+    cursorTriangle = glfwCreateCursor(&cursorImage, 0, 0);
+    TextureManager::free(data);
+}
+
 bool Outrospection::onWindowClose(WindowCloseEvent& e)
 {
     running = false;
@@ -354,128 +398,7 @@ void setKey(ControllerButton& button, const int keyCode, GLFWwindow* window)
 
 void Outrospection::updateInput()
 {
-    // controller support
-    /*if (controllerIn)
-    {
-        int joystick = -1;
-        for (int i = GLFW_JOYSTICK_1; i < GLFW_JOYSTICK_LAST; i++)
-        {
-            if (glfwJoystickPresent(i) == GLFW_TRUE)
-            {
-                joystick = i;
-
-                controller.isGamepad = true;
-
-                //LOG_DEBUG("Joystick %s detected with ID %i!", glfwGetJoystickName(joystick), joystick);
-
-                break;
-            }
-        }
-
-        if (joystick != -1) {                    // there is a controller
-
-            if (glfwJoystickIsGamepad(joystick)) // easy!
-            {
-                //LOG_DEBUG("It is a gamepad! Sweet!");
-
-                GLFWgamepadstate gamepadState;
-                glfwGetGamepadState(joystick, &gamepadState);
-
-                // make negative bc flipped!
-                controller.lStickY = -Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_LEFT_Y]);
-                controller.lStickX = Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_LEFT_X]);
-
-                controller.rStickY = -Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y]);
-                controller.rStickX = Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_RIGHT_X]);
-
-                controller.leftTrigger = Util::valFromJoystickAxis(gamepadState.axes[GLFW_GAMEPAD_AXIS_LEFT_TRIGGER]);
-
-                controller.jump = gamepadState.buttons[GLFW_GAMEPAD_BUTTON_A] ? controller.jump + 1 : false;
-                controller.talk = gamepadState.buttons[GLFW_GAMEPAD_BUTTON_X] ? controller.talk + 1 : false;
-                controller.pause = gamepadState.buttons[GLFW_GAMEPAD_BUTTON_START] ? controller.pause + 1 : false;
-            }
-            else // have to manually set everything :c
-            {
-                LOG_DEBUG("It is a non-mapped controller. Hrm.");
-
-                int axesCount = -1;
-
-                const float* rawAxes = glfwGetJoystickAxes(joystick, &axesCount);
-
-                if (axesCount < 2) // not enough sticks, return for now?
-                {
-                    joystick = -1;
-                }
-                else if (axesCount == 2) // one stick! assumed to be left so we can move around
-                {
-                    controller.lStickY = -Util::valFromJoystickAxis(rawAxes[STICK_LEFT_UP]);
-                    controller.lStickX = Util::valFromJoystickAxis(rawAxes[STICK_LEFT_SIDE]);
-                }
-                else if (axesCount >= 4) // two sticks or more
-                {
-                    controller.rStickY = -Util::valFromJoystickAxis(rawAxes[STICK_LEFT_UP]);
-                    controller.rStickX = Util::valFromJoystickAxis(rawAxes[STICK_LEFT_SIDE]);
-
-                    controller.lStickY = -Util::valFromJoystickAxis(rawAxes[STICK_LEFT_UP]);
-                    controller.lStickX = Util::valFromJoystickAxis(rawAxes[STICK_LEFT_SIDE]);
-                }
-
-
-                int buttonCount = -1;
-                const unsigned char* rawButtons = glfwGetJoystickButtons(joystick, &buttonCount);
-
-                if (buttonCount < 4) // not enough buttons for us
-                {
-                    joystick = -1;
-                }
-                else
-                {
-                    controller.jump = rawButtons[BUTTON_A] ? controller.jump + 1 : false;
-                    controller.talk = rawButtons[BUTTON_X] ? controller.talk + 1 : false;
-                    controller.pause = rawButtons[BUTTON_START] ? controller.pause + 1 : false;
-                    // TODO add more controls lol
-                }
-            }
-        }
-    }
-    else {*/
-
-    // we check this for zero because a fake controller may be plugged in. real controllers will usually never have zero
-    if (true)// || joystick == -1) // no *usable* controllers are present
-    {
-        //LOG_DEBUG("No usable controller is present. ");
-
-        controller.isGamepad = false;
-
-        float leftForwardInput = 0.0f;
-        if (glfwGetKey(gameWindow, gameSettings.keyBindForward.keyCode) == GLFW_PRESS)
-        {
-            leftForwardInput += 1.0f;
-        }
-        if (glfwGetKey(gameWindow, gameSettings.keyBindBackward.keyCode) == GLFW_PRESS)
-        {
-            leftForwardInput += -1.0f;
-        }
-        controller.lStickY = leftForwardInput;
-
-
-        float leftSideInput = 0.0f;
-        if (glfwGetKey(gameWindow, gameSettings.keyBindRight.keyCode) == GLFW_PRESS)
-        {
-            leftSideInput += 1.0f;
-        }
-        if (glfwGetKey(gameWindow, gameSettings.keyBindLeft.keyCode) == GLFW_PRESS)
-        {
-            leftSideInput += -1.0f;
-        }
-        controller.lStickX = leftSideInput;
-
-
-        setKey(controller.jump, gameSettings.keyBindJump.keyCode, gameWindow);
-        setKey(controller.talk, gameSettings.keyBindTalk.keyCode, gameWindow);
-        setKey(controller.pause, gameSettings.keyBindExit.keyCode, gameWindow);
-        setKey(controller.debugBreak, gameSettings.keyBindBreak.keyCode, gameWindow);
-    }
+    
 }
 
 void Outrospection::startTimeThread()

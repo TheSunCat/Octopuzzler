@@ -6,6 +6,19 @@ void eyeClick(UIButton& button, float mouseX, float mouseY)
     LOG("<Octopus> ouch. you pressed eye %s", button.name);
     button.setAnimation("blink");
     Util::doLater([&button]() { button.setAnimation("default"); }, 300);
+
+	switch(button.name[8])
+	{
+    case 'C':
+        Outrospection::get().setEye(Eye::CIRCLE);
+        break;
+    case 'S':
+        Outrospection::get().setEye(Eye::SQUARE);
+        break;
+    case 'T':
+        Outrospection::get().setEye(Eye::TRIANGLE);
+        break;  
+	}
 }
 
 GUIOctopusOverlay::GUIOctopusOverlay() : GUILayer("Octopus Overlay", false),

@@ -4,8 +4,23 @@
 void controlClick(UIButton& button, float mouseX, float mouseY)
 {
     LOG("You pressed button %s", button.name);
-    //button.setAnimation("blink");
-    //Util::doLater([&button]() { button.setAnimation("default"); }, 300);
+	
+    Outrospection& o = Outrospection::get();
+	switch(button.name[0])
+	{
+    case 'U':
+        o.keyBinds.emplace_back(o.getEye(), Control::MOVE_UP);
+        break;
+    case 'D':
+        o.keyBinds.emplace_back(o.getEye(), Control::MOVE_DOWN);
+        break;
+    case 'L':
+        o.keyBinds.emplace_back(o.getEye(), Control::MOVE_LEFT);
+        break;
+    case 'R':
+        o.keyBinds.emplace_back(o.getEye(), Control::MOVE_RIGHT);
+        break;
+	}
 }
 
 GUIControlsOverlay::GUIControlsOverlay() : GUILayer("Controls Overlay", false),

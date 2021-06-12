@@ -94,9 +94,6 @@
     <ClInclude Include="Util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GameSettings.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="KeyBinding.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -193,9 +190,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Core\Rendering\Shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameSettings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="KeyBinding.cpp">
