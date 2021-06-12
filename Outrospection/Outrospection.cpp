@@ -7,6 +7,7 @@
 
 #include "Util.h"
 #include "Core/Layer.h"
+#include "Core/UI/GUIControlsOverlay.h"
 
 #include "Core/UI/GUILayer.h"
 #include "Core/UI/GUIOctopusOverlay.h"
@@ -42,9 +43,11 @@ Outrospection::Outrospection() : playerController(player)
     player = Player(glm::vec3(1.0, 60.0, 0.0));
     
     octopusOverlay = new GUIOctopusOverlay();
+    controlsOverlay = new GUIControlsOverlay();
 
     //pushOverlay(ingameGUI);
     pushOverlay(octopusOverlay);
+    pushOverlay(controlsOverlay);
 
     soundEngine->play2D("./res/ObjectData/Sounds/taco.ogg", true);
 }

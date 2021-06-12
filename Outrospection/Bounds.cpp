@@ -17,6 +17,8 @@ Bounds::Bounds(BoundsShape _shape, const std::vector<float>& boundsArgs) : shape
 	}
 }
 
+Bounds::Bounds() : shape(BoundsShape::None) {}
+
 
 bool Bounds::contains(const glm::vec2& point) const
 {
