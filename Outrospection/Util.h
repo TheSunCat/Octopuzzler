@@ -61,6 +61,17 @@ namespace Util
         return startVal + difference * percent;
     }
 
+	// future stuff
+    struct FutureRun
+    {
+        std::function<void()> func;
+        time_t startTime;
+
+        time_t waitTime;
+    };
+	
+    void doLater(std::function<void()> func, time_t waitTime);
+
     constexpr std::size_t hashBytes(const char* data, std::size_t length)
     {
 #define get16bits(d) ((((uint32_t)(((const uint8_t *)(d))[1])) << 8) +(uint32_t)(((const uint8_t *)(d))[0]))

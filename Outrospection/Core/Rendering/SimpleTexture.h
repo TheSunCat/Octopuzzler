@@ -15,6 +15,9 @@ public:
 
     virtual void tick();
 
+    virtual void reset();
+    bool shouldTick = false;
+
     GLuint texId = 0;
 
     bool operator==(const SimpleTexture& st) const;

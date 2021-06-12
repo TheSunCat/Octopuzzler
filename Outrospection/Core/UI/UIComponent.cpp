@@ -22,8 +22,10 @@ UIComponent::UIComponent(std::string _texName, const glm::vec2& _position, const
 
 UIComponent::UIComponent(std::string _name, SimpleTexture& _tex, const glm::vec2& _position, const glm::vec2& dimensions)
 	: name(std::move(_name)), position(_position), width(dimensions.x), height(dimensions.y), textOffset(0.0f, height / 2),
-    textColor(0.0f), texture(&_tex)
+    textColor(0.0f)
 {
+    animations.insert(std::make_pair("default", &_tex));
+	
     // we need to create our quad the first time!
     if (quadVAO == 0)
     {
@@ -55,6 +57,19 @@ UIComponent::UIComponent(std::string _name, SimpleTexture& _tex, const glm::vec2
 
 void UIComponent::tick() {}
 
+void UIComponent::addAnimation(const std::string& anim, SimpleTexture& _tex)
+{
+    animations.insert(std::make_pair(anim, &_tex));
+}
+
+void UIComponent::setAnimation(const std::string& anim)
+{
+    animations.at(curAnimation)->shouldTick = false;
+    animations.at(curAnimation)->reset();
+    curAnimation = anim;
+    animations.at(curAnimation)->shouldTick = true;
+}
+
 void UIComponent::draw(Shader& shader, const Shader& glyphShader) const
 {
     shader.use();
@@ -71,7 +86,7 @@ void UIComponent::draw(Shader& shader, const Shader& glyphShader) const
     shader.setMat4("model", model);
 
     glActiveTexture(GL_TEXTURE0);
-    texture->bind();
+    animations.at(curAnimation)->bind();
 
     glBindVertexArray(quadVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);

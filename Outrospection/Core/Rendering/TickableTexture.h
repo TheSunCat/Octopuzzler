@@ -16,6 +16,7 @@ public:
 
     void nextFrame();
 
+    void reset() override;
 private:
     const std::vector<GLuint> textures;
     const unsigned int frameLength;

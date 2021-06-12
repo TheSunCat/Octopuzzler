@@ -68,6 +68,7 @@ public:
     GameSettings gameSettings;
     Controller controller{};
 
+	std::vector<Util::FutureRun> futureFunctions;
     std::unordered_map<char, FontCharacter> fontCharacters;
 
     Shader objectShader;

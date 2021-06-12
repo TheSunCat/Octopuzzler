@@ -22,6 +22,9 @@ public:
 
     virtual void tick();
 
+    void addAnimation(const std::string& anim, SimpleTexture& _tex);
+    void setAnimation(const std::string& anim);
+
     std::string name;
     glm::vec2 position;
     float width = 10.0f, height = 10.0f;
@@ -33,7 +36,8 @@ public:
 private:
     virtual void drawText(const std::string& text, const Shader& glyphShader) const;
 
-    SimpleTexture* texture = &TextureManager::missingTexture;
+    std::string curAnimation = "default";
+    std::unordered_map<std::string, SimpleTexture*> animations;// = &TextureManager::missingTexture;
 
     static GLuint quadVAO;
 };

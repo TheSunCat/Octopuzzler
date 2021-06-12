@@ -11,6 +11,7 @@ void SimpleTexture::bind() const
 }
 
 void SimpleTexture::tick() {}
+void SimpleTexture::reset() {}
 
 bool SimpleTexture::operator==(const SimpleTexture& st) const
 {

@@ -4,11 +4,16 @@ TickableTexture::TickableTexture(const std::vector<GLuint>& texIds, const std::s
                                  const unsigned int _frameLength)
     : SimpleTexture(texIds.at(0)), textures(texIds), frameLength(_frameLength)
 {
+    shouldTick = true;
+	
     texId = textures[0];
 }
 
 void TickableTexture::tick()
 {
+    if (!shouldTick)
+        return;
+	
     frameTally++;
 
     if (frameTally > frameLength)
@@ -33,5 +38,11 @@ void TickableTexture::nextFrame()
     else
         curFrame = 0;
 
+    texId = textures.at(curFrame);
+}
+
+void TickableTexture::reset()
+{
+    curFrame = 0;
     texId = textures.at(curFrame);
 }

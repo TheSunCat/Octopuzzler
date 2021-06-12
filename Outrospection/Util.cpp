@@ -9,6 +9,7 @@
 #include <glm/common.hpp>
 
 #include "Constants.h"
+#include "Outrospection.h"
 #include "Core/World/SphereCollider.h"
 #include "External/stb_image.h"
 
@@ -47,6 +48,11 @@ void Util::split(const std::string& input, const char& delimiter, std::vector<st
     }
 
     out.emplace_back(&*start, next - start);
+}
+
+void Util::doLater(std::function<void()> func, time_t waitTime)
+{
+    Outrospection::get().futureFunctions.emplace_back(func, currentTimeMillis, waitTime);
 }
 
 glm::vec3 Util::rotToVec3(const float yaw, const float pitch)

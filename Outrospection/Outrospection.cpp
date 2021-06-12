@@ -171,8 +171,20 @@ void Outrospection::runGameLoop()
 
             textureManager.tickAllTextures();
 
-            // TODO execute scheduled tasks
-            // ----------------------------
+            // execute scheduled tasks
+            for(int i = 0; i < futureFunctions.size(); i++)
+            {
+                const auto& futureFunc = futureFunctions[i];
+            	
+	            if(currentTimeMillis - futureFunc.startTime > futureFunc.waitTime)
+	            {
+                    futureFunc.func();
+
+	            	// pop the function
+                    futureFunctions.erase(futureFunctions.begin() + i);
+                    i--;
+	            }
+            }
         }
 
         // TODO remove this LOG("%f, %f", lastMousePos.x, lastMousePos.y);
