@@ -12,5 +12,5 @@ public:
 
     void draw() const override;
 private:
-    UIButton buttonResume;
+    // TODO add this back UIButton buttonResume;
 };

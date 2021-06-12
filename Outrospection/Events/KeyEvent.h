@@ -35,5 +35,5 @@ public:
     KeyReleasedEvent(const int _keyCode)
         : KeyEvent(_keyCode) {}
 
-    EVENT_CLASS_TYPE(KeyPressed)
+    EVENT_CLASS_TYPE(KeyReleased)
 };

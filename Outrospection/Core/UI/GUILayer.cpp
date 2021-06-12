@@ -3,27 +3,32 @@
 #include <utility>
 
 #include "Outrospection.h"
-#include "Core/Rendering/Shader.h"
+#include "UIButton.h"
+#include "Events/MouseEvent.h"
+#include "Events/KeyEvent.h"
 
 GUILayer::GUILayer(std::string _name, const bool _captureMouse) : Layer(),
-                                                                  name(std::move(_name)), captureMouse(_captureMouse)
+    captureMouse(_captureMouse), name(std::move(_name))
 {
 }
 
 void GUILayer::onAttach()
 {
     Outrospection::get().captureMouse(captureMouse);
+    LOG("Attached %s", name);
 }
 
 void GUILayer::onDetach()
 {
     Outrospection::get().captureMouse(!captureMouse);
+    LOG("Detached %s", name);
 }
 
 void GUILayer::onEvent(Event& event)
 {
     dispatchEvent<KeyPressedEvent>(event, std::bind(&GUILayer::onKeyPressed, this, std::placeholders::_1));
     dispatchEvent<KeyReleasedEvent>(event, std::bind(&GUILayer::onKeyReleased, this, std::placeholders::_1));
+    dispatchEvent<MouseButtonPressedEvent>(event, std::bind(&GUILayer::onMousePressed, this, std::placeholders::_1));
 }
 
 bool GUILayer::onKeyPressed(KeyPressedEvent& event)
@@ -33,5 +38,18 @@ bool GUILayer::onKeyPressed(KeyPressedEvent& event)
 
 bool GUILayer::onKeyReleased(KeyReleasedEvent& event)
 {
+    return false;
+}
+
+bool GUILayer::onMousePressed(MouseButtonPressedEvent& event)
+{
+    for(auto& button : buttons)
+    {
+	    if(button->hovered)
+	    {
+            button->onClick(*button, 0, 0); // TODO feed mouse coords
+	    }
+    }
+	
     return false;
 }

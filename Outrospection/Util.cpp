@@ -564,6 +564,11 @@ float Util::dist2(const glm::vec3& v0, const glm::vec3& v1)
     return pow(v0.x - v1.x, 2) + pow(v0.y - v1.y, 2) + pow(v0.z - v1.z, 2);
 }
 
+float Util::dist2(const glm::vec2& v0, const glm::vec2& v1)
+{
+    return pow(v0.x - v1.x, 2) + pow(v0.y - v1.y, 2);
+}
+
 float Util::length2(const glm::vec3& v)
 {
     return (v.x * v.x) + (v.y * v.y) + (v.z * v.z);
@@ -671,6 +676,16 @@ int Util::stoi(const std::string_view& str)
     int ret;
     std::from_chars(str.data(), str.data() + str.size(), ret);
     return ret;
+}
+
+glm::vec2 Util::operator*(int i, const glm::vec2& vec)
+{
+    return vec * float(i);
+}
+
+glm::vec2 Util::operator*(const glm::vec2& vec, int i)
+{
+    return i * vec;
 }
 
 Util::Timer::Timer() : Timer::Timer("")     { }

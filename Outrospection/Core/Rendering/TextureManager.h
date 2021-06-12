@@ -2,6 +2,7 @@
 #include "Core.h"
 
 #include <unordered_map>
+//#include <unordered_set>
 
 #include <GLAD/glad.h>
 
@@ -14,18 +15,18 @@
 class TextureManager
 {
 private:
-    std::unordered_map<Resource, SimpleTexture, Hashes> textures;
-    std::vector<TickableTexture> tickableTextures;
+    std::unordered_map<Resource, std::unique_ptr<SimpleTexture>, Hashes> textures;
 public:
     TextureManager();
 
-    SimpleTexture loadTexture(Resource& r);
+    SimpleTexture& loadTexture(const Resource& r);
 
-    TickableTexture loadAnimatedTexture(Resource& r, unsigned int textureTickLength, unsigned int textureFrameCount);
+    SimpleTexture& loadAnimatedTexture(const Resource& r, unsigned int textureTickLength,
+                                        unsigned int textureFrameCount);
 
     void bindTexture(Resource& r);
 
-    SimpleTexture& get(Resource& r);
+    SimpleTexture& get(const Resource& r);
 
     void tickAllTextures();
 

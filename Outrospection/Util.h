@@ -160,6 +160,8 @@ namespace Util
 
     float dist2(const glm::vec3& v0, const glm::vec3& v1);
 
+	float dist2(const glm::vec2& v0, const glm::vec2& v1);
+
     float length2(const glm::vec3& v);
 
     bool isZeroV3(const glm::vec3& v);
@@ -186,6 +188,9 @@ namespace Util
     float stof(const std::string_view& str);
 
     int stoi(const std::string_view& str);
+
+    glm::vec2 operator*(int i, const glm::vec2& vec);
+    glm::vec2 operator*(const glm::vec2& vec, int i);
 
     class Timer
     {

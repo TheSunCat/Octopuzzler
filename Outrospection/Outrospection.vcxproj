@@ -225,6 +225,7 @@
     <None Include="res\ShaderData\wireframe.frag" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bounds.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Core.h" />
@@ -250,13 +251,11 @@
     <ClInclude Include="Core\Rendering\SimpleTexture.h" />
     <ClInclude Include="Core\Rendering\TextureManager.h" />
     <ClInclude Include="Core\Scene.h" />
-    <ClInclude Include="Core\UI\GUIIngame.h" />
-    <ClInclude Include="Core\UI\GUIInventory.h" />
     <ClInclude Include="Core\UI\GUIPause.h" />
     <ClInclude Include="Core\UI\GUILayer.h" />
     <ClInclude Include="Core\UI\UIButton.h" />
     <ClInclude Include="Core\UI\UIComponent.h" />
-    <ClInclude Include="Core\UI\UIItemSlot.h" />
+    <ClInclude Include="Core\UI\GUIOctopusOverlay.h" />
     <ClInclude Include="Core\World\Character.h" />
     <ClInclude Include="Core\World\Collider.h" />
     <ClInclude Include="Core\World\Inventory.h" />
@@ -301,6 +300,7 @@
     <ClCompile Include="..\Libraries\include\discord\types.cpp" />
     <ClCompile Include="..\Libraries\include\discord\user_manager.cpp" />
     <ClCompile Include="..\Libraries\include\discord\voice_manager.cpp" />
+    <ClCompile Include="Bounds.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Core\Camera.cpp" />
     <ClCompile Include="Core\LayerStack.cpp" />
@@ -317,13 +317,11 @@
     <ClCompile Include="Core\Rendering\SimpleTexture.cpp" />
     <ClCompile Include="Core\Rendering\TextureManager.cpp" />
     <ClCompile Include="Core\Scene.cpp" />
-    <ClCompile Include="Core\UI\GUIIngame.cpp" />
-    <ClCompile Include="Core\UI\GUIInventory.cpp" />
     <ClCompile Include="Core\UI\GUIPause.cpp" />
     <ClCompile Include="Core\UI\GUILayer.cpp" />
     <ClCompile Include="Core\UI\UIButton.cpp" />
     <ClCompile Include="Core\UI\UIComponent.cpp" />
-    <ClCompile Include="Core\UI\UIItemSlot.cpp" />
+    <ClCompile Include="Core\UI\GUIOctopusOverlay.cpp" />
     <ClCompile Include="Core\World\Character.cpp" />
     <ClCompile Include="Core\World\Collider.cpp" />
     <ClCompile Include="Core\World\Inventory.cpp" />

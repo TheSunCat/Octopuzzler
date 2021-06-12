@@ -33,7 +33,7 @@ void PlayerController::acceleratePlayer(Player& player, const Controller& contro
         LOG("JUMP");
     }
 
-    LOG("%f, %f, %f", playerBody.force.x, playerBody.force.y, playerBody.force.z);
+    //LOG("%f, %f, %f", playerBody.force.x, playerBody.force.y, playerBody.force.z);
 }
 
 bool PlayerController::isMoving() const

@@ -8,9 +8,8 @@
 #include "Util.h"
 #include "Core/Layer.h"
 
-#include "Core/UI/GUIIngame.h"
-#include "Core/UI/GUIInventory.h"
 #include "Core/UI/GUILayer.h"
+#include "Core/UI/GUIOctopusOverlay.h"
 #include "Core/UI/GUIPause.h"
 #include "Core/World/PhysicsValues.h"
 #include "Core/World/PositionSolver.h"
@@ -18,13 +17,6 @@
 #include "Events/KeyEvent.h"
 #include "Events/MouseEvent.h"
 #include "Events/WindowEvent.h"
-
-//void* operator new(const size_t _Size)
-//{
-//    //std::cout << s << '\n';
-//
-//    return malloc(_Size);
-//}
 
 Outrospection* Outrospection::instance = nullptr;
 
@@ -46,20 +38,15 @@ Outrospection::Outrospection() : playerController(player)
 
     registerCallbacks();
     createShaders();
-
-    scene = new Scene("TestLevel000");
+    
     player = Player(glm::vec3(1.0, 60.0, 0.0));
+    
+    octopusOverlay = new GUIOctopusOverlay();
 
-    scene->physicsWorld.addCollisionObject(&playerController.playerBody);
-    scene->physicsWorld.addSolver(new PositionSolver());
+    //pushOverlay(ingameGUI);
+    pushOverlay(octopusOverlay);
 
-    ingameGUI = new GUIIngame();
-    pauseGUI = new GUIPause();
-    inventoryGUI = new GUIInventory(player.inventory);
-
-    pushOverlay(ingameGUI);
-
-    soundEngine->play2D("./res/ObjectData/Sounds/taco.ogg", false);
+    soundEngine->play2D("./res/ObjectData/Sounds/taco.ogg", true);
 }
 
 void Outrospection::run()
@@ -140,14 +127,14 @@ bool inInventory = false;
 
 void Outrospection::initItems()
 {
-    itemRegistry.add(0, Item("entropy", 0));
-    itemRegistry.add(100, Item("iron"));
-    itemRegistry.add(101, Item("copper"));
-    itemRegistry.add(102, Item("aluminum"));
-    itemRegistry.add(103, Item("titanium"));
-    itemRegistry.add(104, Item("magnetite"));
-    itemRegistry.add(105, Item("methane", 32));
-    itemRegistry.add(106, Item("oxygen", 32));
+    //itemRegistry.add(0, Item("entropy", 0));
+    //itemRegistry.add(100, Item("iron"));
+    //itemRegistry.add(101, Item("copper"));
+    //itemRegistry.add(102, Item("aluminum"));
+    //itemRegistry.add(103, Item("titanium"));
+    //itemRegistry.add(104, Item("magnetite"));
+    //itemRegistry.add(105, Item("methane", 32));
+    //itemRegistry.add(106, Item("oxygen", 32));
 }
 
 void Outrospection::runGameLoop()
@@ -156,37 +143,40 @@ void Outrospection::runGameLoop()
     deltaTime = float(currentFrame - lastFrame) / 1000.0f;
     lastFrame = currentFrame;
 
-    if(deltaTime == 0.0f)
+    if(deltaTime == 0.0f) // first frame will be 0. Assume it was 60fps
     {
-        deltaTime = 1.0f / 60.0f;
+        deltaTime = 1.0f / 60.0f; 
     }
-
-    //LOG_DEBUG("%f", deltaTime);
+    
     // Update game world
     {
         // fetch input into simplified controller class
         updateInput();
 
 
-        if (controller.pause == 1)
-        {
-            if (!inInventory)
-                pushOverlay(inventoryGUI);
-            else
-                popOverlay(inventoryGUI);
+        //if (controller.pause == 1)
+        //{
+        //    if (!inInventory)
+        //        pushOverlay(inventoryGUI);
+        //    else
+        //        popOverlay(inventoryGUI);
 
-            inInventory = !inInventory;
-        }
+        //    inInventory = !inInventory;
+        //}
 
         if (!isGamePaused)
         {
             // Run one "tick" of the game physics
             runTick();
 
+            textureManager.tickAllTextures();
+
             // TODO execute scheduled tasks
             // ----------------------------
         }
 
+        // TODO remove this LOG("%f, %f", lastMousePos.x, lastMousePos.y);
+    	
         // UIs are also updated when game is paused
         for (auto& layer : layerStack)
         {
@@ -203,29 +193,7 @@ void Outrospection::runGameLoop()
         // make sure we have the latest data in the camera fields
         camera.updateCameraData();
 
-        // set shader info
-        objectShader.use();
-        objectShader.setVec3("viewPos", camera.mPosition);
-        objectShader.setFloat("shininess", 32.0f);
-        objectShader.setVec3("lightPos", player.position + glm::vec3(0, 1.5f, 0));
-        objectShader.sendViewProjMat(camera, true);
-
-        billboardShader.use();
-        billboardShader.sendViewProjMat(camera, true);
-
-        skyShader.use();
-        skyShader.sendViewProjMat(camera, false);
-
-        simpleShader.use();
-        simpleShader.sendViewProjMat(camera, true);
-
-        culled = 0;
-
-        // draw stuff
-        scene->draw(camera, objectShader, billboardShader, skyShader, simpleShader);
-        player.draw(billboardShader);
-
-        //LOG("Culled %i objects.", culled);
+		// draw stuff here
 
         glDisable(GL_DEPTH_TEST); // disable depth test so stuff near camera isn't clipped
 
@@ -240,14 +208,15 @@ void Outrospection::runGameLoop()
         glBindVertexArray(quadVAO);
         glBindTexture(GL_TEXTURE_2D, textureColorbuffer);    // use the color attachment texture as the texture of the quad plane
         glDrawArrays(GL_TRIANGLES, 0, 6);
-
-
+    	
         // draw UI
         for (const auto& layer : layerStack)
         {
             layer->draw();
         }
 
+        Util::glError();
+    	
         glEnable(GL_DEPTH_TEST); // re-enable depth testing
     }
 

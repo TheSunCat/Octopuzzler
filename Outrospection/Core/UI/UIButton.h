@@ -1,20 +1,30 @@
 #pragma once
 #include <functional>
 
+#include "Bounds.h"
 #include "Core/UI/UIComponent.h"
 
 class UIButton :
     public UIComponent
 {
+    typedef std::function<void(UIButton&, float, float)> ButtonCallback;
+	
 public:
-    UIButton(const std::string& _texName, float posXPercent, float posYPercent, float widthPercent, float heightPercent,
-             std::function<void()> clickCallback = nullptr);
+    UIButton(const std::string& _texName, float posXPercent, float posYPercent,
+        float widthPercent, float heightPercent, Bounds bounds,
+        ButtonCallback clickCallback = nullptr);
 
+    UIButton(const std::string& _name, SimpleTexture& tex, float posXPercent, float posYPercent,
+        float widthPercent, float heightPercent, Bounds bounds,
+        ButtonCallback clickCallback = nullptr);
+	
     bool isOnButton(const glm::vec2& point) const;
 
     void tick() override;
 
-    std::function<void()> onClick;
+    ButtonCallback onClick;
 
     bool hovered = false;
+
+    Bounds buttonBounds;
 };
