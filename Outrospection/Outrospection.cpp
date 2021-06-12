@@ -143,7 +143,7 @@ void Outrospection::setEye(Eye letter)
 	
 }
 
-Eye Outrospection::getEye()
+Eye Outrospection::getEye() const
 {
     return eye;
 }
@@ -301,7 +301,7 @@ void Outrospection::registerCallbacks() const
         Outrospection::get().onEvent(event);
     });
 
-    //glfwSetKeyCallback(gameWindow, key_callback);
+    glfwSetKeyCallback(gameWindow, key_callback);
     glfwSetErrorCallback(error_callback);
 }
 
@@ -384,6 +384,28 @@ bool Outrospection::onMouseMoved(MouseMovedEvent& e)
 void Outrospection::scroll_callback(GLFWwindow*, const double xoffset, const double yoffset)
 {
     camera.changeDistBy(float(yoffset));
+}
+
+// this function is called when you press a key
+void Outrospection::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	if(action == GLFW_PRESS)
+	{
+        LOG_INFO("pressed key %i", key);
+
+		switch(key)
+		{
+        case GLFW_KEY_Z:
+            LOG("Pressed CIRCLE");
+            break;
+        case GLFW_KEY_X:
+            LOG("Pressed SQUARE");
+            break;
+        case GLFW_KEY_C:
+            LOG("Pressed TRIANGLE");
+            break;
+		}
+	}
 }
 
 void Outrospection::error_callback(const int errorcode, const char* description)
