@@ -1,7 +1,5 @@
 #pragma once
 
-#include <unordered_map>
-
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
@@ -9,20 +7,6 @@
 #include "Tracker.h"
 #include "Core/Rendering/Resource.h"
 #include "Core/Rendering/SimpleTexture.h"
-
-//enum class AnimType {
-//    walk,
-//    idle,
-//    jump, 
-//    fall
-//};
-//
-//const std::unordered_map<AnimType, std::string> animTypeMap ({
-//    {AnimType::idle, "idle"},
-//    {AnimType::walk, "walk"},
-//    {AnimType::jump, "jump"},
-//    {AnimType::fall, "fall"}
-//});
 
 struct Transform
 {
@@ -245,12 +229,6 @@ struct FontCharacter
     glm::ivec2 size;
     glm::ivec2 bearing; // offset from base line
     long advance; // offset to advance to next glyph
-};
-
-struct DummyObj
-{
-    std::string name;
-    std::vector<float> properties;
 };
 
 typedef glm::vec3 Color;

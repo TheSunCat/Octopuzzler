@@ -51,7 +51,7 @@ inline time_t currentTimeSeconds;
 #include "Windows.h"
 #undef APIENTRY
 
-// stole from https://github.com/ikalnytskyi/termcolor/blob/master/include/termcolor/termcolor.hpp#L567, thanks!
+// stolen from https://github.com/ikalnytskyi/termcolor/blob/master/include/termcolor/termcolor.hpp#L567, thanks!
 //! Change Windows Terminal colors attribute. If some
 //! parameter is `-1` then attribute won't changed.
 inline void win_change_attributes(const int foreground)
@@ -103,7 +103,6 @@ inline void win_change_attributes(const int foreground)
 #include <mutex>
 #include <queue>
 #include <string>
-#include <thread>
 #include <iostream>
 #include <ctime>
 
@@ -196,6 +195,10 @@ struct smart_printf {
 #endif
 
 #define LOG_ERROR(...) loggerQueue.push([args=std::make_tuple(__VA_ARGS__)] { CHANGE_COLOR(4); /* red error color */\
+        std::apply(smart_printf{}, args); \
+        CHANGE_COLOR(0);});
+
+#define LOG_INFO(...) loggerQueue.push([args=std::make_tuple(__VA_ARGS__)] { CHANGE_COLOR(34); /* green info color */\
         std::apply(smart_printf{}, args); \
         CHANGE_COLOR(0);});
 

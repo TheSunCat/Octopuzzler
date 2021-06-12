@@ -8,9 +8,9 @@
 #include <GLAD/glad.h>
 #include <glm/common.hpp>
 
+#include "Types.h"
 #include "Constants.h"
 #include "Outrospection.h"
-#include "Core/World/SphereCollider.h"
 #include "External/stb_image.h"
 
 glm::vec3 operator*(const int& lhs, const glm::vec3& vec)
@@ -424,41 +424,6 @@ bool Util::intersectTriangleSphere(const glm::vec3& spherePos, float sphereRadiu
     bool separated = outsideOfPlane || outsideOfVerts || outsideOfEdges;
 
     return !separated; // together ♥
-}
-
-ManifoldPoints Util::intersectSphereSphere(const SphereCollider* a, const Transform* transA,
-                                            const SphereCollider* b, const Transform* transB)
-{
-    const glm::vec3& aPos = /*a->mCenter + */transA->pos().get();
-    const glm::vec3& bPos = /*b->mCenter + */transB->pos().get();
-
-    float aRad = a->mRadius * Util::major(transA->scl());
-    float bRad = b->mRadius * Util::major(transB->scl());
-
-
-    glm::vec3 aToB = bPos - aPos;
-
-    float distSq = (aRad + bRad) * (aRad + bRad);
-    if(Util::length2(aToB) > distSq)
-    {
-        return {};
-    }
-
-    float aToB_len = glm::length(aToB);
-    glm::vec3 aToB_norm = aToB / aToB_len;
-
-    // we just shifted a and b away from each other by the radii
-    // direction from a to b is still the same
-    float new_aToB_len = aToB_len + aRad + bRad;
-
-    return
-    {
-        aPos + aToB_norm * aRad,
-        bPos + aToB_norm * -bRad,
-        aToB_norm,
-        new_aToB_len,
-        true
-    };
 }
 
 bool Util::sameSide(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& a, const glm::vec3& b)
