@@ -8,7 +8,7 @@ void eyeClick(UIButton& button, int mouseButton)
     button.setAnimation("blink");
     Util::doLater([&button]() { button.setAnimation("default"); }, 300);
 
-    Eye theEyeThatWasPoked;
+    Eye theEyeThatWasPoked = Eye::NONE;
 	
 	switch(button.name[8])
 	{
@@ -20,11 +20,18 @@ void eyeClick(UIButton& button, int mouseButton)
         break;
     case 'T':
         theEyeThatWasPoked = Eye::TRIANGLE;
-        break;  
+        break;
+    default:
+        LOG_ERROR("Invalid eye?? %s", button.name);
 	}
 
 	// TODO do something with mouse button. Left = do action, Right = set mouse Eye
-    Outrospection::get().setEye(theEyeThatWasPoked);
+    if (mouseButton == GLFW_MOUSE_BUTTON_RIGHT) {
+        Outrospection::get().setEye(theEyeThatWasPoked);
+    } else // do the action
+    {
+        Outrospection::get().doControl(theEyeThatWasPoked);
+    }
 }
 
 GUIOctopusOverlay::GUIOctopusOverlay() : GUILayer("Octopus Overlay", false),

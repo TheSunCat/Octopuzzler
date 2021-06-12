@@ -56,13 +56,14 @@ public:
 	// stores the letter and sets the mouse image
     void setEye(Eye letter);
     Eye getEye() const;
+    void doControl(Eye pokedEye);
+    std::vector<KeyBinding> keyBinds;
+    std::vector<Control> inputQueue;
 
     glm::vec2 lastMousePos = glm::vec2(SCR_HEIGHT / 2.0f, SCR_WIDTH / 2.0f);
 
     TextureManager textureManager;
-    Controller controller{};
 
-    std::vector<KeyBinding> keyBinds;
 
 	std::vector<Util::FutureRun> futureFunctions;
     std::unordered_map<char, FontCharacter> fontCharacters;
@@ -77,6 +78,7 @@ public:
 private:
     void runGameLoop();
     void runTick();
+    time_t lastTick;
 
     GUILayer* octopusOverlay;
     GUILayer* controlsOverlay;

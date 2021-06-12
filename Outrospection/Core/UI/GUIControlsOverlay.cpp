@@ -6,24 +6,29 @@ void controlClick(UIButton& button, int mouseButton)
     LOG("You pressed button %s", button.name);
 	
     Outrospection& o = Outrospection::get();
-    
+
+    Control theControlThatWasClicked;
 	switch(button.name[0])
 	{
     case 'U':
-        o.keyBinds.emplace_back(o.getEye(), Control::MOVE_UP);
+        theControlThatWasClicked = Control::MOVE_UP;
         break;
     case 'D':
-        o.keyBinds.emplace_back(o.getEye(), Control::MOVE_DOWN);
+        theControlThatWasClicked = Control::MOVE_DOWN;
         break;
     case 'L':
-        o.keyBinds.emplace_back(o.getEye(), Control::MOVE_LEFT);
+        theControlThatWasClicked = Control::MOVE_LEFT;
         break;
     case 'R':
-        o.keyBinds.emplace_back(o.getEye(), Control::MOVE_RIGHT);
+        theControlThatWasClicked = Control::MOVE_RIGHT;
         break;
 	}
+	
+    if (true) { //(mouseButton == GLFW_MOUSE_BUTTON_LEFT) {// change the keybind
+        o.keyBinds.emplace_back(o.getEye(), theControlThatWasClicked);
 
-    button.name[button.name.length() - 2] = char(o.getEye());
+        button.name[button.name.length() - 2] = char(o.getEye());
+    }
 }
 
 GUIControlsOverlay::GUIControlsOverlay() : GUILayer("Controls Overlay", false),
