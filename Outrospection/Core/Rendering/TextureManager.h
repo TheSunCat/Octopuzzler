@@ -10,7 +10,6 @@
 #include "Types.h"
 
 #include "Core/Rendering/SimpleTexture.h"
-#include "Core/Rendering/TickableTexture.h"
 
 class TextureManager
 {
@@ -32,7 +31,10 @@ public:
 
     static SimpleTexture missingTexture;
 
-    DISALLOW_COPY_AND_ASSIGN(TextureManager)
+    static unsigned char* readImageBytes(const std::string& path, int& width, int& height);
+    static void free(unsigned char* data);
+	
+    DISALLOW_COPY_AND_ASSIGN(TextureManager);
 private:
     static GLuint textureFromFile(const std::string& filename);
     static void createTexture(const GLuint& texId, const unsigned char* data, const GLenum& format,

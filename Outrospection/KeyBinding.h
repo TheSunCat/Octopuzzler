@@ -1,9 +1,11 @@
 #pragma once
+#include "Types.h"
 
 class KeyBinding
 {
 public:
-    KeyBinding(int _keyCode);
+    KeyBinding(Eye eye, Control control);
 
-    int keyCode;
+    Eye m_eye;
+    Control m_control;
 };

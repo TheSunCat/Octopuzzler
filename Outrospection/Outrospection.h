@@ -5,10 +5,11 @@
 #include <glm/vec2.hpp>
 #include "discord/discord.h"
 
+#include "Types.h"
 #include "Constants.h"
-#include "GameSettings.h"
 
 #include "Controller.h"
+#include "KeyBinding.h"
 #include "Util.h"
 #include "Core/Camera.h"
 #include "Core/LayerStack.h"
@@ -28,8 +29,6 @@ class Layer;
 
 class Outrospection
 {
-    static void initItems();
-
     PreInitialization preInit;
 
     OpenGL opengl; // defined at the beginning so nothing gets initialized before this
@@ -54,13 +53,16 @@ public:
 
     void captureMouse(bool doCapture);
 
+	// stores the letter and sets the mouse image
+    void setEye(Eye letter);
+    Eye getEye();
+
     glm::vec2 lastMousePos = glm::vec2(SCR_HEIGHT / 2.0f, SCR_WIDTH / 2.0f);
 
-    //Scene* scene;
-	//Player player
     TextureManager textureManager;
-    GameSettings gameSettings;
     Controller controller{};
+
+    std::vector<KeyBinding> keyBinds;
 
 	std::vector<Util::FutureRun> futureFunctions;
     std::unordered_map<char, FontCharacter> fontCharacters;
@@ -96,6 +98,7 @@ private:
     Camera camera = Camera(glm::vec3(0.0f, 0.0f, 3.0f));
     bool firstMouse = true;
 
+
     bool onWindowClose(WindowCloseEvent& e);
     bool onMouseMoved(MouseMovedEvent& e);
     void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
@@ -103,6 +106,11 @@ private:
 
     void registerCallbacks() const;
     void createShaders();
+    void createCursors();
+	
+    Eye eye = Eye::NONE;
+    GLFWcursor *cursorNone{}, *cursorCircle{}, *cursorSquare{}, *cursorTriangle{};
+	
     void updateInput();
 
     bool isGamePaused = false;

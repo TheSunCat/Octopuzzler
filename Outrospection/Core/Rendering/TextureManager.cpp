@@ -3,6 +3,7 @@
 #include <ranges>
 #include <sstream>
 
+#include "Core/Rendering/TickableTexture.h"
 #include "External/stb_image.h"
 
 SimpleTexture TextureManager::missingTexture(-1);
@@ -107,6 +108,17 @@ void TextureManager::tickAllTextures()
     {
         val->tick();
     }
+}
+
+unsigned char* TextureManager::readImageBytes(const std::string& path, int& width, int& height)
+{
+    int nrComponents = 0;
+    return stbi_load(path.c_str(), &width, &height, &nrComponents, 0);
+}
+
+void TextureManager::free(unsigned char* data)
+{
+    stbi_image_free(data);
 }
 
 void TextureManager::createTexture(const GLuint& texId, const unsigned char* data, const GLenum& format,
