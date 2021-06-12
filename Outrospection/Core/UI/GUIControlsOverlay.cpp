@@ -1,7 +1,7 @@
 #include "GUIControlsOverlay.h"
 #include "Outrospection.h"
 
-void controlClick(UIButton& button, float mouseX, float mouseY)
+void controlClick(UIButton& button, int mouseButton)
 {
     LOG("You pressed button %s", button.name);
 	
