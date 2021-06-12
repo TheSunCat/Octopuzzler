@@ -4,7 +4,6 @@
 #include <glm/glm.hpp>
 
 #include "Types.h"
-#include "Core/World/Collider.h"
 
 glm::vec3 operator*(const int& lhs, const glm::vec3& vec);
 glm::vec2 operator*(int i, const glm::vec2& vec);
@@ -156,9 +155,6 @@ namespace Util
     bool inTriangle(const glm::vec3& point, const Triangle& tri);
 
     bool intersectTriangleSphere(const glm::vec3& spherePos, float sphereRadius, const Triangle& tri, glm::vec3& intersectPoint, float& pointToPlaneDist);
-
-    ManifoldPoints intersectSphereSphere(const SphereCollider* a, const Transform* transA,
-                                          const SphereCollider* b, const Transform* transB);
 
     // A test to see if P1 is on the same side as P2 of a line segment ab
     bool sameSide(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& a, const glm::vec3& b);

@@ -12,8 +12,6 @@
 #include "Core/UI/GUILayer.h"
 #include "Core/UI/GUIOctopusOverlay.h"
 #include "Core/UI/GUIPause.h"
-#include "Core/World/PhysicsValues.h"
-#include "Core/World/PositionSolver.h"
 #include "Events/Event.h"
 #include "Events/KeyEvent.h"
 #include "Events/MouseEvent.h"
@@ -23,7 +21,7 @@ Outrospection* Outrospection::instance = nullptr;
 
 irrklang::ISoundEngine* soundEngine = irrklang::createIrrKlangDevice();
 
-Outrospection::Outrospection() : playerController(player)
+Outrospection::Outrospection()
 {
     instance = this;
 
@@ -39,8 +37,6 @@ Outrospection::Outrospection() : playerController(player)
 
     registerCallbacks();
     createShaders();
-    
-    player = Player(glm::vec3(1.0, 60.0, 0.0));
     
     octopusOverlay = new GUIOctopusOverlay();
     controlsOverlay = new GUIControlsOverlay();
@@ -113,16 +109,12 @@ void Outrospection::captureMouse(const bool doCapture)
 {
     if (doCapture) {
         glfwSetInputMode(gameWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-        doMoveCamera = true;
     }
     else
     {
         glfwSetInputMode(gameWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
         glfwSetCursorPos(gameWindow, SCR_WIDTH / 2.0f, SCR_HEIGHT / 2.0f);
-
-        doMoveCamera = false;
     }
 }
 
@@ -246,27 +238,10 @@ void Outrospection::runGameLoop()
 
 void Outrospection::runTick()
 {
-    // update gravity direction & strength
-    Physics::gravity = glm::normalize(glm::vec3(0) - glm::vec3(0, 1, 0));
-    //gravityStrength = 9.8f;
+	// TODO player code here
 
-    playerController.acceleratePlayer(player, controller, glm::cross(Physics::gravity, camera.mRight), -camera.mUp, deltaTime);
-    //TODO player controls
-
-    scene->step(deltaTime);
-
-    if (doMoveCamera && controller.isGamepad)
-        camera.playerRotateCameraBy(controller.rStickX * 12.5f, controller.rStickY * 10);
-
-    updateCamera();
-}
-
-void Outrospection::updateCamera()
-{
-    camera.setDownVector(Physics::gravity);
-
-    // TODO need a better way to determine whether the camera should be auto-updated or not
-    camera.calculateCameraPosition(player, *scene, deltaTime, playerController.isMoving());
+    //if (controller.isGamepad)
+        //camera.playerRotateCameraBy(controller.rStickX * 12.5f, controller.rStickY * 10);
 }
 
 void Outrospection::registerCallbacks() const
@@ -315,8 +290,6 @@ void Outrospection::registerCallbacks() const
 void Outrospection::createShaders()
 {
     objectShader    = Shader("obj"      , "obj"      );
-    billboardShader = Shader("billboard", "lightless");
-    skyShader       = Shader("sky"      , "sky"      );
     screenShader    = Shader("screen"   , "screen"   );
     simpleShader    = Shader("simple"   , "simple"   );
     spriteShader    = Shader("sprite"   , "sprite"   );
@@ -358,8 +331,8 @@ bool Outrospection::onMouseMoved(MouseMovedEvent& e)
     lastMousePos.x = xPos;
     lastMousePos.y = yPos;
 
-    if(doMoveCamera)
-        camera.playerRotateCameraBy(xOffset, yOffset);
+    
+    camera.playerRotateCameraBy(xOffset, yOffset);
 
     return false;
 }
@@ -367,10 +340,6 @@ bool Outrospection::onMouseMoved(MouseMovedEvent& e)
 void Outrospection::scroll_callback(GLFWwindow*, const double xoffset, const double yoffset)
 {
     camera.changeDistBy(float(yoffset));
-
-    scene->cubeThreshold += yoffset;
-
-    LOG("threshold: %f", scene->cubeThreshold);
 }
 
 void Outrospection::error_callback(const int errorcode, const char* description)
@@ -579,87 +548,17 @@ void Outrospection::startConsoleThread()
 
 
 
-                        if (command == "gravity")
+                        if (command == "hello")
                         {
-                            if (args.empty())
-                            {
-                                LOG("Gravity is %f.", Physics::gravityStrength);
-                            }
-                            else
-                            {
-                                float newGravity = Util::stof(args[0]);
-
-                                Physics::gravityStrength = newGravity;
-
-                                LOG("Set gravity to %f.", newGravity);
-                            }
+                            LOG_INFO("Hi!!!!");
                         }
-                        else if (command == "give")
+                        else if(command == "help")
                         {
-                            if (!args.empty())
-                            {
-                                std::string_view itemToGive = args[0];
-
-                                if (Util::isAllDigits(itemToGive))
-                                {
-
-                                    ItemID itemID = Util::stoi(itemToGive);
-
-                                    if (!ITEM_EXISTS(itemID))
-                                    {
-                                        LOG_ERROR("give: item with ID %i does not exist in registry!", itemID);
-                                    }
-                                    else
-                                    {
-                                        unsigned int count = 1;
-                                        if (args.size() >= 2)
-                                            count = Util::stoi(args[1]);
-
-                                        ItemStack stack(itemID);
-                                        stack.setCount(count);
-
-                                        Outrospection::get().player.inventory.addItem(stack);
-                                    }
-                                }
-                                else
-                                {
-                                    LOG_ERROR("give: please use numerical item IDs");
-                                }
-                            }
-                            else
-                            {
-                                LOG_ERROR("give: please provide item ID to give");
-                            }
-                        }
-                        else if (command == "threshold")
-                        {
-                            if (!args.empty())
-                            {
-                                std::string_view threshold = args[0];
-
-                                if (Util::isAllDigits(threshold, true))
-                                {
-                                    scene->cubeThreshold = Util::stof(threshold);
-
-                                    LOG("New threshold: %f", scene->cubeThreshold);
-                                }
-                            }
-                        }
-                        else if (command == "cubes")
-                        {
-                            if (!args.empty())
-                            {
-                                bool hidden = args[0] == "false";
-
-
-                                for (auto* cube : scene->objects["debugCubes"])
-                                    cube->hidden = hidden;
-
-                                LOG("Successfully hid/unhid cubes.");
-                            }
+                            LOG_INFO("Here is a list of commands:");
+                            LOG_INFO("/hello");
                         }
                         else {
-                            LOG_ERROR("Unknown command %s!", input);
+                            LOG_ERROR("Unknown command %s! Try /help", input);
                         }
 
                     }

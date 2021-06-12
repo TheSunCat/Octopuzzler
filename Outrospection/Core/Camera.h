@@ -48,8 +48,6 @@ public:
     // same ctor but w/ scalar args
     Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float _yaw, float _pitch, float screenWidth, float screenHeight);
 
-    void calculateCameraPosition(const Player& player, const Scene& scene, float deltaTime, bool shouldAutoCam);
-
     void playerRotateCameraBy(float xoffset, float yoffset, bool applyCameraSpeed = true);
 
     void changeDistBy(float yoffset);

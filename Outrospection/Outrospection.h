@@ -14,16 +14,11 @@
 #include "Core/LayerStack.h"
 #include "Core/PreInitialization.h"
 #include "Core/Registry.h"
-#include "Core/Scene.h"
 #include "Core/Rendering/FreeType.h"
 #include "Core/Rendering/OpenGL.h"
 #include "Core/Rendering/Shader.h"
 #include "Core/Rendering/TextureManager.h"
 #include "Core/UI/GUILayer.h"
-#include "Core/World/PhysicsValues.h"
-#include "Core/World/Player.h"
-#include "Core/World/PlayerController.h"
-#include "Item/Item.h"
 
 
 class MouseMovedEvent;
@@ -61,9 +56,8 @@ public:
 
     glm::vec2 lastMousePos = glm::vec2(SCR_HEIGHT / 2.0f, SCR_WIDTH / 2.0f);
 
-    Scene* scene;
-    Player player;
-    PlayerController playerController;
+    //Scene* scene;
+	//Player player
     TextureManager textureManager;
     GameSettings gameSettings;
     Controller controller{};
@@ -72,22 +66,15 @@ public:
     std::unordered_map<char, FontCharacter> fontCharacters;
 
     Shader objectShader;
-    Shader billboardShader;
-    Shader skyShader;
     Shader screenShader;
     Shader simpleShader;
     Shader spriteShader;
     Shader glyphShader;
 
-    inline static Registry<ItemID, Item> itemRegistry;
-    inline static ItemStack noItem = ItemStack(0);
-    inline static unsigned int culled = 0;
-
     DISALLOW_COPY_AND_ASSIGN(Outrospection)
 private:
     void runGameLoop();
     void runTick();
-    void updateCamera();
 
     GUILayer* octopusOverlay;
     GUILayer* controlsOverlay;
@@ -119,9 +106,6 @@ private:
     void updateInput();
 
     bool isGamePaused = false;
-
-    bool doMoveCamera = true;
-    
 
     LayerStack layerStack;
 
