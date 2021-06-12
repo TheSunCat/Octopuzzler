@@ -10,10 +10,10 @@
 
 enum class Control
 {
-    MOVE_UP,
-    MOVE_DOWN,
-    MOVE_RIGHT,
-    MOVE_LEFT
+    MOVE_UP, // 0
+    MOVE_DOWN, // 1
+    MOVE_RIGHT, // 2
+    MOVE_LEFT // 3
 };
 
 enum class Eye

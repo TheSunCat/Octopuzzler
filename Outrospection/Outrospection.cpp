@@ -148,7 +148,16 @@ Eye Outrospection::getEye() const
     return eye;
 }
 
-bool inInventory = false;
+void Outrospection::doControl(Eye pokedEye)
+{
+	for(KeyBinding& bind : keyBinds)
+	{
+		if(bind.m_eye == pokedEye)
+		{
+            inputQueue.emplace_back(bind.m_control);
+		}
+	}
+}
 
 void Outrospection::runGameLoop()
 {
@@ -166,22 +175,10 @@ void Outrospection::runGameLoop()
         // fetch input into simplified controller class
         updateInput();
 
-
-        //if (controller.pause == 1)
-        //{
-        //    if (!inInventory)
-        //        pushOverlay(inventoryGUI);
-        //    else
-        //        popOverlay(inventoryGUI);
-
-        //    inInventory = !inInventory;
-        //}
-
         if (!isGamePaused)
         {
             // Run one "tick" of the game physics
             runTick();
-
             textureManager.tickAllTextures();
 
             // execute scheduled tasks
@@ -256,10 +253,20 @@ void Outrospection::runGameLoop()
 
 void Outrospection::runTick()
 {
-	// TODO player code here
+    if (inputQueue.empty())
+        return;
 
-    //if (controller.isGamepad)
-        //camera.playerRotateCameraBy(controller.rStickX * 12.5f, controller.rStickY * 10);
+    if (currentTimeMillis - lastTick < 1000) // one tick per second
+        return;
+	
+    lastTick = currentTimeMillis;
+
+	// read input
+    Control curInput = inputQueue[0];
+    LOG_INFO("Player is playing %i", int(curInput));
+
+	// erase it so we move to the next one
+    inputQueue.erase(inputQueue.begin());
 }
 
 void Outrospection::registerCallbacks() const
