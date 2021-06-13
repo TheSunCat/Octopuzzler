@@ -44,6 +44,9 @@ void GUIScene::tick()
 
 void GUIScene::draw() const
 {
+	if (Outrospection::get().won)
+		return;
+	
 	Shader& spriteShader = Outrospection::get().spriteShader;
 	Shader& glyphShader = Outrospection::get().glyphShader;
 
@@ -142,11 +145,28 @@ void GUIScene::tryMovePlayer(Control input)
 			flag.hidden = true;
 			playerSprite.setAnimation("win");
 			canMove = false;
+			levelID++;
+			
+			if (levelID > sizeof(ALL_LEVELS) / sizeof(*ALL_LEVELS) - 1)
+				Outrospection::get().won = true;
+			
 			Util::doLater([this]{
-				this->levelID++;
-				setLevel(ALL_LEVELS[this->levelID]);
 				
-				//LOG_INFO("Advancing to level %i...", this->levelID);
+				if(this->levelID > (sizeof(ALL_LEVELS) / sizeof(*ALL_LEVELS)) - 1) // no more levels
+				{
+					auto& o = Outrospection::get();
+
+					o.won = true;
+					o.popLayer(o.scene);
+					o.scene = nullptr;
+					o.pushOverlay(o.winOverlay);
+				} else
+				{
+					setLevel(ALL_LEVELS[this->levelID]);
+					
+					//LOG_INFO("Advancing to level %i...", this->levelID);
+					
+				}
 			}, 1000);
 			return;
 		}

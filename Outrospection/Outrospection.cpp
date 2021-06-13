@@ -14,6 +14,7 @@
 #include "Core/UI/GUIPause.h"
 #include "Core/UI/GUIScene.h"
 #include "Core/UI/GUIWelcome.h"
+#include "Core/UI/GUIWinOverlay.h"
 #include "Events/Event.h"
 #include "Events/KeyEvent.h"
 #include "Events/MouseEvent.h"
@@ -66,6 +67,7 @@ Outrospection::Outrospection()
     octopusOverlay = new GUIOctopusOverlay();
     controlsOverlay = new GUIControlsOverlay();
     welcomeOverlay = new GUIWelcome();
+    winOverlay = new GUIWinOverlay();
 
     pushLayer(scene);
     pushOverlay(octopusOverlay);
@@ -256,7 +258,8 @@ void Outrospection::runGameLoop()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     	
 		// draw stuff here
-        scene->draw();
+    	if(!won)
+			scene->draw();
 
 
         // bind to default framebuffer and draw custom one over that

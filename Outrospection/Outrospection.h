@@ -75,6 +75,9 @@ public:
     GUILayer* octopusOverlay;
     GUILayer* controlsOverlay;
     GUILayer* welcomeOverlay;
+    GUILayer* winOverlay;
+
+    bool won = false;
 	
     DISALLOW_COPY_AND_ASSIGN(Outrospection)
 private:
