@@ -275,7 +275,7 @@ void Outrospection::runGameLoop()
     	// apply CRT effect
         crtShader.use();
         crtShader.setVec2("resolution", CRT_WIDTH, CRT_HEIGHT);
-        crtShader.setInt("time", currentTimeMillis % 1000000);
+        crtShader.setFloat("time", float(currentTimeMillis % 1000000) / 1000000);
     	
         glBindVertexArray(crtVAO);
         glBindTexture(GL_TEXTURE_2D, textureColorbuffer);    // use the color attachment texture as the texture of the quad plane
