@@ -48,7 +48,7 @@ void controlClick(UIButton& button, int mouseButton)
 }
 
 GUIControlsOverlay::GUIControlsOverlay() : GUILayer("Controls Overlay", false),
-	window("window", 0.05, 0.1, 0.15, 0.31)
+	window("window", 0.04, 0.1, 0.2, 0.475)
 {
     std::string buttonNames[] = {
         "U up N ",
@@ -65,7 +65,7 @@ GUIControlsOverlay::GUIControlsOverlay() : GUILayer("Controls Overlay", false),
     {
         buttons.emplace_back(std::make_unique<UIButton>(buttonNames[i],
             TextureManager::None,
-            0.06, 0.15 + (0.05 * float(i)), 0.15, 0.05, Bounds(),
+            0.05, 0.16 + (0.05 * float(i)), 0.15, 0.05, Bounds(),
             controlClick));
         
 		buttons[i]->showText = true;
@@ -84,7 +84,7 @@ void GUIControlsOverlay::tick()
 
 void GUIControlsOverlay::draw() const
 {
-    window.draw(Outrospection::get().spriteScanlinesShader, Outrospection::get().glyphShader);
+    window.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
 
     for (auto& button : buttons)
     {

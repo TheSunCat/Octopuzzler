@@ -215,7 +215,6 @@
     <None Include="res\ShaderData\screen.vert" />
     <None Include="res\ShaderData\sprite.frag" />
     <None Include="res\ShaderData\sprite.vert" />
-    <None Include="res\ShaderData\spriteScanlines.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bounds.h" />
