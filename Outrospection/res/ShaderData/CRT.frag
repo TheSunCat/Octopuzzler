@@ -8,5 +8,5 @@ uniform int time;
 
 void main()
 {
-    FragColor = vec4(vec3(0.5), 1.0);
+    FragColor = vec4(TexCoords, 1.0 , 1.0);
 }  

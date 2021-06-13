@@ -8,10 +8,8 @@
 #include "Types.h"
 #include "Constants.h"
 
-#include "Controller.h"
 #include "KeyBinding.h"
 #include "Util.h"
-#include "Core/Camera.h"
 #include "Core/LayerStack.h"
 #include "Core/PreInitialization.h"
 #include "Core/Registry.h"
@@ -93,14 +91,12 @@ private:
 
     GLFWwindow* gameWindow;
 
-    GLuint framebuffer, intermediateFBO = 0;
+    GLuint crtFramebuffer, intermediateFBO = 0;
     GLuint textureColorbuffer;
-    GLuint quadVAO;
-	
     GLuint crtVAO;
 
     // camera stuff
-    Camera camera = Camera(glm::vec3(0.0f, 0.0f, 3.0f));
+    //Camera camera = Camera(glm::vec3(0.0f, 0.0f, 3.0f));
     bool firstMouse = true;
 
 
@@ -109,8 +105,7 @@ private:
     void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
     static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
     static void error_callback(int errorcode, const char* description);
-
-    void initCrtVAO();
+	
     void registerCallbacks() const;
     void createShaders();
     void createCursors();
