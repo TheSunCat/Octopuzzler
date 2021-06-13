@@ -29,7 +29,8 @@ public:
 
     void tickAllTextures();
 
-    static SimpleTexture missingTexture;
+    static SimpleTexture MissingTexture;
+    static SimpleTexture None;
 
     static unsigned char* readImageBytes(const std::string& path, int& width, int& height);
     static void free(unsigned char* data);

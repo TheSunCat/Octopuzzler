@@ -52,6 +52,9 @@ bool GUILayer::onMousePressed(MouseButtonPressedEvent& event)
             return true; // handled
 	    }
     }
+
+	// TODO this is bad
+    Outrospection::get().setEye(Eye::NONE);
 	
     return false;
 }

@@ -56,6 +56,7 @@ public:
 	// stores the letter and sets the mouse image
     void setEye(Eye letter);
     Eye getEye() const;
+    bool controlBound(Control control);
     void doControl(Eye pokedEye);
     std::vector<KeyBinding> keyBinds;
     std::vector<Control> inputQueue;
@@ -67,10 +68,9 @@ public:
 
 	std::vector<Util::FutureRun> futureFunctions;
     std::unordered_map<char, FontCharacter> fontCharacters;
-
-    Shader objectShader;
+    
     Shader screenShader;
-    Shader simpleShader;
+    Shader crtShader;
     Shader spriteShader;
     Shader glyphShader;
 
@@ -80,6 +80,7 @@ private:
     void runTick();
     time_t lastTick;
 
+    GUILayer* scene;
     GUILayer* octopusOverlay;
     GUILayer* controlsOverlay;
 
@@ -95,6 +96,8 @@ private:
     GLuint framebuffer, intermediateFBO = 0;
     GLuint textureColorbuffer;
     GLuint quadVAO;
+	
+    GLuint crtVAO;
 
     // camera stuff
     Camera camera = Camera(glm::vec3(0.0f, 0.0f, 3.0f));
@@ -107,6 +110,7 @@ private:
     static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
     static void error_callback(int errorcode, const char* description);
 
+    void initCrtVAO();
     void registerCallbacks() const;
     void createShaders();
     void createCursors();
