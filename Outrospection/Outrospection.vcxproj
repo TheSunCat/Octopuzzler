@@ -100,7 +100,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;freetype.lib;irrKlang.lib;discord_game_sdk.dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;freetype.lib;irrKlang.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)\Libraries\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -127,7 +127,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;freetype.lib;irrKlang.lib;discord_game_sdk.dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;freetype.lib;irrKlang.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)\Libraries\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -158,7 +158,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;freetype.lib;irrKlang.lib;discord_game_sdk.dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;freetype.lib;irrKlang.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)\Libraries\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -189,7 +189,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;freetype.lib;irrKlang.lib;discord_game_sdk.dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;freetype.lib;irrKlang.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)\Libraries\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -252,20 +252,6 @@
     <ClInclude Include="Util.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Libraries\include\discord\achievement_manager.cpp" />
-    <ClCompile Include="..\Libraries\include\discord\activity_manager.cpp" />
-    <ClCompile Include="..\Libraries\include\discord\application_manager.cpp" />
-    <ClCompile Include="..\Libraries\include\discord\core.cpp" />
-    <ClCompile Include="..\Libraries\include\discord\image_manager.cpp" />
-    <ClCompile Include="..\Libraries\include\discord\lobby_manager.cpp" />
-    <ClCompile Include="..\Libraries\include\discord\network_manager.cpp" />
-    <ClCompile Include="..\Libraries\include\discord\overlay_manager.cpp" />
-    <ClCompile Include="..\Libraries\include\discord\relationship_manager.cpp" />
-    <ClCompile Include="..\Libraries\include\discord\storage_manager.cpp" />
-    <ClCompile Include="..\Libraries\include\discord\store_manager.cpp" />
-    <ClCompile Include="..\Libraries\include\discord\types.cpp" />
-    <ClCompile Include="..\Libraries\include\discord\user_manager.cpp" />
-    <ClCompile Include="..\Libraries\include\discord\voice_manager.cpp" />
     <ClCompile Include="Bounds.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Core\LayerStack.cpp" />

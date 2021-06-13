@@ -7,7 +7,7 @@
 // it only takes care of copying the level data to store it here for now
 GUIScene::GUIScene(std::string& _level, int _rowLength) : GUILayer("Scene", false),
 	level(std::move(_level)), rowLength(_rowLength),
-	wall("wallTile", 0, 0, 0.1, 0.1),
+	wall("wall/single", 0, 0, 0.1, 0.1),
 	hole("holeTile", 0, 0, 0.1, 0.1),
 	player("player", 0, 0, 0.1, 0.1)
 	
@@ -30,8 +30,8 @@ void GUIScene::draw() const
 	Shader& spriteShader = Outrospection::get().spriteShader;
 	Shader& glyphShader = Outrospection::get().glyphShader;
 
-	float xTileSize = 0.9f / rowLength;
-	float yTileSize = 1.0f / int(level.length() / rowLength);
+	float xTileSize = 1.8f / float(rowLength);
+	float yTileSize = 2.0f / int(level.length() / rowLength);
 
 	player.setScale(xTileSize, yTileSize);
 	wall.setScale(xTileSize, yTileSize);
@@ -62,9 +62,13 @@ void GUIScene::draw() const
 			hole.draw(spriteShader, glyphShader);
 			break;
 		}
+
+		printf("%i, %i\n", xPos, yPos);
 		
 		//button->draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
 	}
+
+	//__debugbreak();
 
 	
 }
