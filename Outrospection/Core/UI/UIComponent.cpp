@@ -97,6 +97,9 @@ void UIComponent::setScalePx(int _width, int _height)
 
 void UIComponent::draw(Shader& shader, const Shader& glyphShader) const
 {
+    if (hidden)
+        return;
+	
     shader.use();
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(position, 0.0f));
