@@ -9,7 +9,7 @@ GUIScene::GUIScene(std::string& _level, int _rowLength) : GUILayer("Scene", fals
 	level(std::move(_level)), rowLength(_rowLength),
 	wall("wall/single", 0, 0, 0.1, 0.1),
 	hole("holeTile", 0, 0, 0.1, 0.1),
-	player("player", 0, 0, 0.1, 0.1)
+	player("player/sad0", 0, 0, 0.1, 0.1)
 	
 {
 	handleManually = true;
@@ -25,17 +25,18 @@ void GUIScene::tick()
 
 void GUIScene::draw() const
 {
-
-
 	Shader& spriteShader = Outrospection::get().spriteShader;
 	Shader& glyphShader = Outrospection::get().glyphShader;
 
-	float xTileSize = 1.8f / float(rowLength);
-	float yTileSize = 2.0f / int(level.length() / rowLength);
+	player.setScalePx(160, 130);
+	wall.setScalePx(160, 130);
+	hole.setScalePx(160, 130);
 
-	player.setScale(xTileSize, yTileSize);
-	wall.setScale(xTileSize, yTileSize);
-	hole.setScale(xTileSize, yTileSize);
+	int xPlayerPos = playerPos.x * 16 * 9.2;
+	int yPlayerPos = playerPos.y * 16 * 8.3;
+	
+	player.setPositionPx(xPlayerPos, yPlayerPos);
+	player.draw(spriteShader, glyphShader);
 	
 	for (int i = 0; i < level.length(); i++)
 	{
@@ -44,26 +45,26 @@ void GUIScene::draw() const
 		int xPos = i % rowLength;
 		int yPos = i / rowLength;
 
-		float xSpritePos = xPos * xTileSize;
-		float ySpritePos = 1 - yPos * yTileSize;
+		int xSpritePos = xPos * 16 * 9.2;
+		int ySpritePos = yPos * 16 * 8.3;
 		
 		switch(tile)
 		{
 		case ' ': // empty space. skip
 			break;
+			
 		case 'w': // wall
-			// TODO actually draw a wall
-			wall.setPosition(xSpritePos, ySpritePos);
+			wall.setPositionPx(xSpritePos, ySpritePos);
 			wall.draw(spriteShader, glyphShader);
 			break;
+			
 		case 'o': // hole
-			// TODO actually draw a hole
-			hole.setPosition(xSpritePos, ySpritePos);
+			hole.setPositionPx(xSpritePos, ySpritePos);
 			hole.draw(spriteShader, glyphShader);
 			break;
 		}
 
-		printf("%i, %i\n", xPos, yPos);
+		//printf("%i, %i\n", xPos, yPos);
 		
 		//button->draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
 	}
