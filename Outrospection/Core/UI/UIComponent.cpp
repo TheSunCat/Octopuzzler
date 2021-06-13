@@ -72,13 +72,27 @@ void UIComponent::setAnimation(const std::string& anim)
 
 void UIComponent::setPosition(float xPercent, float yPercent)
 {
-    position = glm::vec2(xPercent * SCR_WIDTH, yPercent * SCR_HEIGHT);
+    setPositionPx(xPercent * SCR_WIDTH, yPercent * SCR_HEIGHT);
 }
 
 void UIComponent::setScale(float xPercent, float yPercent)
 {
-    width = xPercent * SCR_WIDTH;
-	height = yPercent* SCR_HEIGHT;
+    setScalePx(xPercent * SCR_WIDTH, yPercent* SCR_HEIGHT);
+}
+
+void UIComponent::setPositionPx(int x, int y)
+{
+    position = glm::vec2(x, y);
+}
+
+void UIComponent::setScalePx(int scale)
+{
+    setScalePx(scale, scale);
+}
+
+void UIComponent::setScalePx(int _width, int _height)
+{
+    width = _width, height = _height;
 }
 
 void UIComponent::draw(Shader& shader, const Shader& glyphShader) const

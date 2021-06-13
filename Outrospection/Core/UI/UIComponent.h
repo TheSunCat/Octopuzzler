@@ -27,6 +27,10 @@ public:
 
     void setPosition(float xPercent, float yPercent);
     void setScale(float xPercent, float yPercent);
+
+	void setPositionPx(int x, int y);
+    void setScalePx(int scale);
+    void setScalePx(int _width, int _height);
     std::string name;
 	
     glm::vec2 textOffset; // vector to offset text by

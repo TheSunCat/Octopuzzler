@@ -18,4 +18,6 @@ public:
 	mutable UIComponent hole;
 	
 	mutable UIComponent player; // oof. the player is a ui component. I need to find better names
+	
+	mutable glm::vec2 playerPos;
 };

@@ -82,7 +82,7 @@ float rand(in vec2 p,in float t) {
 
 // Film grain
 float grain(vec2 uv) {
-    return 1.0-grainIntensity+grainIntensity*rand(uv,time);
+    return 1.0-grainIntensity+grainIntensity*rand(uv,time/100);
 }
 
 // Halo
@@ -90,7 +90,7 @@ float halo(vec2 uv) {
     return haloRadius-distance(uv,vec2(0.2,0.5))-distance(uv,vec2(0.8,0.5));
 }
 
-void main()
+void mainOld()
 {
     vec2 fragCoord = texCoords * resolution;
 
@@ -98,4 +98,25 @@ void main()
     FragColor.rgb = aberration(uv) * scanLines(uv) * crt(fragCoord) * grain(uv) * halo(uv);
 
     FragColor.w = 1.0; // not transparent
+
+    FragColor = texture(screenTexture, texCoords);
+}
+
+// thanks to https://www.shadertoy.com/view/wddyRH for this code!
+void main()
+{
+    vec2 p = texCoords;
+    p = 2.*p -1.;
+    p *= 1. + pow(abs(p.yx)/vec2(5., 4.), vec2(2.));
+    p = .5*p+.5;
+    vec3 col = aberration(texCoords);
+    col *= 2.;
+
+    // line
+    col *= .4 + .7*(clamp(.3 + .3*sin(p.x * resolution.x * 1.5), 0., 1.));
+    float vig = 16.*texCoords.x * texCoords.y * (1.-texCoords.x)*(1.-texCoords.y);
+	col *= pow(vig, .2);
+    
+
+    FragColor = vec4(col, 1.0) * grain(texCoords);
 }
