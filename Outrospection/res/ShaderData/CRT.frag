@@ -7,36 +7,20 @@ uniform sampler2D screenTexture;
 uniform vec2 resolution;
 uniform float time;
 
-// shader from https://www.shadertoy.com/view/tssSzM, thanks!!
-
+// shader from https://www.shadertoy.com/view/tssSzM and https://www.shadertoy.com/view/wddyRH, thanks!!
 #define PI 3.14159265359
 
-// Emulated CRT resolution
-#define FAKE_RES (resolution.xy/6.0)
-
 // ------ PARAMETERS ------
-vec2 fishEye = vec2(0.03,0.05); // Fish-eye warp factor
 float crtOutIntensity = 1.1; // intensity of crt cell outline
 float crtInIntensity = 0.9; // intensity of crt cell inside
-float scanIntensity = 1.1; // intensity of scanlines
 float aberrationIntensity = 1.5; // Intensity of chromatic aberration
 int monochromeAberrations = 0;
-float grainIntensity = 0.3; // Intensity of film grain
-float haloRadius = 1.8; // Radius of the ellipsis halo
-float blurIntensity = 0.4; // Intensity of the radial blur
-float scratchesIntensity = 3.; // Intensity of screen scratches
+float grainIntensity = 0.5; // Intensity of film grain
 // ------------------------
 
 
 vec3 surface(vec2 uv) {
 	return texture(screenTexture, uv).rgb;
-}
-
-// Fish-eye effect
-vec2 fisheye(vec2 uv){
-  uv = uv*2.0 - 1.0;    
-  uv *= vec2(1.0+(uv.y*uv.y)*fishEye.x,1.0+(uv.x*uv.x)*fishEye.y);
-  return uv*0.5 + 0.5;
 }
 
 // Scanlines chromatic aberration
@@ -50,13 +34,6 @@ vec3 aberration(vec2 uv) {
             + vec3(surface(vec2( uv.x+o, uv.y )).x, surface(vec2( uv.x+o, uv.y )).y, surface(vec2( uv.x+o, uv.y+o )).z) / 3.0;
     }
     return newVec;
-}
-
-// Draw smoothed scanlines
-float scanLines(vec2 uv){
-  float dy = uv.y * FAKE_RES.y;
-  dy = fract(dy) - 0.5;
-  return exp2(-dy*dy*scanIntensity);
 }
 
 // CRT cells
@@ -85,38 +62,20 @@ float grain(vec2 uv) {
     return 1.0-grainIntensity+grainIntensity*rand(uv,time/100);
 }
 
-// Halo
-float halo(vec2 uv) {    
-    return haloRadius-distance(uv,vec2(0.2,0.5))-distance(uv,vec2(0.8,0.5));
-}
-
-void mainOld()
-{
-    vec2 fragCoord = texCoords * resolution;
-
-    vec2 uv = fisheye(fragCoord/resolution);
-    FragColor.rgb = aberration(uv) * scanLines(uv) * crt(fragCoord) * grain(uv) * halo(uv);
-
-    FragColor.w = 1.0; // not transparent
-
-    FragColor = texture(screenTexture, texCoords);
-}
-
-// thanks to https://www.shadertoy.com/view/wddyRH for this code!
 void main()
 {
     vec2 p = texCoords;
-    p = 2.*p -1.;
-    p *= 1. + pow(abs(p.yx)/vec2(5., 4.), vec2(2.));
-    p = .5*p+.5;
-    vec3 col = aberration(texCoords);
-    col *= 2.;
+    //p = 2.*p -1.;
+    //p *= 1. + pow(abs(p.yx)/vec2(5., 4.), vec2(2.));
+    //p = .5*p+.5;
+    vec3 col = aberration(texCoords);// * crt(texCoords);
+    //col *= 2.;
 
     // line
-    col *= .4 + .7*(clamp(.3 + .3*sin(p.x * resolution.x * 1.5), 0., 1.));
+    //col *= .4 + .7*(clamp(.3 + .3*sin(p.y * resolution.x * 1.5), 0., 1.));
     float vig = 16.*texCoords.x * texCoords.y * (1.-texCoords.x)*(1.-texCoords.y);
 	col *= pow(vig, .2);
     
 
-    FragColor = vec4(col, 1.0) * grain(texCoords);
+    FragColor = vec4(col, 1.0);// * grain(texCoords) * 0.8;
 }

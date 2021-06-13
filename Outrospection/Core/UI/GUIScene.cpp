@@ -7,20 +7,23 @@
 // it only takes care of copying the level data to store it here for now
 GUIScene::GUIScene(Level& _level) : GUILayer("Scene", false),
 	level(std::move(_level)), playerPosInt(level.start),
-	wall("wall/single", 0, 0, 0.1, 0.1),
-	hole("holeTile", 0, 0, 0.1, 0.1),
-	playerSprite("player/sad0", 0, 0, 0.1, 0.1)
+	floor("floor/single", 0, 0, 0.1, 0.1),
+	ink("ink/single", 0, 0, 0.1, 0.1),
+	playerSprite("player/default", 0, 0, 0.1, 0.1)
 	
 {
 	handleManually = true;
+
+
+	playerSprite.addAnimation("die", simpleTexture({"UI/player/", "sad"}));
 }
 
 void GUIScene::tick()
 {
 	playerPos = Util::lerp(playerPos, playerPosInt, 0.2);
 	
-	wall.tick();
-	hole.tick();
+	floor.tick();
+	ink.tick();
 	
 	playerSprite.tick();
 }
@@ -31,14 +34,8 @@ void GUIScene::draw() const
 	Shader& glyphShader = Outrospection::get().glyphShader;
 
 	playerSprite.setScalePx(160, 130);
-	wall.setScalePx(160, 130);
-	hole.setScalePx(160, 130);
-
-	int xPlayerPos = playerPos.x * 16 * 9.2;
-	int yPlayerPos = playerPos.y * 16 * 8.3;
-	
-	playerSprite.setPositionPx(xPlayerPos, yPlayerPos);
-	playerSprite.draw(spriteShader, glyphShader);
+	floor.setScalePx(160, 130);
+	ink.setScalePx(160, 130);
 	
 	for (int i = 0; i < level.data.length(); i++)
 	{
@@ -52,20 +49,27 @@ void GUIScene::draw() const
 		
 		switch(tile)
 		{
-		case ' ': // empty space. skip
+		case ' ': // floor
+			floor.setPositionPx(xSpritePos, ySpritePos);
+			floor.draw(spriteShader, glyphShader);
+
 			break;
 			
 		case 'w': // wall
-			wall.setPositionPx(xSpritePos, ySpritePos);
-			wall.draw(spriteShader, glyphShader);
 			break;
 			
-		case 'o': // hole
-			hole.setPositionPx(xSpritePos, ySpritePos);
-			hole.draw(spriteShader, glyphShader);
+		case 'i': // ink
+			ink.setPositionPx(xSpritePos, ySpritePos);
+			ink.draw(spriteShader, glyphShader);
 			break;
 		}
 	}
+	
+	int xPlayerPos = playerPos.x * 16 * 9.2;
+	int yPlayerPos = playerPos.y * 16 * 8.3;
+	
+	playerSprite.setPositionPx(xPlayerPos, yPlayerPos);
+	playerSprite.draw(spriteShader, glyphShader);
 }
 
 void GUIScene::tryMovePlayer(Control input)
@@ -95,7 +99,7 @@ void GUIScene::tryMovePlayer(Control input)
 	
 	if(level.data[intGhostPosition] != ' ')
 	{
-		LOG("TODO: Kill player");
+		playerSprite.setAnimation("die");
 	} else
 	{
 		playerPosInt = playerPosInt + delta;

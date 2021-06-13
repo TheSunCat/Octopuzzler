@@ -17,8 +17,8 @@ public:
 	mutable glm::vec2 playerPos; // interpolates player between grid spots
 	mutable glm::vec2 playerPosInt; // actual position on grid
 	
-	mutable UIComponent wall;
-	mutable UIComponent hole;
+	mutable UIComponent floor;
+	mutable UIComponent ink;
 	
 	mutable UIComponent playerSprite;
 };
