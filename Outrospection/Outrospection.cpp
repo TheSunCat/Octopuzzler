@@ -61,17 +61,8 @@ Outrospection::Outrospection()
     
 
     glfwSetCursor(gameWindow, cursorNone);
-
-    Level level0 = { "\
-wwwwwwww\
-wwww www\
-wwww  ww\
-w   w ww\
-www   ww\
-wwwwwwww",
-    8, glm::vec2(1, 3), glm::vec2(4, 1)};
 	
-    scene = new GUIScene(level0);
+    scene = new GUIScene();
     octopusOverlay = new GUIOctopusOverlay();
     controlsOverlay = new GUIControlsOverlay();
     welcomeOverlay = new GUIWelcome();
@@ -311,7 +302,7 @@ void Outrospection::runTick()
     if (inputQueue.empty())
         return;
 
-    if (currentTimeMillis - lastTick < 1000) // one tick per second
+    if (currentTimeMillis - lastTick < 500) // one tick per second
         return;
 	
     lastTick = currentTimeMillis;

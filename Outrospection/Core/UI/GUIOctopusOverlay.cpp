@@ -8,7 +8,7 @@ void eyeClick(UIButton& button, int mouseButton)
     LOG("<Octopus> ouch. you poked me on my %s eye!", button.name);
 	
     button.setAnimation("blink");
-    Util::doLater([&button]() { button.setAnimation("default"); }, 300);
+    Util::doLater([&button]() { button.setAnimation("default"); }, 100);
 
     Eye theEyeThatWasPoked = Eye::NONE;
 	
@@ -56,15 +56,15 @@ GUIOctopusOverlay::GUIOctopusOverlay() : GUILayer("Octopus Overlay", false),
 {
     buttons.emplace_back(std::make_unique<UIButton>("eyes/eyeCircle0", 0, 0, 1, 1,
         Bounds(BoundsShape::Circle, { 0.73, 0.1, 0.07 }), eyeClick));
-    buttons[0]->addAnimation("blink", animatedTexture({ "UI/eyes/", "eyeCircle" }, 3, 5));
+    buttons[0]->addAnimation("blink", animatedTexture({ "UI/eyes/", "eyeCircle" }, 1, 5));
 	
     buttons.emplace_back(std::make_unique<UIButton>("eyes/eyeSquare0", 0, 0, 1, 1,
         Bounds(BoundsShape::Circle, { 0.88, 0.05, 0.07 }), eyeClick));
-    buttons[1]->addAnimation("blink", animatedTexture({ "UI/eyes/", "eyeSquare" }, 3, 5));
+    buttons[1]->addAnimation("blink", animatedTexture({ "UI/eyes/", "eyeSquare" }, 1, 5));
 	
     buttons.emplace_back(std::make_unique<UIButton>("eyes/eyeTriangle0", 0, 0, 1, 1,
         Bounds(BoundsShape::Circle, { 0.93, 0.3, 0.07 }), eyeClick));
-    buttons[2]->addAnimation("blink", animatedTexture({ "UI/eyes/", "eyeTriangle" }, 3, 5));
+    buttons[2]->addAnimation("blink", animatedTexture({ "UI/eyes/", "eyeTriangle" }, 1, 5));
 
     buttons.emplace_back(std::make_unique<UIButton>("showWelcome", 0.95, 0.92, 0.05, 0.08, Bounds(), showWelcome));
     buttons.emplace_back(std::make_unique<UIButton>("reset", 0.90, 0.92, 0.05, 0.08, Bounds(), reset));

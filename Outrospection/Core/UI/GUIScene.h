@@ -5,7 +5,8 @@
 class GUIScene : public GUILayer
 {
 public:
-	GUIScene(Level& _level);
+	GUIScene();
+	void setLevel(Level& lvl);
 
 	void tick() override;
 	
@@ -14,14 +15,17 @@ public:
 	void tryMovePlayer(Control input);
 	void reset();
 
-	Level level;
+
+	Level level{};
 	mutable glm::vec2 playerPos{}; // interpolates player between grid spots
-	mutable glm::vec2 playerPosInt; // actual position on grid
-	mutable bool isPlayerDead = false;
+	mutable glm::vec2 playerPosInt{}; // actual position on grid
+	mutable bool canMove = true;
 	
 	mutable UIComponent floor;
 	mutable UIComponent ink;
 	mutable UIComponent flag;
 	
 	mutable UIComponent playerSprite;
+	
+	mutable int levelID = 0;
 };

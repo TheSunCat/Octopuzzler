@@ -3,11 +3,11 @@
 #include "Outrospection.h"
 #include "UIButton.h"
 #include "Core/UI/GUIControlsOverlay.h"
+#include <AllLevels.h>
 
 // this is the constructor (ctor for short).
 // it only takes care of copying the level data to store it here for now
-GUIScene::GUIScene(Level& _level) : GUILayer("Scene", false),
-	level(std::move(_level)), playerPosInt(level.start),
+GUIScene::GUIScene() : GUILayer("Scene", false),
 	floor("platform", 0, 0, 0.1, 0.1),
 	ink("hole", 0, 0, 0.1, 0.1),
 	flag("flag", animatedTexture({"UI/flag/", "default"}, 10, 2), {0, 0}, {0, 0}),
@@ -17,6 +17,19 @@ GUIScene::GUIScene(Level& _level) : GUILayer("Scene", false),
 	handleManually = true;
 
 	playerSprite.addAnimation("die", simpleTexture({"UI/player/", "sad"}));
+	playerSprite.addAnimation("win", simpleTexture({"UI/player/", "happy"}));
+
+	setLevel(ALL_LEVELS[levelID]);
+}
+
+void GUIScene::setLevel(Level& lvl)
+{
+	level = std::move(lvl);
+	playerPosInt = level.start;
+
+	Util::doLater([this]{
+		this->reset();
+	}, 100);
 }
 
 void GUIScene::tick()
@@ -34,10 +47,10 @@ void GUIScene::draw() const
 	Shader& spriteShader = Outrospection::get().spriteShader;
 	Shader& glyphShader = Outrospection::get().glyphShader;
 
-	playerSprite.setScalePx(160, 130);
-	floor.setScalePx(160, 130);
-	ink.setScalePx(160, 130);
-	flag.setScalePx(160, 130);
+	playerSprite.setScalePx(80, 65);
+	floor.setScalePx(80, 65);
+	ink.setScalePx(80, 65);
+	flag.setScalePx(80, 65);
 	
 	for (int i = 0; i < level.data.length(); i++)
 	{
@@ -46,8 +59,8 @@ void GUIScene::draw() const
 		int xPos = i % level.rowLength;
 		int yPos = i / level.rowLength;
 
-		int xSpritePos = xPos * 16 * 9.2;
-		int ySpritePos = yPos * 16 * 8.3;
+		int xSpritePos = xPos * 16 * 4.6;
+		int ySpritePos = yPos * 16 * 4.15;
 		
 		switch(tile)
 		{
@@ -67,25 +80,24 @@ void GUIScene::draw() const
 		}
 	}
 	
-	int xPlayerPos = playerPos.x * 16 * 9.2;
-	int yPlayerPos = playerPos.y * 16 * 8.3;
+	int xPlayerPos = playerPos.x * 16 * 4.6;
+	int yPlayerPos = playerPos.y * 16 * 4.15;
 	
 	playerSprite.setPositionPx(xPlayerPos, yPlayerPos);
 	playerSprite.draw(spriteShader, glyphShader);
 
-	int xFlagPos = level.goal.x * 16 * 9.2;
-	int yFlagPos = level.goal.y * 16 * 8.3;
-
-	//flag.
+	int xFlagPos = level.goal.x * 16 * 4.6;
+	int yFlagPos = level.goal.y * 16 * 4.15;
+	
 	flag.setPositionPx(xFlagPos, yFlagPos);
 	flag.draw(spriteShader, glyphShader);
 }
 
 void GUIScene::tryMovePlayer(Control input)
 {
-	if(isPlayerDead)
+	if(!canMove)
 	{
-		LOG("Dead bodies can't move, silly!");
+		LOG("Can't move your body.");
 		return;
 	}
 	
@@ -121,12 +133,26 @@ void GUIScene::tryMovePlayer(Control input)
 	for (glm::vec2& delta : deltas) {
 		glm::vec2 ghostPlayerPos = playerPosInt + delta;
 
+		if(ghostPlayerPos == level.goal)
+		{
+			LOG_INFO("You win!! :D");
+			flag.hidden = true;
+			playerSprite.setAnimation("win");
+			canMove = false;
+			Util::doLater([this]{
+				this->levelID++;
+				setLevel(ALL_LEVELS[this->levelID]);
+				
+				//LOG_INFO("Advancing to level %i...", this->levelID);
+			}, 1000);
+		}
+
 		int intGhostPosition = ghostPlayerPos.x + (ghostPlayerPos.y * level.rowLength);
 
 		if (level.data[intGhostPosition] != ' ')
 		{
 			playerSprite.setAnimation("die");
-			isPlayerDead = true;
+			canMove = false;
 			LOG_INFO("TODO show death screen"); // TODO show death screen
 			return;
 		}
@@ -142,8 +168,9 @@ void GUIScene::tryMovePlayer(Control input)
 void GUIScene::reset()
 {
 	playerPosInt = level.start;
-	isPlayerDead = false;
+	canMove = true;
 	playerSprite.setAnimation("default");
+	flag.hidden = false;
 	
 	Outrospection::get().keyBinds.clear();
 
@@ -151,3 +178,4 @@ void GUIScene::reset()
 	Outrospection::get().controlsOverlay = new GUIControlsOverlay();
 	Outrospection::get().pushOverlay(Outrospection::get().controlsOverlay);
 }
+

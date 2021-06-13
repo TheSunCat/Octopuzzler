@@ -37,6 +37,8 @@ public:
     bool showText = false;
     Color textColor;
 
+    bool hidden = false;
+	
     virtual ~UIComponent() = default;
 private:
     glm::vec2 position;

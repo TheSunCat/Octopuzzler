@@ -217,6 +217,7 @@
     <None Include="res\ShaderData\sprite.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AllLevels.h" />
     <ClInclude Include="Bounds.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Controller.h" />
