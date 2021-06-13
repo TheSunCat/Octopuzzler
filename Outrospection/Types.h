@@ -29,9 +29,9 @@ enum class Control
 enum class Eye
 {
 	NONE = ' ',
-    CIRCLE = 'O',
-    SQUARE = 'D',
-    TRIANGLE = 'V'
+    CIRCLE = 'C',
+    SQUARE = 'S',
+    TRIANGLE = 'T'
 };
 
 struct Transform

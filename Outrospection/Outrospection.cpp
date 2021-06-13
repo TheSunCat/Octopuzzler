@@ -52,8 +52,6 @@ Outrospection::Outrospection()
     crtFramebuffer = opengl.framebuffer;
     textureColorbuffer = opengl.textureColorbuffer;
 
-    //initCrtVAO();
-
     fontCharacters = freetype.loadedCharacters;
 
     registerCallbacks();
