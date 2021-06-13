@@ -1,6 +1,6 @@
 #pragma once
 #include "GUILayer.h"
-#include "Core/UI/UIButton.h"
+#include "Core/UI/UIComponent.h"
 
 class GUIControlsOverlay :
     public GUILayer

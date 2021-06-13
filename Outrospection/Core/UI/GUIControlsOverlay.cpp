@@ -1,9 +1,9 @@
 #include "GUIControlsOverlay.h"
 #include "Outrospection.h"
+#include "UIButton.h"
 
-void controlClick(UIButton& button, int mouseButton)
+void controlClick(UIButton& button, int)
 {
-	
     Outrospection& o = Outrospection::get();
 
     Control theControlThatWasClicked = Control::NONE;
@@ -26,7 +26,6 @@ void controlClick(UIButton& button, int mouseButton)
         break;
     case '~':
         theControlThatWasClicked = Control::DASH_DOWN;
-        LOG_INFO("yo");
         break;
     case '<':
         theControlThatWasClicked = Control::DASH_LEFT;
@@ -65,7 +64,7 @@ GUIControlsOverlay::GUIControlsOverlay() : GUILayer("Controls Overlay", false),
     {
         buttons.emplace_back(std::make_unique<UIButton>(buttonNames[i],
             TextureManager::None,
-            0.05, 0.16 + (0.05 * float(i)), 0.15, 0.05, Bounds(),
+            0.05, 0.16 + (0.05 * float(i)), 0.2, 0.05, Bounds(),
             controlClick));
         
 		buttons[i]->showText = true;
