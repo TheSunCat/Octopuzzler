@@ -65,10 +65,7 @@ float grain(vec2 uv) {
 void main()
 {
     vec2 p = texCoords;
-    //p = 2.*p -1.;
-    //p *= 1. + pow(abs(p.yx)/vec2(5., 4.), vec2(2.));
-    //p = .5*p+.5;
-    vec3 col = aberration(texCoords);// * crt(texCoords);
+    vec3 col = aberration(texCoords);
     //col *= 2.;
 
     // line
@@ -77,5 +74,5 @@ void main()
 	col *= pow(vig, .2);
     
 
-    FragColor = vec4(col, 1.0);// * grain(texCoords) * 0.8;
+    FragColor = vec4(col, 1.0);
 }

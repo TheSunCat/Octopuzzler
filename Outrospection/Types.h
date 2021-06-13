@@ -23,7 +23,11 @@ enum class Control
     MOVE_UP = 'U',
     MOVE_DOWN = 'D',
     MOVE_RIGHT = 'R',
-    MOVE_LEFT = 'L'
+    MOVE_LEFT = 'L',
+	DASH_UP = '^',
+	DASH_DOWN = '~',
+	DASH_RIGHT = '>',
+	DASH_LEFT = '<'
 };
 
 enum class Eye
