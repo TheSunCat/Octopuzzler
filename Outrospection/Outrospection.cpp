@@ -69,7 +69,7 @@ wwww  ww\
 w   w ww\
 www   ww\
 wwwwwwww",
-    8, glm::vec2(1, 3), glm::vec2(5, 1)};
+    8, glm::vec2(1, 3), glm::vec2(4, 1)};
 	
     scene = new GUIScene(level0);
     octopusOverlay = new GUIOctopusOverlay();
@@ -393,24 +393,24 @@ void Outrospection::createCursors()
     GLFWimage cursorImage;
     int width = 10, height = 10;
 
-    unsigned char* data = TextureManager::readImageBytes("./res/ObjectData/Textures/cursorNone.png", width, height);
+    unsigned char* data = TextureManager::readImageBytes("./res/ObjectData/Textures/mouse.png", width, height);
     cursorImage.pixels = data; cursorImage.width = width; cursorImage.height = height;
     cursorNone = glfwCreateCursor(&cursorImage, 0, 0);
     TextureManager::free(data);
 
-    data = TextureManager::readImageBytes("./res/ObjectData/Textures/cursorCircle.png", width, height);
+    data = TextureManager::readImageBytes("./res/ObjectData/Textures/circleMouse.png", width, height);
     cursorImage.pixels = data; cursorImage.width = width; cursorImage.height = height;
-    cursorCircle = glfwCreateCursor(&cursorImage, 32, 32);
+    cursorCircle = glfwCreateCursor(&cursorImage, 0, 0);
     TextureManager::free(data);
 
-    data = TextureManager::readImageBytes("./res/ObjectData/Textures/cursorSquare.png", width, height);
+    data = TextureManager::readImageBytes("./res/ObjectData/Textures/squareMouse.png", width, height);
     cursorImage.pixels = data; cursorImage.width = width; cursorImage.height = height;
-    cursorSquare = glfwCreateCursor(&cursorImage, 32, 32);
+    cursorSquare = glfwCreateCursor(&cursorImage, 0, 0);
     TextureManager::free(data);
 
-    data = TextureManager::readImageBytes("./res/ObjectData/Textures/cursorTriangle.png", width, height);
+    data = TextureManager::readImageBytes("./res/ObjectData/Textures/triangleMouse.png", width, height);
     cursorImage.pixels = data; cursorImage.width = width; cursorImage.height = height;
-    cursorTriangle = glfwCreateCursor(&cursorImage, 32, 32);
+    cursorTriangle = glfwCreateCursor(&cursorImage, 0, 0);
     TextureManager::free(data);
 }
 

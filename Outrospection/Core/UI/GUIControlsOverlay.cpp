@@ -15,10 +15,10 @@ void controlClick(UIButton& button, int mouseButton)
     case 'D':
         theControlThatWasClicked = Control::MOVE_DOWN;
         break;
-    case 'L':
+    case 'R':
         theControlThatWasClicked = Control::MOVE_LEFT;
         break;
-    case 'R':
+    case 'L':
         theControlThatWasClicked = Control::MOVE_RIGHT;
         break;
 	case '^':
@@ -53,8 +53,8 @@ GUIControlsOverlay::GUIControlsOverlay() : GUILayer("Controls Overlay", false),
     std::string buttonNames[] = {
         "U up N ",
         "D down N ",
-        "L left N ",
-        "R right N ",
+        "L right N ",
+        "R left N ",
     	"^ dash up N ",
     	"~ dash down N ",
     	"< dash left N ",
