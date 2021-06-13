@@ -27,5 +27,5 @@ public:
 	
 	mutable UIComponent playerSprite;
 	
-	mutable int levelID = 5;
+	mutable int levelID = 0;
 };

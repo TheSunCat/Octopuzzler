@@ -74,7 +74,7 @@ Outrospection::Outrospection()
     pushOverlay(controlsOverlay);
     pushOverlay(welcomeOverlay);
 
-    soundEngine->play2D("./res/ObjectData/Sounds/taco.ogg", true);
+    soundEngine->play2D("./res/SoundData/totallyNotABossBattle.ogg", true);
 }
 
 void Outrospection::run()
