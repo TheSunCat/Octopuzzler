@@ -263,10 +263,6 @@ void Outrospection::runGameLoop()
         glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
         glClearColor(0.3725, 0.4667, 0.5529f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        spriteScanlinesShader.use();
-        spriteScanlinesShader.setVec2("resolution", CRT_WIDTH, CRT_HEIGHT);
-        spriteScanlinesShader.setFloat("time", float(currentTimeMillis % 1000000) / 1000000);
     	
 		// draw stuff here
         scene->draw();
@@ -380,7 +376,6 @@ void Outrospection::createShaders()
     screenShader          = Shader("screen"   , "screen"         );
     crtShader             = Shader("crt"      , "crt"            );
     spriteShader          = Shader("sprite"   , "sprite"         );
-    spriteScanlinesShader = Shader("sprite"   , "spriteScanlines");
     glyphShader           = Shader("sprite"   , "glyph"          );
 
     // set up 2d shader
@@ -388,9 +383,6 @@ void Outrospection::createShaders()
                                             float(SCR_HEIGHT), 0.0f, -1.0f, 1.0f);
     spriteShader.use();
     spriteShader.setMat4("projection", projection);
-
-    spriteScanlinesShader.use();
-    spriteScanlinesShader.setMat4("projection", projection);
 
     glyphShader.use();
     glyphShader.setMat4("projection", projection);

@@ -69,7 +69,6 @@ public:
     Shader screenShader;
     Shader crtShader;
     Shader spriteShader;
-    Shader spriteScanlinesShader;
     Shader glyphShader;
 
     GUILayer* scene;

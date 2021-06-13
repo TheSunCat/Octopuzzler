@@ -10,11 +10,11 @@ void close(UIButton&, int)
 }
 
 GUIWelcome::GUIWelcome() : GUILayer("Welcome", false),
-                           window("welcomeWindow", 0.25, 0.20, 0.5, 0.60)
+                           window("welcomeWindow", 0.25, 0.15, 0.5, 0.65)
 {
 	buttons.emplace_back(std::make_unique<UIButton>("closeX",
 		TextureManager::None,
-		0.70, 0.20, 0.05, 0.06, Bounds(),
+		0.70, 0.15, 0.05, 0.07, Bounds(),
 		close));
 }
 
