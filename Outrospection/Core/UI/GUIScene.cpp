@@ -141,10 +141,12 @@ void GUIScene::tryMovePlayer(Control input)
 
 		if(ghostPlayerPos == level.goal)
 		{
+			playerPosInt = ghostPlayerPos;
 			LOG_INFO("You win!! :D");
 			flag.hidden = true;
 			playerSprite.setAnimation("win");
-			canMove = false;
+			Util::doLater([this] {this->canMove = false; }, 100);
+			
 			levelID++;
 			
 			if (levelID > sizeof(ALL_LEVELS) / sizeof(*ALL_LEVELS) - 1)
@@ -176,9 +178,15 @@ void GUIScene::tryMovePlayer(Control input)
 		
 		if (tile != ' ' && !(tile == 'H' && i == 0 && deltas.size() == 2))
 		{
+			LOG_INFO("Player died!");
+			
+			playerPosInt = ghostPlayerPos;
 			playerSprite.setAnimation("die");
-			canMove = false;
-			LOG_INFO("TODO show death screen"); // TODO show death screen
+
+			Util::doLater([this] {this->canMove = false; }, 100);
+			Util::doLater([this] {this->reset(); }, 1500);
+			
+			//LOG_INFO("TODO show death screen"); // TODO show death screen
 			return;
 		}
 
@@ -186,8 +194,7 @@ void GUIScene::tryMovePlayer(Control input)
 	}
 	
 	
-	playerPosInt = playerPosInt + totalDelta;
-	
+	playerPosInt += totalDelta;
 }
 
 void GUIScene::reset()
