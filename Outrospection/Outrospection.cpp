@@ -12,6 +12,7 @@
 #include "Core/UI/GUILayer.h"
 #include "Core/UI/GUIOctopusOverlay.h"
 #include "Core/UI/GUIPause.h"
+#include "Core/UI/GUIScene.h"
 #include "Events/Event.h"
 #include "Events/KeyEvent.h"
 #include "Events/MouseEvent.h"
@@ -32,6 +33,8 @@ Outrospection::Outrospection()
     framebuffer = opengl.framebuffer;
     textureColorbuffer = opengl.textureColorbuffer;
 
+    initCrtVAO();
+
     fontCharacters = freetype.loadedCharacters;
 
     registerCallbacks();
@@ -40,11 +43,20 @@ Outrospection::Outrospection()
     
 
     glfwSetCursor(gameWindow, cursorNone);
+
+    std::string level0 =  "\
+wwwwwwwww\
+wwww   ww\
+wwww w ww\
+w   ww ww\
+www    ww\
+wwwwwwwww";
 	
+    scene = new GUIScene(level0, 8);
     octopusOverlay = new GUIOctopusOverlay();
     controlsOverlay = new GUIControlsOverlay();
 
-    //pushOverlay(ingameGUI);
+    pushLayer(scene);
     pushOverlay(octopusOverlay);
     pushOverlay(controlsOverlay);
 
@@ -148,6 +160,17 @@ Eye Outrospection::getEye() const
     return eye;
 }
 
+bool Outrospection::controlBound(Control control)
+{
+    for(KeyBinding& bind : keyBinds)
+    {
+        if (bind.m_control == control)
+            return true; // can't bind control twice!
+    }
+
+    return false;
+}
+
 void Outrospection::doControl(Eye pokedEye)
 {
 	for(KeyBinding& bind : keyBinds)
@@ -202,12 +225,18 @@ void Outrospection::runGameLoop()
         // UIs are also updated when game is paused
         for (auto& layer : layerStack)
         {
+            //if (layer->handleManually)
+            //    continue;
+        	
             layer->tick();
         }
     }
 
     // Draw the frame!
     {
+        glDisable(GL_DEPTH_TEST); // disable depth test so stuff near camera isn't clipped
+
+    	
         glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f); // background color
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -216,8 +245,8 @@ void Outrospection::runGameLoop()
         camera.updateCameraData();
 
 		// draw stuff here
+        scene->draw();
 
-        glDisable(GL_DEPTH_TEST); // disable depth test so stuff near camera isn't clipped
 
         // bind to default framebuffer and draw custom one over that
 
@@ -226,20 +255,22 @@ void Outrospection::runGameLoop()
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessary actually, since we won't be able to see behind the quad anyways)
         glClear(GL_COLOR_BUFFER_BIT);
 
-        screenShader.use();
-        glBindVertexArray(quadVAO);
+        crtShader.use();
+        //crtShader.setInt("time", currentTimeMillis % 10000);
+    	
+        glBindVertexArray(crtVAO);
         glBindTexture(GL_TEXTURE_2D, textureColorbuffer);    // use the color attachment texture as the texture of the quad plane
         glDrawArrays(GL_TRIANGLES, 0, 6);
-    	
+
+        screenShader.use();
         // draw UI
         for (const auto& layer : layerStack)
         {
+            if (layer->handleManually)
+                continue;
+        	
             layer->draw();
         }
-
-        Util::glError();
-    	
-        glEnable(GL_DEPTH_TEST); // re-enable depth testing
     }
 
     // check for errors
@@ -267,6 +298,31 @@ void Outrospection::runTick()
 
 	// erase it so we move to the next one
     inputQueue.erase(inputQueue.begin());
+}
+
+void Outrospection::initCrtVAO()
+{
+	// quad that fills CRT space
+    float quadVertices[] = {
+        // positions 
+        -0.5f, 0.5f, 
+        -0.5f, -0.5f,
+        0.5f, -0.5f, 
+
+        -0.5f, 0.5f, 
+        0.5f, -0.5f,
+        0.5f, 0.5f,
+    };
+
+    // screen quad VAO
+    GLuint quadVBO;
+    glGenVertexArrays(1, &crtVAO);
+    glGenBuffers(1, &quadVBO);
+    glBindVertexArray(crtVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), nullptr);
 }
 
 void Outrospection::registerCallbacks() const
@@ -314,9 +370,8 @@ void Outrospection::registerCallbacks() const
 
 void Outrospection::createShaders()
 {
-    objectShader    = Shader("obj"      , "obj"      );
     screenShader    = Shader("screen"   , "screen"   );
-    simpleShader    = Shader("simple"   , "simple"   );
+    crtShader       = Shader("crt"      , "crt"      );
     spriteShader    = Shader("sprite"   , "sprite"   );
     glyphShader     = Shader("sprite"   , "glyph"    );
 
@@ -342,17 +397,17 @@ void Outrospection::createCursors()
 
     data = TextureManager::readImageBytes("./res/ObjectData/Textures/cursorCircle.png", width, height);
     cursorImage.pixels = data; cursorImage.width = width; cursorImage.height = height;
-    cursorCircle = glfwCreateCursor(&cursorImage, 0, 0);
+    cursorCircle = glfwCreateCursor(&cursorImage, 32, 32);
     TextureManager::free(data);
 
     data = TextureManager::readImageBytes("./res/ObjectData/Textures/cursorSquare.png", width, height);
     cursorImage.pixels = data; cursorImage.width = width; cursorImage.height = height;
-    cursorSquare = glfwCreateCursor(&cursorImage, 0, 0);
+    cursorSquare = glfwCreateCursor(&cursorImage, 32, 32);
     TextureManager::free(data);
 
     data = TextureManager::readImageBytes("./res/ObjectData/Textures/cursorTriangle.png", width, height);
     cursorImage.pixels = data; cursorImage.width = width; cursorImage.height = height;
-    cursorTriangle = glfwCreateCursor(&cursorImage, 0, 0);
+    cursorTriangle = glfwCreateCursor(&cursorImage, 32, 32);
     TextureManager::free(data);
 }
 

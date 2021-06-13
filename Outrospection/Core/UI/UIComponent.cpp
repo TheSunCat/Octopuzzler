@@ -70,6 +70,17 @@ void UIComponent::setAnimation(const std::string& anim)
     animations.at(curAnimation)->shouldTick = true;
 }
 
+void UIComponent::setPosition(float xPercent, float yPercent)
+{
+    position = glm::vec2(xPercent * SCR_WIDTH, yPercent * SCR_HEIGHT);
+}
+
+void UIComponent::setScale(float xPercent, float yPercent)
+{
+    width = xPercent * SCR_WIDTH;
+	height = yPercent* SCR_HEIGHT;
+}
+
 void UIComponent::draw(Shader& shader, const Shader& glyphShader) const
 {
     shader.use();

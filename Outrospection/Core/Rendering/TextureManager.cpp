@@ -6,7 +6,8 @@
 #include "Core/Rendering/TickableTexture.h"
 #include "External/stb_image.h"
 
-SimpleTexture TextureManager::missingTexture(-1);
+SimpleTexture TextureManager::MissingTexture(-1);
+SimpleTexture TextureManager::None(-2);
 
 TextureManager::TextureManager()
 {
@@ -17,11 +18,23 @@ TextureManager::TextureManager()
         255, 0, 220  // purple, bottom right
     };
 
-    GLuint missingTexId = -1;
-    glGenTextures(1, &missingTexId);
-    createTexture(missingTexId, missingTexData, GL_RGB, 2, 2);
+    GLuint texId = -1;
+    glGenTextures(1, &texId);
+    createTexture(texId, missingTexData, GL_RGB, 2, 2);
 
-    missingTexture.texId = missingTexId;
+    MissingTexture.texId = texId;
+
+    const unsigned char noneTexData[] = {
+        0, 0, 0, 0,
+    	0, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 0, // all transparent RGBA
+    };
+    
+    glGenTextures(1, &texId);
+    createTexture(texId, noneTexData, GL_RGBA, 2, 2);
+
+    None.texId = texId;
 }
 
 SimpleTexture& TextureManager::loadTexture(const Resource& r)
@@ -42,7 +55,7 @@ SimpleTexture& TextureManager::loadTexture(const Resource& r)
     {
         LOG_ERROR("Failed to generate texture ID for %s", path);
 
-        return missingTexture;
+        return MissingTexture;
     }
 }
 
@@ -70,7 +83,7 @@ SimpleTexture& TextureManager::loadAnimatedTexture(const Resource& r, unsigned i
             LOG_ERROR("Failed to generate texture ID for animated texture frame %i at %s", textureFrameCount,
                 currentPath);
 
-            textureIds.push_back(missingTexture.texId);
+            textureIds.push_back(MissingTexture.texId);
         }
     }
     
@@ -130,8 +143,8 @@ void TextureManager::createTexture(const GLuint& texId, const unsigned char* dat
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 }
 
 GLuint TextureManager::textureFromFile(const std::string& filename)

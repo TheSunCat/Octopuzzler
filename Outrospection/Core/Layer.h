@@ -13,4 +13,7 @@ public:
     virtual void tick() {}
     virtual void draw() const {}
     virtual void onEvent(Event& event) {}
+
+	// hacky
+    bool handleManually = false;
 };

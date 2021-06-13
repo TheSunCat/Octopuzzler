@@ -25,9 +25,9 @@ public:
     void addAnimation(const std::string& anim, SimpleTexture& _tex);
     void setAnimation(const std::string& anim);
 
+    void setPosition(float xPercent, float yPercent);
+    void setScale(float xPercent, float yPercent);
     std::string name;
-    glm::vec2 position;
-    float width = 10.0f, height = 10.0f;
 	
     glm::vec2 textOffset; // vector to offset text by
     bool showText = false;
@@ -35,7 +35,10 @@ public:
 
     virtual ~UIComponent() = default;
 private:
-    virtual void drawText(const std::string& text, const Shader& glyphShader) const;
+    glm::vec2 position;
+    float width = 10.0f, height = 10.0f;
+
+	virtual void drawText(const std::string& text, const Shader& glyphShader) const;
 
     std::string curAnimation = "default";
     std::unordered_map<std::string, SimpleTexture*> animations;// = &TextureManager::missingTexture;
