@@ -28,7 +28,7 @@ void controlClick(UIButton& button, int mouseButton)
     	
         o.keyBinds.emplace_back(o.getEye(), theControlThatWasClicked);
 
-        button.name[button.name.length() - 2] = char(o.getEye());
+        button.name[button.name.length() - 1] = char(o.getEye());
     }
 	
     LOG("You pressed button %s", button.name);
@@ -38,10 +38,10 @@ GUIControlsOverlay::GUIControlsOverlay() : GUILayer("Controls Overlay", false),
 	window("window", 0.05, 0.1, 0.15, 0.31)
 {
     std::string buttonNames[] = {
-        "Up [ ]",
-        "Down [ ]",
-        "Left [ ]",
-        "Right [ ]"
+        "U up N ",
+        "D down N ",
+        "L left N ",
+        "R right N "
     };
 
     for (int i = 0; i < sizeof(buttonNames) / sizeof(*buttonNames); i++)
@@ -50,9 +50,8 @@ GUIControlsOverlay::GUIControlsOverlay() : GUILayer("Controls Overlay", false),
             TextureManager::None,
             0.06, 0.15 + (0.05 * float(i)), 0.15, 0.05, Bounds(),
             controlClick));
-
-    	// TODO show selected char in little box. Maybe font rendering?
-        //buttons[i]->showText = true;
+        
+		buttons[i]->showText = true;
     }
 }
 

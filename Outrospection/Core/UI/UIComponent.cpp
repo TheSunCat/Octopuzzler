@@ -21,8 +21,8 @@ UIComponent::UIComponent(std::string _texName, const glm::vec2& _position, const
 }
 
 UIComponent::UIComponent(std::string _name, SimpleTexture& _tex, const glm::vec2& _position, const glm::vec2& dimensions)
-	: name(std::move(_name)), position(_position), width(dimensions.x), height(dimensions.y), textOffset(0.0f, height / 2),
-    textColor(0.0f)
+	: name(std::move(_name)), textOffset(0.0f, dimensions.y/2), textColor(0.0f), position(_position), width(dimensions.x),
+    height(dimensions.y)
 {
     animations.insert(std::make_pair("default", &_tex));
 	
@@ -130,16 +130,20 @@ void UIComponent::drawText(const std::string& text, const Shader& glyphShader) c
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(quadVAO);
 
-    float textScale = 0.5f;
+    float textScale = 1.0f;
 
     float textX = position.x + textOffset.x;
     float textY = position.y + textOffset.y;
 
     for (char c : text)
     {
-        if (c <= '\0') // replace null char with space
-            c = ' ';
+        if(c <= '\0' || c == ' ')
+        {
+            textX += 10;
+            continue;
+        }
 
+    	
         FontCharacter fontCharacter = Outrospection::get().fontCharacters.at(c);
 
         // calculate model matrix
@@ -153,6 +157,12 @@ void UIComponent::drawText(const std::string& text, const Shader& glyphShader) c
         float height = (fontCharacter.size.y) * textScale;
         charModel = glm::scale(charModel, glm::vec3(width, height, 1.0f));
 
+    	// TODO not hardcode this lol
+        if(c == 'C' || c == 'S' || c == 'T')
+            glyphShader.setVec3("textColor", glm::vec3(0.0549f, 0.0902f, 0.1725f)); //0x0E172C
+        else
+			glyphShader.setVec3("textColor", glm::vec3(0.8941f, 0.2039f, 0.4314f)); //0xE4346E
+    	
         glyphShader.setMat4("model", charModel);
         glBindTexture(GL_TEXTURE_2D, fontCharacter.textureId);
 
