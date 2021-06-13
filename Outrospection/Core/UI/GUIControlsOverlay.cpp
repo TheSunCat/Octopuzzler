@@ -21,6 +21,19 @@ void controlClick(UIButton& button, int mouseButton)
     case 'R':
         theControlThatWasClicked = Control::MOVE_RIGHT;
         break;
+	case '^':
+        theControlThatWasClicked = Control::DASH_UP;
+        break;
+    case '~':
+        theControlThatWasClicked = Control::DASH_DOWN;
+        LOG_INFO("yo");
+        break;
+    case '<':
+        theControlThatWasClicked = Control::DASH_LEFT;
+        break;
+    case '>':
+        theControlThatWasClicked = Control::DASH_RIGHT;
+        break;
 	}
 	
 	// change the keybind
@@ -41,7 +54,11 @@ GUIControlsOverlay::GUIControlsOverlay() : GUILayer("Controls Overlay", false),
         "U up N ",
         "D down N ",
         "L left N ",
-        "R right N "
+        "R right N ",
+    	"^ dash up N ",
+    	"~ dash down N ",
+    	"< dash left N ",
+    	"> dash right N "
     };
 
     for (int i = 0; i < sizeof(buttonNames) / sizeof(*buttonNames); i++)

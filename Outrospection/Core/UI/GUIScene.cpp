@@ -74,35 +74,50 @@ void GUIScene::draw() const
 
 void GUIScene::tryMovePlayer(Control input)
 {
-	glm::vec2 delta = glm::vec2();
+	std::vector<glm::vec2> deltas;
 	switch(input)
 	{
+	case Control::DASH_UP:
+		deltas.push_back(glm::vec2(0.0f, -1.0f));
 	case Control::MOVE_UP:
-		delta.y--;
+		deltas.push_back(glm::vec2(0.0f, -1.0f));
 		break;
+	case Control::DASH_DOWN:
+		deltas.push_back(glm::vec2(0.0f, 1.0f));
 	case Control::MOVE_DOWN:
-		delta.y++;
+		deltas.push_back(glm::vec2(0.0f, 1.0f));
 		break;
+	case Control::DASH_RIGHT:
+		deltas.push_back(glm::vec2(1.0f, 0.0f));
 	case Control::MOVE_RIGHT:
-		delta.x++;
+		deltas.push_back(glm::vec2(1.0f, 0.0f));
 		break;
+	case Control::DASH_LEFT:
+		deltas.push_back(glm::vec2(-1.0f, 0.0f));
 	case Control::MOVE_LEFT:
-		delta.x--;
+		deltas.push_back(glm::vec2(-1.0f, 0.0f));
 		break;
 	default:
 		LOG_ERROR("Unknown control %i", int(input));
 	}
 
-	glm::vec2 ghostPlayerPos = playerPosInt + delta;
-
-	int intGhostPosition = ghostPlayerPos.x + (ghostPlayerPos.y * level.rowLength);
+	glm::vec2 totalDelta = glm::vec2();
 	
-	if(level.data[intGhostPosition] != ' ')
-	{
-		playerSprite.setAnimation("die");
-	} else
-	{
-		playerPosInt = playerPosInt + delta;
+	for (glm::vec2& delta : deltas) {
+		glm::vec2 ghostPlayerPos = playerPosInt + delta;
+
+		int intGhostPosition = ghostPlayerPos.x + (ghostPlayerPos.y * level.rowLength);
+
+		if (level.data[intGhostPosition] != ' ')
+		{
+			playerSprite.setAnimation("die");
+			return;
+		}
+
+		totalDelta += delta;
 	}
+	
+	
+	playerPosInt = playerPosInt + totalDelta;
 	
 }
