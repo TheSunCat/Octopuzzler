@@ -3,7 +3,6 @@
 
 #include <thread>
 #include <glm/vec2.hpp>
-#include "discord/discord.h"
 
 #include "Types.h"
 #include "Constants.h"
