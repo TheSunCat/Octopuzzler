@@ -27,7 +27,7 @@ public:
 #endif
 
         // Window init
-        gameWindow = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Outrospection", nullptr, nullptr);
+        gameWindow = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Octopuzzle", nullptr, nullptr);
         if (gameWindow == nullptr)
         {
             LOG_ERROR("Failed to create GLFW window!");

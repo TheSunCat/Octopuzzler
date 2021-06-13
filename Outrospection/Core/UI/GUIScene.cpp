@@ -67,13 +67,12 @@ void GUIScene::draw() const
 		case ' ': // floor
 			floor.setPositionPx(xSpritePos, ySpritePos);
 			floor.draw(spriteShader, glyphShader);
-
 			break;
 			
 		case 'w': // wall
 			break;
 			
-		case 'i': // ink
+		case 'H': // ink
 			ink.setPositionPx(xSpritePos, ySpritePos);
 			ink.draw(spriteShader, glyphShader);
 			break;
@@ -129,9 +128,13 @@ void GUIScene::tryMovePlayer(Control input)
 	}
 
 	glm::vec2 totalDelta = glm::vec2();
+
+	glm::vec2 ghostPlayerPos = playerPosInt;
 	
-	for (glm::vec2& delta : deltas) {
-		glm::vec2 ghostPlayerPos = playerPosInt + delta;
+	for (int i = 0; i < deltas.size(); i++) {
+		glm::vec2& delta = deltas[i];
+		
+		ghostPlayerPos += delta;
 
 		if(ghostPlayerPos == level.goal)
 		{
@@ -145,11 +148,13 @@ void GUIScene::tryMovePlayer(Control input)
 				
 				//LOG_INFO("Advancing to level %i...", this->levelID);
 			}, 1000);
+			return;
 		}
 
 		int intGhostPosition = ghostPlayerPos.x + (ghostPlayerPos.y * level.rowLength);
-
-		if (level.data[intGhostPosition] != ' ')
+		char tile = level.data[intGhostPosition];
+		
+		if (tile != ' ' && !(tile == 'H' && i == 0 && deltas.size() == 2))
 		{
 			playerSprite.setAnimation("die");
 			canMove = false;
