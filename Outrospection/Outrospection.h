@@ -129,7 +129,4 @@ private:
     
     std::thread consoleThread;
     void startConsoleThread();
-
-    std::thread discordThread;
-    void startDiscordThread();
 };

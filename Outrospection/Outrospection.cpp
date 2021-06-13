@@ -64,12 +64,13 @@ Outrospection::Outrospection()
     glfwSetCursor(gameWindow, cursorNone);
 
     std::string level0 =  "\
-wwwwwwwww\
-wwww   ww\
-wwww w ww\
-w   ww ww\
-www    ww\
-wwwwwwwww";
+wwwwwwww\
+wwww www\
+wwww  ww\
+w   w ww\
+www   ww\
+wwwwwwww\
+";
 	
     scene = new GUIScene(level0, 8);
     octopusOverlay = new GUIOctopusOverlay();
@@ -256,7 +257,6 @@ void Outrospection::runGameLoop()
         glBindFramebuffer(GL_FRAMEBUFFER, crtFramebuffer);
         SCR_WIDTH = CRT_WIDTH; SCR_HEIGHT = CRT_HEIGHT;
         glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f); // background color
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// draw stuff here
@@ -269,7 +269,7 @@ void Outrospection::runGameLoop()
         glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
     	
         // clear all relevant buffers
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessary actually, since we won't be able to see behind the quad anyways)
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
     	// apply CRT effect
@@ -563,53 +563,6 @@ void Outrospection::startConsoleThread()
                     }
                 }
             }
-        }
-    };
-}
-
-volatile bool discordInterrupted{ false };
-
-void Outrospection::startDiscordThread()
-{
-    discordThread = std::thread {
-        [&]() -> void {
-            discord::Core* discordCore;
-        	
-            auto result = discord::Core::Create(793250268099641386, DiscordCreateFlags_Default, &discordCore);
-
-            if (!discordCore)
-            {
-                LOG_ERROR("Discord: Failed to instantiate Discord core! Error %i", int(result));
-                return;
-            }
-
-            discordCore->SetLogHook(discord::LogLevel::Debug, [](discord::LogLevel level, const char* message)
-            {
-                LOG("Discord: Log(%i): %s", uint32_t(level), message);
-            });
-
-            discord::Activity activity{};
-            activity.SetDetails("Ingame");
-            activity.SetState("Marching cubes");
-            //activity.GetAssets().SetSmallImage("smallimage");
-            //activity.GetAssets().SetSmallText("smalltext");
-            activity.GetAssets().SetLargeImage("fishlady");
-            // activity.GetAssets().SetLargeText("Oh, hi there!");
-            activity.SetType(discord::ActivityType::Playing);
-
-            discordCore->ActivityManager().UpdateActivity(activity, [](discord::Result result) {
-                LOG("%s to update activity!", (result == discord::Result::Ok) ? "Succeeded" : "Failed");
-            });
-            
-            
-        	
-            std::signal(SIGINT, [](int) {
-                discordInterrupted = true;
-            });
-            do {
-                discordCore->RunCallbacks();
-                std::this_thread::sleep_for(std::chrono::milliseconds(16));
-            } while (!discordInterrupted);
         }
     };
 }
