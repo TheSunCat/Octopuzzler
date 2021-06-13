@@ -8,7 +8,6 @@
 #include <glm/ext/matrix_transform.hpp>
 
 #include "Util.h"
-#include "Core/Camera.h"
 
 Shader::Shader(const GLchar* vertexName, const GLchar* fragmentName)
 {
@@ -101,18 +100,6 @@ Shader::Shader(const GLchar* vertexName, const GLchar* fragmentName)
     // delete the shaders as they're linked into our program now and no longer necessary
     glDeleteShader(vertex);
     glDeleteShader(fragment);
-}
-
-void Shader::sendViewProjMat(Camera& _camera, const bool doPos) const
-{
-    if (doPos)
-        setMat4("viewProj", _camera.viewProj);
-    else
-    {
-        glm::mat4 view = glm::lookAt(glm::vec3(0.0), _camera.mFront, _camera.mUp);
-
-        setMat4("viewProj", _camera.proj * view);
-    }
 }
 
 // use/activate the shader

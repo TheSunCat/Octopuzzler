@@ -208,21 +208,13 @@
   <ItemGroup>
     <None Include="cpp.hint" />
     <None Include="packages.config" />
-    <None Include="res\ShaderData\billboard.frag" />
-    <None Include="res\ShaderData\billboard.vert" />
+    <None Include="res\ShaderData\CRT.frag" />
+    <None Include="res\ShaderData\CRT.vert" />
     <None Include="res\ShaderData\glyph.frag" />
-    <None Include="res\ShaderData\lightless.frag" />
-    <None Include="res\ShaderData\obj.frag" />
-    <None Include="res\ShaderData\obj.vert" />
     <None Include="res\ShaderData\screen.frag" />
     <None Include="res\ShaderData\screen.vert" />
-    <None Include="res\ShaderData\simple.frag" />
-    <None Include="res\ShaderData\simple.vert" />
-    <None Include="res\ShaderData\sky.frag" />
-    <None Include="res\ShaderData\sky.vert" />
     <None Include="res\ShaderData\sprite.frag" />
     <None Include="res\ShaderData\sprite.vert" />
-    <None Include="res\ShaderData\wireframe.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bounds.h" />

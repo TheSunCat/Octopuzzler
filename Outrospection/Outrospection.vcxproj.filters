@@ -20,22 +20,7 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="cpp.hint" />
-    <None Include="res\ShaderData\billboard.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\ShaderData\billboard.vert">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="res\ShaderData\glyph.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\ShaderData\lightless.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\ShaderData\obj.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\ShaderData\obj.vert">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="res\ShaderData\screen.frag">
@@ -44,25 +29,16 @@
     <None Include="res\ShaderData\screen.vert">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="res\ShaderData\simple.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\ShaderData\simple.vert">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\ShaderData\sky.frag">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="res\ShaderData\sky.vert">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="res\ShaderData\sprite.frag">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="res\ShaderData\sprite.vert">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="res\ShaderData\wireframe.frag">
+    <None Include="res\ShaderData\CRT.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\ShaderData\CRT.vert">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

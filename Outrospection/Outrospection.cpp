@@ -18,6 +18,25 @@
 #include "Events/MouseEvent.h"
 #include "Events/WindowEvent.h"
 
+
+int WINDOW_WIDTH = 1920 / 1.5;
+int WINDOW_HEIGHT = 1080 / 1.5;
+
+int CRT_WIDTH = WINDOW_WIDTH / 2;
+int CRT_HEIGHT = WINDOW_HEIGHT / 1.5;
+
+int SCR_WIDTH = WINDOW_WIDTH;
+int SCR_HEIGHT = WINDOW_HEIGHT;
+
+void updateRes()
+{
+    CRT_WIDTH = WINDOW_WIDTH / 2;
+    CRT_HEIGHT = WINDOW_HEIGHT / 1.5;
+
+    SCR_WIDTH = WINDOW_WIDTH;
+    SCR_HEIGHT = WINDOW_HEIGHT;
+}
+
 Outrospection* Outrospection::instance = nullptr;
 
 irrklang::ISoundEngine* soundEngine = irrklang::createIrrKlangDevice();
@@ -235,6 +254,8 @@ void Outrospection::runGameLoop()
 
     	
         glBindFramebuffer(GL_FRAMEBUFFER, crtFramebuffer);
+        SCR_WIDTH = CRT_WIDTH; SCR_HEIGHT = CRT_HEIGHT;
+        glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f); // background color
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -243,14 +264,18 @@ void Outrospection::runGameLoop()
 
 
         // bind to default framebuffer and draw custom one over that
-
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        SCR_WIDTH = WINDOW_WIDTH; SCR_HEIGHT = WINDOW_HEIGHT;
+        glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+    	
         // clear all relevant buffers
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessary actually, since we won't be able to see behind the quad anyways)
         glClear(GL_COLOR_BUFFER_BIT);
 
     	// apply CRT effect
         crtShader.use();
+        crtShader.setVec2("resolution", CRT_WIDTH, CRT_HEIGHT);
+        crtShader.setInt("time", currentTimeMillis % 1000000);
     	
         glBindVertexArray(crtVAO);
         glBindTexture(GL_TEXTURE_2D, textureColorbuffer);    // use the color attachment texture as the texture of the quad plane
@@ -299,7 +324,9 @@ void Outrospection::registerCallbacks() const
     // Register OpenGL events
     glfwSetFramebufferSizeCallback(gameWindow, [](GLFWwindow*, const int width, const int height)
     {
-        glViewport(0, 0, width, height);
+        SCR_WIDTH = width; SCR_HEIGHT = height;
+        updateRes();
+        glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
     });
 
     glfwSetCursorPosCallback(gameWindow, [](GLFWwindow* window, const double xPosD, const double yPosD)
