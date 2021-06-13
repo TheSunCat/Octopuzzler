@@ -25,17 +25,28 @@ void GUIScene::tick()
 
 void GUIScene::draw() const
 {
-	// test, fill up entire CRT
-	wall.setPosition(0.17, 0.13);
-	wall.setScale(0.56, 0.88);
+	// fill entire framebuffer with missing texture test
+	//wall.setPosition(0, 0);
+	//wall.setScale(1, 0.5);
 
-	wall.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
+	//wall.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
 
-	return;
+	//return;
+
+	float tileSize = 0.9f / rowLength;
+	player.setScale(tileSize, tileSize);
+	wall.setScale(tileSize, tileSize);
+	hole.setScale(tileSize, tileSize);
 	
-	for (auto& tile : level)
+	for (int i = 0; i < level.length(); i++)
 	{
+		char tile = level[i];
 		
+		int xPos = i % rowLength;
+		int yPos = i / rowLength;
+
+		float xSpritePos = xPos * tileSize;
+		float ySpritePos = yPos * tileSize;
 		
 		switch(tile)
 		{
@@ -43,6 +54,7 @@ void GUIScene::draw() const
 			break;
 		case 'w': // wall
 			// TODO actually draw a wall
+			
 			break;
 		case 'o': // hole
 			// TODO actually draw a hole

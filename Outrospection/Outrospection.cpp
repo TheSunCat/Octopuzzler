@@ -29,11 +29,11 @@ Outrospection::Outrospection()
     preInit = PreInitialization();
 
     gameWindow = opengl.gameWindow;
-    quadVAO = opengl.quadVAO;
-    framebuffer = opengl.framebuffer;
+    crtVAO = opengl.crtVAO;
+    crtFramebuffer = opengl.framebuffer;
     textureColorbuffer = opengl.textureColorbuffer;
 
-    initCrtVAO();
+    //initCrtVAO();
 
     fontCharacters = freetype.loadedCharacters;
 
@@ -70,7 +70,7 @@ void Outrospection::run()
     startTimeThread();
     startLoggerThread();
     startConsoleThread();
-    startDiscordThread();
+    //startDiscordThread();
 
     lastFrame = currentTimeMillis;
     while (running)
@@ -225,9 +225,6 @@ void Outrospection::runGameLoop()
         // UIs are also updated when game is paused
         for (auto& layer : layerStack)
         {
-            //if (layer->handleManually)
-            //    continue;
-        	
             layer->tick();
         }
     }
@@ -237,12 +234,9 @@ void Outrospection::runGameLoop()
         glDisable(GL_DEPTH_TEST); // disable depth test so stuff near camera isn't clipped
 
     	
-        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+        glBindFramebuffer(GL_FRAMEBUFFER, crtFramebuffer);
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f); // background color
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        // make sure we have the latest data in the camera fields
-        camera.updateCameraData();
 
 		// draw stuff here
         scene->draw();
@@ -255,8 +249,8 @@ void Outrospection::runGameLoop()
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // set clear color to white (not really necessary actually, since we won't be able to see behind the quad anyways)
         glClear(GL_COLOR_BUFFER_BIT);
 
+    	// apply CRT effect
         crtShader.use();
-        //crtShader.setInt("time", currentTimeMillis % 10000);
     	
         glBindVertexArray(crtVAO);
         glBindTexture(GL_TEXTURE_2D, textureColorbuffer);    // use the color attachment texture as the texture of the quad plane
@@ -298,31 +292,6 @@ void Outrospection::runTick()
 
 	// erase it so we move to the next one
     inputQueue.erase(inputQueue.begin());
-}
-
-void Outrospection::initCrtVAO()
-{
-	// quad that fills CRT space
-    float quadVertices[] = {
-        // positions 
-        -0.5f, 0.5f, 
-        -0.5f, -0.5f,
-        0.5f, -0.5f, 
-
-        -0.5f, 0.5f, 
-        0.5f, -0.5f,
-        0.5f, 0.5f,
-    };
-
-    // screen quad VAO
-    GLuint quadVBO;
-    glGenVertexArrays(1, &crtVAO);
-    glGenBuffers(1, &quadVBO);
-    glBindVertexArray(crtVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), nullptr);
 }
 
 void Outrospection::registerCallbacks() const
@@ -437,15 +406,12 @@ bool Outrospection::onMouseMoved(MouseMovedEvent& e)
     lastMousePos.x = xPos;
     lastMousePos.y = yPos;
 
-    
-    camera.playerRotateCameraBy(xOffset, yOffset);
-
     return false;
 }
 
 void Outrospection::scroll_callback(GLFWwindow*, const double xoffset, const double yoffset)
 {
-    camera.changeDistBy(float(yoffset));
+    
 }
 
 // this function is called when you press a key
@@ -473,11 +439,6 @@ void Outrospection::key_callback(GLFWwindow* window, int key, int scancode, int 
 void Outrospection::error_callback(const int errorcode, const char* description)
 {
     LOG_ERROR("GLFW error (%i): %s", errorcode, description);
-}
-
-void setKey(ControllerButton& button, const int keyCode, GLFWwindow* window)
-{
-    button = glfwGetKey(window, keyCode) == GLFW_PRESS ? button + 1 : false;
 }
 
 void Outrospection::updateInput()

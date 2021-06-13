@@ -229,7 +229,6 @@
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Core.h" />
-    <ClInclude Include="Core\Camera.h" />
     <ClInclude Include="Core\Layer.h" />
     <ClInclude Include="Core\LayerStack.h" />
     <ClInclude Include="Core\PreInitialization.h" />
@@ -277,7 +276,6 @@
     <ClCompile Include="..\Libraries\include\discord\voice_manager.cpp" />
     <ClCompile Include="Bounds.cpp" />
     <ClCompile Include="Controller.cpp" />
-    <ClCompile Include="Core\Camera.cpp" />
     <ClCompile Include="Core\LayerStack.cpp" />
     <ClCompile Include="Core\Rendering\TickableTexture.cpp" />
     <ClCompile Include="Core\Rendering\Resource.cpp" />
