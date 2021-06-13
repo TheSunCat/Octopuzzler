@@ -69,6 +69,7 @@ public:
     Shader screenShader;
     Shader crtShader;
     Shader spriteShader;
+    Shader spriteScanlinesShader;
     Shader glyphShader;
 
     DISALLOW_COPY_AND_ASSIGN(Outrospection)

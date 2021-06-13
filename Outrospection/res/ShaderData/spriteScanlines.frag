@@ -32,13 +32,6 @@ vec3 surface(vec2 uv) {
 	return texture(screenTexture, uv).rgb;
 }
 
-// Fish-eye effect
-vec2 fisheye(vec2 uv){
-  uv = uv*2.0 - 1.0;    
-  uv *= vec2(1.0+(uv.y*uv.y)*fishEye.x,1.0+(uv.x*uv.x)*fishEye.y);
-  return uv*0.5 + 0.5;
-}
-
 // Scanlines chromatic aberration
 vec3 aberration(vec2 uv) {
     float o = sin(uv.y * resolution.x * PI);
@@ -85,17 +78,12 @@ float grain(vec2 uv) {
     return 1.0-grainIntensity+grainIntensity*rand(uv,time);
 }
 
-// Halo
-float halo(vec2 uv) {    
-    return haloRadius-distance(uv,vec2(0.2,0.5))-distance(uv,vec2(0.8,0.5));
-}
-
 void main()
 {
     vec2 fragCoord = texCoords * resolution;
 
-    vec2 uv = fisheye(fragCoord/resolution);
-    FragColor.rgb = aberration(uv) * scanLines(uv) * crt(fragCoord) * grain(uv) * halo(uv);
+    vec2 uv = texCoords;
+    FragColor.rgb = aberration(uv) * scanLines(uv) * crt(fragCoord) * grain(uv);
 
     FragColor.w = 1.0; // not transparent
 }

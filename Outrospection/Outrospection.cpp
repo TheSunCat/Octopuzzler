@@ -22,7 +22,7 @@
 int WINDOW_WIDTH = 1920 / 1.5;
 int WINDOW_HEIGHT = 1080 / 1.5;
 
-int CRT_WIDTH = WINDOW_WIDTH / 2;
+int CRT_WIDTH = WINDOW_WIDTH / 1.5;
 int CRT_HEIGHT = WINDOW_HEIGHT / 1.5;
 
 int SCR_WIDTH = WINDOW_WIDTH;
@@ -30,7 +30,7 @@ int SCR_HEIGHT = WINDOW_HEIGHT;
 
 void updateRes()
 {
-    CRT_WIDTH = WINDOW_WIDTH / 2;
+    CRT_WIDTH = WINDOW_WIDTH / 1.5;
     CRT_HEIGHT = WINDOW_HEIGHT / 1.5;
 
     SCR_WIDTH = WINDOW_WIDTH;
@@ -257,8 +257,13 @@ void Outrospection::runGameLoop()
         glBindFramebuffer(GL_FRAMEBUFFER, crtFramebuffer);
         SCR_WIDTH = CRT_WIDTH; SCR_HEIGHT = CRT_HEIGHT;
         glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+        glClearColor(0.3725, 0.4667, 0.5529f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        spriteScanlinesShader.use();
+        spriteScanlinesShader.setVec2("resolution", CRT_WIDTH, CRT_HEIGHT);
+        spriteScanlinesShader.setFloat("time", float(currentTimeMillis % 1000000) / 1000000);
+    	
 		// draw stuff here
         scene->draw();
 
@@ -366,16 +371,20 @@ void Outrospection::registerCallbacks() const
 
 void Outrospection::createShaders()
 {
-    screenShader    = Shader("screen"   , "screen"   );
-    crtShader       = Shader("crt"      , "crt"      );
-    spriteShader    = Shader("sprite"   , "sprite"   );
-    glyphShader     = Shader("sprite"   , "glyph"    );
+    screenShader          = Shader("screen"   , "screen"         );
+    crtShader             = Shader("crt"      , "crt"            );
+    spriteShader          = Shader("sprite"   , "sprite"         );
+    spriteScanlinesShader = Shader("sprite"   , "spriteScanlines");
+    glyphShader           = Shader("sprite"   , "glyph"          );
 
     // set up 2d shader
     const glm::mat4 projection = glm::ortho(0.0f, float(SCR_WIDTH),
                                             float(SCR_HEIGHT), 0.0f, -1.0f, 1.0f);
     spriteShader.use();
     spriteShader.setMat4("projection", projection);
+
+    spriteScanlinesShader.use();
+    spriteScanlinesShader.setMat4("projection", projection);
 
     glyphShader.use();
     glyphShader.setMat4("projection", projection);

@@ -45,7 +45,7 @@ void GUIScene::draw() const
 		int yPos = i / rowLength;
 
 		float xSpritePos = xPos * xTileSize;
-		float ySpritePos = yPos * yTileSize;
+		float ySpritePos = 1 - yPos * yTileSize;
 		
 		switch(tile)
 		{
