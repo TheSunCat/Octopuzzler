@@ -4,6 +4,12 @@
 #include <functional>
 #include <iomanip>
 
+extern int SCR_WIDTH;
+extern int SCR_HEIGHT;
+
+extern int CUR_WIDTH;
+extern int CUR_HEIGHT;
+
 inline time_t currentTimeMillis;
 inline time_t currentTimeSeconds;
 

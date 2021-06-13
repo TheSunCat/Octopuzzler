@@ -7,9 +7,6 @@
 // divide velocity by this to slow down
 constexpr auto FRICTION = 1.35f;
 
-constexpr auto SCR_WIDTH = 1920 / 1.5;
-constexpr auto SCR_HEIGHT = 1080 / 1.5;
-
 
 // CONTROLLER
 

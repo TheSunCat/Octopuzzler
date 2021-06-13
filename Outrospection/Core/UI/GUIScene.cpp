@@ -12,7 +12,7 @@ GUIScene::GUIScene(std::string& _level, int _rowLength) : GUILayer("Scene", fals
 	player("player", 0, 0, 0.1, 0.1)
 	
 {
-	
+	handleManually = true;
 }
 
 void GUIScene::tick()
@@ -26,17 +26,20 @@ void GUIScene::tick()
 void GUIScene::draw() const
 {
 	// fill entire framebuffer with missing texture test
-	//wall.setPosition(0, 0);
-	//wall.setScale(1, 0.5);
+	wall.setPosition(0, 0);
+	wall.setScale(1, 1);
 
-	//wall.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
+	wall.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
 
-	//return;
+	return;
 
-	float tileSize = 0.9f / rowLength;
-	player.setScale(tileSize, tileSize);
-	wall.setScale(tileSize, tileSize);
-	hole.setScale(tileSize, tileSize);
+	Shader& spriteShader = Outrospection::get().spriteShader;
+	Shader& glyphShader = Outrospection::get().glyphShader;
+
+	float tileSize = 0.45f / rowLength;
+	player.setScale(tileSize, tileSize * 1.5);
+	wall.setScale(tileSize, tileSize * 1.5);
+	hole.setScale(tileSize, tileSize * 1.5);
 	
 	for (int i = 0; i < level.length(); i++)
 	{
@@ -45,8 +48,8 @@ void GUIScene::draw() const
 		int xPos = i % rowLength;
 		int yPos = i / rowLength;
 
-		float xSpritePos = xPos * tileSize;
-		float ySpritePos = yPos * tileSize;
+		float xSpritePos = 0.275 + xPos * tileSize;
+		float ySpritePos = 0.25 + yPos * (tileSize * 1.5);
 		
 		switch(tile)
 		{
@@ -54,10 +57,13 @@ void GUIScene::draw() const
 			break;
 		case 'w': // wall
 			// TODO actually draw a wall
-			
+			wall.setPosition(xSpritePos, ySpritePos);
+			wall.draw(spriteShader, glyphShader);
 			break;
 		case 'o': // hole
 			// TODO actually draw a hole
+			hole.setPosition(xSpritePos, ySpritePos);
+			hole.draw(spriteShader, glyphShader);
 			break;
 		}
 		

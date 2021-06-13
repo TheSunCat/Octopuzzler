@@ -61,13 +61,13 @@ public:
         // quad that fills CRT space
         float quadVertices[] = {
             // positions 
-            -0.5f, 0.75f,
-            -0.5f, -0.75f,
-            0.5f, -0.75f,
+            -0.5f, 0.66f,
+            -0.5f, -0.6667f,
+            0.5f, -0.6667f,
 
-            -0.5f, 0.75f,
-            0.5f, -0.75f,
-            0.5f, 0.75f,
+            -0.5f, 0.66f,
+            0.5f, -0.6667f,
+            0.5f, 0.66f,
         };
 
         // screen quad VAO
