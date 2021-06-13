@@ -83,7 +83,7 @@ void main()
     vec2 fragCoord = texCoords * resolution;
 
     vec2 uv = texCoords;
-    FragColor.rgb = aberration(uv) * scanLines(uv) * crt(fragCoord) * grain(uv);
+    FragColor.rgb = aberration(uv) * scanLines(uv) * crt(fragCoord);
 
     FragColor.w = 1.0; // not transparent
 }
