@@ -1,5 +1,7 @@
 #include "GUIOctopusOverlay.h"
 #include "Outrospection.h"
+#include "Core/UI/GUIScene.h"
+
 
 void eyeClick(UIButton& button, int mouseButton)
 {
@@ -34,14 +36,19 @@ void eyeClick(UIButton& button, int mouseButton)
     }
 }
 
-void showWelcome(UIButton& button, int mouseButton)
+void showWelcome(UIButton&, int)
 {
     Util::doLater([] {Outrospection::get().pushOverlay(Outrospection::get().welcomeOverlay);}, 100);
 }
 
-void reset(UIButton& button, int mouseButton)
+void reset(UIButton&, int)
 {
-    Util::doLater([] {LOG_INFO("TODO RESET"); }, 100); // TODO reset
+    Util::doLater([]
+    {
+        LOG("resetting...");
+        auto& o = Outrospection::get();
+        ((GUIScene*)o.scene)->reset();
+    }, 100);
 }
 
 GUIOctopusOverlay::GUIOctopusOverlay() : GUILayer("Octopus Overlay", false),
