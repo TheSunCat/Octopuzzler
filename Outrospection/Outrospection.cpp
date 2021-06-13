@@ -13,6 +13,7 @@
 #include "Core/UI/GUIOctopusOverlay.h"
 #include "Core/UI/GUIPause.h"
 #include "Core/UI/GUIScene.h"
+#include "Core/UI/GUIWelcome.h"
 #include "Events/Event.h"
 #include "Events/KeyEvent.h"
 #include "Events/MouseEvent.h"
@@ -73,10 +74,12 @@ wwwwwwww",
     scene = new GUIScene(level0);
     octopusOverlay = new GUIOctopusOverlay();
     controlsOverlay = new GUIControlsOverlay();
+    welcomeOverlay = new GUIWelcome();
 
     pushLayer(scene);
     pushOverlay(octopusOverlay);
     pushOverlay(controlsOverlay);
+    pushOverlay(welcomeOverlay);
 
     soundEngine->play2D("./res/ObjectData/Sounds/taco.ogg", true);
 }
@@ -140,14 +143,14 @@ void Outrospection::popOverlay(Layer* overlay)
 
 void Outrospection::captureMouse(const bool doCapture)
 {
-    if (doCapture) {
+    if (false) { // TODO not hardcode this
         glfwSetInputMode(gameWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
     else
     {
-        glfwSetInputMode(gameWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        //glfwSetInputMode(gameWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
-        glfwSetCursorPos(gameWindow, SCR_WIDTH / 2.0f, SCR_HEIGHT / 2.0f);
+        //glfwSetCursorPos(gameWindow, SCR_WIDTH / 2.0f, SCR_HEIGHT / 2.0f);
     }
 }
 

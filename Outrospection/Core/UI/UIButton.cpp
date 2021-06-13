@@ -14,6 +14,11 @@ UIButton::UIButton(const std::string& _texName, const float posXPercent, const f
 	onClick(std::move(clickCallback)),
 	buttonBounds(bounds)
 {
+	// assume default bounds
+	if (buttonBounds.shape == BoundsShape::None)
+	{
+		buttonBounds = Bounds(BoundsShape::AABB, { posXPercent, posYPercent, widthPercent, heightPercent });
+	}
 }
 
 UIButton::UIButton(const std::string& _name, SimpleTexture& tex, const float posXPercent, const float posYPercent,
