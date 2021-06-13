@@ -8,6 +8,15 @@
 #include "Core/Rendering/Resource.h"
 #include "Core/Rendering/SimpleTexture.h"
 
+struct Level
+{
+    std::string data;
+    int rowLength;
+
+    glm::vec2 start;
+    glm::vec2 goal;
+};
+
 enum class Control
 {
 	NONE = ' ',

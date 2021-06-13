@@ -5,11 +5,11 @@
 
 // this is the constructor (ctor for short).
 // it only takes care of copying the level data to store it here for now
-GUIScene::GUIScene(std::string& _level, int _rowLength) : GUILayer("Scene", false),
-	level(std::move(_level)), rowLength(_rowLength),
+GUIScene::GUIScene(Level& _level) : GUILayer("Scene", false),
+	level(std::move(_level)), playerPosInt(level.start),
 	wall("wall/single", 0, 0, 0.1, 0.1),
 	hole("holeTile", 0, 0, 0.1, 0.1),
-	player("player/sad0", 0, 0, 0.1, 0.1)
+	playerSprite("player/sad0", 0, 0, 0.1, 0.1)
 	
 {
 	handleManually = true;
@@ -17,10 +17,12 @@ GUIScene::GUIScene(std::string& _level, int _rowLength) : GUILayer("Scene", fals
 
 void GUIScene::tick()
 {
+	playerPos = Util::lerp(playerPos, playerPosInt, 0.2);
+	
 	wall.tick();
 	hole.tick();
 	
-	player.tick();
+	playerSprite.tick();
 }
 
 void GUIScene::draw() const
@@ -28,22 +30,22 @@ void GUIScene::draw() const
 	Shader& spriteShader = Outrospection::get().spriteShader;
 	Shader& glyphShader = Outrospection::get().glyphShader;
 
-	player.setScalePx(160, 130);
+	playerSprite.setScalePx(160, 130);
 	wall.setScalePx(160, 130);
 	hole.setScalePx(160, 130);
 
 	int xPlayerPos = playerPos.x * 16 * 9.2;
 	int yPlayerPos = playerPos.y * 16 * 8.3;
 	
-	player.setPositionPx(xPlayerPos, yPlayerPos);
-	player.draw(spriteShader, glyphShader);
+	playerSprite.setPositionPx(xPlayerPos, yPlayerPos);
+	playerSprite.draw(spriteShader, glyphShader);
 	
-	for (int i = 0; i < level.length(); i++)
+	for (int i = 0; i < level.data.length(); i++)
 	{
-		char tile = level[i];
+		char tile = level.data[i];
 		
-		int xPos = i % rowLength;
-		int yPos = i / rowLength;
+		int xPos = i % level.rowLength;
+		int yPos = i / level.rowLength;
 
 		int xSpritePos = xPos * 16 * 9.2;
 		int ySpritePos = yPos * 16 * 8.3;
@@ -63,13 +65,40 @@ void GUIScene::draw() const
 			hole.draw(spriteShader, glyphShader);
 			break;
 		}
+	}
+}
 
-		//printf("%i, %i\n", xPos, yPos);
-		
-		//button->draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
+void GUIScene::tryMovePlayer(Control input)
+{
+	glm::vec2 delta = glm::vec2();
+	switch(input)
+	{
+	case Control::MOVE_UP:
+		delta.y--;
+		break;
+	case Control::MOVE_DOWN:
+		delta.y++;
+		break;
+	case Control::MOVE_RIGHT:
+		delta.x++;
+		break;
+	case Control::MOVE_LEFT:
+		delta.x--;
+		break;
+	default:
+		LOG_ERROR("Unknown control %i", int(input));
 	}
 
-	//__debugbreak();
+	glm::vec2 ghostPlayerPos = playerPosInt + delta;
 
+	int intGhostPosition = ghostPlayerPos.x + (ghostPlayerPos.y * level.rowLength);
+	
+	if(level.data[intGhostPosition] != ' ')
+	{
+		LOG("TODO: Kill player");
+	} else
+	{
+		playerPosInt = playerPosInt + delta;
+	}
 	
 }
