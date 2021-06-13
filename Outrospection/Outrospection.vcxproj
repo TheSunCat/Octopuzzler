@@ -238,6 +238,7 @@
     <ClInclude Include="Core\UI\GUILayer.h" />
     <ClInclude Include="Core\UI\GUIScene.h" />
     <ClInclude Include="Core\UI\GUIWelcome.h" />
+    <ClInclude Include="Core\UI\GUIWinOverlay.h" />
     <ClInclude Include="Core\UI\UIButton.h" />
     <ClInclude Include="Core\UI\UIComponent.h" />
     <ClInclude Include="Core\UI\GUIOctopusOverlay.h" />
@@ -267,6 +268,7 @@
     <ClCompile Include="Core\UI\GUILayer.cpp" />
     <ClCompile Include="Core\UI\GUIScene.cpp" />
     <ClCompile Include="Core\UI\GUIWelcome.cpp" />
+    <ClCompile Include="Core\UI\GUIWinOverlay.cpp" />
     <ClCompile Include="Core\UI\UIButton.cpp" />
     <ClCompile Include="Core\UI\UIComponent.cpp" />
     <ClCompile Include="Core\UI\GUIOctopusOverlay.cpp" />
