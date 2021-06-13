@@ -63,16 +63,16 @@ Outrospection::Outrospection()
 
     glfwSetCursor(gameWindow, cursorNone);
 
-    std::string level0 =  "\
+    Level level0 = { "\
 wwwwwwww\
 wwww www\
 wwww  ww\
 w   w ww\
 www   ww\
-wwwwwwww\
-";
+wwwwwwww",
+    8, glm::vec2(1, 3), glm::vec2(5, 1)};
 	
-    scene = new GUIScene(level0, 8);
+    scene = new GUIScene(level0);
     octopusOverlay = new GUIOctopusOverlay();
     controlsOverlay = new GUIControlsOverlay();
 
@@ -182,9 +182,12 @@ Eye Outrospection::getEye() const
 
 bool Outrospection::controlBound(Control control)
 {
+    if (control == Control::NONE)
+        return false; // NONE cannot be bound
+	
     for(KeyBinding& bind : keyBinds)
     {
-        if (bind.m_control == control)
+        if (bind.m_eye != Eye::NONE && bind.m_control == control)
             return true; // can't bind control twice!
     }
 
@@ -319,6 +322,8 @@ void Outrospection::runTick()
 	// read input
     Control curInput = inputQueue[0];
     LOG_INFO("Player is playing %i", int(curInput));
+
+    ((GUIScene*)scene)->tryMovePlayer(curInput);
 
 	// erase it so we move to the next one
     inputQueue.erase(inputQueue.begin());
@@ -467,6 +472,9 @@ void Outrospection::key_callback(GLFWwindow* window, int key, int scancode, int 
             break;
         case GLFW_KEY_C:
             LOG("Pressed TRIANGLE");
+            break;
+        case GLFW_KEY_ESCAPE:
+            Outrospection::get().running = false;
             break;
 		}
 	}

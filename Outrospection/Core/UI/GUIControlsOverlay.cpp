@@ -24,7 +24,7 @@ void controlClick(UIButton& button, int mouseButton)
 	}
 	
 	// change the keybind
-    if (!o.controlBound(theControlThatWasClicked)) { // can't rebind controls!
+    if (theControlThatWasClicked != Control::NONE && !o.controlBound(theControlThatWasClicked)) { // can't rebind controls!
     	
         o.keyBinds.emplace_back(o.getEye(), theControlThatWasClicked);
 

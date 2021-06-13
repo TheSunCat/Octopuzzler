@@ -5,19 +5,20 @@
 class GUIScene : public GUILayer
 {
 public:
-	GUIScene(std::string& _level, int _rowLength);
+	GUIScene(Level& _level);
 
 	void tick() override;
 	
 	void draw() const override;
 
-	std::string level; // stored in a grid like in Processing
-	int rowLength;
+	void tryMovePlayer(Control input);
+
+	Level level;
+	mutable glm::vec2 playerPos; // interpolates player between grid spots
+	mutable glm::vec2 playerPosInt; // actual position on grid
 	
 	mutable UIComponent wall;
 	mutable UIComponent hole;
 	
-	mutable UIComponent player; // oof. the player is a ui component. I need to find better names
-	
-	mutable glm::vec2 playerPos;
+	mutable UIComponent playerSprite;
 };
