@@ -25,21 +25,17 @@ void GUIScene::tick()
 
 void GUIScene::draw() const
 {
-	// fill entire framebuffer with missing texture test
-	wall.setPosition(0, 0);
-	wall.setScale(1, 1);
 
-	wall.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
-
-	return;
 
 	Shader& spriteShader = Outrospection::get().spriteShader;
 	Shader& glyphShader = Outrospection::get().glyphShader;
 
-	float tileSize = 0.45f / rowLength;
-	player.setScale(tileSize, tileSize * 1.5);
-	wall.setScale(tileSize, tileSize * 1.5);
-	hole.setScale(tileSize, tileSize * 1.5);
+	float xTileSize = 0.9f / rowLength;
+	float yTileSize = 1.0f / int(level.length() / rowLength);
+
+	player.setScale(xTileSize, yTileSize);
+	wall.setScale(xTileSize, yTileSize);
+	hole.setScale(xTileSize, yTileSize);
 	
 	for (int i = 0; i < level.length(); i++)
 	{
@@ -48,8 +44,8 @@ void GUIScene::draw() const
 		int xPos = i % rowLength;
 		int yPos = i / rowLength;
 
-		float xSpritePos = 0.275 + xPos * tileSize;
-		float ySpritePos = 0.25 + yPos * (tileSize * 1.5);
+		float xSpritePos = xPos * xTileSize;
+		float ySpritePos = yPos * yTileSize;
 		
 		switch(tile)
 		{

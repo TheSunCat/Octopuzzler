@@ -5,7 +5,7 @@ in vec2 texCoords;
 
 uniform sampler2D screenTexture;
 uniform vec2 resolution;
-uniform int time;
+uniform float time;
 
 // shader from https://www.shadertoy.com/view/tssSzM, thanks!!
 
