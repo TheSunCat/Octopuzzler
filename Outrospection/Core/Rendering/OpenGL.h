@@ -37,7 +37,7 @@ public:
 
         glfwMakeContextCurrent(gameWindow);
 
-        glfwSetInputMode(gameWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        glfwSetInputMode(gameWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
         glfwSetWindowUserPointer(gameWindow, reinterpret_cast<void*>(this));
 

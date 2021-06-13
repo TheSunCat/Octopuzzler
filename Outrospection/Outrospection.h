@@ -72,15 +72,16 @@ public:
     Shader spriteScanlinesShader;
     Shader glyphShader;
 
+    GUILayer* scene;
+    GUILayer* octopusOverlay;
+    GUILayer* controlsOverlay;
+    GUILayer* welcomeOverlay;
+	
     DISALLOW_COPY_AND_ASSIGN(Outrospection)
 private:
     void runGameLoop();
     void runTick();
     time_t lastTick;
-
-    GUILayer* scene;
-    GUILayer* octopusOverlay;
-    GUILayer* controlsOverlay;
 
     // set to false when the game loop shouldn't run
     bool running = false;
