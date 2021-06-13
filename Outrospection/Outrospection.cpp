@@ -199,6 +199,8 @@ bool Outrospection::controlBound(Control control)
 
 void Outrospection::doControl(Eye pokedEye)
 {
+    lastTick = currentTimeMillis - 5000; // do tick NOW
+	
 	for(KeyBinding& bind : keyBinds)
 	{
 		if(bind.m_eye == pokedEye)
