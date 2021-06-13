@@ -38,6 +38,9 @@
     <None Include="res\ShaderData\CRT.vert">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="res\ShaderData\spriteScanlines.frag">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Rendering\OpenGL.h">
