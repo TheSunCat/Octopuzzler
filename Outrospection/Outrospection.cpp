@@ -59,8 +59,17 @@ Outrospection::Outrospection()
     registerCallbacks();
     createShaders();
     createCursors();
-    
 
+    GLFWimage image;
+    int width = 10, height = 10;
+
+    unsigned char* data = TextureManager::readImageBytes("./res/ObjectData/icon.png", width, height);
+    image.pixels = data; image.width = width; image.height = height;
+	
+    glfwSetWindowIcon(gameWindow, 1, &image);
+
+    TextureManager::free(data);
+	
     glfwSetCursor(gameWindow, cursorNone);
 	
     scene = new GUIScene();

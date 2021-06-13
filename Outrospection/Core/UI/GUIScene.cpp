@@ -99,7 +99,7 @@ void GUIScene::tryMovePlayer(Control input)
 {
 	if(!canMove)
 	{
-		LOG("Can't move your body.");
+		LOG("Can't move your body."); // Undertale reference!!!!!!
 		return;
 	}
 	
@@ -164,7 +164,7 @@ void GUIScene::tryMovePlayer(Control input)
 				{
 					setLevel(ALL_LEVELS[this->levelID]);
 					
-					//LOG_INFO("Advancing to level %i...", this->levelID);
+					LOG_INFO("Advancing to level %i...", this->levelID);
 					
 				}
 			}, 1000);
