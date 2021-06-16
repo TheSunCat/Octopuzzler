@@ -148,6 +148,9 @@
     <ClInclude Include="Core\UI\GUIWinOverlay.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LevelReader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\Rendering\TextureManager.cpp">

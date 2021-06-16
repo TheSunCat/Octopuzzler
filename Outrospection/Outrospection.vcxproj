@@ -250,6 +250,7 @@
     <ClInclude Include="Events\MouseEvent.h" />
     <ClInclude Include="Events\WindowEvent.h" />
     <ClInclude Include="KeyBinding.h" />
+    <ClInclude Include="LevelReader.h" />
     <ClInclude Include="Outrospection.h" />
     <ClInclude Include="Tracker.h" />
     <ClInclude Include="Types.h" />

@@ -243,8 +243,6 @@ void Outrospection::runGameLoop()
 	            }
             }
         }
-
-        // TODO remove this LOG("%f, %f", lastMousePos.x, lastMousePos.y);
     	
         // UIs are also updated when game is paused
         for (auto& layer : layerStack)

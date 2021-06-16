@@ -204,10 +204,8 @@ void GUIScene::reset()
 	playerSprite.setAnimation("default");
 	flag.hidden = false;
 	
-	Outrospection::get().keyBinds.clear();
-
-	Outrospection::get().popOverlay(Outrospection::get().controlsOverlay);
-	Outrospection::get().controlsOverlay = new GUIControlsOverlay();
-	Outrospection::get().pushOverlay(Outrospection::get().controlsOverlay);
+	Outrospection::get().inputQueue.clear();
+	
+	((GUIControlsOverlay*)Outrospection::get().controlsOverlay)->setControls(level.controls);
 }
 

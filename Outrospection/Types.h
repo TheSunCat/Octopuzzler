@@ -12,6 +12,7 @@ struct Level
 {
     std::string data;
     int rowLength;
+    std::string controls;
 
     glm::vec2 start;
     glm::vec2 goal;
