@@ -49,26 +49,7 @@ void controlClick(UIButton& button, int)
 GUIControlsOverlay::GUIControlsOverlay() : GUILayer("Controls Overlay", false),
 	window("window", 0.04, 0.1, 0.2, 0.475)
 {
-    std::string buttonNames[] = {
-        "U up N ",
-        "D down N ",
-        "L right N ",
-        "R left N ",
-    	"^ dash up N ",
-    	"~ dash down N ",
-    	"< dash left N ",
-    	"> dash right N "
-    };
-
-    for (int i = 0; i < sizeof(buttonNames) / sizeof(*buttonNames); i++)
-    {
-        buttons.emplace_back(std::make_unique<UIButton>(buttonNames[i],
-            TextureManager::None,
-            0.05, 0.16 + (0.05 * float(i)), 0.2, 0.05, Bounds(),
-            controlClick));
-        
-		buttons[i]->showText = true;
-    }
+    
 }
 
 void GUIControlsOverlay::tick()
@@ -88,5 +69,54 @@ void GUIControlsOverlay::draw() const
     for (auto& button : buttons)
     {
         button->draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
+    }
+}
+
+void GUIControlsOverlay::setControls(const std::string& controlsStr)
+{
+    buttons.clear(); // TODO memory leak? need to free textures maybe?
+    Outrospection::get().keyBinds.clear();
+	
+    std::vector<std::string> buttonNames;
+
+    for (char c : controlsStr)
+    {
+        switch (c)
+        {
+        case 'U':
+            buttonNames.emplace_back("U up N ");
+            break;
+        case 'D':
+            buttonNames.emplace_back("D down N ");
+            break;
+        case 'L':
+            buttonNames.emplace_back("L right N ");
+            break;
+        case 'R':
+            buttonNames.emplace_back("R left N ");
+            break;
+        case '^':
+            buttonNames.emplace_back("^ dash up N ");
+            break;
+        case '~':
+            buttonNames.emplace_back("~ dash down N ");
+            break;
+        case '<':
+            buttonNames.emplace_back("< dash left N ");
+            break;
+        case '>':
+            buttonNames.emplace_back("> dash right N ");
+            break;
+        }
+    }
+
+    for (int i = 0; i < buttonNames.size(); i++)
+    {
+        buttons.emplace_back(std::make_unique<UIButton>(buttonNames[i],
+            TextureManager::None,
+            0.05, 0.16 + (0.05 * float(i)), 0.2, 0.05, Bounds(),
+            controlClick));
+
+        buttons[i]->showText = true;
     }
 }
