@@ -32,9 +32,6 @@ int SCR_HEIGHT = WINDOW_HEIGHT;
 
 void updateRes()
 {
-    //CRT_WIDTH = WINDOW_WIDTH / 1.5;
-    //CRT_HEIGHT = WINDOW_HEIGHT / 1.5;
-
     SCR_WIDTH = WINDOW_WIDTH;
     SCR_HEIGHT = WINDOW_HEIGHT;
 }
@@ -93,7 +90,6 @@ void Outrospection::run()
     startTimeThread();
     startLoggerThread();
     startConsoleThread();
-    //startDiscordThread();
 
     lastFrame = currentTimeMillis;
     while (running)

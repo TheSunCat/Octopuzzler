@@ -13,7 +13,7 @@ uniform float time;
 // ------ PARAMETERS ------
 float crtOutIntensity = 1.1; // intensity of crt cell outline
 float crtInIntensity = 0.9; // intensity of crt cell inside
-float aberrationIntensity = 1.5; // Intensity of chromatic aberration
+float aberrationIntensity = 0.5; // Intensity of chromatic aberration
 int monochromeAberrations = 0;
 float grainIntensity = 0.5; // Intensity of film grain
 // ------------------------
