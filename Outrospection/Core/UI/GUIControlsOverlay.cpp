@@ -47,7 +47,7 @@ void controlClick(UIButton& button, int)
 }
 
 GUIControlsOverlay::GUIControlsOverlay() : GUILayer("Controls Overlay", false),
-	window("window", 0.04, 0.1, 0.2, 0.475)
+	window("window", GL_LINEAR, 0.04, 0.1, 0.2, 0.475)
 {
     
 }

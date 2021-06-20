@@ -11,10 +11,10 @@ class Shader;
 class UIComponent
 {
 public:
-    UIComponent(const std::string& _texName, float posXPercent, float posYPercent, float widthPercent,
+    UIComponent(const std::string& _texName, const GLint& texFilter, float posXPercent, float posYPercent, float widthPercent,
                 float heightPercent);
 
-    UIComponent(std::string _texName, const glm::vec2& _position, const glm::vec2& dimensions);
+    UIComponent(std::string _texName, const GLint& texFilter, const glm::vec2& _position, const glm::vec2& dimensions);
 	
     UIComponent(std::string _name, SimpleTexture& _tex, const glm::vec2& _position, const glm::vec2& dimensions);
 

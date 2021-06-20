@@ -11,6 +11,7 @@ SimpleTexture TextureManager::None(-2);
 
 TextureManager::TextureManager()
 {
+	// create error texture
     const unsigned char missingTexData[] = {
         255, 0, 220, // purple, top left
         0,   0,   0, // black, top right
@@ -20,10 +21,11 @@ TextureManager::TextureManager()
 
     GLuint texId = -1;
     glGenTextures(1, &texId);
-    createTexture(texId, missingTexData, GL_RGB, 2, 2);
+    createTexture(texId, missingTexData, GL_RGB, 2, 2, GL_NEAREST);
 
     MissingTexture.texId = texId;
 
+	// create blank texture
     const unsigned char noneTexData[] = {
         0, 0, 0, 0,
     	0, 0, 0, 0,
@@ -32,16 +34,16 @@ TextureManager::TextureManager()
     };
     
     glGenTextures(1, &texId);
-    createTexture(texId, noneTexData, GL_RGBA, 2, 2);
+    createTexture(texId, noneTexData, GL_RGBA, 2, 2, GL_NEAREST);
 
     None.texId = texId;
 }
 
-SimpleTexture& TextureManager::loadTexture(const Resource& r)
+SimpleTexture& TextureManager::loadTexture(const Resource& r, const GLint& filter)
 {
     const std::string path = r.getResourcePath() + ".png";
 
-    const GLuint texId = textureFromFile(path);
+    const GLuint texId = textureFromFile(path, filter);
 
     if (texId != INT_MAX)
     {
@@ -60,7 +62,7 @@ SimpleTexture& TextureManager::loadTexture(const Resource& r)
 }
 
 SimpleTexture& TextureManager::loadAnimatedTexture(const Resource& r, unsigned int textureTickLength,
-    const unsigned int textureFrameCount)
+    const unsigned int textureFrameCount, const GLint& filter)
 {
     std::string path = r.getResourcePath();
 
@@ -72,7 +74,7 @@ SimpleTexture& TextureManager::loadAnimatedTexture(const Resource& r, unsigned i
         ss << path << i << ".png";
         std::string currentPath = ss.str();
 
-        GLuint currentTextureId = textureFromFile(currentPath);
+        GLuint currentTextureId = textureFromFile(currentPath, filter);
 
         if (currentTextureId != INT_MAX)
         {
@@ -106,7 +108,8 @@ SimpleTexture& TextureManager::get(const Resource& r)
     if (f == textures.end())
     {
         // resource not found in already existing storage, needs to be loaded
-        return loadTexture(r);
+        LOG_ERROR("Texture %s was not loaded before fetching! Loading now as fallback...", r.getResourcePath());
+        return loadTexture(r, GL_LINEAR);
     }
     else
     {
@@ -135,7 +138,7 @@ void TextureManager::free(unsigned char* data)
 }
 
 void TextureManager::createTexture(const GLuint& texId, const unsigned char* data, const GLenum& format,
-                                   const unsigned int& width, const unsigned int& height)
+                                   const unsigned int& width, const unsigned int& height, const GLint& filter)
 {
     glBindTexture(GL_TEXTURE_2D, texId);
     glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
@@ -143,11 +146,11 @@ void TextureManager::createTexture(const GLuint& texId, const unsigned char* dat
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
 }
 
-GLuint TextureManager::textureFromFile(const std::string& filename)
+GLuint TextureManager::textureFromFile(const std::string& filename, const GLint& filter)
 {
     GLuint tex;
     int width, height;
@@ -166,7 +169,7 @@ GLuint TextureManager::textureFromFile(const std::string& filename)
         else if (nrComponents == 4)
             format = GL_RGBA;
 
-        createTexture(tex, data, format, width, height);
+        createTexture(tex, data, format, width, height, filter);
 
         stbi_image_free(data);
 

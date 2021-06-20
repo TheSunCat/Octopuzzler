@@ -28,14 +28,14 @@ glm::vec2 operator*(const glm::vec2& vec, int i)
     return i * vec;
 }
 
-SimpleTexture& animatedTexture(const Resource& resource, int tickLength, int frameCount)
+SimpleTexture& animatedTexture(const Resource& resource, int tickLength, int frameCount, const GLint& filter)
 {
-    return Outrospection::get().textureManager.loadAnimatedTexture(resource, tickLength, frameCount);
+    return Outrospection::get().textureManager.loadAnimatedTexture(resource, tickLength, frameCount, filter);
 }
 
-SimpleTexture& simpleTexture(const Resource& resource)
+SimpleTexture& simpleTexture(const Resource& resource, const GLint& filter)
 {
-    return Outrospection::get().textureManager.loadTexture(resource);
+    return Outrospection::get().textureManager.loadTexture(resource, filter);
 }
 
 bool Util::glError()
@@ -46,7 +46,7 @@ bool Util::glError()
     {
         ret = true;
 
-        LOG_ERROR("%i", err);
+        LOG_ERROR("OpenGL error %i", err);
     }
 
     return ret;

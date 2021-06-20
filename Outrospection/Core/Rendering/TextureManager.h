@@ -18,10 +18,10 @@ private:
 public:
     TextureManager();
 
-    SimpleTexture& loadTexture(const Resource& r);
+    SimpleTexture& loadTexture(const Resource& r, const GLint& filter = GL_LINEAR);
 
     SimpleTexture& loadAnimatedTexture(const Resource& r, unsigned int textureTickLength,
-                                        unsigned int textureFrameCount);
+                                        unsigned int textureFrameCount, const GLint& filter = GL_LINEAR);
 
     void bindTexture(Resource& r);
 
@@ -37,7 +37,7 @@ public:
 	
     DISALLOW_COPY_AND_ASSIGN(TextureManager);
 private:
-    static GLuint textureFromFile(const std::string& filename);
+    static GLuint textureFromFile(const std::string& filename, const GLint& filter);
     static void createTexture(const GLuint& texId, const unsigned char* data, const GLenum& format,
-                              const unsigned int& width, const unsigned int& height);
+                              const unsigned int& width, const unsigned int& height, const GLint& filter);
 };

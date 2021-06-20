@@ -202,11 +202,11 @@ struct smart_printf {
 
 #define LOG_ERROR(...) loggerQueue.push([args=std::make_tuple(__VA_ARGS__)] { CHANGE_COLOR(4); /* red error color */\
         std::apply(smart_printf{}, args); \
-        CHANGE_COLOR(0);});
+        CHANGE_COLOR(0);})
 
 #define LOG_INFO(...) loggerQueue.push([args=std::make_tuple(__VA_ARGS__)] { CHANGE_COLOR(34); /* green info color */\
         std::apply(smart_printf{}, args); \
-        CHANGE_COLOR(0);});
+        CHANGE_COLOR(0);})
 
 #define DISALLOW_COPY_AND_ASSIGN(TypeName) \
     TypeName(const TypeName&) = delete;   \
