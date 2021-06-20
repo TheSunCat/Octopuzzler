@@ -10,8 +10,8 @@ glm::vec2 operator*(int i, const glm::vec2& vec);
 glm::vec2 operator*(const glm::vec2& vec, int i);
 
 // proxy functions that are shorter than the usual huge call
-SimpleTexture& animatedTexture(const Resource& resource, int tickLength, int frameCount);
-SimpleTexture& simpleTexture(const Resource& resource);
+SimpleTexture& animatedTexture(const Resource& resource, int tickLength, int frameCount, const GLint& filter);
+SimpleTexture& simpleTexture(const Resource& resource, const GLint& filter);
 
 namespace Util
 {

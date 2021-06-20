@@ -10,7 +10,7 @@ class UIButton :
     typedef std::function<void(UIButton&, int)> ButtonCallback;
 	
 public:
-    UIButton(const std::string& _texName, float posXPercent, float posYPercent,
+    UIButton(const std::string& _texName, const GLint& texFilter, float posXPercent, float posYPercent,
         float widthPercent, float heightPercent, Bounds bounds,
         ButtonCallback clickCallback = nullptr);
 

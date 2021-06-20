@@ -7,25 +7,25 @@
 
 GLuint UIComponent::quadVAO = 0;
 
-UIComponent::UIComponent(const std::string& _texName, const float posXPercent, const float posYPercent,
+UIComponent::UIComponent(const std::string& _texName, const GLint& texFilter, const float posXPercent, const float posYPercent,
                          const float widthPercent, const float heightPercent)
-    : UIComponent(_texName, glm::vec2(SCR_WIDTH * posXPercent, SCR_HEIGHT * posYPercent),
+    : UIComponent(_texName, texFilter, glm::vec2(SCR_WIDTH * posXPercent, SCR_HEIGHT * posYPercent),
                   glm::vec2(widthPercent * SCR_WIDTH, heightPercent * SCR_HEIGHT))
 {
 }
 
-UIComponent::UIComponent(std::string _texName, const glm::vec2& _position, const glm::vec2& dimensions)
-    : UIComponent(std::move(_texName), (Outrospection::get().textureManager.get({ "UI/", _texName })), _position, dimensions)
+UIComponent::UIComponent(std::string _texName, const GLint& texFilter, const glm::vec2& _position, const glm::vec2& dimensions)
+    : UIComponent(std::move(_texName), simpleTexture({ "UI/", _texName }, texFilter), _position, dimensions)
 {
     
 }
 
 UIComponent::UIComponent(std::string _name, SimpleTexture& _tex, const glm::vec2& _position, const glm::vec2& dimensions)
-	: name(std::move(_name)), textOffset(0.0f, dimensions.y/2), textColor(0.0f), position(_position), width(dimensions.x),
+    : name(std::move(_name)), textOffset(0.0f, dimensions.y/2), textColor(0.0f), position(_position), width(dimensions.x),
     height(dimensions.y)
 {
     animations.insert(std::make_pair("default", &_tex));
-	
+    
     // we need to create our quad the first time!
     if (quadVAO == 0)
     {
@@ -99,7 +99,7 @@ void UIComponent::draw(Shader& shader, const Shader& glyphShader) const
 {
     if (hidden)
         return;
-	
+    
     shader.use();
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(position, 0.0f));
@@ -146,7 +146,7 @@ void UIComponent::drawText(const std::string& text, const Shader& glyphShader) c
             continue;
         }
 
-    	
+        
         FontCharacter fontCharacter = Outrospection::get().fontCharacters.at(c);
 
         // calculate model matrix
@@ -160,12 +160,12 @@ void UIComponent::drawText(const std::string& text, const Shader& glyphShader) c
         float height = (fontCharacter.size.y) * textScale;
         charModel = glm::scale(charModel, glm::vec3(width, height, 1.0f));
 
-    	// TODO not hardcode this lol
+        // TODO not hardcode this lol
         if(c == 'C' || c == 'S' || c == 'T')
             glyphShader.setVec3("textColor", glm::vec3(0.0549f, 0.0902f, 0.1725f)); //0x0E172C
         else
-			glyphShader.setVec3("textColor", glm::vec3(0.8941f, 0.2039f, 0.4314f)); //0xE4346E
-    	
+            glyphShader.setVec3("textColor", glm::vec3(0.8941f, 0.2039f, 0.4314f)); //0xE4346E
+        
         glyphShader.setMat4("model", charModel);
         glBindTexture(GL_TEXTURE_2D, fontCharacter.textureId);
 

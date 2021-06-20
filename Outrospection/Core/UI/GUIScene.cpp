@@ -8,16 +8,16 @@
 // this is the constructor (ctor for short).
 // it only takes care of copying the level data to store it here for now
 GUIScene::GUIScene() : GUILayer("Scene", false),
-	floor("platform", 0, 0, 0.1, 0.1),
-	ink("hole", 0, 0, 0.1, 0.1),
-	flag("flag", animatedTexture({"UI/flag/", "default"}, 10, 2), {0, 0}, {0, 0}),
-	playerSprite("player/default", 0, 0, 0.1, 0.1)
+	floor("platform", 0, 0, 0.1, 0.1, GL_NEAREST),
+	ink("hole", 0, 0, 0.1, 0.1, GL_NEAREST),
+	flag("flag", animatedTexture({"UI/flag/", "default"}, 10, 2, GL_NEAREST), {0, 0}, {0, 0}),
+	playerSprite("player/default", 0, 0, 0.1, 0.1, GL_NEAREST)
 	
 {
 	handleManually = true;
 
-	playerSprite.addAnimation("die", simpleTexture({"UI/player/", "sad"}));
-	playerSprite.addAnimation("win", simpleTexture({"UI/player/", "happy"}));
+	playerSprite.addAnimation("die", simpleTexture({"UI/player/", "sad"}, GL_NEAREST));
+	playerSprite.addAnimation("win", simpleTexture({"UI/player/", "happy"}, GL_NEAREST));
 
 	setLevel(ALL_LEVELS[levelID]);
 }
