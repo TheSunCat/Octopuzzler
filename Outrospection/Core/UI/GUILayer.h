@@ -26,6 +26,5 @@ protected:
     std::vector<std::unique_ptr<UIButton>> buttons;
     bool captureMouse = false;
 private:
-	
     std::string name;
 };

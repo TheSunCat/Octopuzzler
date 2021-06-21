@@ -7,8 +7,8 @@ void controlClick(UIButton& button, int)
     Outrospection& o = Outrospection::get();
 
     Control theControlThatWasClicked = Control::NONE;
-	switch(button.name[0])
-	{
+    switch (button.name[0])
+    {
     case 'U':
         theControlThatWasClicked = Control::MOVE_UP;
         break;
@@ -21,7 +21,7 @@ void controlClick(UIButton& button, int)
     case 'L':
         theControlThatWasClicked = Control::MOVE_RIGHT;
         break;
-	case '^':
+    case '^':
         theControlThatWasClicked = Control::DASH_UP;
         break;
     case '~':
@@ -33,23 +33,24 @@ void controlClick(UIButton& button, int)
     case '>':
         theControlThatWasClicked = Control::DASH_RIGHT;
         break;
-	}
-	
-	// change the keybind
-    if (theControlThatWasClicked != Control::NONE && !o.controlBound(theControlThatWasClicked)) { // can't rebind controls!
-    	
+    }
+
+    // change the keybind
+    if (theControlThatWasClicked != Control::NONE && !o.controlBound(theControlThatWasClicked))
+    {
+        // can't rebind controls!
+
         o.keyBinds.emplace_back(o.getEye(), theControlThatWasClicked);
 
         button.name[button.name.length() - 1] = char(o.getEye());
     }
-	
+
     LOG("You pressed button %s", button.name);
 }
 
 GUIControlsOverlay::GUIControlsOverlay() : GUILayer("Controls Overlay", false),
-	window("window", GL_LINEAR, 0.04, 0.1, 0.2, 0.475)
+                                           window("window", GL_LINEAR, 0.04, 0.1, 0.2, 0.475)
 {
-    
 }
 
 void GUIControlsOverlay::tick()
@@ -76,7 +77,7 @@ void GUIControlsOverlay::setControls(const std::string& controlsStr)
 {
     buttons.clear(); // TODO memory leak? need to free textures maybe?
     Outrospection::get().keyBinds.clear();
-	
+
     std::vector<std::string> buttonNames;
 
     for (char c : controlsStr)
@@ -113,9 +114,9 @@ void GUIControlsOverlay::setControls(const std::string& controlsStr)
     for (int i = 0; i < buttonNames.size(); i++)
     {
         buttons.emplace_back(std::make_unique<UIButton>(buttonNames[i],
-            TextureManager::None,
-            0.05, 0.16 + (0.05 * float(i)), 0.2, 0.05, Bounds(),
-            controlClick));
+                                                        TextureManager::None,
+                                                        0.05, 0.16 + (0.05 * float(i)), 0.2, 0.05, Bounds(),
+                                                        controlClick));
 
         buttons[i]->showText = true;
     }

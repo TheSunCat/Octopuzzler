@@ -8,7 +8,7 @@
 #include "Events/KeyEvent.h"
 
 GUILayer::GUILayer(std::string _name, const bool _captureMouse) : Layer(),
-    captureMouse(_captureMouse), name(std::move(_name))
+                                                                  captureMouse(_captureMouse), name(std::move(_name))
 {
 }
 
@@ -43,18 +43,18 @@ bool GUILayer::onKeyReleased(KeyReleasedEvent& event)
 
 bool GUILayer::onMousePressed(MouseButtonPressedEvent& event)
 {
-    for(auto& button : buttons)
+    for (auto& button : buttons)
     {
-	    if(button->hovered)
-	    {
+        if (button->hovered)
+        {
             button->onClick(*button, event.getMouseButton()); // TODO feed mouse coords
-	    	
+
             return true; // handled
-	    }
+        }
     }
 
-	// TODO this is bad
+    // TODO this is bad
     Outrospection::get().setEye(Eye::NONE);
-	
+
     return false;
 }

@@ -21,7 +21,7 @@ public:
     SimpleTexture& loadTexture(const Resource& r, const GLint& filter = GL_LINEAR);
 
     SimpleTexture& loadAnimatedTexture(const Resource& r, unsigned int textureTickLength,
-                                        unsigned int textureFrameCount, const GLint& filter = GL_LINEAR);
+                                       unsigned int textureFrameCount, const GLint& filter = GL_LINEAR);
 
     void bindTexture(Resource& r);
 
@@ -34,7 +34,7 @@ public:
 
     static unsigned char* readImageBytes(const std::string& path, int& width, int& height);
     static void free(unsigned char* data);
-	
+
     DISALLOW_COPY_AND_ASSIGN(TextureManager);
 private:
     static GLuint textureFromFile(const std::string& filename, const GLint& filter);
