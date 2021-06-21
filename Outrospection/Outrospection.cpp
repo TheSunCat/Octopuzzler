@@ -44,6 +44,10 @@ Outrospection::Outrospection()
 {
     instance = this;
 
+#ifdef PLATFORM_WINDOWS && !DEBUG
+    ::ShowWindow(::GetConsoleWindow(), SW_HIDE); // hide console window
+#endif
+
     preInit = PreInitialization();
 
     gameWindow = opengl.gameWindow;
