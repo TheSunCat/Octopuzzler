@@ -38,6 +38,7 @@ public:
     }
 
     Outrospection();
+    ~Outrospection();
 
     void run();
     void onEvent(Event& e);
@@ -124,12 +125,12 @@ private:
 
     static Outrospection* instance;
 
-    std::thread timeThread;
+    std::jthread timeThread;
     void startTimeThread();
 
-    std::thread loggerThread;
+    std::jthread loggerThread;
     void startLoggerThread();
     
-    std::thread consoleThread;
+    std::jthread consoleThread;
     void startConsoleThread();
 };

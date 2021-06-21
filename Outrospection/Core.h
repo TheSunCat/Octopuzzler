@@ -48,8 +48,6 @@ inline time_t currentTimeSeconds;
     #error "Unknown platform!"
 #endif // End of platform detection
 
-#define DEBUG false//__DEBUG__
-
 #ifdef PLATFORM_WINDOWS
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
@@ -116,6 +114,12 @@ template <typename T>
 class Queue
 {
 public:
+    bool empty()
+    {
+        std::unique_lock<std::mutex> mlock(mutex);
+        return queue.empty();
+    }
+
     T pop()
     {
         std::unique_lock<std::mutex> mlock(mutex);
@@ -123,7 +127,7 @@ public:
         {
             cond.wait(mlock);
         }
-        auto item = queue.front();
+        auto item = std::move(queue.front());
         queue.pop();
         return item;
     }
@@ -135,7 +139,7 @@ public:
         {
             cond.wait(mlock);
         }
-        item = queue.front();
+        item = std::move(queue.front());
         queue.pop();
     }
 
@@ -189,7 +193,7 @@ struct smart_printf {
 
 #define LOG(...) loggerQueue.push([args=std::make_tuple(__VA_ARGS__)] { std::apply(smart_printf{}, args); })
 
-#if DEBUG
+#ifdef __DEBUG__
 #define LOG_DEBUG(...) loggerQueue.push([args=std::make_tuple(__VA_ARGS__)] { CHANGE_COLOR(35); /* set color to magenta */\
         std::apply(smart_printf{}, args); \
         CHANGE_COLOR(0);})
