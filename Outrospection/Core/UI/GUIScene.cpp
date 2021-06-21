@@ -104,6 +104,8 @@ void GUIScene::tryMovePlayer(Control input)
         return;
     }
 
+    pastPositions.emplace_back(playerPosInt);
+
     std::vector<glm::vec2> deltas;
     switch (input)
     {
@@ -197,6 +199,20 @@ void GUIScene::tryMovePlayer(Control input)
 
 
     playerPosInt += totalDelta;
+}
+
+void GUIScene::tryUndo()
+{
+    if (!canMove || pastPositions.empty())
+    {
+        LOG("Can't move your body."); // Undertale reference!!!!!!
+        return;
+    }
+
+    playerPosInt = pastPositions.back();
+    pastPositions.pop_back();
+
+    LOG_INFO("Undid move!");
 }
 
 void GUIScene::reset()
