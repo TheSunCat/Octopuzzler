@@ -6,41 +6,14 @@ void controlClick(UIButton& button, int)
 {
     Outrospection& o = Outrospection::get();
 
-    Control theControlThatWasClicked = Control::NONE;
-    switch (button.name[0])
-    {
-    case 'U':
-        theControlThatWasClicked = Control::MOVE_UP;
-        break;
-    case 'D':
-        theControlThatWasClicked = Control::MOVE_DOWN;
-        break;
-    case 'R':
-        theControlThatWasClicked = Control::MOVE_LEFT;
-        break;
-    case 'L':
-        theControlThatWasClicked = Control::MOVE_RIGHT;
-        break;
-    case '^':
-        theControlThatWasClicked = Control::DASH_UP;
-        break;
-    case '~':
-        theControlThatWasClicked = Control::DASH_DOWN;
-        break;
-    case '<':
-        theControlThatWasClicked = Control::DASH_LEFT;
-        break;
-    case '>':
-        theControlThatWasClicked = Control::DASH_RIGHT;
-        break;
-    }
+    auto clickedControl = (Control)button.name[0];
 
     // change the keybind
-    if (theControlThatWasClicked != Control::NONE && !o.controlBound(theControlThatWasClicked))
+    if (clickedControl != Control::NONE && !o.controlBound(clickedControl))
     {
         // can't rebind controls!
 
-        o.keyBinds.emplace_back(o.getEye(), theControlThatWasClicked);
+        o.keyBinds.emplace_back(o.getEye(), clickedControl);
 
         button.name[button.name.length() - 1] = char(o.getEye());
     }
