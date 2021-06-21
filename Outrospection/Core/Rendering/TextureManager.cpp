@@ -11,12 +11,12 @@ SimpleTexture TextureManager::None(-2);
 
 TextureManager::TextureManager()
 {
-	// create error texture
+    // create error texture
     const unsigned char missingTexData[] = {
         255, 0, 220, // purple, top left
-        0,   0,   0, // black, top right
-        0,   0,   0, // black, bottom left
-        255, 0, 220  // purple, bottom right
+        0, 0, 0, // black, top right
+        0, 0, 0, // black, bottom left
+        255, 0, 220 // purple, bottom right
     };
 
     GLuint texId = -1;
@@ -25,14 +25,14 @@ TextureManager::TextureManager()
 
     MissingTexture.texId = texId;
 
-	// create blank texture
+    // create blank texture
     const unsigned char noneTexData[] = {
         0, 0, 0, 0,
-    	0, 0, 0, 0,
+        0, 0, 0, 0,
         0, 0, 0, 0,
         0, 0, 0, 0, // all transparent RGBA
     };
-    
+
     glGenTextures(1, &texId);
     createTexture(texId, noneTexData, GL_RGBA, 2, 2, GL_NEAREST);
 
@@ -62,7 +62,7 @@ SimpleTexture& TextureManager::loadTexture(const Resource& r, const GLint& filte
 }
 
 SimpleTexture& TextureManager::loadAnimatedTexture(const Resource& r, unsigned int textureTickLength,
-    const unsigned int textureFrameCount, const GLint& filter)
+                                                   const unsigned int textureFrameCount, const GLint& filter)
 {
     std::string path = r.getResourcePath();
 
@@ -83,13 +83,14 @@ SimpleTexture& TextureManager::loadAnimatedTexture(const Resource& r, unsigned i
         else
         {
             LOG_ERROR("Failed to generate texture ID for animated texture frame %i at %s", textureFrameCount,
-                currentPath);
+                      currentPath);
 
             textureIds.push_back(MissingTexture.texId);
         }
     }
-    
-    auto [it, success] = textures.insert(std::pair(r, std::make_unique<TickableTexture>(textureIds, path, textureTickLength)));
+
+    auto [it, success] = textures.insert(
+        std::pair(r, std::make_unique<TickableTexture>(textureIds, path, textureTickLength)));
 
     return *(it->second);
 }

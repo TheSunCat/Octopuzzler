@@ -5,27 +5,27 @@
 class GUIScene : public GUILayer
 {
 public:
-	GUIScene();
-	void setLevel(Level& lvl);
+    GUIScene();
+    void setLevel(Level& lvl);
 
-	void tick() override;
-	
-	void draw() const override;
+    void tick() override;
 
-	void tryMovePlayer(Control input);
-	void reset();
+    void draw() const override;
+
+    void tryMovePlayer(Control input);
+    void reset();
 
 
-	Level level{};
-	mutable glm::vec2 playerPos{}; // interpolates player between grid spots
-	mutable glm::vec2 playerPosInt{}; // actual position on grid
-	mutable bool canMove = true;
-	
-	mutable UIComponent floor;
-	mutable UIComponent ink;
-	mutable UIComponent flag;
-	
-	mutable UIComponent playerSprite;
-	
-	mutable int levelID = 0;
+    Level level{};
+    mutable glm::vec2 playerPos{}; // interpolates player between grid spots
+    mutable glm::vec2 playerPosInt{}; // actual position on grid
+    mutable bool canMove = true;
+
+    mutable UIComponent floor;
+    mutable UIComponent ink;
+    mutable UIComponent flag;
+
+    mutable UIComponent playerSprite;
+
+    mutable int levelID = 0;
 };

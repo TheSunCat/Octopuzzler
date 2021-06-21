@@ -47,7 +47,7 @@ public:
 
         loadedCharacters.insert(std::pair<char, FontCharacter>(c, character));
     }
-	
+
     FreeType()
     {
         FT_Library ft;
@@ -72,14 +72,14 @@ public:
         {
             loadChar(face, c);
         }
-    	
+
         loadChar(face, ' ');
         loadChar(face, '^');
         loadChar(face, '~');
         loadChar(face, '<');
         loadChar(face, '>');
 
-    	// arrows
+        // arrows
         loadChar(face, 'U'); // up
         loadChar(face, 'D'); // down
         loadChar(face, 'L'); // left

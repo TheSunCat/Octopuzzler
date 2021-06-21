@@ -4,37 +4,37 @@
 
 #include "Outrospection.h"
 
-UIButton::UIButton(const std::string& _texName, const GLint& texFilter, const float posXPercent, const float posYPercent,
+UIButton::UIButton(const std::string& _texName, const GLint& texFilter, const float posXPercent,
+                   const float posYPercent,
                    const float widthPercent,
                    const float heightPercent, Bounds bounds, ButtonCallback clickCallback)
     : UIComponent(_texName, texFilter,
-                 posXPercent, posYPercent,
-                 widthPercent, heightPercent),
-    onClick(std::move(clickCallback)),
-    buttonBounds(bounds)
+                  posXPercent, posYPercent,
+                  widthPercent, heightPercent),
+      onClick(std::move(clickCallback)),
+      buttonBounds(bounds)
 {
     // assume default bounds
     if (buttonBounds.shape == BoundsShape::None)
     {
-        buttonBounds = Bounds(BoundsShape::AABB, { posXPercent, posYPercent, widthPercent, heightPercent });
+        buttonBounds = Bounds(BoundsShape::AABB, {posXPercent, posYPercent, widthPercent, heightPercent});
     }
 }
 
 UIButton::UIButton(const std::string& _name, SimpleTexture& tex, const float posXPercent, const float posYPercent,
-    const float widthPercent, const float heightPercent,
-    Bounds bounds, ButtonCallback clickCallback)
+                   const float widthPercent, const float heightPercent,
+                   Bounds bounds, ButtonCallback clickCallback)
     : UIComponent(_name, tex,
-        glm::vec2(SCR_WIDTH * posXPercent, SCR_HEIGHT* posYPercent),
-        glm::vec2(SCR_WIDTH* widthPercent, SCR_HEIGHT* heightPercent)),
-    onClick(std::move(clickCallback)),
-    buttonBounds(bounds)
+                  glm::vec2(SCR_WIDTH * posXPercent, SCR_HEIGHT * posYPercent),
+                  glm::vec2(SCR_WIDTH * widthPercent, SCR_HEIGHT * heightPercent)),
+      onClick(std::move(clickCallback)),
+      buttonBounds(bounds)
 {
     // assume default bounds
-    if(buttonBounds.shape == BoundsShape::None)
+    if (buttonBounds.shape == BoundsShape::None)
     {
-        buttonBounds = Bounds(BoundsShape::AABB, { posXPercent, posYPercent, widthPercent, heightPercent });
+        buttonBounds = Bounds(BoundsShape::AABB, {posXPercent, posYPercent, widthPercent, heightPercent});
     }
-
 }
 
 bool UIButton::isOnButton(const glm::vec2& point) const
