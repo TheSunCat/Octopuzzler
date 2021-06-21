@@ -310,14 +310,14 @@ void Outrospection::runTick()
     if (inputQueue.empty())
         return;
 
-    if (currentTimeMillis - lastTick < 500) // one tick per second
+    if (currentTimeMillis - lastTick < 333) // three ticks per second
         return;
 	
     lastTick = currentTimeMillis;
 
 	// read input
     Control curInput = inputQueue[0];
-    LOG_INFO("Player is playing %i", int(curInput));
+    LOG_INFO("Player is playing %c", char(curInput));
 
     ((GUIScene*)scene)->tryMovePlayer(curInput);
 

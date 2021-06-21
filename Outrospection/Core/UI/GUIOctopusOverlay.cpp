@@ -38,6 +38,15 @@ void reset(UIButton&, int)
     }, 100);
 }
 
+void undo(UIButton&, int)
+{
+    Util::doLater([]
+    {
+        auto& o = Outrospection::get();
+        ((GUIScene*)o.scene)->tryUndo();
+    }, 100);
+}
+
 GUIOctopusOverlay::GUIOctopusOverlay() : GUILayer("Octopus Overlay", false),
                                          theOverlay("octopusOverlay", GL_LINEAR, 0, 0, 1, 1)
 {
@@ -53,9 +62,9 @@ GUIOctopusOverlay::GUIOctopusOverlay() : GUILayer("Octopus Overlay", false),
                                                     Bounds(BoundsShape::Circle, {0.93, 0.3, 0.07}), eyeClick));
     buttons[2]->addAnimation("blink", animatedTexture({"UI/eyes/", "eyeTriangle"}, 1, 5, GL_LINEAR));
 
-    buttons.emplace_back(std::make_unique<UIButton>("showWelcome", GL_NEAREST, 0.95, 0.92, 0.05, 0.08, Bounds(),
-                                                    showWelcome));
+    buttons.emplace_back(std::make_unique<UIButton>("showWelcome", GL_NEAREST, 0.95, 0.92, 0.05, 0.08, Bounds(), showWelcome));
     buttons.emplace_back(std::make_unique<UIButton>("reset", GL_NEAREST, 0.90, 0.92, 0.05, 0.08, Bounds(), reset));
+    buttons.emplace_back(std::make_unique<UIButton>("undo", GL_NEAREST, 0.85, 0.92, 0.05, 0.08, Bounds(), undo));
 }
 
 void GUIOctopusOverlay::tick()

@@ -13,6 +13,7 @@ public:
     void draw() const override;
 
     void tryMovePlayer(Control input);
+    void tryUndo();
     void reset();
 
 
@@ -20,6 +21,7 @@ public:
     mutable glm::vec2 playerPos{}; // interpolates player between grid spots
     mutable glm::vec2 playerPosInt{}; // actual position on grid
     mutable bool canMove = true;
+    mutable std::vector<glm::vec2> pastPositions;
 
     mutable UIComponent floor;
     mutable UIComponent ink;
