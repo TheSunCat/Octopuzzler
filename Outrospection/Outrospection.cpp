@@ -44,7 +44,7 @@ Outrospection::Outrospection()
 {
     instance = this;
 
-#ifdef PLATFORM_WINDOWS && !DEBUG
+#if defined(PLATFORM_WINDOWS) && defined(__DEBUG__)
     ::ShowWindow(::GetConsoleWindow(), SW_HIDE); // hide console window
 #endif
 
@@ -87,21 +87,36 @@ Outrospection::Outrospection()
     soundEngine->play2D("./res/SoundData/totallyNotABossBattle.ogg", true);
 }
 
+Outrospection::~Outrospection()
+{
+    LOG_INFO("Terminating engine...");
+
+    glfwTerminate();
+    timeThread.request_stop();
+    timeThread.join();
+
+    //consoleThread.request_stop();
+    //consoleThread.join();
+
+    loggerThread.request_stop();
+    loggerThread.join();
+
+    std::cout << "Terminated the termination of the engine." << std::endl;
+}
+
 void Outrospection::run()
 {
     running = true;
 
     startTimeThread();
     startLoggerThread();
-    startConsoleThread();
+    // TODO startConsoleThread();
 
     lastFrame = currentTimeMillis;
     while (running)
     {
         runGameLoop();
     }
-
-    glfwTerminate();
 }
 
 void Outrospection::onEvent(Event& e)
@@ -488,11 +503,12 @@ void Outrospection::updateInput()
 
 void Outrospection::startTimeThread()
 {
-    timeThread = std::thread{
-        [&]() -> void
+    timeThread = std::jthread(
+        [&](std::stop_token stopToken) -> void
         {
-            while (true)
-            {
+            std::cout << "Started time thread." << std::endl;
+
+            while (!stopToken.stop_requested()) {
                 auto now = std::chrono::system_clock::now();
 
                 currentTimeSeconds = std::chrono::system_clock::to_time_t(now);
@@ -500,17 +516,22 @@ void Outrospection::startTimeThread()
 
                 std::this_thread::yield();
             }
-        }
-    };
+
+            std::cout << "I literally just stopped time." << std::endl;
+        });
 }
 
 void Outrospection::startLoggerThread()
 {
-    loggerThread = std::thread{
-        [&]() -> void
+    loggerThread = std::jthread{
+        [&](std::stop_token stopToken) -> void
         {
-            while (true)
-            {
+            std::cout << "Started logger thread." << std::endl;
+
+            while (!stopToken.stop_requested()) {
+                if (loggerQueue.empty())
+                    continue;
+
                 const auto& log = loggerQueue.pop();
                 if (log != nullptr)
                 {
@@ -520,19 +541,22 @@ void Outrospection::startLoggerThread()
 
                 std::this_thread::yield();
             }
+
+            std::cout << "Stopped logger thread." << std::endl;
         }
     };
 }
 
 void Outrospection::startConsoleThread()
 {
-    consoleThread = std::thread {
-        [&]() -> void
+    consoleThread = std::jthread{
+        [&](std::stop_token stopToken) -> void
         {
-            char input[512];
+            std::cout << "Started console thread." << std::endl;
 
-            while (true)
-            {
+            while (!stopToken.stop_requested()) {
+                char input[512];
+
                 std::cin.getline(input, sizeof(input));
 
                 size_t size = strlen(input);
@@ -560,7 +584,7 @@ void Outrospection::startConsoleThread()
                         {
                             LOG_INFO("Hi!!!!");
                         }
-                        else if(command == "help")
+                        else if (command == "help")
                         {
                             LOG_INFO("Here is a list of commands:");
                             LOG_INFO("/hello");
@@ -575,7 +599,11 @@ void Outrospection::startConsoleThread()
                         LOG("<John> %s", input);
                     }
                 }
+
+                std::this_thread::yield();
             }
+
+            std::cout << "Stopped console thread." << std::endl;
         }
     };
 }
