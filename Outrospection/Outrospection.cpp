@@ -66,13 +66,13 @@ Outrospection::Outrospection()
 
     unsigned char* data = TextureManager::readImageBytes("./res/ObjectData/icon.png", width, height);
     image.pixels = data; image.width = width; image.height = height;
-	
+    
     glfwSetWindowIcon(gameWindow, 1, &image);
 
     TextureManager::free(data);
-	
+    
     glfwSetCursor(gameWindow, cursorNone);
-	
+    
     scene = new GUIScene();
     octopusOverlay = new GUIOctopusOverlay();
     controlsOverlay = new GUIControlsOverlay();
@@ -175,8 +175,8 @@ void Outrospection::setEye(Eye letter)
 {
     eye = letter;
 
-	switch(eye)
-	{
+    switch(eye)
+    {
     case Eye::NONE:
         glfwSetCursor(gameWindow, cursorNone);
         break;
@@ -189,8 +189,8 @@ void Outrospection::setEye(Eye letter)
     case Eye::TRIANGLE:
         glfwSetCursor(gameWindow, cursorTriangle);
         break;
-	}
-	
+    }
+    
 }
 
 Eye Outrospection::getEye() const
@@ -202,7 +202,7 @@ bool Outrospection::controlBound(Control control)
 {
     if (control == Control::NONE)
         return false; // NONE cannot be bound
-	
+    
     for(KeyBinding& bind : keyBinds)
     {
         if (bind.m_eye != Eye::NONE && bind.m_control == control)
@@ -215,14 +215,14 @@ bool Outrospection::controlBound(Control control)
 void Outrospection::doControl(Eye pokedEye)
 {
     lastTick = currentTimeMillis - 5000; // do tick NOW
-	
-	for(KeyBinding& bind : keyBinds)
-	{
-		if(bind.m_eye == pokedEye)
-		{
+    
+    for(KeyBinding& bind : keyBinds)
+    {
+        if(bind.m_eye == pokedEye)
+        {
             inputQueue.emplace_back(bind.m_control);
-		}
-	}
+        }
+    }
 }
 
 void Outrospection::runGameLoop()
@@ -251,18 +251,18 @@ void Outrospection::runGameLoop()
             for(int i = 0; i < futureFunctions.size(); i++)
             {
                 const auto& futureFunc = futureFunctions[i];
-            	
-	            if(currentTimeMillis - futureFunc.startTime > futureFunc.waitTime)
-	            {
+                
+                if(currentTimeMillis - futureFunc.startTime > futureFunc.waitTime)
+                {
                     futureFunc.func();
 
-	            	// pop the function
+                    // pop the function
                     futureFunctions.erase(futureFunctions.begin() + i);
                     i--;
-	            }
+                }
             }
         }
-    	
+        
         // UIs are also updated when game is paused
         for (auto& layer : layerStack)
         {
@@ -274,32 +274,32 @@ void Outrospection::runGameLoop()
     {
         glDisable(GL_DEPTH_TEST); // disable depth test so stuff near camera isn't clipped
 
-    	
+        
         glBindFramebuffer(GL_FRAMEBUFFER, crtFramebuffer);
         SCR_WIDTH = CRT_WIDTH; SCR_HEIGHT = CRT_HEIGHT;
         glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
         glClearColor(0.3725, 0.4667, 0.5529f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    	
-		// draw stuff here
-    	if(!won)
-			scene->draw();
+        
+        // draw stuff here
+        if(!won)
+            scene->draw();
 
 
         // bind to default framebuffer and draw custom one over that
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         SCR_WIDTH = WINDOW_WIDTH; SCR_HEIGHT = WINDOW_HEIGHT;
         glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
-    	
+        
         // clear all relevant buffers
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-    	// apply CRT effect
+        // apply CRT effect
         crtShader.use();
         crtShader.setVec2("resolution", CRT_WIDTH, CRT_HEIGHT);
         crtShader.setFloat("time", float(currentTimeMillis % 1000000) / 1000000);
-    	
+        
         glBindVertexArray(crtVAO);
         glBindTexture(GL_TEXTURE_2D, textureColorbuffer);    // use the color attachment texture as the texture of the quad plane
         glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -310,7 +310,7 @@ void Outrospection::runGameLoop()
         {
             if (layer->handleManually)
                 continue;
-        	
+            
             layer->draw();
         }
     }
@@ -331,16 +331,16 @@ void Outrospection::runTick()
 
     if (currentTimeMillis - lastTick < 333) // three ticks per second
         return;
-	
+    
     lastTick = currentTimeMillis;
 
-	// read input
+    // read input
     Control curInput = inputQueue[0];
     LOG_INFO("Player is playing %c", char(curInput));
 
     ((GUIScene*)scene)->tryMovePlayer(curInput);
 
-	// erase it so we move to the next one
+    // erase it so we move to the next one
     inputQueue.erase(inputQueue.begin());
 }
 
@@ -469,12 +469,12 @@ void Outrospection::scroll_callback(GLFWwindow*, const double xoffset, const dou
 // this function is called when you press a key
 void Outrospection::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	if(action == GLFW_PRESS)
-	{
+    if(action == GLFW_PRESS)
+    {
         LOG_INFO("pressed key %i", key);
 
-		switch(key)
-		{
+        switch(key)
+        {
         case GLFW_KEY_Z:
             LOG("Pressed CIRCLE");
             break;
@@ -487,8 +487,8 @@ void Outrospection::key_callback(GLFWwindow* window, int key, int scancode, int 
         case GLFW_KEY_ESCAPE:
             Outrospection::get().running = false;
             break;
-		}
-	}
+        }
+    }
 }
 
 void Outrospection::error_callback(const int errorcode, const char* description)
