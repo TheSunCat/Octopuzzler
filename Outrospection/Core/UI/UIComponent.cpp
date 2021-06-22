@@ -109,7 +109,7 @@ void UIComponent::draw(Shader& shader, const Shader& glyphShader) const
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(position, 0.0f));
 
-    // rotation code, no need to worry about this for now
+    // rotation, no need to worry about this for now
     //model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f));
     //model = glm::rotate(model, glm::radians(rotate), glm::vec3(0.0f, 0.0f, 1.0f));
     //model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f));
@@ -125,7 +125,7 @@ void UIComponent::draw(Shader& shader, const Shader& glyphShader) const
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
 
-    if (showText && !name.empty()) // TODO text class myself
+    if (showText && !name.empty()) // TODO text class
     {
         drawText(name, glyphShader);
     }

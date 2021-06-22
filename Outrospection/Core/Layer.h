@@ -14,6 +14,6 @@ public:
     virtual void draw() const {}
     virtual void onEvent(Event& event) {}
 
-	// hacky
+    // hacky
     bool handleManually = false;
 };
