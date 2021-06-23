@@ -8,10 +8,10 @@
 // this is the constructor (ctor for short).
 // it only takes care of copying the level data to store it here for now
 GUIScene::GUIScene() : GUILayer("Scene", false),
-                       floor("platform", 0, 0, 0.1, 0.1, GL_NEAREST),
-                       ink("hole", 0, 0, 0.1, 0.1, GL_NEAREST),
+                       floor("platform", GL_NEAREST, 0, 0, 0.1, 0.1),
+                       ink("hole", GL_NEAREST, 0, 0, 0.1, 0.1),
                        flag("flag", animatedTexture({"UI/flag/", "default"}, 10, 2, GL_NEAREST), {0, 0}, {0, 0}),
-                       playerSprite("player/default", 0, 0, 0.1, 0.1, GL_NEAREST)
+                       playerSprite("player/default", GL_NEAREST, 0, 0, 0.1, 0.1)
 
 {
     handleManually = true;
@@ -56,10 +56,13 @@ void GUIScene::draw() const
     Shader& spriteShader = Outrospection::get().spriteShader;
     Shader& glyphShader = Outrospection::get().glyphShader;
 
-    playerSprite.setScale(4.f / level.rowLength, 4.f / level.rowLength);
-    floor.setScale(4.f / level.rowLength, 4.f / level.rowLength);
-    ink.setScale(4.f / level.rowLength, 4.f / level.rowLength);
-    flag.setScale(4.f / level.rowLength, 4.f / level.rowLength);
+    
+    float spriteScale = 4.f / std::max(int(level.rowLength), int(level.data.size()/level.rowLength));
+
+    playerSprite.setScale(spriteScale, spriteScale);
+    floor.setScale(spriteScale, spriteScale);
+    ink.setScale(spriteScale, spriteScale);
+    flag.setScale(spriteScale, spriteScale);
 
     for (int i = 0; i < level.data.length(); i++)
     {
@@ -68,8 +71,8 @@ void GUIScene::draw() const
         int xPos = i % level.rowLength;
         int yPos = i / level.rowLength;
 
-        float xSpritePos = xPos * 4.f / level.rowLength;
-        float ySpritePos = yPos * 4.f / level.rowLength;
+        float xSpritePos = xPos * spriteScale;
+        float ySpritePos = yPos * spriteScale;
 
         switch (tile)
         {
@@ -82,20 +85,23 @@ void GUIScene::draw() const
             break;
 
         case 'H': // ink
+            floor.setPosition(xSpritePos, ySpritePos);
+            floor.draw(spriteShader, glyphShader);
+
             ink.setPosition(xSpritePos, ySpritePos);
             ink.draw(spriteShader, glyphShader);
             break;
         }
     }
 
-    float xPlayerPos = playerPos.x * 4.f / level.rowLength;
-    float yPlayerPos = playerPos.y * 4.f / level.rowLength;
+    float xPlayerPos = playerPos.x * spriteScale;
+    float yPlayerPos = playerPos.y * spriteScale;
 
     playerSprite.setPosition(xPlayerPos, yPlayerPos);
     playerSprite.draw(spriteShader, glyphShader);
 
-    float xFlagPos = level.goal.x * 4.f / level.rowLength;
-    float yFlagPos = level.goal.y * 4.f / level.rowLength;
+    float xFlagPos = level.goal.x * spriteScale;
+    float yFlagPos = level.goal.y * spriteScale;
 
     flag.setPosition(xFlagPos, yFlagPos);
     flag.draw(spriteShader, glyphShader);
