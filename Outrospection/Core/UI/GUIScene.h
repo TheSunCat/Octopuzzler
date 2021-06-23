@@ -6,7 +6,7 @@ class GUIScene : public GUILayer
 {
 public:
     GUIScene();
-    void setLevel(Level& lvl);
+    void setLevel(const std::string& lvlName, int lvlID);
 
     void tick() override;
 

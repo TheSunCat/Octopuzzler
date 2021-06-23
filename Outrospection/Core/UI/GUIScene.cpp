@@ -3,7 +3,7 @@
 #include "Outrospection.h"
 #include "UIButton.h"
 #include "Core/UI/GUIControlsOverlay.h"
-#include <AllLevels.h>
+#include <json.hpp>
 
 // this is the constructor (ctor for short).
 // it only takes care of copying the level data to store it here for now
@@ -19,12 +19,17 @@ GUIScene::GUIScene() : GUILayer("Scene", false),
     playerSprite.addAnimation("die", simpleTexture({"UI/player/", "sad"}, GL_NEAREST));
     playerSprite.addAnimation("win", simpleTexture({"UI/player/", "happy"}, GL_NEAREST));
 
-    setLevel(ALL_LEVELS[levelID]);
+    setLevel("", 0);
 }
 
-void GUIScene::setLevel(Level& lvl)
+void GUIScene::setLevel(const std::string& lvlName, int lvlID)
 {
-    level = std::move(lvl);
+    // parse level
+    std::string levelData = Util::readAllBytes("StageData/level" + lvlName + lvlID);
+    
+    nlohmann::json jason = nlohmann::json::parse(levelData);
+    level = jason.get<Level>();
+    
     playerPosInt = level.start;
 
     Util::doLater([this]
@@ -51,10 +56,10 @@ void GUIScene::draw() const
     Shader& spriteShader = Outrospection::get().spriteShader;
     Shader& glyphShader = Outrospection::get().glyphShader;
 
-    playerSprite.setScalePx(80, 65);
-    floor.setScalePx(80, 65);
-    ink.setScalePx(80, 65);
-    flag.setScalePx(80, 65);
+    playerSprite.setScale(4.f / level.rowLength, 4.f / level.rowLength);
+    floor.setScale(4.f / level.rowLength, 4.f / level.rowLength);
+    ink.setScale(4.f / level.rowLength, 4.f / level.rowLength);
+    flag.setScale(4.f / level.rowLength, 4.f / level.rowLength);
 
     for (int i = 0; i < level.data.length(); i++)
     {
@@ -63,13 +68,13 @@ void GUIScene::draw() const
         int xPos = i % level.rowLength;
         int yPos = i / level.rowLength;
 
-        int xSpritePos = xPos * 16 * 4.6;
-        int ySpritePos = yPos * 16 * 4.15;
+        float xSpritePos = xPos * 4.f / level.rowLength;
+        float ySpritePos = yPos * 4.f / level.rowLength;
 
         switch (tile)
         {
         case ' ': // floor
-            floor.setPositionPx(xSpritePos, ySpritePos);
+            floor.setPosition(xSpritePos, ySpritePos);
             floor.draw(spriteShader, glyphShader);
             break;
 
@@ -77,22 +82,22 @@ void GUIScene::draw() const
             break;
 
         case 'H': // ink
-            ink.setPositionPx(xSpritePos, ySpritePos);
+            ink.setPosition(xSpritePos, ySpritePos);
             ink.draw(spriteShader, glyphShader);
             break;
         }
     }
 
-    int xPlayerPos = playerPos.x * 16 * 4.6;
-    int yPlayerPos = playerPos.y * 16 * 4.15;
+    float xPlayerPos = playerPos.x * 4.f / level.rowLength;
+    float yPlayerPos = playerPos.y * 4.f / level.rowLength;
 
-    playerSprite.setPositionPx(xPlayerPos, yPlayerPos);
+    playerSprite.setPosition(xPlayerPos, yPlayerPos);
     playerSprite.draw(spriteShader, glyphShader);
 
-    int xFlagPos = level.goal.x * 16 * 4.6;
-    int yFlagPos = level.goal.y * 16 * 4.15;
+    float xFlagPos = level.goal.x * 4.f / level.rowLength;
+    float yFlagPos = level.goal.y * 4.f / level.rowLength;
 
-    flag.setPositionPx(xFlagPos, yFlagPos);
+    flag.setPosition(xFlagPos, yFlagPos);
     flag.draw(spriteShader, glyphShader);
 }
 
@@ -153,23 +158,18 @@ void GUIScene::tryMovePlayer(Control input)
 
             levelID++;
 
-            if (levelID > sizeof(ALL_LEVELS) / sizeof(*ALL_LEVELS) - 1)
-                Outrospection::get().won = true;
-
             Util::doLater([this]
             {
-                if (this->levelID > (sizeof(ALL_LEVELS) / sizeof(*ALL_LEVELS)) - 1) // no more levels
+                if (!Util::fileExists("StageData/level" + std::to_string(this->levelID))) // no more levels
                 {
                     auto& o = Outrospection::get();
 
                     o.won = true;
-                    o.popLayer(o.scene);
-                    o.scene = nullptr;
                     o.pushOverlay(o.winOverlay);
                 }
                 else
                 {
-                    setLevel(ALL_LEVELS[this->levelID]);
+                    setLevel("", this->levelID);
 
                     LOG_INFO("Advancing to level %i...", this->levelID);
                 }
@@ -221,6 +221,7 @@ void GUIScene::reset()
     canMove = true;
     playerSprite.setAnimation("default");
     flag.hidden = false;
+    pastPositions.clear();
 
     Outrospection::get().inputQueue.clear();
 
