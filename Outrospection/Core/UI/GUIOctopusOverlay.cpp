@@ -11,8 +11,7 @@ void eyeClick(UIButton& button, int mouseButton)
     Util::doLater([&button]() { button.setAnimation("default"); }, 100);
 
     auto pokedEye = (Eye)button.name[8];
-
-    // TODO do something with mouse button. Left = do action, Right = set mouse Eye
+    
     if (mouseButton == GLFW_MOUSE_BUTTON_RIGHT)
     {
         Outrospection::get().setEye(pokedEye);

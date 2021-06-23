@@ -9,6 +9,9 @@ glm::vec3 operator*(const int& lhs, const glm::vec3& vec);
 glm::vec2 operator*(int i, const glm::vec2& vec);
 glm::vec2 operator*(const glm::vec2& vec, int i);
 
+std::string operator+(const std::string& str, int i);
+std::string operator+(int i, const std::string& str);
+
 // proxy functions that are shorter than the usual huge call
 SimpleTexture& animatedTexture(const Resource& resource, int tickLength, int frameCount, const GLint& filter);
 SimpleTexture& simpleTexture(const Resource& resource, const GLint& filter);
@@ -125,6 +128,9 @@ namespace Util
 
         return hash;
     }
+
+    bool fileExists(const std::string& file);
+    std::string readAllBytes(const std::string& file);
 
     glm::vec3 rotToVec3(float yaw, float pitch = 0);
 

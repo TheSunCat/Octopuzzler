@@ -44,8 +44,8 @@ Outrospection::Outrospection()
 {
     instance = this;
 
-#if defined(PLATFORM_WINDOWS) && defined(__DEBUG__)
-    ::ShowWindow(::GetConsoleWindow(), SW_HIDE); // hide console window
+#if !defined(__DEBUG__) && defined(PLATFORM_WINDOWS)
+    //::ShowWindow(::GetConsoleWindow(), SW_HIDE); // hide console window
 #endif
 
     preInit = PreInitialization();
@@ -73,11 +73,11 @@ Outrospection::Outrospection()
     
     glfwSetCursor(gameWindow, cursorNone);
     
-    scene = new GUIScene();
     octopusOverlay = new GUIOctopusOverlay();
     controlsOverlay = new GUIControlsOverlay();
     welcomeOverlay = new GUIWelcome();
     winOverlay = new GUIWinOverlay();
+    scene = new GUIScene();
 
     pushLayer(scene);
     pushOverlay(octopusOverlay);
@@ -278,7 +278,7 @@ void Outrospection::runGameLoop()
         glBindFramebuffer(GL_FRAMEBUFFER, crtFramebuffer);
         SCR_WIDTH = CRT_WIDTH; SCR_HEIGHT = CRT_HEIGHT;
         glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
-        glClearColor(0.3725, 0.4667, 0.5529f, 1.0f);
+        glClearColor(0.3725, 0.4667, 0.5529f, 1.0f); // clear screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         // draw stuff here

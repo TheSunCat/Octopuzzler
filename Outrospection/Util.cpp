@@ -4,6 +4,7 @@
 #include <charconv>
 #include <map>
 #include <sstream>
+#include <fstream>
 
 #include <GLAD/glad.h>
 #include <glm/common.hpp>
@@ -26,6 +27,16 @@ glm::vec2 operator*(int i, const glm::vec2& vec)
 glm::vec2 operator*(const glm::vec2& vec, int i)
 {
     return i * vec;
+}
+
+std::string operator+(const std::string& str, int i)
+{
+    return str + std::to_string(i);
+}
+
+std::string operator+(int i, const std::string& str)
+{
+    return std::to_string(i) + str;
 }
 
 SimpleTexture& animatedTexture(const Resource& resource, int tickLength, int frameCount, const GLint& filter)
@@ -73,6 +84,45 @@ void Util::split(const std::string& input, const char& delimiter, std::vector<st
 void Util::doLater(std::function<void()> func, time_t waitTime)
 {
     Outrospection::get().futureFunctions.emplace_back(func, currentTimeMillis, waitTime);
+}
+
+bool Util::fileExists(const std::string& file)
+{
+    std::string fullPath("res/" + file);
+
+    struct stat buffer;
+    return (stat(fullPath.c_str(), &buffer) == 0);
+}
+
+std::string Util::readAllBytes(const std::string& file)
+{
+    std::string fullPath("res/" + file);
+    
+    std::ifstream vShaderFile;
+
+    // ensure ifstream objects can throw exceptions
+    vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
+    try
+    {
+        // open file
+        vShaderFile.open(fullPath);
+        std::stringstream vShaderStream;
+
+        // read file's buffer contents into streams
+        vShaderStream << vShaderFile.rdbuf();
+
+        // close file handlers
+        vShaderFile.close();
+
+        // convert stream into string
+        return vShaderStream.str();
+    }
+    catch (std::ifstream::failure& e)
+    {
+        LOG_ERROR("Failed to read file \"%s\" or \"%s\"! errno %s", fullPath, e.what());
+        return "ERROR: NO FILE";
+    }
 }
 
 glm::vec3 Util::rotToVec3(const float yaw, const float pitch)

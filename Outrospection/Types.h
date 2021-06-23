@@ -1,5 +1,6 @@
 #pragma once
 
+#include <json.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
@@ -18,22 +19,37 @@ struct Level
     glm::vec2 goal;
 };
 
+inline void from_json(const nlohmann::json& j, Level& lvl)
+{
+    auto rows = j["level"].get<std::vector<std::string>>();
+    lvl.rowLength = rows[0].size();
+    lvl.data = std::accumulate(begin(rows), end(rows), std::string());
+
+    j["controls"].get_to(lvl.controls);
+
+    int startIndex = lvl.data.find('S'); lvl.data[startIndex] = ' ';
+    lvl.start = glm::vec2(startIndex % lvl.rowLength, int(startIndex / lvl.rowLength));
+
+    int goalIndex = lvl.data.find('G'); lvl.data[goalIndex] = ' ';
+    lvl.goal = glm::vec2(goalIndex % lvl.rowLength, int(goalIndex / lvl.rowLength));
+}
+
 enum class Control
 {
-	NONE = ' ',
+    NONE = ' ',
     MOVE_UP = 'U',
     MOVE_DOWN = 'D',
     MOVE_RIGHT = 'L',
     MOVE_LEFT = 'R',
-	DASH_UP = '^',
-	DASH_DOWN = '~',
-	DASH_RIGHT = '>',
-	DASH_LEFT = '<'
+    DASH_UP = '^',
+    DASH_DOWN = '~',
+    DASH_RIGHT = '>',
+    DASH_LEFT = '<'
 };
 
 enum class Eye
 {
-	NONE = ' ',
+    NONE = ' ',
     CIRCLE = 'C',
     SQUARE = 'S',
     TRIANGLE = 'T'
