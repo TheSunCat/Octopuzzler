@@ -116,6 +116,9 @@ void Outrospection::run()
     while (running)
     {
         runGameLoop();
+
+        if (glfwWindowShouldClose(gameWindow))
+            running = false;
     }
 }
 
