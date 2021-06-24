@@ -45,7 +45,7 @@ Outrospection::Outrospection()
     instance = this;
 
 #if !defined(_DEBUG) && defined(PLATFORM_WINDOWS)
-    ::ShowWindow(::GetConsoleWindow(), SW_HIDE); // hide console window
+    //::ShowWindow(::GetConsoleWindow(), SW_HIDE); // hide console window
 #endif
 
     preInit = PreInitialization();
@@ -102,6 +102,11 @@ Outrospection::~Outrospection()
     loggerThread.join();
 
     std::cout << "Terminated the termination of the engine." << std::endl;
+}
+
+void Outrospection::stop()
+{
+    running = false;
 }
 
 void Outrospection::run()
