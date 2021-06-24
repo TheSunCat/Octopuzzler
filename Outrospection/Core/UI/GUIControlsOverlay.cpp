@@ -1,21 +1,23 @@
 #include "GUIControlsOverlay.h"
 #include "Outrospection.h"
 #include "UIButton.h"
+#include "GUIScene.h"
+
 
 void controlClick(UIButton& button, int)
 {
     Outrospection& o = Outrospection::get();
 
-    auto clickedControl = (Control)button.name[0];
+    auto clickedControl = (Control)button.name[0]; // beauty of enum classes yay
 
     // change the keybind
-    if (clickedControl != Control::NONE && !o.controlBound(clickedControl))
+    if (clickedControl != Control::NONE && !o.controlBound(clickedControl)) // can't rebind controls!
     {
-        // can't rebind controls!
-
         o.keyBinds.emplace_back(o.getEye(), clickedControl);
 
         button.name[button.name.length() - 1] = char(o.getEye());
+
+        ((GUIScene*)o.scene)->pastPositions.clear(); // clear undo history
     }
 
     LOG("You pressed button %s", button.name);

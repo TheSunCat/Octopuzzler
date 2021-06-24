@@ -40,6 +40,8 @@ public:
     Outrospection();
     ~Outrospection();
 
+    void stop();
+
     void run();
     void onEvent(Event& e);
 
