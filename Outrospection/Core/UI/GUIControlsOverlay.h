@@ -16,5 +16,7 @@ public:
 
     DISALLOW_COPY_AND_ASSIGN(GUIControlsOverlay)
 private:
-    UIComponent window;
+    UIComponent windowTitle;
+    UIComponent windowBody;
+    UIComponent windowBottom;
 };
