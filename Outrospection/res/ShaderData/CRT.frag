@@ -7,7 +7,7 @@ uniform sampler2D screenTexture;
 uniform vec2 resolution;
 uniform float time;
 
-// shader from https://www.shadertoy.com/view/Ms23DR and https://www.shadertoy.com/view/wddyRH, thanks!!
+// math from https://www.shadertoy.com/view/Ms23DR and https://www.shadertoy.com/view/wddyRH, thanks!!
 #define PI 3.14159265359
 
 // from rez in Glenz vector form Hell

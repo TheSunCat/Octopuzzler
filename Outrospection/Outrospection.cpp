@@ -44,8 +44,8 @@ Outrospection::Outrospection()
 {
     instance = this;
 
-#if !defined(__DEBUG__) && defined(PLATFORM_WINDOWS)
-    //::ShowWindow(::GetConsoleWindow(), SW_HIDE); // hide console window
+#if !defined(_DEBUG) && defined(PLATFORM_WINDOWS)
+    ::ShowWindow(::GetConsoleWindow(), SW_HIDE); // hide console window
 #endif
 
     preInit = PreInitialization();

@@ -39,12 +39,12 @@ enum class Control
     NONE = ' ',
     MOVE_UP = 'U',
     MOVE_DOWN = 'D',
-    MOVE_RIGHT = 'L',
-    MOVE_LEFT = 'R',
+    MOVE_LEFT = 'L',
+    MOVE_RIGHT = 'R',
     DASH_UP = '^',
-    DASH_DOWN = '~',
-    DASH_RIGHT = '>',
-    DASH_LEFT = '<'
+    DASH_DOWN = 'V',
+    DASH_LEFT = '<',
+    DASH_RIGHT = '>'
 };
 
 enum class Eye

@@ -70,16 +70,16 @@ void GUIControlsOverlay::setControls(const std::string& controlsStr)
             buttonNames.emplace_back("D down N ");
             break;
         case 'L':
-            buttonNames.emplace_back("L right N ");
+            buttonNames.emplace_back("L left N ");
             break;
         case 'R':
-            buttonNames.emplace_back("R left N ");
+            buttonNames.emplace_back("R right N ");
             break;
         case '^':
             buttonNames.emplace_back("^ dash up N ");
             break;
         case '~':
-            buttonNames.emplace_back("~ dash down N ");
+            buttonNames.emplace_back("V dash down N ");
             break;
         case '<':
             buttonNames.emplace_back("< dash left N ");
@@ -100,7 +100,7 @@ void GUIControlsOverlay::setControls(const std::string& controlsStr)
         buttons[i]->showText = true;
     }
 
-    float bodyHeight = 0.06 * buttons.size();
+    float bodyHeight = 0.05 * buttons.size() + 0.02;
     windowBody.setScale(0.2, bodyHeight);
     windowBottom.setPosition(0.04, 0.15 + bodyHeight);
 }

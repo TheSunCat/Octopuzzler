@@ -8,7 +8,7 @@
 		"W WWWW",
 		"W H WW",
 		"W   GW",
-		"WW  WW",
+		"WW WWW",
 		"WWWWWW"],
-	"controls" : "UDRL^~<>"
+	"controls" : "UDLR>"
 }
