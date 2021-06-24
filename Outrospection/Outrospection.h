@@ -84,7 +84,7 @@ public:
 private:
     void runGameLoop();
     void runTick();
-    time_t lastTick;
+    time_t lastTick = 0;
 
     // set to false when the game loop shouldn't run
     bool running = false;
