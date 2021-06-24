@@ -22,13 +22,17 @@ void controlClick(UIButton& button, int)
 }
 
 GUIControlsOverlay::GUIControlsOverlay() : GUILayer("Controls Overlay", false),
-                                           window("window", GL_LINEAR, 0.04, 0.1, 0.2, 0.475)
+                                           windowTitle("windowTitle", GL_LINEAR, 0.04, 0.1, 0.2, 0.05),
+                                           windowBody("windowBody", GL_LINEAR, 0.04, 0.15, 0.2, 0.06),
+                                           windowBottom("windowBottom", GL_LINEAR, 0.04, 0.21, 0.2, 0.0067)
 {
 }
 
 void GUIControlsOverlay::tick()
 {
-    window.tick();
+    windowTitle.tick();
+    windowBody.tick();
+    windowBottom.tick();
 
     for (auto& button : buttons)
     {
@@ -38,7 +42,9 @@ void GUIControlsOverlay::tick()
 
 void GUIControlsOverlay::draw() const
 {
-    window.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
+    windowTitle.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
+    windowBody.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
+    windowBottom.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
 
     for (auto& button : buttons)
     {
@@ -93,4 +99,8 @@ void GUIControlsOverlay::setControls(const std::string& controlsStr)
 
         buttons[i]->showText = true;
     }
+
+    float bodyHeight = 0.06 * buttons.size();
+    windowBody.setScale(0.2, bodyHeight);
+    windowBottom.setPosition(0.04, 0.15 + bodyHeight);
 }

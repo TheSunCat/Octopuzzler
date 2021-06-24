@@ -64,8 +64,8 @@ void GUIScene::draw() const
     float spriteScale = 4.f / largestLength;
 
     playerSprite.setScale(spriteScale, spriteScale);
-    floor.setScale(spriteScale, spriteScale);
-    ink.setScale(spriteScale, spriteScale);
+    floor.setScale(spriteScale, spriteScale + 0.01); // adjust for floating point  imprecision (I think?)
+    ink.setScale(spriteScale, spriteScale + 0.01);   // else we get weird horizontal lines between some tiles
     flag.setScale(spriteScale, spriteScale);
 
     for (int i = 0; i < level.data.length(); i++)
