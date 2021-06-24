@@ -61,9 +61,9 @@ GUIOctopusOverlay::GUIOctopusOverlay() : GUILayer("Octopus Overlay", false),
                                                     Bounds(BoundsShape::Circle, {0.93, 0.3, 0.07}), eyeClick));
     buttons[2]->addAnimation("blink", animatedTexture({"UI/eyes/", "eyeTriangle"}, 1, 5, GL_LINEAR));
 
-    buttons.emplace_back(std::make_unique<UIButton>("showWelcome", GL_NEAREST, 0.95, 0.92, 0.05, 0.08, Bounds(), showWelcome));
-    buttons.emplace_back(std::make_unique<UIButton>("reset", GL_NEAREST, 0.89, 0.92, 0.05, 0.08, Bounds(), reset));
-    buttons.emplace_back(std::make_unique<UIButton>("undo", GL_NEAREST, 0.83, 0.92, 0.05, 0.08, Bounds(), undo));
+    buttons.emplace_back(std::make_unique<UIButton>("showWelcome", GL_NEAREST, 0.94, 0.91, 0.05, 0.08, Bounds(), showWelcome));
+    buttons.emplace_back(std::make_unique<UIButton>("reset", GL_NEAREST, 0.88, 0.91, 0.05, 0.08, Bounds(), reset));
+    buttons.emplace_back(std::make_unique<UIButton>("undo", GL_NEAREST, 0.82, 0.91, 0.05, 0.08, Bounds(), undo));
 }
 
 void GUIOctopusOverlay::tick()

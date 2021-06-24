@@ -50,7 +50,7 @@ void GUIScene::tick()
 
 void GUIScene::draw() const
 {
-    if (Outrospection::get().won)
+    if (Outrospection::get().won) // don't draw the level if we won
         return;
 
     Shader& spriteShader = Outrospection::get().spriteShader;
