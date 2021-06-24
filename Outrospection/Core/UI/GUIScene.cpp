@@ -56,8 +56,12 @@ void GUIScene::draw() const
     Shader& spriteShader = Outrospection::get().spriteShader;
     Shader& glyphShader = Outrospection::get().glyphShader;
 
-    
-    float spriteScale = 4.f / std::max(int(level.rowLength), int(level.data.size()/level.rowLength));
+    int rowLength = level.rowLength;
+    int colLength = int(level.data.size() / level.rowLength);
+
+    int largestLength = std::max(rowLength, colLength);
+
+    float spriteScale = 4.f / largestLength;
 
     playerSprite.setScale(spriteScale, spriteScale);
     floor.setScale(spriteScale, spriteScale);
@@ -68,11 +72,11 @@ void GUIScene::draw() const
     {
         char tile = level.data[i];
 
-        int xPos = i % level.rowLength;
-        int yPos = i / level.rowLength;
+        int xPos = i % rowLength;
+        int yPos = i / rowLength;
 
-        float xSpritePos = xPos * spriteScale;
-        float ySpritePos = yPos * spriteScale;
+        float xSpritePos = (xPos + (largestLength - rowLength) / 2.f) * spriteScale;
+        float ySpritePos = (yPos + (largestLength - colLength) / 2.f) * spriteScale;
 
         switch (tile)
         {
@@ -94,14 +98,14 @@ void GUIScene::draw() const
         }
     }
 
-    float xPlayerPos = playerPos.x * spriteScale;
-    float yPlayerPos = playerPos.y * spriteScale;
+    float xPlayerPos = (playerPos.x + (largestLength - rowLength) / 2.f) * spriteScale;
+    float yPlayerPos = (playerPos.y + (largestLength - colLength) / 2.f) * spriteScale;
 
     playerSprite.setPosition(xPlayerPos, yPlayerPos);
     playerSprite.draw(spriteShader, glyphShader);
 
-    float xFlagPos = level.goal.x * spriteScale;
-    float yFlagPos = level.goal.y * spriteScale;
+    float xFlagPos = (level.goal.x + (largestLength - rowLength) / 2.f) * spriteScale;
+    float yFlagPos = (level.goal.y + (largestLength - colLength) / 2.f) * spriteScale;
 
     flag.setPosition(xFlagPos, yFlagPos);
     flag.draw(spriteShader, glyphShader);
