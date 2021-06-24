@@ -75,7 +75,7 @@ public:
 
         loadChar(face, ' ');
         loadChar(face, '^');
-        loadChar(face, '~');
+        loadChar(face, 'V');
         loadChar(face, '<');
         loadChar(face, '>');
 
