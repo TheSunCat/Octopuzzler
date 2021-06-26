@@ -42,7 +42,6 @@ inline time_t currentTimeSeconds;
 
 #elif defined(__linux__)
     #define PLATFORM_LINUX
-    #error "Linux is not supported!"
 
 #else
     #error "Unknown platform!"
