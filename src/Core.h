@@ -185,9 +185,8 @@ struct smart_printf {
     template <typename ...Ts>
     void operator()(Ts const& ...args) const
     {
-        std::tm now_tm{};
-        localtime_s(&now_tm, &currentTimeSeconds);
-        std::cout << '[' << std::put_time(&now_tm, "%H:%M:%S") << '\'' << std::setfill('0') << std::setw(3) << currentTimeMillis % 1000 << "] ";  printf(printf_transform(args)...);
+        std::tm* now_tm = localtime(&currentTimeSeconds);
+        std::cout << '[' << std::put_time(now_tm, "%H:%M:%S") << '\'' << std::setfill('0') << std::setw(3) << currentTimeMillis % 1000 << "] ";  printf(printf_transform(args)...);
     }
 };
 
