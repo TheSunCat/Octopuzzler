@@ -38,7 +38,7 @@ endif()
 # Packages
 find_package(glad REQUIRED CONFIG)
 
-find_package(GLFW3 REQUIRED CONFIG)
+find_package(glfw3 REQUIRED CONFIG)
 
 find_package(FreeType REQUIRED CONFIG)
 
