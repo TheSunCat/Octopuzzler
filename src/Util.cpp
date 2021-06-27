@@ -4,6 +4,7 @@
 #include <map>
 #include <sstream>
 #include <fstream>
+#include <filesystem>
 
 #include <GLAD/glad.h>
 #include <glm/common.hpp>
@@ -89,9 +90,8 @@ void Util::doLater(std::function<void()> func, time_t waitTime)
 bool Util::fileExists(const std::string& file)
 {
     std::string fullPath("res/" + file);
-
-    struct stat buffer;
-    return (stat(fullPath.c_str(), &buffer) == 0);
+    
+    return std::filesystem::exists(fullPath);
 }
 
 std::string Util::readAllBytes(const std::string& file)
