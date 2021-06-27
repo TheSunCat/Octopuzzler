@@ -151,8 +151,12 @@ void UIComponent::drawText(const std::string& text, const Shader& glyphShader) c
             continue;
         }
 
+        if (!Outrospection::get().fontCharacters.contains(c)) {
+            LOG_ERROR("Character %c not found!", c);
+            continue;
+        }
 
-        FontCharacter fontCharacter = Outrospection::get().fontCharacters.at(c);
+        FontCharacter fontCharacter = Outrospection::get().fontCharacters[c];
 
         // calculate model matrix
         glm::mat4 charModel = glm::mat4(1.0f);
