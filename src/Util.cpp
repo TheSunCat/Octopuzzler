@@ -1,7 +1,6 @@
 #include "Util.h"
 #include "Core.h"
 
-#include <charconv>
 #include <map>
 #include <sstream>
 #include <fstream>
@@ -9,6 +8,7 @@
 #include <GLAD/glad.h>
 #include <glm/common.hpp>
 #include <stb_image.h>
+#include <fast_float.h>
 
 #include "Types.h"
 #include "Constants.h"
@@ -708,15 +708,13 @@ bool Util::isAllDigits(const std::string_view& str, bool allowDecimals)
 float Util::stof(const std::string_view& str)
 {
     float ret;
-    std::from_chars(str.data(), str.data() + str.size(), ret);
+    fast_float::from_chars(str.data(), str.data() + str.size(), ret);
     return ret;
 }
 
 int Util::stoi(const std::string_view& str)
 {
-    int ret;
-    std::from_chars(str.data(), str.data() + str.size(), ret);
-    return ret;
+    return int(Util::stof(str)); // lolrip, fast_float doesn't support int
 }
 
 Util::Timer::Timer() : Timer::Timer("")     { }

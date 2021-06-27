@@ -32,7 +32,7 @@ class Outrospection
     FreeType freetype;
 
 public:
-    constexpr static Outrospection& get()
+    static Outrospection& get()
     {
         return *instance;
     }
