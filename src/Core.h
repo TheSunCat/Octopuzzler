@@ -166,6 +166,7 @@ private:
 
 inline Queue<std::function<void()>> loggerQueue;
 
+// TODO this function is EVIL. segfault on Linux. Why??
 template <typename T>
 static decltype(auto) printf_transform(T const& arg)
 {
@@ -185,7 +186,9 @@ struct smart_printf {
     void operator()(Ts const& ...args) const
     {
         std::tm* now_tm = localtime(&currentTimeSeconds);
-        std::cout << '[' << std::put_time(now_tm, "%H:%M:%S") << '\'' << std::setfill('0') << std::setw(3) << currentTimeMillis % 1000 << "] ";  printf(printf_transform(args)...);
+        std::cout << '[' << std::put_time(now_tm, "%H:%M:%S") << '\'' << std::setfill('0') << std::setw(3) << currentTimeMillis % 1000 << "] ";
+        printf(args...);
+        //printf(printf_transform(args)...);
     }
 };
 
