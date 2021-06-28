@@ -93,6 +93,21 @@ target_compile_features(Outrospection PRIVATE
 	cxx_std_20
 )
 
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang") # clang
+	target_compile_options(Outrospection PRIVATE
+		-Wno-volatile
+	)
+endif()
+
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU") # gcc
+	target_compile_options(Outrospection PRIVATE
+		-Wno-volatile
+	)
+endif()
+
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC") # msvc
+endif()
+
 target_include_directories(Outrospection PRIVATE
 	src
 	"Libraries/include"
