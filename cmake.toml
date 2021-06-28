@@ -13,11 +13,19 @@ packages = [
 [find-package]
 glad = {}
 glfw3 = {}
-FreeType = { }
+FreeType = {}
+
+[conditions]
+clang = "CMAKE_CXX_COMPILER_ID MATCHES \"Clang\""
+gcc = "CMAKE_CXX_COMPILER_ID STREQUAL \"GNU\""
+msvc = "CMAKE_CXX_COMPILER_ID STREQUAL \"MSVC\""
 
 [target.Outrospection]
 type = "executable"
 compile-features = ["cxx_std_20"]
+clang.compile-options = ["-Wno-volatile"]
+gcc.compile-options = ["-Wno-volatile"]
+msvc.compile-options = []
 sources = [
     "src/**.cpp",
 ]
