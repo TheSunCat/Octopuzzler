@@ -11,6 +11,7 @@ GUIScene::GUIScene() : GUILayer("Scene", false),
                        floor("platform", GL_NEAREST, 0, 0, 0.1, 0.1),
                        ink("hole", GL_NEAREST, 0, 0, 0.1, 0.1),
                        flag("flag", animatedTexture({"UI/flag/", "default"}, 10, 2, GL_NEAREST), {0, 0}, {0, 0}),
+                       wall("flag", animatedTexture({"UI/wall/", "wall"}, 4, 17, GL_NEAREST), {0, 0}, {0, 0}),
                        playerSprite("player/default", GL_NEAREST, 0, 0, 0.1, 0.1)
 
 {
@@ -64,37 +65,50 @@ void GUIScene::draw() const
     float spriteScale = 4.f / largestLength;
 
     playerSprite.setScale(spriteScale, spriteScale);
-    floor.setScale(spriteScale, spriteScale + 0.01); // adjust for floating point imprecision (I think?)
+    floor.setScale(spriteScale + 0.01, spriteScale + 0.01); // adjust for floating point imprecision (I think?)
     ink.setScale(spriteScale, spriteScale + 0.01);   // else we get weird horizontal lines between some tiles
     flag.setScale(spriteScale, spriteScale);         // TODO looks like this isn't working. too bad.
+    wall.setScale(spriteScale + 0.01, spriteScale + 0.01);         
 
-    for (int i = 0; i < level.data.length(); i++)
+    for(int x = 0; x < largestLength + 5; x++) // TODO dirty hack
     {
-        char tile = level.data[i];
-
-        int xPos = i % rowLength;
-        int yPos = i / rowLength;
-
-        float xSpritePos = (xPos + (largestLength - rowLength) / 2.f) * spriteScale;
-        float ySpritePos = (yPos + (largestLength - colLength) / 2.f) * spriteScale;
-
-        switch (tile)
+        for(int y = 0; y < largestLength; y++)
         {
-        case ' ': // floor
+            float xSpritePos = x * spriteScale;
+            float ySpritePos = y * spriteScale;
+
+            wall.setPosition(xSpritePos, ySpritePos);
+            wall.draw(spriteShader, glyphShader);
+
+            if (x < (largestLength - rowLength) / 2 || x >= rowLength + (largestLength - rowLength) / 2 ||
+                y < (largestLength - colLength) / 2 || y >= colLength + (largestLength - colLength) / 2) // tile not in level
+                continue;
+
             floor.setPosition(xSpritePos, ySpritePos);
             floor.draw(spriteShader, glyphShader);
-            break;
 
-        case 'w': // wall
-            break;
+            /*char tile = level.data[(x - (largestLength - rowLength) / 2) + (y - (largestLength - colLength) / 2) * colLength];
 
-        case 'H': // ink
-            floor.setPosition(xSpritePos, ySpritePos);
-            floor.draw(spriteShader, glyphShader);
+            switch (tile)
+            {
+            case ' ': // floor
+                floor.setPosition(xSpritePos, ySpritePos);
+                floor.draw(spriteShader, glyphShader);
+                break;
 
-            ink.setPosition(xSpritePos, ySpritePos);
-            ink.draw(spriteShader, glyphShader);
-            break;
+            case 'W': // wall
+                //wall.setPosition(xSpritePos, ySpritePos);
+                //wall.draw(spriteShader, glyphShader);
+                break;
+
+            case 'H': // ink
+                //floor.setPosition(xSpritePos, ySpritePos);
+                //floor.draw(spriteShader, glyphShader);
+
+                ink.setPosition(xSpritePos, ySpritePos);
+                ink.draw(spriteShader, glyphShader);
+                break;
+            }*/
         }
     }
 
@@ -102,13 +116,13 @@ void GUIScene::draw() const
     float yPlayerPos = (playerPos.y + (largestLength - colLength) / 2.f) * spriteScale;
 
     playerSprite.setPosition(xPlayerPos, yPlayerPos);
-    playerSprite.draw(spriteShader, glyphShader);
+    //playerSprite.draw(spriteShader, glyphShader);
 
     float xFlagPos = (level.goal.x + (largestLength - rowLength) / 2.f) * spriteScale;
     float yFlagPos = (level.goal.y + (largestLength - colLength) / 2.f) * spriteScale;
 
     flag.setPosition(xFlagPos, yFlagPos);
-    flag.draw(spriteShader, glyphShader);
+    //flag.draw(spriteShader, glyphShader);
 }
 
 void GUIScene::tryMovePlayer(Control input)
