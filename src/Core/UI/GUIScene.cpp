@@ -84,10 +84,7 @@ void GUIScene::draw() const
                 y < (largestLength - colLength) / 2 || y >= colLength + (largestLength - colLength) / 2) // tile not in level
                 continue;
 
-            floor.setPosition(xSpritePos, ySpritePos);
-            floor.draw(spriteShader, glyphShader);
-
-            /*char tile = level.data[(x - (largestLength - rowLength) / 2) + (y - (largestLength - colLength) / 2) * colLength];
+            char tile = level.data[(x - (largestLength - rowLength) / 2) + (y - (largestLength - colLength) / 2) * rowLength];
 
             switch (tile)
             {
@@ -108,21 +105,21 @@ void GUIScene::draw() const
                 ink.setPosition(xSpritePos, ySpritePos);
                 ink.draw(spriteShader, glyphShader);
                 break;
-            }*/
+            }
         }
     }
 
-    float xPlayerPos = (playerPos.x + (largestLength - rowLength) / 2.f) * spriteScale;
-    float yPlayerPos = (playerPos.y + (largestLength - colLength) / 2.f) * spriteScale;
+    float xPlayerPos = (playerPos.x + (largestLength - rowLength) / 2) * spriteScale;
+    float yPlayerPos = (playerPos.y + (largestLength - colLength) / 2) * spriteScale;
 
     playerSprite.setPosition(xPlayerPos, yPlayerPos);
-    //playerSprite.draw(spriteShader, glyphShader);
+    playerSprite.draw(spriteShader, glyphShader);
 
-    float xFlagPos = (level.goal.x + (largestLength - rowLength) / 2.f) * spriteScale;
-    float yFlagPos = (level.goal.y + (largestLength - colLength) / 2.f) * spriteScale;
+    float xFlagPos = (level.goal.x + (largestLength - rowLength) / 2) * spriteScale;
+    float yFlagPos = (level.goal.y + (largestLength - colLength) / 2) * spriteScale;
 
     flag.setPosition(xFlagPos, yFlagPos);
-    //flag.draw(spriteShader, glyphShader);
+    flag.draw(spriteShader, glyphShader);
 }
 
 void GUIScene::tryMovePlayer(Control input)
