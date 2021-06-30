@@ -8,11 +8,11 @@
 // this is the constructor (ctor for short).
 // it only takes care of copying the level data to store it here for now
 GUIScene::GUIScene() : GUILayer("Scene", false),
-                       floor("platform", GL_NEAREST, 0, 0, 0.1, 0.1),
-                       ink("hole", GL_NEAREST, 0, 0, 0.1, 0.1),
-                       flag("flag", animatedTexture({"UI/flag/", "default"}, 10, 2, GL_NEAREST), {0, 0}, {0, 0}),
-                       wall("flag", animatedTexture({"UI/wall/", "wall"}, 4, 17, GL_NEAREST), {0, 0}, {0, 0}),
-                       playerSprite("player/default", GL_NEAREST, 0, 0, 0.1, 0.1)
+                    floor("floor", animatedTexture({ "UI/floor/", "empty" }, 2, 17, GL_NEAREST), { 0, 0 }, { 0.1, 0.1 }),
+                    ink("hole", GL_NEAREST, 0, 0, 0.1, 0.1),
+                    flag("flag", animatedTexture({"UI/flag/", "default"}, 10, 2, GL_NEAREST), {0, 0}, {0, 0}),
+                    wall("wall", animatedTexture({"UI/wall/", "wall"}, 4, 17, GL_NEAREST), {0, 0}, {0, 0}),
+                    playerSprite("player", animatedTexture({ "UI/player/", "default" }, 8, 2, GL_NEAREST), { 0, 0 }, { 0.1, 0.1 })
 
 {
     handleManually = true;
