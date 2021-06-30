@@ -11,7 +11,7 @@ GUIScene::GUIScene() : GUILayer("Scene", false),
                     floor("floor", animatedTexture({ "UI/floor/", "empty" }, 2, 17, GL_NEAREST), { 0, 0 }, { 0.1, 0.1 }),
                     ink("hole", GL_NEAREST, 0, 0, 0.1, 0.1),
                     flag("flag", animatedTexture({"UI/flag/", "default"}, 10, 2, GL_NEAREST), {0, 0}, {0, 0}),
-                    wall("wall", animatedTexture({"UI/wall/", "wall"}, 4, 17, GL_NEAREST), {0, 0}, {0, 0}),
+                    background("background", animatedTexture({"UI/background/", "default"}, 4, 17, GL_NEAREST), {0, 0}, {0, 0}),
                     playerSprite("player", animatedTexture({ "UI/player/", "default" }, 8, 2, GL_NEAREST), { 0, 0 }, { 0.1, 0.1 })
 
 {
@@ -68,7 +68,7 @@ void GUIScene::draw() const
     floor.setScale(spriteScale + 0.01, spriteScale + 0.01); // adjust for floating point imprecision (I think?)
     ink.setScale(spriteScale, spriteScale + 0.01);   // else we get weird horizontal lines between some tiles
     flag.setScale(spriteScale, spriteScale);         // TODO looks like this isn't working. too bad.
-    wall.setScale(spriteScale + 0.01, spriteScale + 0.01);         
+    background.setScale(spriteScale + 0.01, spriteScale + 0.01);         
 
     for(int x = 0; x < largestLength + 5; x++) // TODO dirty hack
     {
@@ -77,8 +77,8 @@ void GUIScene::draw() const
             float xSpritePos = x * spriteScale;
             float ySpritePos = y * spriteScale;
 
-            wall.setPosition(xSpritePos, ySpritePos);
-            wall.draw(spriteShader, glyphShader);
+            background.setPosition(xSpritePos, ySpritePos);
+            background.draw(spriteShader, glyphShader);
 
             if (x < (largestLength - rowLength) / 2 || x >= rowLength + (largestLength - rowLength) / 2 ||
                 y < (largestLength - colLength) / 2 || y >= colLength + (largestLength - colLength) / 2) // tile not in level

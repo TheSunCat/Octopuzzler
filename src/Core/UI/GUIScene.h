@@ -26,7 +26,7 @@ public:
     mutable UIComponent floor;
     mutable UIComponent ink;
     mutable UIComponent flag;
-    mutable UIComponent wall;
+    mutable UIComponent background;
 
     mutable UIComponent playerSprite;
 
