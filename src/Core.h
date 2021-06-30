@@ -174,9 +174,9 @@ static decltype(auto) printf_transform(T const& arg)
     {
         return arg.c_str();
     }
-    else
+    else // TODO add this back maybe
     {
-        static_assert(std::is_trivially_copyable_v<T>);
+        //static_assert(std::is_trivially_copyable_v<T>);
         return arg;
     }
 }
@@ -187,8 +187,8 @@ struct smart_printf {
     {
         std::tm* now_tm = localtime(&currentTimeSeconds);
         std::cout << '[' << std::put_time(now_tm, "%H:%M:%S") << '\'' << std::setfill('0') << std::setw(3) << currentTimeMillis % 1000 << "] ";
-        printf(args...);
-        //printf(printf_transform(args)...);
+        //printf(args...);
+        printf(printf_transform(args)...);
     }
 };
 
