@@ -10,15 +10,15 @@
 GUIScene::GUIScene() : GUILayer("Scene", false),
                     floor("floor", animatedTexture({ "UI/floor/", "empty" }, 2, 17, GL_NEAREST), { 0, 0 }, { 0.1, 0.1 }),
                     ink("hole", GL_NEAREST, 0, 0, 0.1, 0.1),
-                    flag("flag", animatedTexture({"UI/flag/", "default"}, 10, 2, GL_NEAREST), {0, 0}, {0, 0}),
+                    flag("flag", animatedTexture({"UI/flag/", "default"}, 8, 2, GL_NEAREST), {0, 0}, {0, 0}),
                     background("background", animatedTexture({"UI/background/", "default"}, 4, 17, GL_NEAREST), {0, 0}, {0, 0}),
                     playerSprite("player", animatedTexture({ "UI/player/", "default" }, 8, 2, GL_NEAREST), { 0, 0 }, { 0.1, 0.1 })
 
 {
     handleManually = true;
 
-    playerSprite.addAnimation("die", simpleTexture({"UI/player/", "sad"}, GL_NEAREST));
-    playerSprite.addAnimation("win", simpleTexture({"UI/player/", "happy"}, GL_NEAREST));
+    playerSprite.addAnimation("die", simpleTexture({"UI/player/", "fail"}, GL_NEAREST));
+    playerSprite.addAnimation("win", simpleTexture({"UI/player/", "win"}, GL_NEAREST));
 
     setLevel("", 0);
 }
