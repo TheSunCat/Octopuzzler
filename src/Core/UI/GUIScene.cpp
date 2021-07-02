@@ -17,7 +17,8 @@ GUIScene::GUIScene() : GUILayer("Scene", false),
 {
     handleManually = true;
 
-    playerSprite.addAnimation("die", simpleTexture({"UI/player/", "fail"}, GL_NEAREST));
+    playerSprite.addAnimation("fail", simpleTexture({"UI/player/", "fail"}, GL_NEAREST));
+    playerSprite.addAnimation("failInk", simpleTexture({"UI/player/", "failInk"}, GL_NEAREST));
     playerSprite.addAnimation("win", simpleTexture({"UI/player/", "win"}, GL_NEAREST));
 
     setLevel("", 0);
@@ -94,13 +95,11 @@ void GUIScene::draw() const
                 break;
 
             case 'W': // wall
-                //wall.setPosition(xSpritePos, ySpritePos);
-                //wall.draw(spriteShader, glyphShader);
                 break;
 
             case 'H': // ink
-                //floor.setPosition(xSpritePos, ySpritePos);
-                //floor.draw(spriteShader, glyphShader);
+                floor.setPosition(xSpritePos, ySpritePos);
+                floor.draw(spriteShader, glyphShader);
 
                 ink.setPosition(xSpritePos, ySpritePos);
                 ink.draw(spriteShader, glyphShader);
@@ -206,7 +205,11 @@ void GUIScene::tryMovePlayer(Control input)
             LOG_INFO("Player died!");
 
             playerPosInt = ghostPlayerPos;
-            playerSprite.setAnimation("die");
+
+            if(tile == 'H')
+                playerSprite.setAnimation("failInk");
+            else
+                playerSprite.setAnimation("fail");
 
             Util::doLater([this] { this->canMove = false; }, 100);
             Util::doLater([this] { this->reset(); }, 1500);
