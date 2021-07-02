@@ -85,8 +85,8 @@ Outrospection::~Outrospection()
     LOG_INFO("Terminating engine...");
 
     glfwTerminate();
-    timeThread.request_stop();
-    timeThread.join();
+    //timeThread.request_stop();
+    //timeThread.join();
 
     //consoleThread.request_stop();
     //consoleThread.join();
@@ -105,12 +105,11 @@ void Outrospection::stop()
 void Outrospection::run()
 {
     running = true;
-
-    startTimeThread();
+    
     startLoggerThread();
     // TODO startConsoleThread();
 
-    lastFrame = currentTimeMillis;
+    lastFrame = Util::currentTimeMillis();
     while (running)
     {
         runGameLoop();
@@ -228,6 +227,8 @@ void Outrospection::doControl(Eye pokedEye)
 
 void Outrospection::runGameLoop()
 {
+    currentTimeMillis = Util::currentTimeMillis();
+
     const auto currentFrame = currentTimeMillis;
     deltaTime = float(currentFrame - lastFrame) / 1000.0f;
     lastFrame = currentFrame;
@@ -515,26 +516,6 @@ void Outrospection::updateInput()
     
 }
 
-void Outrospection::startTimeThread()
-{
-    timeThread = std::jthread(
-        [&](std::stop_token stopToken) -> void
-        {
-            std::cout << "Started time thread." << std::endl;
-
-            while (!stopToken.stop_requested()) {
-                auto now = std::chrono::system_clock::now();
-
-                currentTimeSeconds = std::chrono::system_clock::to_time_t(now);
-                currentTimeMillis = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
-
-                std::this_thread::yield();
-            }
-
-            std::cout << "I literally just stopped time." << std::endl;
-        });
-}
-
 void Outrospection::startLoggerThread()
 {
     loggerThread = std::jthread{
@@ -543,14 +524,14 @@ void Outrospection::startLoggerThread()
             std::cout << "Started logger thread." << std::endl;
 
             while (!stopToken.stop_requested()) {
-                if (loggerQueue.empty())
-                    continue;
-
-                const auto& log = loggerQueue.pop();
-                if (log != nullptr)
+                while (!loggerQueue.empty())
                 {
-                    log();
-                    std::putchar('\n');
+                    const auto& log = loggerQueue.pop();
+                    if (log != nullptr)
+                    {
+                        log();
+                        std::putchar('\n');
+                    }
                 }
 
                 std::this_thread::yield();

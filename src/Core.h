@@ -10,9 +10,6 @@ extern int SCR_HEIGHT;
 extern int CUR_WIDTH;
 extern int CUR_HEIGHT;
 
-inline time_t currentTimeMillis;
-inline time_t currentTimeSeconds;
-
 // Platform detection using predefined macros
 #ifdef _WIN32
     /* Windows x64/x86 */
@@ -185,9 +182,19 @@ struct smart_printf {
     template <typename ...Ts>
     void operator()(Ts const& ...args) const
     {
-        std::tm* now_tm = localtime(&currentTimeSeconds);
-        std::cout << '[' << std::put_time(now_tm, "%H:%M:%S") << '\'' << std::setfill('0') << std::setw(3) << currentTimeMillis % 1000 << "] ";
-        //printf(args...);
+        char timestamp_buffer[_MAX_PATH] = {};
+        std::time_t now = std::time(NULL);
+        std::tm current_localtime = {};
+        std::tm* current_localtime_ptr = nullptr;
+#ifdef PLATFORM_WINDOWS
+        localtime_s(&current_localtime, &now);
+        current_localtime_ptr = &current_localtime;
+#else
+        current_localtime_ptr = std::localtime(&now);
+#endif
+        std::strftime(timestamp_buffer, 32, "[%Y/%m/%d, %H:%M:%S] ", current_localtime_ptr);
+
+        std::cout << timestamp_buffer;
         printf(printf_transform(args)...);
     }
 };

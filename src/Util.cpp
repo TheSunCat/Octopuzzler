@@ -82,9 +82,15 @@ void Util::split(const std::string& input, const char& delimiter, std::vector<st
     out.emplace_back(&*start, next - start);
 }
 
+time_t Util::currentTimeMillis()
+{
+    auto now = std::chrono::system_clock::now();
+    return std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
+}
+
 void Util::doLater(std::function<void()> func, time_t waitTime)
 {
-    Outrospection::get().futureFunctions.emplace_back(func, currentTimeMillis, waitTime);
+    Outrospection::get().futureFunctions.emplace_back(func, currentTimeMillis(), waitTime);
 }
 
 bool Util::fileExists(const std::string& file)
