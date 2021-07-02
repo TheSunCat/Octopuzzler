@@ -178,23 +178,27 @@ static decltype(auto) printf_transform(T const& arg)
     }
 }
 
+inline auto thread_safe_time(const std::time_t& time) {
+    static std::mutex mut;
+    std::lock_guard<std::mutex> lock(mut);
+    auto localtime_ret = std::localtime(&time);
+    return localtime_ret;
+};
+
 struct smart_printf {
     template <typename ...Ts>
     void operator()(Ts const& ...args) const
     {
-        char timestamp_buffer[50] = {};
-        std::time_t now = std::time(NULL);
-        std::tm current_localtime = {};
-        std::tm* current_localtime_ptr = nullptr;
-#ifdef PLATFORM_WINDOWS
-        localtime_s(&current_localtime, &now);
-        current_localtime_ptr = &current_localtime;
-#else
-        current_localtime_ptr = std::localtime(&now);
-#endif
-        std::strftime(timestamp_buffer, 32, "[%Y/%m/%d, %H:%M:%S] ", current_localtime_ptr);
+        char time_buf[128];
+        std::time_t t = std::time(nullptr);
+        const auto time_strlen = std::strftime(time_buf, sizeof(time_buf), "[%Y/%m/%d, %H:%M:%S] ", thread_safe_time(t));
 
-        std::cout << timestamp_buffer;
+        if (time_strlen == 0) {
+            std::cerr << "Failed to retrieve date/time.\n";
+            return;
+        }
+
+        std::cout << time_buf;
         printf(printf_transform(args)...);
     }
 };
