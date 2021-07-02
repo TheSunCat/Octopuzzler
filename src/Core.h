@@ -182,7 +182,7 @@ struct smart_printf {
     template <typename ...Ts>
     void operator()(Ts const& ...args) const
     {
-        char timestamp_buffer[_MAX_PATH] = {};
+        char timestamp_buffer[50] = {};
         std::time_t now = std::time(NULL);
         std::tm current_localtime = {};
         std::tm* current_localtime_ptr = nullptr;
