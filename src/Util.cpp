@@ -90,6 +90,8 @@ void Util::doLater(std::function<void()> func, time_t waitTime)
 bool Util::fileExists(const std::string& file)
 {
     std::string fullPath("res/" + file);
+
+    LOG("Checking file %s", fullPath);
     
     return std::filesystem::exists(fullPath);
 }

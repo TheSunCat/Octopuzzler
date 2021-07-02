@@ -115,6 +115,7 @@ private:
     void registerCallbacks() const;
     void createShaders();
     void createCursors();
+    void createIcon() const;
 	
     Eye eye = Eye::NONE;
     GLFWcursor *cursorNone{}, *cursorCircle{}, *cursorSquare{}, *cursorTriangle{};
