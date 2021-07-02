@@ -181,7 +181,13 @@ static decltype(auto) printf_transform(T const& arg)
 inline auto thread_safe_time(const std::time_t& time) {
     static std::mutex mut;
     std::lock_guard<std::mutex> lock(mut);
-    auto localtime_ret = std::localtime(&time);
+
+#ifdef _WIN32
+    auto localtime_ret = std::localtime(&time);;
+#else
+    tm* localtime_ret = new tm();
+    localtime_r(&time, localtime_ret);
+#endif
     return localtime_ret;
 };
 
