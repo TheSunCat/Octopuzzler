@@ -60,17 +60,10 @@ Outrospection::Outrospection()
     registerCallbacks();
     createShaders();
     createCursors();
+    createIcon();
 
-    GLFWimage image;
-    int width = 10, height = 10;
+    // TODO check if we can access files, if not warn the user
 
-    unsigned char* data = TextureManager::readImageBytes("./res/ObjectData/icon.png", width, height);
-    image.pixels = data; image.width = width; image.height = height;
-    
-    glfwSetWindowIcon(gameWindow, 1, &image);
-
-    TextureManager::free(data);
-    
     glfwSetCursor(gameWindow, cursorNone);
     
     octopusOverlay = new GUIOctopusOverlay();
@@ -437,6 +430,19 @@ void Outrospection::createCursors()
     data = TextureManager::readImageBytes("./res/ObjectData/Textures/triangleMouse.png", width, height);
     cursorImage.pixels = data; cursorImage.width = width; cursorImage.height = height;
     cursorTriangle = glfwCreateCursor(&cursorImage, 0, 0);
+    TextureManager::free(data);
+}
+
+void Outrospection::createIcon() const
+{
+    GLFWimage image;
+    int width = 10, height = 10;
+
+    unsigned char* data = TextureManager::readImageBytes("./res/ObjectData/icon.png", width, height);
+    image.pixels = data; image.width = width; image.height = height;
+
+    glfwSetWindowIcon(gameWindow, 1, &image);
+
     TextureManager::free(data);
 }
 
