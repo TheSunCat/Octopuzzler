@@ -106,29 +106,29 @@ std::string Util::readAllBytes(const std::string& file)
 {
     std::string fullPath("res/" + file);
     
-    std::ifstream vShaderFile;
+    std::ifstream fileStream;
 
     // ensure ifstream objects can throw exceptions
-    vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+    fileStream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
     try
     {
         // open file
-        vShaderFile.open(fullPath);
-        std::stringstream vShaderStream;
+        fileStream.open(fullPath);
+        std::stringstream fileString;
 
         // read file's buffer contents into streams
-        vShaderStream << vShaderFile.rdbuf();
+        fileString << fileStream.rdbuf();
 
         // close file handlers
-        vShaderFile.close();
+        fileStream.close();
 
         // convert stream into string
-        return vShaderStream.str();
+        return fileString.str();
     }
     catch (std::ifstream::failure& e)
     {
-        LOG_ERROR("Failed to read file \"%s\" or \"%s\"! errno %s", fullPath, e.what());
+        LOG_ERROR("Failed to read file \"%s\"! errno %s", fullPath, e.what());
         return "ERROR: NO FILE";
     }
 }
