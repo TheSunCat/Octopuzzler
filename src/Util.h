@@ -77,7 +77,10 @@ namespace Util
 
         time_t waitTime;
     };
-	
+
+    // I miss Java
+    time_t currentTimeMillis();
+
     void doLater(std::function<void()> func, time_t waitTime);
 
     constexpr std::size_t hashBytes(const char* data, std::size_t length)

@@ -81,6 +81,8 @@ public:
     GUILayer* winOverlay;
 
     bool won = false;
+
+    time_t currentTimeMillis = 0;
 	
     DISALLOW_COPY_AND_ASSIGN(Outrospection)
 private:
@@ -127,9 +129,6 @@ private:
     LayerStack layerStack;
 
     static Outrospection* instance;
-
-    std::jthread timeThread;
-    void startTimeThread();
 
     std::jthread loggerThread;
     void startLoggerThread();
