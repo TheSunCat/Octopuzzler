@@ -24,8 +24,24 @@ void eyeClick(UIButton& button, int mouseButton)
 
 void eyeHover(UIButton& button, int)
 {
+    LOG("eye %s hovered", button.name);
+
+    auto scene = (GUIScene*)Outrospection::get().scene;
+
     auto pokedEye = (Eye)button.name[8];
-    ((GUIScene*)Outrospection::get().scene)->doGhostControl(pokedEye);
+    scene->ghostInputQueue.clear();
+    scene->showGhost = true;
+    scene->doGhostControl(pokedEye);
+}
+
+void eyeUnhover(UIButton& button, int)
+{
+    LOG("eye %s unhovered", button.name);
+
+    auto scene = (GUIScene*)Outrospection::get().scene;
+
+    scene->ghostInputQueue.clear();
+    scene->showGhost = false;
 }
 
 void showWelcome(UIButton&, int)
@@ -59,14 +75,19 @@ GUIOctopusOverlay::GUIOctopusOverlay() : GUILayer("Octopus Overlay", false),
                                                     Bounds(BoundsShape::Circle, {0.73, 0.1, 0.07}), eyeClick));
     bCircle->addAnimation("blink", animatedTexture({"UI/eyes/", "eyeCircle"}, 1, 5, GL_LINEAR));
     bCircle->onHover = eyeHover;
+    bCircle->onUnhover = eyeUnhover;
 
     auto& bSquare = buttons.emplace_back(std::make_unique<UIButton>("eyes/eyeSquare0", GL_LINEAR, 0, 0, 1, 1,
                                                     Bounds(BoundsShape::Circle, {0.88, 0.05, 0.07}), eyeClick));
     bSquare->addAnimation("blink", animatedTexture({"UI/eyes/", "eyeSquare"}, 1, 5, GL_LINEAR));
+    bSquare->onHover = eyeHover;
+    bSquare->onUnhover = eyeUnhover;
 
     auto& bTriangle = buttons.emplace_back(std::make_unique<UIButton>("eyes/eyeTriangle0", GL_LINEAR, 0, 0, 1, 1,
                                                     Bounds(BoundsShape::Circle, {0.93, 0.3, 0.07}), eyeClick));
     bTriangle->addAnimation("blink", animatedTexture({"UI/eyes/", "eyeTriangle"}, 1, 5, GL_LINEAR));
+    bTriangle->onHover = eyeHover;
+    bTriangle->onUnhover = eyeUnhover;
 
     buttons.emplace_back(std::make_unique<UIButton>("showWelcome", GL_NEAREST, 0.94, 0.91, 0.05, 0.08, Bounds(), showWelcome));
     buttons.emplace_back(std::make_unique<UIButton>("reset", GL_NEAREST, 0.88, 0.91, 0.05, 0.08, Bounds(), reset));

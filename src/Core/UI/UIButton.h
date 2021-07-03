@@ -24,6 +24,7 @@ public:
 
     ButtonCallback onClick;
     ButtonCallback onHover;
+    ButtonCallback onUnhover;
 
     bool hovered = false;
 

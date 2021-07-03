@@ -33,6 +33,7 @@ public:
     glm::vec2 ghostPosInt{}; // actual position on grid
     int curGhostMove = -1;
     std::vector<Control> ghostInputQueue;
+    bool showGhost = false;
 private:
     void tryMovePlayer(Control input);
     void moveGhost(Control input);
