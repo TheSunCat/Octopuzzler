@@ -22,7 +22,7 @@ GUIScene::GUIScene() : GUILayer("Scene", false),
     playerSprite.addAnimation("failInk", simpleTexture({"UI/player/", "failInk"}, GL_NEAREST));
     playerSprite.addAnimation("win", simpleTexture({"UI/player/", "win"}, GL_NEAREST));
 
-    setLevel("", 0);
+    setLevel("", 3);
 }
 
 void GUIScene::setLevel(const std::string& lvlName, int lvlID)
@@ -44,7 +44,20 @@ void GUIScene::setLevel(const std::string& lvlName, int lvlID)
 void GUIScene::tick()
 {
     playerPos = Util::lerp(playerPos, playerPosInt, 0.2);
-    ghostPos = Util::lerp(ghostPos, ghostPosInt, 0.2);
+
+    if(!showGhost)
+    {
+        ghostPosInt = playerPosInt; ghostPos = ghostPosInt;
+        curGhostMove = 0;
+    } else
+    {
+        ghostPos = Util::lerp(ghostPos, ghostPosInt, 0.2);
+    }
+
+    if(playerPos == playerPosInt) // finished moving
+    {
+        showGhost = true;
+    }
 
     floor.tick();
     ink.tick();
@@ -117,11 +130,13 @@ void GUIScene::draw() const
     flag.setPosition(xFlagPos, yFlagPos);
     flag.draw(spriteShader, glyphShader);
 
-    float xGhostPos = (ghostPos.x + (largestLength - rowLength) / 2) * spriteScale;
-    float yGhostPos = (ghostPos.y + (largestLength - colLength) / 2) * spriteScale;
+    if (showGhost && canMove) {
+        float xGhostPos = (ghostPos.x + (largestLength - rowLength) / 2) * spriteScale;
+        float yGhostPos = (ghostPos.y + (largestLength - colLength) / 2) * spriteScale;
 
-    ghostSprite.setPosition(xGhostPos, yGhostPos);
-    ghostSprite.draw(spriteShader, glyphShader);
+        ghostSprite.setPosition(xGhostPos, yGhostPos);
+        ghostSprite.draw(spriteShader, glyphShader);
+    }
 
     float xPlayerPos = (playerPos.x + (largestLength - rowLength) / 2) * spriteScale;
     float yPlayerPos = (playerPos.y + (largestLength - colLength) / 2) * spriteScale;
@@ -144,7 +159,7 @@ void GUIScene::worldTick()
         inputQueue.erase(inputQueue.begin());
     }
 
-    if(curGhostMove == 0 && !ghostInputQueue.empty())
+    if(curGhostMove >= 0 && !ghostInputQueue.empty())
     {
         // read input
         Control curInput = ghostInputQueue[curGhostMove];
@@ -244,6 +259,7 @@ void GUIScene::tryMovePlayer(Control input)
 
     playerPosInt += totalDelta;
     ghostPosInt = playerPosInt;
+    showGhost = false;
 }
 
 void GUIScene::moveGhost(Control input)
