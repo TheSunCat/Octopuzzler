@@ -23,6 +23,7 @@ public:
     void tick() override;
 
     ButtonCallback onClick;
+    ButtonCallback onHover;
 
     bool hovered = false;
 
