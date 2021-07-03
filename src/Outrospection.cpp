@@ -3,8 +3,6 @@
 #include <csignal>
 #include <glm/ext/matrix_clip_space.hpp>
 
-//#include "irrKlang/irrKlang.h"
-
 #include "Util.h"
 #include "Core/Layer.h"
 #include "Core/UI/GUIControlsOverlay.h"
@@ -38,15 +36,9 @@ void updateRes()
 
 Outrospection* Outrospection::instance = nullptr;
 
-//irrklang::ISoundEngine* soundEngine = irrklang::createIrrKlangDevice();
-
 Outrospection::Outrospection()
 {
     instance = this;
-
-#if !defined(_DEBUG) && defined(PLATFORM_WINDOWS)
-    //::ShowWindow(::GetConsoleWindow(), SW_HIDE); // hide console window
-#endif
 
     preInit = PreInitialization();
 
