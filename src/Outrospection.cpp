@@ -190,31 +190,9 @@ Eye Outrospection::getEye() const
     return eye;
 }
 
-bool Outrospection::controlBound(Control control)
+void Outrospection::scheduleWorldTick()
 {
-    if (control == Control::NONE)
-        return false; // NONE cannot be bound
-    
-    for(KeyBinding& bind : keyBinds)
-    {
-        if (bind.m_eye != Eye::NONE && bind.m_control == control)
-            return true; // can't bind control twice!
-    }
-
-    return false;
-}
-
-void Outrospection::doControl(Eye pokedEye)
-{
-    lastTick = currentTimeMillis - 5000; // do tick NOW
-    
-    for(KeyBinding& bind : keyBinds)
-    {
-        if(bind.m_eye == pokedEye)
-        {
-            inputQueue.emplace_back(bind.m_control);
-        }
-    }
+    lastTick = Util::currentTimeMillis() - 5000;
 }
 
 void Outrospection::runGameLoop()
@@ -320,22 +298,12 @@ void Outrospection::runGameLoop()
 
 void Outrospection::runTick()
 {
-    if (inputQueue.empty())
-        return;
-
-    if (currentTimeMillis - lastTick < 333) // three ticks per second
+    if (currentTimeMillis - lastTick < 200) // five ticks per second
         return;
     
     lastTick = currentTimeMillis;
 
-    // read input
-    Control curInput = inputQueue[0];
-    LOG_INFO("Player is playing %c", char(curInput));
-
-    ((GUIScene*)scene)->tryMovePlayer(curInput);
-
-    // erase it so we move to the next one
-    inputQueue.erase(inputQueue.begin());
+    ((GUIScene*)scene)->worldTick();
 }
 
 void Outrospection::registerCallbacks() const

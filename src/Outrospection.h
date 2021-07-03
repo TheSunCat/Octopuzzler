@@ -56,10 +56,8 @@ public:
 	// stores the letter and sets the mouse image
     void setEye(Eye letter);
     Eye getEye() const;
-    bool controlBound(Control control);
-    void doControl(Eye pokedEye);
-    std::vector<KeyBinding> keyBinds;
-    std::vector<Control> inputQueue;
+
+    void scheduleWorldTick(); // tick world NOW
 
     glm::vec2 lastMousePos = glm::vec2(SCR_HEIGHT / 2.0f, SCR_WIDTH / 2.0f);
 

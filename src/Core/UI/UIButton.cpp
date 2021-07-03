@@ -45,5 +45,13 @@ bool UIButton::isOnButton(const glm::vec2& point) const
 void UIButton::tick()
 {
     glm::vec2 mousePos = Outrospection::get().lastMousePos;
+
+    bool lastHovered = hovered;
     hovered = isOnButton(mousePos);
+
+    if(onHover && !lastHovered && hovered)
+    {
+        LOG_INFO("onHover");
+        onHover(*this, 0);
+    }
 }

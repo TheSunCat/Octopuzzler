@@ -1,6 +1,7 @@
 #pragma once
 #include "Core/UI/GUILayer.h"
 #include "Core/UI/UIComponent.h"
+#include "KeyBinding.h"
 
 class GUIScene : public GUILayer
 {
@@ -12,22 +13,34 @@ public:
 
     void draw() const override;
 
-    void tryMovePlayer(Control input);
-    void tryMoveGhost(Control input);
+    void worldTick();
+
     void tryUndo();
     void reset();
 
+    bool controlBound(Control control);
+    void doControl(Eye pokedEye);
+    void doGhostControl(Eye hoveredEye);
+
+    std::vector<KeyBinding> keyBinds{};
+    std::vector<Control> inputQueue;
 
     Level level{};
-    mutable glm::vec2 playerPosInt{}; // actual position on grid
+    glm::vec2 playerPosInt{}; // actual position on grid
     mutable bool canMove = true;
     mutable std::vector<glm::vec2> pastPositions;
 
-    mutable glm::vec2 ghostPosInt{}; // actual position on grid
-
+    glm::vec2 ghostPosInt{}; // actual position on grid
+    int curGhostMove = -1;
+    std::vector<Control> ghostInputQueue;
 private:
-    mutable glm::vec2 playerPos{}; // interpolates player between grid spots
-    mutable glm::vec2 ghostPos{};  // interpolates ghost between grid spots
+    void tryMovePlayer(Control input);
+    void moveGhost(Control input);
+
+    static std::vector<glm::vec2> controlToDeltas(Control ctrl);
+
+    glm::vec2 playerPos{}; // interpolates player between grid spots
+    glm::vec2 ghostPos{};  // interpolates ghost between grid spots
 
 
     mutable UIComponent floor;
@@ -36,6 +49,7 @@ private:
     mutable UIComponent background;
 
     mutable UIComponent playerSprite;
+    mutable UIComponent ghostSprite;
 
     mutable int levelID = 0;
 };

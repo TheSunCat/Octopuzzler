@@ -12,7 +12,8 @@ GUIScene::GUIScene() : GUILayer("Scene", false),
                     ink("hole", GL_NEAREST, 0, 0, 0.1, 0.1),
                     flag("flag", animatedTexture({"UI/flag/", "default"}, 16, 2, GL_NEAREST), {0, 0}, {0, 0}),
                     background("background", animatedTexture({"UI/background/", "default"}, 8, 17, GL_NEAREST), {0, 0}, {0, 0}),
-                    playerSprite("player", animatedTexture({ "UI/player/", "default" }, 16, 2, GL_NEAREST), { 0, 0 }, { 0.1, 0.1 })
+                    playerSprite("player", animatedTexture({ "UI/player/", "default" }, 16, 2, GL_NEAREST), { 0, 0 }, { 0.1, 0.1 }),
+                    ghostSprite("ghost", animatedTexture({ "UI/ghost/", "default" }, 16, 2, GL_NEAREST), { 0, 0 }, { 0.1, 0.1 })
 
 {
     handleManually = true;
@@ -43,6 +44,7 @@ void GUIScene::setLevel(const std::string& lvlName, int lvlID)
 void GUIScene::tick()
 {
     playerPos = Util::lerp(playerPos, playerPosInt, 0.2);
+    ghostPos = Util::lerp(ghostPos, ghostPosInt, 0.2);
 
     floor.tick();
     ink.tick();
@@ -66,6 +68,7 @@ void GUIScene::draw() const
     float spriteScale = 4.f / largestLength;
 
     playerSprite.setScale(spriteScale, spriteScale);
+    ghostSprite.setScale(spriteScale, spriteScale);
     floor.setScale(spriteScale + 0.01, spriteScale + 0.01); // adjust for floating point imprecision (I think?)
     ink.setScale(spriteScale, spriteScale + 0.01);   // else we get weird horizontal lines between some tiles
     flag.setScale(spriteScale, spriteScale);         // TODO looks like this isn't working. too bad.
@@ -108,18 +111,62 @@ void GUIScene::draw() const
         }
     }
 
-    float xPlayerPos = (playerPos.x + (largestLength - rowLength) / 2) * spriteScale;
-    float yPlayerPos = (playerPos.y + (largestLength - colLength) / 2) * spriteScale;
-
-    playerSprite.setPosition(xPlayerPos, yPlayerPos);
-    playerSprite.draw(spriteShader, glyphShader);
-
     float xFlagPos = (level.goal.x + (largestLength - rowLength) / 2) * spriteScale;
     float yFlagPos = (level.goal.y + (largestLength - colLength) / 2) * spriteScale;
 
     flag.setPosition(xFlagPos, yFlagPos);
     flag.draw(spriteShader, glyphShader);
+
+    float xGhostPos = (ghostPos.x + (largestLength - rowLength) / 2) * spriteScale;
+    float yGhostPos = (ghostPos.y + (largestLength - colLength) / 2) * spriteScale;
+
+    ghostSprite.setPosition(xGhostPos, yGhostPos);
+    ghostSprite.draw(spriteShader, glyphShader);
+
+    float xPlayerPos = (playerPos.x + (largestLength - rowLength) / 2) * spriteScale;
+    float yPlayerPos = (playerPos.y + (largestLength - colLength) / 2) * spriteScale;
+
+    playerSprite.setPosition(xPlayerPos, yPlayerPos);
+    playerSprite.draw(spriteShader, glyphShader);
 }
+
+void GUIScene::worldTick()
+{
+    if (!inputQueue.empty())
+    {
+        // read input
+        Control curInput = inputQueue[0];
+        LOG_INFO("Player is playing %c", char(curInput));
+
+        tryMovePlayer(curInput);
+
+        // erase it so we move to the next input
+        inputQueue.erase(inputQueue.begin());
+    }
+
+    if(curGhostMove == 0 && !ghostInputQueue.empty())
+    {
+        // read input
+        Control curInput = ghostInputQueue[curGhostMove];
+        LOG_INFO("Ghost is playing %c", char(curInput));
+
+        moveGhost(curInput);
+    }
+
+    // increment so we move to the next input
+    curGhostMove++;
+
+    if (curGhostMove == ghostInputQueue.size()) {
+        curGhostMove = -10; // pause for tick
+    }
+
+    if(curGhostMove == 0) // about to start anim, reset ghost
+    {
+        ghostPosInt = playerPosInt;
+        ghostPos = playerPosInt;
+    }
+}
+
 
 void GUIScene::tryMovePlayer(Control input)
 {
@@ -131,32 +178,7 @@ void GUIScene::tryMovePlayer(Control input)
 
     pastPositions.emplace_back(playerPosInt);
 
-    std::vector<glm::vec2> deltas;
-    switch (input)
-    {
-    case Control::DASH_UP:
-        deltas.emplace_back(0.0f, -1.0f);
-    case Control::MOVE_UP:
-        deltas.emplace_back(0.0f, -1.0f);
-        break;
-    case Control::DASH_DOWN:
-        deltas.emplace_back(0.0f, 1.0f);
-    case Control::MOVE_DOWN:
-        deltas.emplace_back(0.0f, 1.0f);
-        break;
-    case Control::DASH_RIGHT:
-        deltas.emplace_back(1.0f, 0.0f);
-    case Control::MOVE_RIGHT:
-        deltas.emplace_back(1.0f, 0.0f);
-        break;
-    case Control::DASH_LEFT:
-        deltas.emplace_back(-1.0f, 0.0f);
-    case Control::MOVE_LEFT:
-        deltas.emplace_back(-1.0f, 0.0f);
-        break;
-    default:
-        LOG_ERROR("Unknown control %i", int(input));
-    }
+    auto deltas = controlToDeltas(input);
 
     glm::vec2 totalDelta = glm::vec2();
 
@@ -214,15 +236,22 @@ void GUIScene::tryMovePlayer(Control input)
             Util::doLater([this] { this->canMove = false; }, 100);
             Util::doLater([this] { this->reset(); }, 1500);
 
-            //LOG_INFO("TODO show death screen"); // TODO show death screen
             return;
         }
 
         totalDelta += delta;
     }
 
-
     playerPosInt += totalDelta;
+    ghostPosInt = playerPosInt;
+}
+
+void GUIScene::moveGhost(Control input)
+{
+    auto deltas = controlToDeltas(input);
+
+    for(auto& delta : deltas)
+        ghostPosInt += delta;
 }
 
 void GUIScene::tryUndo()
@@ -247,7 +276,79 @@ void GUIScene::reset()
     flag.hidden = false;
     pastPositions.clear();
 
-    Outrospection::get().inputQueue.clear();
+    inputQueue.clear();
 
     ((GUIControlsOverlay*)Outrospection::get().controlsOverlay)->setControls(level.controls);
+}
+
+bool GUIScene::controlBound(Control control)
+{
+    if (control == Control::NONE)
+        return false; // NONE cannot be bound
+
+    for (KeyBinding& bind : keyBinds)
+    {
+        if (bind.m_eye != Eye::NONE && bind.m_control == control)
+            return true; // can't bind control twice!
+    }
+
+    return false;
+}
+
+void GUIScene::doControl(Eye pokedEye)
+{
+    Outrospection::get().scheduleWorldTick(); // do tick NOW
+
+    for (KeyBinding& bind : keyBinds)
+    {
+        if (bind.m_eye == pokedEye)
+        {
+            inputQueue.emplace_back(bind.m_control);
+        }
+    }
+}
+
+void GUIScene::doGhostControl(Eye hoveredEye)
+{
+    //Outrospection::get().scheduleWorldTick(); // do tick NOW
+
+    for (KeyBinding& bind : keyBinds)
+    {
+        if (bind.m_eye == hoveredEye)
+        {
+            ghostInputQueue.emplace_back(bind.m_control);
+        }
+    }
+}
+
+std::vector<glm::vec2> GUIScene::controlToDeltas(Control ctrl)
+{
+    std::vector<glm::vec2> deltas;
+    switch (ctrl)
+    {
+    case Control::DASH_UP:
+        deltas.emplace_back(0.0f, -1.0f);
+    case Control::MOVE_UP:
+        deltas.emplace_back(0.0f, -1.0f);
+        break;
+    case Control::DASH_DOWN:
+        deltas.emplace_back(0.0f, 1.0f);
+    case Control::MOVE_DOWN:
+        deltas.emplace_back(0.0f, 1.0f);
+        break;
+    case Control::DASH_RIGHT:
+        deltas.emplace_back(1.0f, 0.0f);
+    case Control::MOVE_RIGHT:
+        deltas.emplace_back(1.0f, 0.0f);
+        break;
+    case Control::DASH_LEFT:
+        deltas.emplace_back(-1.0f, 0.0f);
+    case Control::MOVE_LEFT:
+        deltas.emplace_back(-1.0f, 0.0f);
+        break;
+    default:
+        LOG_ERROR("Unknown control %i", int(ctrl));
+    }
+
+    return deltas;
 }
