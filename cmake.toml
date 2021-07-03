@@ -26,6 +26,7 @@ compile-features = ["cxx_std_20"]
 clang.compile-options = ["-Wno-volatile"]
 gcc.compile-options = ["-Wno-volatile"]
 msvc.compile-options = []
+msvc.link-options = ["/SUBSYSTEM:WINDOWS"]
 sources = [
     "src/**.cpp",
 ]

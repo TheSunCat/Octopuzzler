@@ -1,7 +1,16 @@
 #include "Outrospection.h"
 
-int main()
-{
+#ifdef PLATFORM_WINDOWS
+int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
+    if (AttachConsole(ATTACH_PARENT_PROCESS)) { // set up console output (if there is a console to attach to)
+        FILE* empty;
+        freopen_s(&empty, "CONOUT$", "w", stdout);
+        freopen_s(&empty, "CONOUT$", "w", stderr);
+    }
+#else
+int main() {
+#endif
+
     // check if we can read the filesystem
     bool canReadFiles = Util::fileExists("ShaderData/crt.vert");
     if(!canReadFiles)

@@ -119,6 +119,12 @@ target_link_libraries(Outrospection PRIVATE
 	freetype
 )
 
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC") # msvc
+	target_link_options(Outrospection PRIVATE
+		"/SUBSYSTEM:WINDOWS"
+	)
+endif()
+
 unset(CMKR_TARGET)
 unset(CMKR_SOURCES)
 
