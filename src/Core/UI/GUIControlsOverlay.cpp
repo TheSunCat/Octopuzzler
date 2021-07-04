@@ -24,9 +24,9 @@ void controlClick(UIButton& button, int)
 }
 
 GUIControlsOverlay::GUIControlsOverlay() : GUILayer("Controls Overlay", false),
-                                           windowTitle("windowTitle", GL_LINEAR, 0.04, 0.1, 0.2, 0.05),
-                                           windowBody("windowBody", GL_LINEAR, 0.04, 0.15, 0.2, 0.06),
-                                           windowBottom("windowBottom", GL_LINEAR, 0.04, 0.21, 0.2, 0.0067)
+                                           windowTitle("windowTitle", GL_LINEAR, 0.02, 0.15, 0.2, 0.05),
+                                           windowBody("windowBody", GL_LINEAR, 0.02, 0.20, 0.2, 0.06),
+                                           windowBottom("windowBottom", GL_LINEAR, 0.02, 0.26, 0.2, 0.0067)
 {
 }
 
@@ -96,7 +96,7 @@ void GUIControlsOverlay::setControls(const std::string& controlsStr)
     {
         buttons.emplace_back(std::make_unique<UIButton>(buttonNames[i],
                                                         TextureManager::None,
-                                                        0.05, 0.16 + (0.05 * float(i)), 0.2, 0.05, Bounds(),
+                                                        0.03, 0.21 + (0.05 * float(i)), 0.2, 0.05, Bounds(),
                                                         controlClick));
 
         buttons[i]->showText = true;
@@ -104,5 +104,5 @@ void GUIControlsOverlay::setControls(const std::string& controlsStr)
 
     float bodyHeight = 0.05 * buttons.size() + 0.02;
     windowBody.setScale(0.2, bodyHeight);
-    windowBottom.setPosition(0.04, 0.15 + bodyHeight);
+    windowBottom.setPosition(0.021f, 0.20f + bodyHeight); // 0.021f because 0.02 was misaligned for some reason aaaaa
 }
