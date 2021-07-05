@@ -2,11 +2,18 @@
 
 #ifdef PLATFORM_WINDOWS
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
+
+#ifdef _DEBUG
+    if (AllocConsole()) {
+#else
     if (AttachConsole(ATTACH_PARENT_PROCESS)) { // set up console output (if there is a console to attach to)
+#endif
         FILE* empty;
         freopen_s(&empty, "CONOUT$", "w", stdout);
         freopen_s(&empty, "CONOUT$", "w", stderr);
     }
+
+    //std::cout << "test";
 #else
 int main() {
 #endif
