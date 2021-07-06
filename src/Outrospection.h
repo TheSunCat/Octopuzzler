@@ -12,6 +12,7 @@
 #include "Core/LayerStack.h"
 #include "Core/PreInitialization.h"
 #include "Core/Registry.h"
+#include "Core/AudioManager.h"
 #include "Core/Rendering/FreeType.h"
 #include "Core/Rendering/OpenGL.h"
 #include "Core/Rendering/Shader.h"
@@ -62,7 +63,7 @@ public:
     glm::vec2 lastMousePos = glm::vec2(SCR_HEIGHT / 2.0f, SCR_WIDTH / 2.0f);
 
     TextureManager textureManager;
-
+    AudioManager audioManager;
 
 	std::vector<Util::FutureRun> futureFunctions;
     std::unordered_map<char, FontCharacter> fontCharacters;
