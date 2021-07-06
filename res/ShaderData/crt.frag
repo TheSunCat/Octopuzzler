@@ -4,7 +4,7 @@ out vec4 FragColor;
 in vec2 texCoords;
 
 uniform sampler2D screenTexture;
-uniform vec2 resolution;
+//uniform vec2 resolution;
 uniform float time;
 
 // math from https://www.shadertoy.com/view/Ms23DR and https://www.shadertoy.com/view/wddyRH, thanks!!

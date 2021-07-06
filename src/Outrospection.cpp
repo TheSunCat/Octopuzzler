@@ -18,22 +18,6 @@
 #include "Events/MouseEvent.h"
 #include "Events/WindowEvent.h"
 
-
-int WINDOW_WIDTH = 1920 / 1.5;
-int WINDOW_HEIGHT = 1080 / 1.5;
-
-int CRT_WIDTH = 256;
-int CRT_HEIGHT = 192;
-
-int SCR_WIDTH = WINDOW_WIDTH;
-int SCR_HEIGHT = WINDOW_HEIGHT;
-
-void updateRes()
-{
-    SCR_WIDTH = WINDOW_WIDTH;
-    SCR_HEIGHT = WINDOW_HEIGHT;
-}
-
 Outrospection* Outrospection::instance = nullptr;
 
 Outrospection::Outrospection()
@@ -245,11 +229,8 @@ void Outrospection::runGameLoop()
     // Draw the frame!
     {
         glDisable(GL_DEPTH_TEST); // disable depth test so stuff near camera isn't clipped
-
         
-        glBindFramebuffer(GL_FRAMEBUFFER, crtFramebuffer);
-        SCR_WIDTH = CRT_WIDTH; SCR_HEIGHT = CRT_HEIGHT;
-        glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+        crtFramebuffer.bind();
         glClearColor(0.3725, 0.4667, 0.5529f, 1.0f); // clear screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
@@ -259,9 +240,7 @@ void Outrospection::runGameLoop()
 
 
         // bind to default framebuffer and draw custom one over that
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        SCR_WIDTH = WINDOW_WIDTH; SCR_HEIGHT = WINDOW_HEIGHT;
-        glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+        defaultFramebuffer.bind();
         
         // clear all relevant buffers
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -269,7 +248,7 @@ void Outrospection::runGameLoop()
 
         // apply CRT effect
         crtShader.use();
-        crtShader.setVec2("resolution", CRT_WIDTH, CRT_HEIGHT);
+        //crtShader.setVec2("resolution", CRT_WIDTH, CRT_HEIGHT);
         crtShader.setFloat("time", float(currentTimeMillis % 1000000) / 1000000);
         
         glBindVertexArray(crtVAO);
@@ -311,9 +290,13 @@ void Outrospection::registerCallbacks() const
     // Register OpenGL events
     glfwSetFramebufferSizeCallback(gameWindow, [](GLFWwindow*, const int width, const int height)
     {
-        SCR_WIDTH = width; SCR_HEIGHT = height;
-        updateRes();
-        glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+        LOG_DEBUG("Framebuffer size changed to %i, %i", width, height);
+
+        // TODO do something here
+        
+        //SCR_WIDTH = width; SCR_HEIGHT = height;
+        //updateRes();
+        //glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
     });
 
     glfwSetCursorPosCallback(gameWindow, [](GLFWwindow* window, const double xPosD, const double yPosD)
@@ -359,8 +342,9 @@ void Outrospection::createShaders()
     glyphShader           = Shader("sprite"   , "glyph"          );
 
     // set up 2d shader
-    const glm::mat4 projection = glm::ortho(0.0f, float(SCR_WIDTH),
-                                            float(SCR_HEIGHT), 0.0f, -1.0f, 1.0f);
+    glm::vec2 res = Util::curResolution();
+    const glm::mat4 projection = glm::ortho(0.0f, res.x,
+                                            res.y, 0.0f, -1.0f, 1.0f);
     spriteShader.use();
     spriteShader.setMat4("projection", projection);
 

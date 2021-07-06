@@ -4,6 +4,8 @@
 #include <GLFW/glfw3.h>
 
 #include "Constants.h"
+#include "Util.h"
+#include "Framebuffer.h"
 
 class OpenGL
 {
@@ -27,7 +29,7 @@ public:
 #endif
 
         // Window init
-        gameWindow = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Octopuzzler", nullptr, nullptr);
+        gameWindow = glfwCreateWindow(1280, 720, "Octopuzzler", nullptr, nullptr);
         if (gameWindow == nullptr)
         {
             LOG_ERROR("Failed to create GLFW window!");
@@ -79,17 +81,8 @@ public:
         glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), nullptr);
-
-
-        glGenFramebuffers(1, &framebuffer);
-        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-        // create a color attachment texture
-        glGenTextures(1, &textureColorbuffer);
-        glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 256, 192, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+        
+        
         // create a renderbuffer object for depth and stencil attachment (we won't be sampling these)
         GLuint RBO;
         glGenRenderbuffers(1, &RBO);
@@ -105,7 +98,7 @@ public:
     }
 
     GLuint crtVAO = 0;
-    GLuint framebuffer = 0;
+    Framebuffer framebuffer;
     GLuint textureColorbuffer = 0;
     GLFWwindow* gameWindow{};
 

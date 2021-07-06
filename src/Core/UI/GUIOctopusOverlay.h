@@ -14,5 +14,6 @@ public:
 
     DISALLOW_COPY_AND_ASSIGN(GUIOctopusOverlay)
 private:
-    UIComponent theOverlay;
+    UIComponent background;
+    UIComponent octopus;
 };
