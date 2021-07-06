@@ -8,12 +8,12 @@
 // this is the constructor (ctor for short).
 // it only takes care of copying the level data to store it here for now
 GUIScene::GUIScene() : GUILayer("Scene", false),
-                    floor("floor", animatedTexture({ "UI/floor/", "empty" }, 8, 17, GL_NEAREST), { 0, 0 }, { 0.1, 0.1 }),
-                    ink("hole", GL_NEAREST, 0, 0, 0.1, 0.1),
-                    flag("flag", animatedTexture({"UI/flag/", "default"}, 16, 2, GL_NEAREST), {0, 0}, {0, 0}),
-                    background("background", animatedTexture({"UI/background/", "default"}, 8, 17, GL_NEAREST), {0, 0}, {0, 0}),
-                    playerSprite("player", animatedTexture({ "UI/player/", "default" }, 16, 2, GL_NEAREST), { 0, 0 }, { 0.1, 0.1 }),
-                    ghostSprite("ghost", animatedTexture({ "UI/ghost/", "default" }, 16, 2, GL_NEAREST), { 0, 0 }, { 0.1, 0.1 })
+                    floor("floor", animatedTexture({ "UI/floor/", "empty" }, 8, 17, GL_NEAREST), UITransform(0, 0, 100, 100)),
+                    ink("hole", GL_NEAREST, UITransform(0, 0, 100, 100)),
+                    flag("flag", animatedTexture({"UI/flag/", "default"}, 16, 2, GL_NEAREST), UITransform(0, 0, 0, 0)),
+                    background("background", animatedTexture({"UI/background/", "default"}, 8, 17, GL_NEAREST), UITransform(0, 0, 0, 0)),
+                    playerSprite("player", animatedTexture({ "UI/player/", "default" }, 16, 2, GL_NEAREST), UITransform(0, 0, 0.1, 0.1)),
+                    ghostSprite("ghost", animatedTexture({ "UI/ghost/", "default" }, 16, 2, GL_NEAREST), UITransform(0, 0, 0.1, 0.1))
 
 {
     handleManually = true;

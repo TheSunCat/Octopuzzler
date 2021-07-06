@@ -49,7 +49,9 @@ set(Outrospection_SOURCES "")
 list(APPEND Outrospection_SOURCES
 	"src/Bounds.cpp"
 	"src/Controller.cpp"
+	"src/Core/AudioManager.cpp"
 	"src/Core/LayerStack.cpp"
+	"src/Core/Rendering/Framebuffer.cpp"
 	"src/Core/Rendering/Resource.cpp"
 	"src/Core/Rendering/Shader.cpp"
 	"src/Core/Rendering/SimpleTexture.cpp"

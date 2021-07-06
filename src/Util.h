@@ -83,6 +83,9 @@ namespace Util
 
     void doLater(std::function<void()> func, time_t waitTime);
 
+    glm::vec2 curResolution();
+    void setResolution(const glm::vec2& res);
+
     constexpr std::size_t hashBytes(const char* data, std::size_t length)
     {
 #define get16bits(d) ((((uint32_t)(((const uint8_t *)(d))[1])) << 8) +(uint32_t)(((const uint8_t *)(d))[0]))

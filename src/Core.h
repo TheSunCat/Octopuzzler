@@ -4,12 +4,6 @@
 #include <functional>
 #include <iomanip>
 
-extern int SCR_WIDTH;
-extern int SCR_HEIGHT;
-
-extern int CUR_WIDTH;
-extern int CUR_HEIGHT;
-
 // Platform detection using predefined macros
 #ifdef _WIN32
     /* Windows x64/x86 */

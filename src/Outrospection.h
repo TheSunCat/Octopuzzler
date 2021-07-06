@@ -59,7 +59,7 @@ public:
 
     void scheduleWorldTick(); // tick world NOW
 
-    glm::vec2 lastMousePos = glm::vec2(SCR_HEIGHT / 2.0f, SCR_WIDTH / 2.0f);
+    glm::vec2 lastMousePos = glm::vec2(Util::curResolution() / 2.0f);
 
     TextureManager textureManager;
 
@@ -97,7 +97,8 @@ private:
 
     GLFWwindow* gameWindow;
 
-    GLuint crtFramebuffer, intermediateFBO = 0;
+    Framebuffer defaultFramebuffer;
+    Framebuffer crtFramebuffer;
     GLuint textureColorbuffer;
     GLuint crtVAO;
 

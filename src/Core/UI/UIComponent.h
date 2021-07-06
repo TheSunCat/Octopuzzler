@@ -8,16 +8,39 @@
 
 class Shader;
 
+enum class UIAlign
+{
+    CENTER,
+    TOP_LEFT,
+    TOP_RIGHT,
+    BOT_LEFT,
+    BOT_RIGHT,
+};
+
+class UITransform
+{
+    glm::vec2 framebufferRes = glm::vec2(1920, 1080);
+
+    glm::vec2 pos;
+    glm::vec2 size;
+public:
+    // units are in 1080p pixels
+    UITransform(int posX, int posY, int sizeX, int sizeY, UIAlign _alignment = UIAlign::TOP_LEFT);
+
+    glm::vec2 getPos() const;
+    glm::vec2 getSize() const;
+
+    void setPos(int x, int y);
+    void setSize(int x, int y);
+    UIAlign alignment;
+};
+
 class UIComponent
 {
 public:
-    UIComponent(const std::string& _texName, const GLint& texFilter, float posXPercent, float posYPercent,
-                float widthPercent,
-                float heightPercent);
+    UIComponent(const std::string& _texName, const GLint& texFilter, const UITransform& transform);
 
-    UIComponent(std::string _texName, const GLint& texFilter, const glm::vec2& _position, const glm::vec2& dimensions);
-
-    UIComponent(std::string _name, SimpleTexture& _tex, const glm::vec2& _position, const glm::vec2& dimensions);
+    UIComponent(std::string _name, SimpleTexture& _tex, const UITransform& transform);
 
     virtual void draw(Shader& shader, const Shader& glyphShader) const;
 
@@ -26,12 +49,9 @@ public:
     void addAnimation(const std::string& anim, SimpleTexture& _tex);
     void setAnimation(const std::string& anim);
 
-    void setPosition(float xPercent, float yPercent);
-    void setScale(float xPercent, float yPercent);
+    void setPosition(int x, int y);
+    void setScale(int x, int y);
 
-    void setPositionPx(int x, int y);
-    void setScalePx(int scale);
-    void setScalePx(int _width, int _height);
     std::string name;
 
     glm::vec2 textOffset; // vector to offset text by
@@ -41,14 +61,14 @@ public:
     bool hidden = false;
 
     virtual ~UIComponent() = default;
-private:
-    glm::vec2 position;
-    float width = 10.0f, height = 10.0f;
+protected:
+    UITransform transform;
 
+private:
     virtual void drawText(const std::string& text, const Shader& glyphShader) const;
 
     std::string curAnimation = "default";
-    std::unordered_map<std::string, SimpleTexture*> animations; // = &TextureManager::missingTexture;
+    std::unordered_map<std::string, SimpleTexture*> animations;
 
     static GLuint quadVAO;
 };
