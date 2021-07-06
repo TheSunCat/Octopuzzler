@@ -49,6 +49,7 @@ set(Outrospection_SOURCES "")
 list(APPEND Outrospection_SOURCES
 	"src/Bounds.cpp"
 	"src/Controller.cpp"
+	"src/Core/AudioManager.cpp"
 	"src/Core/LayerStack.cpp"
 	"src/Core/Rendering/Resource.cpp"
 	"src/Core/Rendering/Shader.cpp"
@@ -64,6 +65,7 @@ list(APPEND Outrospection_SOURCES
 	"src/Core/UI/GUIWinOverlay.cpp"
 	"src/Core/UI/UIButton.cpp"
 	"src/Core/UI/UIComponent.cpp"
+	"src/External/miniaudio.cpp"
 	"src/External/stb_image.cpp"
 	"src/KeyBinding.cpp"
 	"src/Outrospection.cpp"
