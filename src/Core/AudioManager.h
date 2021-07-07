@@ -3,17 +3,27 @@
 #include <string>
 #include <vector>
 #include <list>
+#include <thread>
 
 #include <External/miniaudio.h>
 #include <External/miniaudio_engine.h>
 
+#include "Core.h"
+
 class AudioManager
 {
+public:
     ma_engine engine;
 
-public:
+    std::jthread audioThread;
+
+    // TODO make this private
+    Queue<std::string> audioQueue;
+    bool playNow(const std::string& soundName, float vol = 1);
+//public:
     AudioManager();
     ~AudioManager();
 
-    bool PlaySoundFile(const std::string& file, unsigned long vol);
+    void play(const std::string& soundName, float vol = 1);
+
 };

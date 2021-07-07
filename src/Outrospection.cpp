@@ -69,7 +69,7 @@ Outrospection::Outrospection()
     pushOverlay(controlsOverlay);
     pushOverlay(welcomeOverlay);
 
-    audioManager.PlaySoundFile("./res/SoundData/totallyNotABossBattle.mp3", 1);
+    audioManager.play("totallyNotABossBattle", 1);
 }
 
 Outrospection::~Outrospection()

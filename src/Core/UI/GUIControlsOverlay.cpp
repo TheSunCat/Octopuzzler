@@ -6,6 +6,8 @@
 
 void controlClick(UIButton& button, int)
 {
+    LOG("You pressed button %s", button.name);
+
     auto scene = (GUIScene*)Outrospection::get().scene;
 
     auto clickedControl = (Control)button.name[0]; // beauty of enum classes yay
@@ -13,14 +15,14 @@ void controlClick(UIButton& button, int)
     // change the keybind
     if (clickedControl != Control::NONE && !scene->controlBound(clickedControl)) // can't rebind controls!
     {
+        Outrospection::get().audioManager.play("Control_Select");
+
         scene->keyBinds.emplace_back(Outrospection::get().getEye(), clickedControl);
 
         button.name[button.name.length() - 1] = char(Outrospection::get().getEye());
 
         scene->pastPositions.clear(); // clear undo history
     }
-
-    LOG("You pressed button %s", button.name);
 }
 
 GUIControlsOverlay::GUIControlsOverlay() : GUILayer("Controls Overlay", false),
