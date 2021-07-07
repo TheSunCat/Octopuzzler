@@ -209,6 +209,9 @@ void GUIScene::tryMovePlayer(Control input)
         {
             playerPosInt = ghostPlayerPos;
             LOG_INFO("You win!! :D");
+
+            Outrospection::get().audioManager.play("Flag_Get");
+
             flag.hidden = true;
             playerSprite.setAnimation("win");
             Util::doLater([this] { this->canMove = false; }, 100);
@@ -256,6 +259,8 @@ void GUIScene::tryMovePlayer(Control input)
 
         totalDelta += delta;
     }
+
+    Outrospection::get().audioManager.play("Movement");
 
     playerPosInt += totalDelta;
     ghostPosInt = playerPosInt;

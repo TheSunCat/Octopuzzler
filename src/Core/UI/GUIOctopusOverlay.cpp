@@ -7,6 +7,11 @@ void eyeClick(UIButton& button, int mouseButton)
 {
     LOG("<Octopus> ouch. you poked me on my %s eye!", button.name);
 
+    // play a random Eye_Poke sound
+    int index = rand() / (RAND_MAX / 3);
+    std::string soundName = "Eye_Poke_" + std::to_string(index);
+    Outrospection::get().audioManager.play(soundName);
+
     button.setAnimation("blink");
     Util::doLater([&button]() { button.setAnimation("default"); }, 100);
 
