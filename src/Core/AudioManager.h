@@ -5,13 +5,12 @@
 #include <list>
 
 #include <External/miniaudio.h>
+#include <External/miniaudio_engine.h>
 
 class AudioManager
 {
-    ma_device device;
+    ma_engine engine;
 
-    std::list<ma_decoder> decoders;
-    
 public:
     AudioManager();
     ~AudioManager();
