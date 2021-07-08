@@ -1,10 +1,9 @@
 {
 	"level" : [
-		"WWWWWWW",
-		"WWWWGWW",
-		"WWWW  W",
-		"WS  W W",
-		"WWW   W",
-		"WWWWWWW"],
+		"WWWWW",
+		"WWS W",
+		"WGW W",
+		"W   W",
+		"WWWWW"],
 	"controls" : "UDLR"
 }

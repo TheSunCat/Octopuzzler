@@ -14,17 +14,17 @@ AudioManager::AudioManager()
         [this](std::stop_token stopToken) -> void
         {
             while (!stopToken.stop_requested()) {
-                while (!this->audioQueue.empty())
+                if (!this->audioQueue.empty())
                 {
                     const auto& sound = this->audioQueue.pop();
                     //if (sound != nullptr)
                     {
                         this->playNow(sound);
                     }
+                } else {
+                    // TODO sleep_for 1ms
+                    std::this_thread::yield();
                 }
-
-                // TODO sleep_for 1ms
-                std::this_thread::yield();
             }
         }
     };
@@ -34,7 +34,7 @@ AudioManager::~AudioManager()
 {
     audioThread.request_stop();
     audioThread.join();
-    
+
     ma_engine_uninit(&engine);
 }
 
