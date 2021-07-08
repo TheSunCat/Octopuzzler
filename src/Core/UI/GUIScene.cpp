@@ -22,7 +22,7 @@ GUIScene::GUIScene() : GUILayer("Scene", false),
     playerSprite.addAnimation("failInk", simpleTexture({"UI/player/", "failInk"}, GL_NEAREST));
     playerSprite.addAnimation("win", simpleTexture({"UI/player/", "win"}, GL_NEAREST));
 
-    setLevel("", 3);
+    setLevel("", levelID);
 }
 
 void GUIScene::setLevel(const std::string& lvlName, int lvlID)

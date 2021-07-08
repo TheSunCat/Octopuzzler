@@ -1,0 +1,14 @@
+{
+	"level" : [
+        "WWWWWW",
+        "W   WW",
+        "WSW WW",
+        "WWW WW",
+        "W   WW",
+        "W WWWW",
+        "W H WW",
+        "W   GW",
+        "WW  WW",
+        "WWWWWW"],
+  "controls" : "UDLR<>"
+}
