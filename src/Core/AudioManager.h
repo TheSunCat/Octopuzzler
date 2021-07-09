@@ -1,29 +1,26 @@
 #pragma once
 
 #include <string>
-#include <vector>
+#include <unordered_map>
+#include <memory>
 #include <list>
 #include <thread>
 
-#include <External/miniaudio.h>
-#include <External/miniaudio_engine.h>
+//#define WITH_MINIAUDIO
+#include "soloud.h"
+#include "soloud_wav.h"
 
 #include "Core.h"
 
 class AudioManager
 {
+private:
+    SoLoud::Soloud engine;
+    std::unordered_map<std::string, std::unique_ptr<SoLoud::Wav>> waves;
 public:
-    ma_engine engine;
-
-    std::jthread audioThread;
-
-    // TODO make this private
-    Queue<std::string> audioQueue;
-    bool playNow(const std::string& soundName, float vol = 1);
-//public:
-    AudioManager();
+    AudioManager() = default;
     ~AudioManager();
 
-    void play(const std::string& soundName, float vol = 1);
-
+    void init();
+    void play(const std::string& soundName, float vol = 1.0f, bool loop = false);
 };

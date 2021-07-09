@@ -41,6 +41,7 @@ Outrospection::Outrospection()
     instance = this;
 
     preInit = PreInitialization();
+    audioManager.init();
 
     gameWindow = opengl.gameWindow;
     crtVAO = opengl.crtVAO;

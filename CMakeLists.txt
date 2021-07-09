@@ -65,12 +65,79 @@ list(APPEND Outrospection_SOURCES
 	"src/Core/UI/GUIWinOverlay.cpp"
 	"src/Core/UI/UIButton.cpp"
 	"src/Core/UI/UIComponent.cpp"
-	"src/External/miniaudio.cpp"
+	"src/External/soloud/audiosource/monotone/soloud_monotone.cpp"
+	"src/External/soloud/audiosource/noise/soloud_noise.cpp"
+	"src/External/soloud/audiosource/sfxr/soloud_sfxr.cpp"
+	"src/External/soloud/audiosource/speech/darray.cpp"
+	"src/External/soloud/audiosource/speech/klatt.cpp"
+	"src/External/soloud/audiosource/speech/resonator.cpp"
+	"src/External/soloud/audiosource/speech/tts.cpp"
+	"src/External/soloud/audiosource/tedsid/sid.cpp"
+	"src/External/soloud/audiosource/tedsid/soloud_tedsid.cpp"
+	"src/External/soloud/audiosource/tedsid/ted.cpp"
+	"src/External/soloud/audiosource/vic/soloud_vic.cpp"
+	"src/External/soloud/audiosource/vizsn/soloud_vizsn.cpp"
+	"src/External/soloud/audiosource/wav/dr_impl.cpp"
+	"src/External/soloud/audiosource/wav/soloud_wav.cpp"
+	"src/External/soloud/audiosource/wav/soloud_wavstream.cpp"
+	"src/External/soloud/backend/alsa/soloud_alsa.cpp"
+	"src/External/soloud/backend/coreaudio/soloud_coreaudio.cpp"
+	"src/External/soloud/backend/jack/soloud_jack.cpp"
+	"src/External/soloud/backend/miniaudio/soloud_miniaudio.cpp"
+	"src/External/soloud/backend/nosound/soloud_nosound.cpp"
+	"src/External/soloud/backend/null/soloud_null.cpp"
+	"src/External/soloud/backend/openal/soloud_openal.cpp"
+	"src/External/soloud/backend/opensles/soloud_opensles.cpp"
+	"src/External/soloud/backend/oss/soloud_oss.cpp"
+	"src/External/soloud/backend/portaudio/soloud_portaudio.cpp"
+	"src/External/soloud/backend/sdl/soloud_sdl1.cpp"
+	"src/External/soloud/backend/sdl/soloud_sdl2.cpp"
+	"src/External/soloud/backend/sdl2_static/soloud_sdl2_static.cpp"
+	"src/External/soloud/backend/sdl_static/soloud_sdl_static.cpp"
+	"src/External/soloud/backend/wasapi/soloud_wasapi.cpp"
+	"src/External/soloud/backend/winmm/soloud_winmm.cpp"
+	"src/External/soloud/backend/xaudio2/soloud_xaudio2.cpp"
+	"src/External/soloud/c_api/soloud_c.cpp"
+	"src/External/soloud/core/soloud.cpp"
+	"src/External/soloud/core/soloud_audiosource.cpp"
+	"src/External/soloud/core/soloud_bus.cpp"
+	"src/External/soloud/core/soloud_core_3d.cpp"
+	"src/External/soloud/core/soloud_core_basicops.cpp"
+	"src/External/soloud/core/soloud_core_faderops.cpp"
+	"src/External/soloud/core/soloud_core_filterops.cpp"
+	"src/External/soloud/core/soloud_core_getters.cpp"
+	"src/External/soloud/core/soloud_core_setters.cpp"
+	"src/External/soloud/core/soloud_core_voicegroup.cpp"
+	"src/External/soloud/core/soloud_core_voiceops.cpp"
+	"src/External/soloud/core/soloud_fader.cpp"
+	"src/External/soloud/core/soloud_fft.cpp"
+	"src/External/soloud/core/soloud_fft_lut.cpp"
+	"src/External/soloud/core/soloud_file.cpp"
+	"src/External/soloud/core/soloud_filter.cpp"
+	"src/External/soloud/core/soloud_misc.cpp"
+	"src/External/soloud/core/soloud_queue.cpp"
+	"src/External/soloud/core/soloud_thread.cpp"
+	"src/External/soloud/filter/soloud_bassboostfilter.cpp"
+	"src/External/soloud/filter/soloud_biquadresonantfilter.cpp"
+	"src/External/soloud/filter/soloud_dcremovalfilter.cpp"
+	"src/External/soloud/filter/soloud_echofilter.cpp"
+	"src/External/soloud/filter/soloud_fftfilter.cpp"
+	"src/External/soloud/filter/soloud_flangerfilter.cpp"
+	"src/External/soloud/filter/soloud_freeverbfilter.cpp"
+	"src/External/soloud/filter/soloud_lofifilter.cpp"
+	"src/External/soloud/filter/soloud_robotizefilter.cpp"
+	"src/External/soloud/filter/soloud_waveshaperfilter.cpp"
 	"src/External/stb_image.cpp"
 	"src/KeyBinding.cpp"
 	"src/Outrospection.cpp"
 	"src/Source.cpp"
 	"src/Util.cpp"
+	"src/External/soloud/audiosource/wav/stb_vorbis.c"
+	"src/External/soloud/backend/openal/soloud_openal_dll.c"
+	"src/External/soloud/backend/portaudio/soloud_portaudio_dll.c"
+	"src/External/soloud/backend/sdl/soloud_sdl1_dll.c"
+	"src/External/soloud/backend/sdl/soloud_sdl2_dll.c"
+	"src/External/soloud/tools/resamplerlab/stb_image_write.c"
 )
 
 list(APPEND Outrospection_SOURCES
@@ -91,6 +158,10 @@ endif()
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${Outrospection_SOURCES})
 
+target_compile_definitions(Outrospection PRIVATE
+	WITH_MINIAUDIO
+)
+
 target_compile_features(Outrospection PRIVATE
 	cxx_std_20
 )
@@ -108,6 +179,8 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU") # gcc
 endif()
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC") # msvc
+	target_compile_options(Outrospection PRIVATE
+	)
 endif()
 
 target_include_directories(Outrospection PRIVATE
