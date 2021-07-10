@@ -33,7 +33,9 @@ public:
     glm::vec2 ghostPosInt{}; // actual position on grid
     int curGhostMove = -1;
     std::vector<Control> ghostInputQueue;
-    bool showGhost = false;
+
+    // TODO make this private and control visibility w/ a function
+    mutable UIComponent ghostSprite;
 private:
     void tryMovePlayer(Control input);
     void moveGhost(Control input);
@@ -50,7 +52,6 @@ private:
     mutable UIComponent background;
 
     mutable UIComponent playerSprite;
-    mutable UIComponent ghostSprite;
 
     mutable int levelID = 0;
 };

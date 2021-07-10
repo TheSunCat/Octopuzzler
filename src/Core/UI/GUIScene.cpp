@@ -34,6 +34,7 @@ void GUIScene::setLevel(const std::string& lvlName, int lvlID)
     level = jason.get<Level>();
     
     playerPosInt = level.start;
+    ghostSprite.hidden = true;
 
     Util::doLater([this]
     {
@@ -45,7 +46,7 @@ void GUIScene::tick()
 {
     playerPos = Util::lerp(playerPos, playerPosInt, 0.2);
 
-    if(!showGhost)
+    if(ghostSprite.hidden)
     {
         ghostPosInt = playerPosInt; ghostPos = ghostPosInt;
         curGhostMove = 0;
@@ -54,9 +55,10 @@ void GUIScene::tick()
         ghostPos = Util::lerp(ghostPos, ghostPosInt, 0.2);
     }
 
-    if(playerPos == playerPosInt) // finished moving
+    if(glm::ivec2(playerPos) == glm::ivec2(playerPosInt)) // finished moving
     {
-        showGhost = true;
+        LOG("Showing ghost after done moving");
+        ghostSprite.hidden = false;
     }
 
     floor.tick();
@@ -130,7 +132,7 @@ void GUIScene::draw() const
     flag.setPosition(xFlagPos, yFlagPos);
     flag.draw(spriteShader, glyphShader);
 
-    if (showGhost && canMove) {
+    if (canMove) {
         float xGhostPos = (ghostPos.x + (largestLength - rowLength) / 2) * spriteScale;
         float yGhostPos = (ghostPos.y + (largestLength - colLength) / 2) * spriteScale;
 
@@ -213,6 +215,7 @@ void GUIScene::tryMovePlayer(Control input)
             Outrospection::get().audioManager.play("Flag_Get");
 
             flag.hidden = true;
+            ghostSprite.hidden = true;
             playerSprite.setAnimation("win");
             Util::doLater([this] { this->canMove = false; }, 100);
 
@@ -264,7 +267,7 @@ void GUIScene::tryMovePlayer(Control input)
 
     playerPosInt += totalDelta;
     ghostPosInt = playerPosInt;
-    showGhost = false;
+    ghostSprite.hidden = true;
 }
 
 void GUIScene::moveGhost(Control input)
@@ -295,6 +298,10 @@ void GUIScene::reset()
     canMove = true;
     playerSprite.setAnimation("default");
     flag.hidden = false;
+
+    ghostSprite.hidden = false;
+    ghostPosInt = playerPosInt; ghostPos = ghostPosInt;
+
     pastPositions.clear();
 
     inputQueue.clear();
