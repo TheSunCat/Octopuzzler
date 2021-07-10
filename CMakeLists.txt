@@ -175,6 +175,7 @@ endif()
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU") # gcc
 	target_compile_options(Outrospection PRIVATE
 		-Wno-volatile
+		-O2
 	)
 endif()
 
