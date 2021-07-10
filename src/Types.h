@@ -5,7 +5,6 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#include "Tracker.h"
 #include "Core/Rendering/Resource.h"
 #include "Core/Rendering/SimpleTexture.h"
 
@@ -61,40 +60,31 @@ struct Transform
         : position(position),
           scale(scale),
           rotation(rotation),
-          matrix(1.0),
-          dirtyTransform(true)
+          matrix(1.0)
     {}
 
     const glm::mat4& mat() const
     {
-        if (position.dirty || scale.dirty)
-            dirtyTransform = true;
+        matrix = glm::mat4(1.0f);
 
-        if (dirtyTransform)
-        {
-            matrix = glm::mat4(1.0f);
+        // Translate
+        matrix = glm::translate(matrix, position);
 
-            // Translate
-            matrix = glm::translate(matrix, position.get());
+        // Rotate by quaternion
+        matrix *= glm::toMat4(rotation);
 
-            // Rotate by quaternion
-            matrix *= glm::toMat4(rotation);
-
-            // Scale
-            matrix = glm::scale(matrix, scale.get());
-
-            dirtyTransform = false;
-        }
+        // Scale
+        matrix = glm::scale(matrix, scale);
 
         return matrix;
     }
 
-    tracker<glm::vec3>& pos()
+    glm::vec3& pos()
     {
         return position;
     }
 
-    const tracker<glm::vec3>& pos() const
+    const glm::vec3& pos() const
     {
         return position;
     }
@@ -102,10 +92,9 @@ struct Transform
     void setPos(const glm::vec3& newPos)
     {
         position = newPos;
-        dirtyTransform = true;
     }
 
-    const tracker<glm::vec3>& scl() const
+    const glm::vec3& scl() const
     {
         return scale;
     }
@@ -113,7 +102,6 @@ struct Transform
     void setScl(const glm::vec3& newScl)
     {
         scale = newScl;
-        dirtyTransform = true;
     }
 
     glm::vec3 rot() const
@@ -124,17 +112,14 @@ struct Transform
     void setRot(const glm::vec3& newRot)
     {
         rotation = glm::quat(newRot);
-        dirtyTransform = true;
     }
 
 protected:
-    tracker<glm::vec3> position;
-    tracker<glm::vec3> scale;
+    glm::vec3 position;
+    glm::vec3 scale;
     glm::quat rotation;
 
     mutable glm::mat4 matrix;
-
-    mutable bool dirtyTransform;
 };
 
 struct Vertex
