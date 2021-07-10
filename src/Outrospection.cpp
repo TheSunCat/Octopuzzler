@@ -97,6 +97,8 @@ void Outrospection::stop()
 
 void Outrospection::run()
 {
+    using namespace std::chrono_literals;
+
     running = true;
     
     startLoggerThread();
@@ -105,10 +107,23 @@ void Outrospection::run()
     lastFrame = Util::currentTimeMillis();
     while (running)
     {
+        currentTimeMillis = Util::currentTimeMillis();
+
+        const auto currentFrame = currentTimeMillis;
+        deltaTime = float(currentFrame - lastFrame) / 1000.0f;
+        lastFrame = currentFrame;
+
+        if(deltaTime == 0.0f) // first frame will be 0. Assume it was 60fps
+        {
+            deltaTime = 1.0f / 60.0f; 
+        }
+
         runGameLoop();
 
         if (glfwWindowShouldClose(gameWindow))
             running = false;
+
+        std::this_thread::sleep_for(1ms);
     }
 }
 
@@ -198,17 +213,6 @@ void Outrospection::scheduleWorldTick()
 
 void Outrospection::runGameLoop()
 {
-    currentTimeMillis = Util::currentTimeMillis();
-
-    const auto currentFrame = currentTimeMillis;
-    deltaTime = float(currentFrame - lastFrame) / 1000.0f;
-    lastFrame = currentFrame;
-
-    if(deltaTime == 0.0f) // first frame will be 0. Assume it was 60fps
-    {
-        deltaTime = 1.0f / 60.0f; 
-    }
-    
     // Update game world
     {
         // fetch input into simplified controller class
@@ -482,6 +486,8 @@ void Outrospection::startLoggerThread()
     loggerThread = std::jthread{
         [&](std::stop_token stopToken) -> void
         {
+            using namespace std::chrono_literals;
+
             std::cout << "Started logger thread." << std::endl;
 
             while (!stopToken.stop_requested()) {
@@ -495,7 +501,7 @@ void Outrospection::startLoggerThread()
                     }
                 }
 
-                std::this_thread::yield();
+                std::this_thread::sleep_for(1ms);
             }
 
             std::cout << "Stopped logger thread." << std::endl;
@@ -508,6 +514,8 @@ void Outrospection::startConsoleThread()
     consoleThread = std::jthread{
         [&](std::stop_token stopToken) -> void
         {
+            using namespace std::chrono_literals;
+            
             std::cout << "Started console thread." << std::endl;
 
             while (!stopToken.stop_requested()) {
@@ -556,7 +564,7 @@ void Outrospection::startConsoleThread()
                     }
                 }
 
-                std::this_thread::yield();
+                std::this_thread::sleep_for(1ms);
             }
 
             std::cout << "Stopped console thread." << std::endl;

@@ -9,6 +9,8 @@ void eyeClick(UIButton& button, int mouseButton)
 
     // play a random Eye_Poke sound
     int index = rand() / (RAND_MAX / 3);
+    LOG("The number is %i", index);
+
     std::string soundName = "Eye_Poke_" + std::to_string(index);
     Outrospection::get().audioManager.play(soundName);
 

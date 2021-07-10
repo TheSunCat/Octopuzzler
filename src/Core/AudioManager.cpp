@@ -4,7 +4,11 @@
 
 void AudioManager::init()
 {
-    engine.init();
+    engine.init(1U, // aFlags
+                0U, // aBackend
+                0U, // aSampleRate
+                1024U, // aBufferSize
+                2U);// aChannels
 }
 
 AudioManager::~AudioManager()
@@ -23,7 +27,7 @@ void AudioManager::play(const std::string& soundName, float vol, bool loop)
     if (!wave) {
         wave = std::make_unique<SoLoud::Wav>();
 
-        std::string file = "res/SoundData/" + soundName + ".wav";
+        std::string file = "res/SoundData/" + soundName + ".mp3";
 
         wave->load(file.c_str()); // load the file
     }
