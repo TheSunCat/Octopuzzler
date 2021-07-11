@@ -1,9 +1,10 @@
 #include "GUIScene.h"
+#include <json.hpp>
 
 #include "Outrospection.h"
 #include "UIButton.h"
-#include "Core/UI/GUIControlsOverlay.h"
-#include <json.hpp>
+#include "GUIControlsOverlay.h"
+#include "GUIGuide.h"
 
 // this is the constructor (ctor for short).
 // it only takes care of copying the level data to store it here for now
@@ -22,7 +23,7 @@ GUIScene::GUIScene() : GUILayer("Scene", false),
     playerSprite.addAnimation("failInk", simpleTexture({"UI/player/", "failInk"}, GL_NEAREST));
     playerSprite.addAnimation("win", simpleTexture({"UI/player/", "win"}, GL_NEAREST));
 
-    setLevel("", 3);
+    setLevel("", levelID);
 }
 
 void GUIScene::setLevel(const std::string& lvlName, int lvlID)
@@ -34,6 +35,7 @@ void GUIScene::setLevel(const std::string& lvlName, int lvlID)
     level = jason.get<Level>();
     
     playerPosInt = level.start;
+    ghostSprite.hidden = true;
 
     Util::doLater([this]
     {
@@ -45,18 +47,13 @@ void GUIScene::tick()
 {
     playerPos = Util::lerp(playerPos, playerPosInt, 0.2);
 
-    if(!showGhost)
+    if(ghostSprite.hidden)
     {
         ghostPosInt = playerPosInt; ghostPos = ghostPosInt;
         curGhostMove = 0;
     } else
     {
         ghostPos = Util::lerp(ghostPos, ghostPosInt, 0.2);
-    }
-
-    if(playerPos == playerPosInt) // finished moving
-    {
-        showGhost = true;
     }
 
     floor.tick();
@@ -130,7 +127,7 @@ void GUIScene::draw() const
     flag.setPosition(xFlagPos, yFlagPos);
     flag.draw(spriteShader, glyphShader);
 
-    if (showGhost && canMove) {
+    if (canMove) {
         float xGhostPos = (ghostPos.x + (largestLength - rowLength) / 2) * spriteScale;
         float yGhostPos = (ghostPos.y + (largestLength - colLength) / 2) * spriteScale;
 
@@ -151,7 +148,6 @@ void GUIScene::worldTick()
     {
         // read input
         Control curInput = inputQueue[0];
-        LOG_INFO("Player is playing %c", char(curInput));
 
         tryMovePlayer(curInput);
 
@@ -163,7 +159,6 @@ void GUIScene::worldTick()
     {
         // read input
         Control curInput = ghostInputQueue[curGhostMove];
-        LOG_INFO("Ghost is playing %c", char(curInput));
 
         moveGhost(curInput);
     }
@@ -209,7 +204,11 @@ void GUIScene::tryMovePlayer(Control input)
         {
             playerPosInt = ghostPlayerPos;
             LOG_INFO("You win!! :D");
+
+            Outrospection::get().audioManager.play("Flag_Get");
+
             flag.hidden = true;
+            ghostSprite.hidden = true;
             playerSprite.setAnimation("win");
             Util::doLater([this] { this->canMove = false; }, 100);
 
@@ -226,6 +225,8 @@ void GUIScene::tryMovePlayer(Control input)
                 }
                 else
                 {
+                    playerSprite.setAnimation("default");
+
                     setLevel("", this->levelID);
 
                     LOG_INFO("Advancing to level %i...", this->levelID);
@@ -257,9 +258,11 @@ void GUIScene::tryMovePlayer(Control input)
         totalDelta += delta;
     }
 
+    Outrospection::get().audioManager.play("Movement");
+
     playerPosInt += totalDelta;
     ghostPosInt = playerPosInt;
-    showGhost = false;
+    ghostSprite.hidden = true;
 }
 
 void GUIScene::moveGhost(Control input)
@@ -290,11 +293,18 @@ void GUIScene::reset()
     canMove = true;
     playerSprite.setAnimation("default");
     flag.hidden = false;
-    pastPositions.clear();
 
+    ghostSprite.hidden = true;
+    ghostPosInt = playerPosInt; ghostPos = ghostPosInt;
+    ghostInputQueue.clear();
+
+    pastPositions.clear();
     inputQueue.clear();
 
     ((GUIControlsOverlay*)Outrospection::get().controlsOverlay)->setControls(level.controls);
+
+    ((GUIGuide*)Outrospection::get().guideOverlay)->setRightGuide(level.guideRight);
+    ((GUIGuide*)Outrospection::get().guideOverlay)->setLeftGuide(level.guideLeft);
 }
 
 bool GUIScene::controlBound(Control control)

@@ -1,9 +1,11 @@
 {
 	"level" : [
 		"WWWWWWW",
+		"W   WWW",
+		"W W  WW",
+		"W WW  W",
+		"W WG  W",
 		"WSWWWWW",
-		"W  H  W",
-		"WWWWWGW",
 		"WWWWWWW"],
-	"controls" : "DR>"
+	"controls" : "UDLR"
 }

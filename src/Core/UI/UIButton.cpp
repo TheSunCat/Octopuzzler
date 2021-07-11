@@ -43,13 +43,11 @@ void UIButton::tick()
 
     if(onHover && !lastHovered && hovered)
     {
-        LOG_INFO("onHover %s", name);
         onHover(*this, 0);
     }
 
     if (onUnhover && lastHovered && !hovered)
     {
-        LOG_INFO("onUnhover %s", name);
         onUnhover(*this, 0);
     }
 }

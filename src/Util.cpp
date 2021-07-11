@@ -88,6 +88,10 @@ time_t Util::currentTimeMillis()
     return std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
 }
 
+Util::FutureRun::FutureRun(std::function<void()> _func, time_t _startTime, time_t _waitTime)
+    : func(_func), startTime(_startTime), waitTime(_waitTime)
+{ }
+
 void Util::doLater(std::function<void()> func, time_t waitTime)
 {
     Outrospection::get().futureFunctions.emplace_back(func, currentTimeMillis(), waitTime);
