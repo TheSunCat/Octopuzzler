@@ -55,12 +55,6 @@ void GUIScene::tick()
         ghostPos = Util::lerp(ghostPos, ghostPosInt, 0.2);
     }
 
-    if(glm::ivec2(playerPos) == glm::ivec2(playerPosInt)) // finished moving
-    {
-        LOG("Showing ghost after done moving");
-        ghostSprite.hidden = false;
-    }
-
     floor.tick();
     ink.tick();
 
@@ -299,11 +293,11 @@ void GUIScene::reset()
     playerSprite.setAnimation("default");
     flag.hidden = false;
 
-    ghostSprite.hidden = false;
+    ghostSprite.hidden = true;
     ghostPosInt = playerPosInt; ghostPos = ghostPosInt;
+    ghostInputQueue.clear();
 
     pastPositions.clear();
-
     inputQueue.clear();
 
     ((GUIControlsOverlay*)Outrospection::get().controlsOverlay)->setControls(level.controls);
