@@ -69,17 +69,19 @@ namespace Util
         return startVal + difference * percent;
     }
 
+    // I miss Java
+    time_t currentTimeMillis();
+
 	// future stuff
     struct FutureRun
     {
+        FutureRun(std::function<void()> _func, time_t _startTime, time_t _waitTime);
+
         std::function<void()> func;
         time_t startTime;
 
         time_t waitTime;
     };
-
-    // I miss Java
-    time_t currentTimeMillis();
 
     void doLater(std::function<void()> func, time_t waitTime);
 
