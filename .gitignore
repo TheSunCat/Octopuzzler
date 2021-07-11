@@ -344,3 +344,7 @@ healthchecksdb
 
 # Zipped Blender Scripts (should be zipped by user)
 /Scripts/*.zip
+Outrospection
+.vscode/settings.json
+.vscode/launch.json
+.vscode/tasks.json

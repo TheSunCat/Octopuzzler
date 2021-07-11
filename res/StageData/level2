@@ -1,10 +1,10 @@
 {
 	"level" : [
-		"WWWWWWW",
-		"WWWWGWW",
-		"WWWW  W",
-		"WS  W W",
-		"WWW   W",
-		"WWWWWWW"],
-	"controls" : "UDLR"
+		"WWWWW",
+		"WWS W",
+		"WGW W",
+		"W   W",
+		"WWWWW"],
+	"controls" : "UDLR",
+	"guideRight" : "multibind"
 }

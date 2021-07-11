@@ -12,7 +12,7 @@
         #define PLATFORM_WINDOWS
     #else
         /* Windows x86 */
-        #error "no using x86 in the halls"
+        #error "x86 not supported"
     #endif
 
 #elif defined(__APPLE__) || defined(__MACH__)
@@ -22,7 +22,6 @@
         #error "iOS is not supported!"
     #elif TARGET_OS_MAC == 1
         #define PLATFORM_MACOS
-        #error "MacOS is not supported!"
     #else
         #error "Unknown Apple platform (is probably not supported)!"
     #endif

@@ -107,7 +107,16 @@ void UIComponent::setAnimation(const std::string& anim)
 {
     animations.at(curAnimation)->shouldTick = false;
     animations.at(curAnimation)->reset();
-    curAnimation = anim;
+
+    if(animations.find(anim) == animations.end())
+    {
+        LOG_ERROR("Animation %s has not been loaded!", anim);
+        curAnimation = "default";
+    } else {
+        curAnimation = anim;
+    }
+
+    animations.at(curAnimation)->reset();
     animations.at(curAnimation)->shouldTick = true;
 }
 

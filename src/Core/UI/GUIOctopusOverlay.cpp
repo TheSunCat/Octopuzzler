@@ -5,7 +5,9 @@
 
 void eyeClick(UIButton& button, int mouseButton)
 {
-    LOG("<Octopus> ouch. you poked me on my %s eye!", button.name);
+    // play a random Eye_Poke sound
+    int index = rand() / (RAND_MAX / 3);
+    Outrospection::get().audioManager.play("Eye_Poke_" + std::to_string(index));
 
     button.setAnimation("blink");
     Util::doLater([&button]() { button.setAnimation("default"); }, 100);
@@ -24,36 +26,32 @@ void eyeClick(UIButton& button, int mouseButton)
 
 void eyeHover(UIButton& button, int)
 {
-    LOG("eye %s hovered", button.name);
-
     auto scene = (GUIScene*)Outrospection::get().scene;
 
     auto pokedEye = (Eye)button.name[8];
     scene->ghostInputQueue.clear();
-    scene->showGhost = true;
+    scene->ghostSprite.hidden = false;
     scene->doGhostControl(pokedEye);
 }
 
 void eyeUnhover(UIButton& button, int)
 {
-    LOG("eye %s unhovered", button.name);
-
     auto scene = (GUIScene*)Outrospection::get().scene;
 
     scene->ghostInputQueue.clear();
-    scene->showGhost = false;
+    scene->ghostSprite.hidden = true;
 }
 
 void showWelcome(UIButton&, int)
 {
-    Util::doLater([] { Outrospection::get().pushOverlay(Outrospection::get().welcomeOverlay); }, 100);
+    //Util::doLater([] { Outrospection::get().pushOverlay(Outrospection::get().guideOverlay); }, 100);
 }
 
 void reset(UIButton&, int)
 {
     Util::doLater([]
     {
-        LOG("resetting...");
+        LOG_INFO("Resetting...");
         auto& o = Outrospection::get();
         ((GUIScene*)o.scene)->reset();
     }, 100);

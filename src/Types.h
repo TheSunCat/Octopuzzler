@@ -5,7 +5,6 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#include "Tracker.h"
 #include "Core/Rendering/Resource.h"
 #include "Core/Rendering/SimpleTexture.h"
 
@@ -17,6 +16,9 @@ struct Level
 
     glm::vec2 start;
     glm::vec2 goal;
+
+    std::string guideRight;
+    std::string guideLeft;
 };
 
 inline void from_json(const nlohmann::json& j, Level& lvl)
@@ -26,6 +28,22 @@ inline void from_json(const nlohmann::json& j, Level& lvl)
     lvl.data = std::accumulate(begin(rows), end(rows), std::string());
 
     j["controls"].get_to(lvl.controls);
+
+    if(j.find("guideRight") != j.end())
+    {
+        lvl.guideRight = j["guideRight"].get<std::string>();
+    } else 
+    {
+        lvl.guideRight = "default";
+    }
+
+    if(j.find("guideLeft") != j.end())
+    {
+        lvl.guideLeft = j["guideLeft"].get<std::string>();
+    } else 
+    {
+        lvl.guideLeft = "default";
+    }
 
     int startIndex = lvl.data.find('S'); lvl.data[startIndex] = ' ';
     lvl.start = glm::vec2(startIndex % lvl.rowLength, int(startIndex / lvl.rowLength));
@@ -53,6 +71,74 @@ enum class Eye
     CIRCLE = 'C',
     SQUARE = 'S',
     TRIANGLE = 'T'
+};
+
+struct Transform
+{
+    Transform(const glm::vec3& position = glm::vec3(1.0), const glm::vec3& scale = glm::vec3(1.0), const glm::quat& rotation = glm::quat())
+        : position(position),
+          scale(scale),
+          rotation(rotation),
+          matrix(1.0)
+    {}
+
+    const glm::mat4& mat() const
+    {
+        matrix = glm::mat4(1.0f);
+
+        // Translate
+        matrix = glm::translate(matrix, position);
+
+        // Rotate by quaternion
+        matrix *= glm::toMat4(rotation);
+
+        // Scale
+        matrix = glm::scale(matrix, scale);
+
+        return matrix;
+    }
+
+    glm::vec3& pos()
+    {
+        return position;
+    }
+
+    const glm::vec3& pos() const
+    {
+        return position;
+    }
+
+    void setPos(const glm::vec3& newPos)
+    {
+        position = newPos;
+    }
+
+    const glm::vec3& scl() const
+    {
+        return scale;
+    }
+
+    void setScl(const glm::vec3& newScl)
+    {
+        scale = newScl;
+    }
+
+    glm::vec3 rot() const
+    {
+        return glm::eulerAngles(rotation);
+    }
+
+    void setRot(const glm::vec3& newRot)
+    {
+        rotation = glm::quat(newRot);
+    }
+
+protected:
+    glm::vec3 position;
+    glm::vec3 scale;
+    glm::quat rotation;
+
+    mutable glm::mat4 matrix;
 };
 
 struct Vertex
