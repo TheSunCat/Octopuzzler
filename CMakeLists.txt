@@ -65,6 +65,7 @@ list(APPEND Outrospection_SOURCES
 	"src/Core/UI/GUIWinOverlay.cpp"
 	"src/Core/UI/UIButton.cpp"
 	"src/Core/UI/UIComponent.cpp"
+	"src/Core/jthread.cpp"
 	"src/External/soloud/audiosource/monotone/soloud_monotone.cpp"
 	"src/External/soloud/audiosource/noise/soloud_noise.cpp"
 	"src/External/soloud/audiosource/sfxr/soloud_sfxr.cpp"
