@@ -82,7 +82,7 @@ void GUIControlsOverlay::setControls(const std::string& controlsStr)
         case '^':
             buttonNames.emplace_back("^ dash up N ");
             break;
-        case '~':
+        case 'V':
             buttonNames.emplace_back("V dash down N ");
             break;
         case '<':
