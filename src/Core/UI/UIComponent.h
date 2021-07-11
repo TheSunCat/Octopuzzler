@@ -11,13 +11,20 @@ class Shader;
 class UIComponent
 {
 public:
-    UIComponent(const std::string& _texName, const GLint& texFilter, float posXPercent, float posYPercent,
-                float widthPercent,
-                float heightPercent);
+    UIComponent(const std::string& _texName, const GLint& texFilter,
+                float posXPercent, float posYPercent,
+                float widthPercent, float heightPercent);
 
-    UIComponent(std::string _texName, const GLint& texFilter, const glm::vec2& _position, const glm::vec2& dimensions);
 
-    UIComponent(std::string _name, SimpleTexture& _tex, const glm::vec2& _position, const glm::vec2& dimensions);
+    UIComponent(const std::string& _name, SimpleTexture& _tex,
+                const float posXPercent, const float posYPercent,
+                const float widthPercent, const float heightPercent);
+
+    UIComponent(std::string _texName, const GLint& texFilter,
+                const glm::vec2& _position, const glm::vec2& dimensions);
+
+    UIComponent(std::string _name, SimpleTexture& _tex,
+                const glm::vec2& _position, const glm::vec2& dimensions);
 
     virtual void draw(Shader& shader, const Shader& glyphShader) const;
 
@@ -48,7 +55,7 @@ private:
     virtual void drawText(const std::string& text, const Shader& glyphShader) const;
 
     std::string curAnimation = "default";
-    std::unordered_map<std::string, SimpleTexture*> animations; // = &TextureManager::missingTexture;
+    std::unordered_map<std::string, SimpleTexture*> animations;
 
     static GLuint quadVAO;
 };

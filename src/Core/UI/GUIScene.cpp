@@ -148,7 +148,6 @@ void GUIScene::worldTick()
     {
         // read input
         Control curInput = inputQueue[0];
-        LOG_INFO("Player is playing %c", char(curInput));
 
         tryMovePlayer(curInput);
 
@@ -160,7 +159,6 @@ void GUIScene::worldTick()
     {
         // read input
         Control curInput = ghostInputQueue[curGhostMove];
-        LOG_INFO("Ghost is playing %c", char(curInput));
 
         moveGhost(curInput);
     }
@@ -227,6 +225,8 @@ void GUIScene::tryMovePlayer(Control input)
                 }
                 else
                 {
+                    playerSprite.setAnimation("default");
+
                     setLevel("", this->levelID);
 
                     LOG_INFO("Advancing to level %i...", this->levelID);

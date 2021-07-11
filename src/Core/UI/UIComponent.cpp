@@ -15,6 +15,14 @@ UIComponent::UIComponent(const std::string& _texName, const GLint& texFilter, co
 {
 }
 
+UIComponent::UIComponent(const std::string& _name, SimpleTexture& _tex,
+                         const float posXPercent, const float posYPercent,
+                         const float widthPercent, const float heightPercent)
+    : UIComponent(_name, _tex, glm::vec2(SCR_WIDTH * posXPercent, SCR_HEIGHT * posYPercent),
+                  glm::vec2(widthPercent * SCR_WIDTH, heightPercent * SCR_HEIGHT))
+{
+}
+
 UIComponent::UIComponent(std::string _texName, const GLint& texFilter, const glm::vec2& _position,
                          const glm::vec2& dimensions)
     : UIComponent(std::move(_texName), simpleTexture({"UI/", _texName}, texFilter), _position, dimensions)
@@ -80,6 +88,7 @@ void UIComponent::setAnimation(const std::string& anim)
         curAnimation = anim;
     }
 
+    animations.at(curAnimation)->reset();
     animations.at(curAnimation)->shouldTick = true;
 }
 
