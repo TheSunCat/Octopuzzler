@@ -8,6 +8,7 @@ class jthread
 {
 public:
     jthread() = default;
+    ~jthread();
 
     jthread(ThreadFunc func);
 
