@@ -1,6 +1,5 @@
 #include "TextureManager.h"
 
-#include <ranges>
 #include <sstream>
 #include <stb_image.h>
 
@@ -121,9 +120,9 @@ SimpleTexture& TextureManager::get(const Resource& r)
 // Called every tick, calls tick on every tickable texture.
 void TextureManager::tickAllTextures()
 {
-    for (auto& val : textures | std::views::values)
+    for (auto& val : textures)
     {
-        val->tick();
+        val.second->tick();
     }
 }
 
