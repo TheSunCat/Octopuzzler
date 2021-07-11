@@ -76,7 +76,7 @@ public:
     GUILayer* scene;
     GUILayer* octopusOverlay;
     GUILayer* controlsOverlay;
-    GUILayer* welcomeOverlay;
+    GUILayer* guideOverlay;
     GUILayer* winOverlay;
 
     bool won = false;

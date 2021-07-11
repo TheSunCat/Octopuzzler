@@ -1,9 +1,10 @@
 #include "GUIScene.h"
+#include <json.hpp>
 
 #include "Outrospection.h"
 #include "UIButton.h"
-#include "Core/UI/GUIControlsOverlay.h"
-#include <json.hpp>
+#include "GUIControlsOverlay.h"
+#include "GUIGuide.h"
 
 // this is the constructor (ctor for short).
 // it only takes care of copying the level data to store it here for now
@@ -301,6 +302,9 @@ void GUIScene::reset()
     inputQueue.clear();
 
     ((GUIControlsOverlay*)Outrospection::get().controlsOverlay)->setControls(level.controls);
+
+    ((GUIGuide*)Outrospection::get().guideOverlay)->setRightGuide(level.guideRight);
+    ((GUIGuide*)Outrospection::get().guideOverlay)->setLeftGuide(level.guideLeft);
 }
 
 bool GUIScene::controlBound(Control control)

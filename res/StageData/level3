@@ -6,5 +6,6 @@
 		"WS  W W",
 		"WWW   W",
 		"WWWWWWW"],
-	"controls" : "UDLR"
+	"controls" : "UDLR",
+	"guideRight" : "multibind"
 }

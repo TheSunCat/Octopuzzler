@@ -31,8 +31,6 @@ void eyeClick(UIButton& button, int mouseButton)
 
 void eyeHover(UIButton& button, int)
 {
-    LOG("eye %s hovered", button.name);
-
     auto scene = (GUIScene*)Outrospection::get().scene;
 
     auto pokedEye = (Eye)button.name[8];
@@ -43,8 +41,6 @@ void eyeHover(UIButton& button, int)
 
 void eyeUnhover(UIButton& button, int)
 {
-    LOG("eye %s unhovered", button.name);
-
     auto scene = (GUIScene*)Outrospection::get().scene;
 
     scene->ghostInputQueue.clear();
@@ -53,7 +49,7 @@ void eyeUnhover(UIButton& button, int)
 
 void showWelcome(UIButton&, int)
 {
-    Util::doLater([] { Outrospection::get().pushOverlay(Outrospection::get().welcomeOverlay); }, 100);
+    //Util::doLater([] { Outrospection::get().pushOverlay(Outrospection::get().guideOverlay); }, 100);
 }
 
 void reset(UIButton&, int)
