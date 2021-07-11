@@ -1,7 +1,7 @@
 #!/bin/bash
 mkdir build
 cd build
-make
+make || exit 1
 mv Outrospection ..
 cd ..
 ./Outrospection
