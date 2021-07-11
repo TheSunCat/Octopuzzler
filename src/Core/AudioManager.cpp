@@ -27,7 +27,7 @@ void AudioManager::play(const std::string& soundName, float vol, bool loop)
     if (!wave) {
         wave = std::make_unique<SoLoud::Wav>();
 
-        std::string file = "res/SoundData/" + soundName + ".mp3";
+        std::string file = "res/SoundData/" + soundName + ".ogg";
 
         wave->load(file.c_str()); // load the file
     }
