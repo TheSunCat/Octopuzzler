@@ -18,7 +18,6 @@ jthread::jthread(ThreadFunc func)
         while(this->running)
             func();
 
-        std::cout << "JTHREAD: Stopped thread" << std::endl;
     })
 { }
 
@@ -35,7 +34,6 @@ void jthread::start()
 
 void jthread::stop()
 {
-    std::cout << "JTHREAD: Stopping thread" << std::endl;
     running = false;
     t.join();
 }
