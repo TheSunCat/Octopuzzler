@@ -16,6 +16,9 @@ struct Level
 
     glm::vec2 start;
     glm::vec2 goal;
+
+    std::string guideRight;
+    std::string guideLeft;
 };
 
 inline void from_json(const nlohmann::json& j, Level& lvl)
@@ -25,6 +28,22 @@ inline void from_json(const nlohmann::json& j, Level& lvl)
     lvl.data = std::accumulate(begin(rows), end(rows), std::string());
 
     j["controls"].get_to(lvl.controls);
+
+    if(j.find("guideRight") != j.end())
+    {
+        lvl.guideRight = j["guideRight"].get<std::string>();
+    } else 
+    {
+        lvl.guideRight = "default";
+    }
+
+    if(j.find("guideLeft") != j.end())
+    {
+        lvl.guideLeft = j["guideLeft"].get<std::string>();
+    } else 
+    {
+        lvl.guideLeft = "default";
+    }
 
     int startIndex = lvl.data.find('S'); lvl.data[startIndex] = ' ';
     lvl.start = glm::vec2(startIndex % lvl.rowLength, int(startIndex / lvl.rowLength));

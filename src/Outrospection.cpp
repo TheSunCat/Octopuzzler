@@ -11,7 +11,7 @@
 #include "Core/UI/GUIOctopusOverlay.h"
 #include "Core/UI/GUIPause.h"
 #include "Core/UI/GUIScene.h"
-#include "Core/UI/GUIWelcome.h"
+#include "Core/UI/GUIGuide.h"
 #include "Core/UI/GUIWinOverlay.h"
 #include "Events/Event.h"
 #include "Events/KeyEvent.h"
@@ -61,14 +61,14 @@ Outrospection::Outrospection()
     
     octopusOverlay = new GUIOctopusOverlay();
     controlsOverlay = new GUIControlsOverlay();
-    welcomeOverlay = new GUIWelcome();
+    guideOverlay = new GUIGuide();
     winOverlay = new GUIWinOverlay();
     scene = new GUIScene();
 
     pushLayer(scene);
     pushOverlay(octopusOverlay);
+    pushOverlay(guideOverlay);
     pushOverlay(controlsOverlay);
-    pushOverlay(welcomeOverlay);
 
     audioManager.play("totallyNotABossBattle", 1);
 }
