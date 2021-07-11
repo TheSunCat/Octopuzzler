@@ -78,12 +78,8 @@ Outrospection::~Outrospection()
     LOG_INFO("Terminating engine...");
 
     glfwTerminate();
-    //timeThread.request_stop();
-    //timeThread.join();
 
-    //consoleThread.request_stop();
-    //consoleThread.join();
-
+    //consoleThread.stop();
     loggerThread.stop();
 
     std::cout << "Terminated the termination of the engine." << std::endl;
@@ -104,6 +100,7 @@ void Outrospection::run()
     // TODO consoleThread.start();
 
     lastFrame = Util::currentTimeMillis();
+    deltaTime = 1.0f / 60.0f; 
     while (running)
     {
         currentTimeMillis = Util::currentTimeMillis();
@@ -111,11 +108,6 @@ void Outrospection::run()
         const auto currentFrame = currentTimeMillis;
         deltaTime = float(currentFrame - lastFrame) / 1000.0f;
         lastFrame = currentFrame;
-
-        if(deltaTime == 0.0f) // first frame will be 0. Assume it was 60fps
-        {
-            deltaTime = 1.0f / 60.0f; 
-        }
 
         runGameLoop();
 
