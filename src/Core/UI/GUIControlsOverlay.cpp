@@ -105,6 +105,6 @@ void GUIControlsOverlay::setControls(const std::string& controlsStr)
     }
 
     int bodyHeight = 54 * buttons.size() + 22;
-    windowBody.setScale(38, bodyHeight);
+    windowBody.setScale(384, bodyHeight);
     windowBottom.setPosition(38, 216 + bodyHeight);
 }
