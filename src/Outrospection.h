@@ -14,6 +14,7 @@
 #include "Core/Registry.h"
 #include "Core/AudioManager.h"
 #include "Core/Rendering/FreeType.h"
+#include "Core/Rendering/Framebuffer.h"
 #include "Core/Rendering/OpenGL.h"
 #include "Core/Rendering/Shader.h"
 #include "Core/Rendering/TextureManager.h"
@@ -60,7 +61,11 @@ public:
 
     void scheduleWorldTick(); // tick world NOW
 
-    glm::vec2 lastMousePos = glm::vec2(Util::curResolution() / 2.0f);
+    void setResolution(glm::vec2 res);
+    void setResolution(int x, int y);
+    glm::vec2 getResolution();
+
+    glm::vec2 lastMousePos = glm::vec2(curResolution / 2);
 
     TextureManager textureManager;
     AudioManager audioManager;
@@ -106,6 +111,8 @@ private:
     // camera stuff
     //Camera camera = Camera(glm::vec3(0.0f, 0.0f, 3.0f));
     bool firstMouse = true;
+
+    glm::ivec2 curResolution = glm::ivec2(1920, 1080);
 
 
     bool onWindowClose(WindowCloseEvent& e);

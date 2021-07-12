@@ -97,19 +97,6 @@ void Util::doLater(std::function<void()> func, time_t waitTime)
     Outrospection::get().futureFunctions.emplace_back(func, currentTimeMillis(), waitTime);
 }
 
-glm::vec2 currentRes = glm::vec2(1920, 1080);
-
-glm::vec2 Util::curResolution()
-{
-    return currentRes;
-}
-
-void Util::setResolution(const glm::vec2& res)
-{
-    glViewport(0, 0, res.x, res.y);
-    currentRes = res;
-}
-
 bool Util::fileExists(const std::string& file)
 {
     std::string fullPath("res/" + file);

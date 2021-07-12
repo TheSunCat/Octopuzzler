@@ -1,5 +1,6 @@
 #include "Framebuffer.h"
 
+#include "Outrospection.h"
 #include "Util.h"
 
 Framebuffer::Framebuffer(int width, int height) : resolution(width, height)
@@ -19,5 +20,5 @@ void Framebuffer::bind()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, id);
 
-    Util::setResolution(resolution);
+    //TODO Outrospection::get().setResolution(resolution.x, resolution.y);
 }
