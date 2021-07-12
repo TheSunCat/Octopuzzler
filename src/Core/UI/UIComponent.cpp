@@ -6,7 +6,7 @@
 #include "Util.h"
 
 UITransform::UITransform(int posX, int posY, int sizeX, int sizeY, UIAlign _alignment)
-    : pos(sizeX, sizeY), size(sizeX, sizeY), alignment(_alignment)
+    : pos(posX, posY), size(sizeX, sizeY), alignment(_alignment)
 {
     switch(alignment)
     {
