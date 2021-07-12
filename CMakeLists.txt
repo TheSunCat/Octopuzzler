@@ -47,7 +47,6 @@ set(CMKR_TARGET Outrospection)
 set(Outrospection_SOURCES "")
 
 list(APPEND Outrospection_SOURCES
-	"src/Bounds.cpp"
 	"src/Controller.cpp"
 	"src/Core/AudioManager.cpp"
 	"src/Core/LayerStack.cpp"
@@ -57,6 +56,7 @@ list(APPEND Outrospection_SOURCES
 	"src/Core/Rendering/SimpleTexture.cpp"
 	"src/Core/Rendering/TextureManager.cpp"
 	"src/Core/Rendering/TickableTexture.cpp"
+	"src/Core/UI/Bounds.cpp"
 	"src/Core/UI/GUIControlsOverlay.cpp"
 	"src/Core/UI/GUIGuide.cpp"
 	"src/Core/UI/GUILayer.cpp"
