@@ -286,13 +286,9 @@ void Outrospection::registerCallbacks() const
     // Register OpenGL events
     glfwSetFramebufferSizeCallback(gameWindow, [](GLFWwindow*, const int width, const int height)
     {
-        LOG_DEBUG("Framebuffer size changed to %i, %i", width, height);
+        LOG("Framebuffer size changed to %i, %i", width, height);
 
-        // TODO do something here
-        
-        //SCR_WIDTH = width; SCR_HEIGHT = height;
-        //updateRes();
-        //glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+        Outrospection::get().setResolution(width, height);
     });
 
     glfwSetCursorPosCallback(gameWindow, [](GLFWwindow* window, const double xPosD, const double yPosD)
@@ -338,14 +334,7 @@ void Outrospection::createShaders()
     glyphShader           = Shader("sprite"   , "glyph"          );
 
     // set up 2d shader
-    glm::vec2 res = Util::curResolution();
-    const glm::mat4 projection = glm::ortho(0.0f, res.x,
-                                            res.y, 0.0f, -1.0f, 1.0f);
-    spriteShader.use();
-    spriteShader.setMat4("projection", projection);
-
-    glyphShader.use();
-    glyphShader.setMat4("projection", projection);
+    setResolution(getResolution());
 }
 
 void Outrospection::createCursors()
@@ -385,6 +374,33 @@ void Outrospection::createIcon() const
     glfwSetWindowIcon(gameWindow, 1, &image);
 
     TextureManager::free(data);
+}
+
+void Outrospection::setResolution(glm::vec2 res)
+{
+    setResolution(res.x, res.y);
+}
+
+void Outrospection::setResolution(int x, int y)
+{
+    glViewport(0, 0, x, y);
+    curResolution = glm::ivec2(x, y);
+
+    glm::vec2 res = curResolution;
+    const glm::mat4 projection = glm::ortho(0.0f, res.x,
+                                            res.y, 0.0f, -1.0f, 1.0f);
+    spriteShader.use();
+    spriteShader.setMat4("projection", projection);
+
+    glyphShader.use();
+    glyphShader.setMat4("projection", projection);
+
+    LOG_INFO("res is now %i, %i", x, y);
+}
+
+glm::vec2 Outrospection::getResolution()
+{
+    return glm::vec2(curResolution);
 }
 
 bool Outrospection::onWindowClose(WindowCloseEvent& e)

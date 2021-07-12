@@ -22,7 +22,7 @@ public:
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+        //glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
 #ifdef __APPLE__
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // add on Mac bc Apple is big dumb :(
@@ -82,6 +82,7 @@ public:
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), nullptr);
         
+        framebuffer = Framebuffer(640, 480);
         
         // create a renderbuffer object for depth and stencil attachment (we won't be sampling these)
         GLuint RBO;

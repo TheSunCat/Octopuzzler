@@ -5,8 +5,8 @@
 #include "UIButton.h"
 
 GUIGuide::GUIGuide() : GUILayer("Guides", false),
-                           guideLeft("guideLeft", TextureManager::None, 0.0355, 0.6, 0.25, 0.375),
-                           guideRight("guideRight", TextureManager::None, 0.735, 0.475, 0.25, 0.375)
+                           guideLeft("guideLeft", TextureManager::None, UITransform(69, 458, 405, 405)),
+                           guideRight("guideRight", TextureManager::None, UITransform(1411, 513, 405, 405))
 {
     guideLeft.addAnimation("bind", animatedTexture({"UI/guide/", "bind"}, 5, 29, GL_LINEAR));
     guideLeft.addAnimation("multibind", animatedTexture({"UI/guide/", "multibind"}, 5, 34, GL_LINEAR));

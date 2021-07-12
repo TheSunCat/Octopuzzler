@@ -19,7 +19,7 @@ enum class UIAlign
 
 class UITransform
 {
-    glm::vec2 framebufferRes = glm::vec2(1920, 1080);
+    glm::vec2 defaultRes = glm::vec2(1920, 1080);
 
     glm::vec2 pos;
     glm::vec2 size;

@@ -17,7 +17,7 @@ public:
 
     void bind();
 
-    glm::vec2 resolution = Util::curResolution();
+    glm::vec2 resolution = glm::vec2(1920, 1080);
 
     //DISALLOW_COPY_AND_ASSIGN(Framebuffer)
 };

@@ -5,7 +5,8 @@
 #include "Outrospection.h"
 #include "Util.h"
 
-UITransform::UITransform(int posX, int posY, int sizeX, int sizeY, UIAlign _alignment) : pos(sizeX, sizeY), size(sizeX, sizeY), alignment(_alignment)
+UITransform::UITransform(int posX, int posY, int sizeX, int sizeY, UIAlign _alignment)
+    : pos(sizeX, sizeY), size(sizeX, sizeY), alignment(_alignment)
 {
     switch(alignment)
     {
@@ -29,18 +30,18 @@ UITransform::UITransform(int posX, int posY, int sizeX, int sizeY, UIAlign _alig
         pos -= size;
         break;
     }
-
-    framebufferRes = Util::curResolution();
 }
 
 glm::vec2 UITransform::getPos() const
 {
-    return pos * (Util::curResolution() / 1080.f);
+    glm::vec2 multiplier = (Outrospection::get().getResolution() / defaultRes);
+
+    return pos * glm::vec2(multiplier);
 }
 
 glm::vec2 UITransform::getSize() const
 {
-    return size;
+    return size * (Outrospection::get().getResolution() / defaultRes);
 }
 
 void UITransform::setPos(int x, int y)
