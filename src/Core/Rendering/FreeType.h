@@ -58,9 +58,9 @@ public:
         }
 
         FT_Face face;
-        if (FT_New_Face(ft, "./res/ObjectData/UI/jamminTooSlow.otf", 0, &face))
+        if (FT_New_Face(ft, "res/ObjectData/UI/jamminTooSlow.otf", 0, &face))
         {
-            LOG_ERROR("Failed to load ./res/ObjectData/UI/jamminTooSlow.otf!");
+            LOG_ERROR("Failed to load res/ObjectData/UI/jamminTooSlow.otf!");
             return;
         }
 
