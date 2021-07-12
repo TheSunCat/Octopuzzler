@@ -72,19 +72,19 @@ GUIOctopusOverlay::GUIOctopusOverlay() : GUILayer("Octopus Overlay", false),
                                              2, 21, GL_LINEAR), UITransform(0, 0, 1920, 1080))
 {
     auto &bCircle = buttons.emplace_back(std::make_unique<UIButton>("eyes/eyeCircle0", GL_LINEAR, UITransform(0, 0, 1920, 1080),
-                                                    Bounds(BoundsShape::Circle, {0.73, 0.1, 0.07}), eyeClick));
+                                            Bounds(UITransform(1401, 108, 134, 0), BoundsShape::Circle), eyeClick));
     bCircle->addAnimation("blink", animatedTexture({"UI/eyes/", "eyeCircle"}, 1, 5, GL_LINEAR));
     bCircle->onHover = eyeHover;
     bCircle->onUnhover = eyeUnhover;
 
     auto& bSquare = buttons.emplace_back(std::make_unique<UIButton>("eyes/eyeSquare0", GL_LINEAR, UITransform(0, 0, 1920, 1080),
-                                                    Bounds(BoundsShape::Circle, {0.88, 0.05, 0.07}), eyeClick));
+                                            Bounds(UITransform(1690, 54, 134, 0), BoundsShape::Circle), eyeClick));
     bSquare->addAnimation("blink", animatedTexture({"UI/eyes/", "eyeSquare"}, 1, 5, GL_LINEAR));
     bSquare->onHover = eyeHover;
     bSquare->onUnhover = eyeUnhover;
 
     auto& bTriangle = buttons.emplace_back(std::make_unique<UIButton>("eyes/eyeTriangle0", GL_LINEAR, UITransform(0, 0, 1920, 1080),
-                                                    Bounds(BoundsShape::Circle, {0.93, 0.3, 0.07}), eyeClick));
+                                            Bounds(UITransform(1786, 300, 134, 0), BoundsShape::Circle), eyeClick));
     bTriangle->addAnimation("blink", animatedTexture({"UI/eyes/", "eyeTriangle"}, 1, 5, GL_LINEAR));
     bTriangle->onHover = eyeHover;
     bTriangle->onUnhover = eyeUnhover;
@@ -93,7 +93,6 @@ GUIOctopusOverlay::GUIOctopusOverlay() : GUILayer("Octopus Overlay", false),
     buttons.emplace_back(std::make_unique<UIButton>("reset", GL_NEAREST, UITransform(1685, 983, 96, 96), Bounds(), reset));
     buttons.emplace_back(std::make_unique<UIButton>("undo", GL_NEAREST, UITransform(1565, 983, 96, 96), Bounds(), undo));
 }
-
 void GUIOctopusOverlay::tick()
 {
     background.tick();
