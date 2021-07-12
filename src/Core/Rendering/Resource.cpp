@@ -1,6 +1,6 @@
 #include "Resource.h"
 
-Resource::Resource(const std::string& path, const std::string& name) : fullPath("./res/ObjectData/" + path + name)
+Resource::Resource(const std::string& path, const std::string& name) : fullPath("res/ObjectData/" + path + name)
 {
 }
 
