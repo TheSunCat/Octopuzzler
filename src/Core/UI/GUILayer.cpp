@@ -7,8 +7,8 @@
 #include "Events/MouseEvent.h"
 #include "Events/KeyEvent.h"
 
-GUILayer::GUILayer(std::string _name, const bool _captureMouse) : Layer(),
-                                                                  captureMouse(_captureMouse), name(std::move(_name))
+GUILayer::GUILayer(const std::string& _name, const bool _captureMouse) : Layer(),
+                captureMouse(_captureMouse), name(_name)
 {
 }
 

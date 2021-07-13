@@ -20,10 +20,10 @@ public:
                 const float posXPercent, const float posYPercent,
                 const float widthPercent, const float heightPercent);
 
-    UIComponent(std::string _texName, const GLint& texFilter,
+    UIComponent(const std::string& _name, const GLint& texFilter,
                 const glm::vec2& _position, const glm::vec2& dimensions);
 
-    UIComponent(std::string _name, SimpleTexture& _tex,
+    UIComponent(const std::string& _name, SimpleTexture& _tex,
                 const glm::vec2& _position, const glm::vec2& dimensions);
 
     virtual void draw(Shader& shader, const Shader& glyphShader) const;
