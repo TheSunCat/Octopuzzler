@@ -23,15 +23,15 @@ UIComponent::UIComponent(const std::string& _name, SimpleTexture& _tex,
 {
 }
 
-UIComponent::UIComponent(std::string _texName, const GLint& texFilter, const glm::vec2& _position,
+UIComponent::UIComponent(const std::string& _texName, const GLint& texFilter, const glm::vec2& _position,
                          const glm::vec2& dimensions)
-    : UIComponent(std::move(_texName), simpleTexture({"UI/", _texName}, texFilter), _position, dimensions)
+    : UIComponent(_texName, simpleTexture({"UI/", _texName}, texFilter), _position, dimensions)
 {
 }
 
-UIComponent::UIComponent(std::string _name, SimpleTexture& _tex, const glm::vec2& _position,
+UIComponent::UIComponent(const std::string& _name, SimpleTexture& _tex, const glm::vec2& _position,
                          const glm::vec2& dimensions)
-    : name(std::move(_name)), textOffset(0.0f, dimensions.y / 2), textColor(0.0f), position(_position),
+    : name(_name), textOffset(0.0f, dimensions.y / 2), textColor(0.0f), position(_position),
       width(dimensions.x),
       height(dimensions.y)
 {

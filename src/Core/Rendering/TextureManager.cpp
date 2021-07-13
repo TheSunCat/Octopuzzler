@@ -178,6 +178,7 @@ GLuint TextureManager::textureFromFile(const std::string& filename, const GLint&
     else
     {
         LOG_ERROR("Texture failed to load at path: %s", filename);
+        LOG_ERROR("stbi_failure_reason: %s", stbi_failure_reason());
         stbi_image_free(data);
 
         return INT_MAX;

@@ -11,8 +11,7 @@ UIButton::UIButton(const std::string& _texName, const GLint& texFilter, const fl
     : UIComponent(_texName, texFilter,
                   posXPercent, posYPercent,
                   widthPercent, heightPercent),
-      onClick(std::move(clickCallback)),
-      buttonBounds(bounds)
+      onClick(std::move(clickCallback)), buttonBounds(bounds)
 {
     // assume default bounds
     if (buttonBounds.shape == BoundsShape::None)
@@ -27,8 +26,7 @@ UIButton::UIButton(const std::string& _name, SimpleTexture& tex, const float pos
     : UIComponent(_name, tex,
                   glm::vec2(SCR_WIDTH * posXPercent, SCR_HEIGHT * posYPercent),
                   glm::vec2(SCR_WIDTH * widthPercent, SCR_HEIGHT * heightPercent)),
-      onClick(std::move(clickCallback)),
-      buttonBounds(bounds)
+      onClick(std::move(clickCallback)), buttonBounds(bounds)
 {
     // assume default bounds
     if (buttonBounds.shape == BoundsShape::None)
