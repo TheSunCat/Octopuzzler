@@ -8,13 +8,13 @@ GUIGuide::GUIGuide() : GUILayer("Guides", false),
                            guideLeft("guideLeft", TextureManager::None, 0.0355, 0.6, 0.25, 0.375),
                            guideRight("guideRight", TextureManager::None, 0.735, 0.475, 0.25, 0.375)
 {
-    guideLeft.addAnimation("bind", animatedTexture({"UI/guide/", "bind"}, 5, 29, GL_LINEAR));
-    guideLeft.addAnimation("multibind", animatedTexture({"UI/guide/", "multibind"}, 5, 34, GL_LINEAR));
-    guideLeft.addAnimation("moving", animatedTexture({"UI/guide/", "moving"}, 5, 18, GL_LINEAR));
+    guideLeft.addAnimation("bind", animatedTexture({"UI/guide/", "bind"}, 4, 29, GL_LINEAR));
+    guideLeft.addAnimation("multibind", animatedTexture({"UI/guide/", "multibind"}, 4, 34, GL_LINEAR));
+    guideLeft.addAnimation("moving", animatedTexture({"UI/guide/", "moving"}, 4, 18, GL_LINEAR));
 
-    guideRight.addAnimation("bind", animatedTexture({"UI/guide/", "bind"}, 5, 29, GL_LINEAR));
-    guideRight.addAnimation("multibind", animatedTexture({"UI/guide/", "multibind"}, 5, 34, GL_LINEAR));
-    guideRight.addAnimation("moving", animatedTexture({"UI/guide/", "moving"}, 5, 18, GL_LINEAR));
+    guideRight.addAnimation("bind", animatedTexture({"UI/guide/", "bind"}, 4, 29, GL_LINEAR));
+    guideRight.addAnimation("multibind", animatedTexture({"UI/guide/", "multibind"}, 4, 34, GL_LINEAR));
+    guideRight.addAnimation("moving", animatedTexture({"UI/guide/", "moving"}, 4, 18, GL_LINEAR));
 }
 
 void GUIGuide::tick()
