@@ -200,7 +200,7 @@ void GUIScene::tryMovePlayer(Control input)
 
         ghostPlayerPos += delta;
 
-        if (ghostPlayerPos == level.goal)
+        if (ghostPlayerPos == level.goal && (i == deltas.size() - 1))
         {
             playerPosInt = ghostPlayerPos;
             LOG_INFO("You win!! :D");
@@ -238,7 +238,7 @@ void GUIScene::tryMovePlayer(Control input)
         int intGhostPosition = ghostPlayerPos.x + (ghostPlayerPos.y * level.rowLength);
         char tile = level.data[intGhostPosition];
 
-        if (tile != ' ' && !(tile == 'H' && i == 0 && deltas.size() == 2))
+        if (tile != ' ' && !((tile == 'H' || tile == 'G') && i == 0 && deltas.size() == 2))
         {
             LOG_INFO("Player died!");
 
