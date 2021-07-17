@@ -386,9 +386,8 @@ void Outrospection::setResolution(int x, int y)
     glViewport(0, 0, x, y);
     curResolution = glm::ivec2(x, y);
 
-    glm::vec2 res = curResolution;
-    const glm::mat4 projection = glm::ortho(0.0f, res.x,
-                                            res.y, 0.0f, -1.0f, 1.0f);
+    const glm::mat4 projection = glm::ortho(0.0f, float(x), float(y),
+                                            0.0f, -1.0f, 1.0f);
     spriteShader.use();
     spriteShader.setMat4("projection", projection);
 
