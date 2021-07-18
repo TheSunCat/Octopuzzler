@@ -87,6 +87,7 @@ public:
     bool won = false;
 
     time_t currentTimeMillis = 0;
+    glm::ivec2 curResolution = glm::ivec2(1920, 1080);
 	
     DISALLOW_COPY_AND_ASSIGN(Outrospection)
 private:
@@ -111,7 +112,6 @@ private:
     //Camera camera = Camera(glm::vec3(0.0f, 0.0f, 3.0f));
     bool firstMouse = true;
 
-    glm::ivec2 curResolution = glm::ivec2(1920, 1080);
 
 
     bool onWindowClose(WindowCloseEvent& e);

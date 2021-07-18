@@ -64,36 +64,27 @@ void GUIScene::tick()
 
 void GUIScene::draw() const
 {
-    background.hidden = false;
-
-    background.setPosition(0, 0);
-    background.setScale(1920, 1080);
-
-
-    /*if (Outrospection::get().won) // don't draw the level if we won
-        return;*/
+    if (Outrospection::get().won) // don't draw the level if we won
+        return;
 
     Shader& spriteShader = Outrospection::get().spriteShader;
     Shader& glyphShader = Outrospection::get().glyphShader;
-
-    background.draw(spriteShader, glyphShader);
-    //return;
 
     int rowLength = level.rowLength;
     int colLength = int(level.data.size() / level.rowLength);
 
     int largestLength = std::max(rowLength, colLength);
 
-    float spriteScale = 1080 / largestLength;
+    float spriteScale = (Util::currentTimeMillis() % 1000) / largestLength;
 
     playerSprite.setScale(spriteScale, spriteScale);
     ghostSprite.setScale(spriteScale, spriteScale);
-    floor.setScale(spriteScale + 0.01, spriteScale + 0.01); // adjust for floating point imprecision (I think?)
-    ink.setScale(spriteScale, spriteScale + 0.01);   // else we get weird horizontal lines between some tiles
-    flag.setScale(spriteScale, spriteScale);         // TODO looks like this isn't working. too bad.
-    background.setScale(spriteScale + 0.01, spriteScale + 0.01);         
+    floor.setScale(spriteScale, spriteScale);
+    ink.setScale(spriteScale, spriteScale);
+    flag.setScale(spriteScale, spriteScale);
+    background.setScale(spriteScale, spriteScale);
 
-    for(int x = 0; x < largestLength + 5; x++) // TODO dirty hack
+    for(int x = 0; x < largestLength + 5; x++) // TODO dirty hack to draw further right
     {
         for(int y = 0; y < largestLength; y++)
         {

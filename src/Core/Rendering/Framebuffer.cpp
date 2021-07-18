@@ -34,7 +34,7 @@ void Framebuffer::bind()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, id);
 
-    //TODO Outrospection::get().setResolution(resolution.x, resolution.y);
+    Outrospection::get().curResolution = glm::vec2(resolution.x, resolution.y);
 }
 
 void Framebuffer::bindTexture()
