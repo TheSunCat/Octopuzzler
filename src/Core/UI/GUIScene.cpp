@@ -200,7 +200,7 @@ void GUIScene::tryMovePlayer(Control input)
 
         ghostPlayerPos += delta;
 
-        if (ghostPlayerPos == level.goal && (i == deltas.size() - 1))
+        if (ghostPlayerPos == level.goal && (i == deltas.size() - 1) && (inputQueue.size() == 1))
         {
             playerPosInt = ghostPlayerPos;
             LOG_INFO("You win!! :D");
