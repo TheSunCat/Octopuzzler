@@ -13,11 +13,6 @@ void AudioManager::init()
 
 AudioManager::~AudioManager()
 {
-    for(auto it = waves.begin(); it != waves.end(); ++it)
-    {
-        
-    }
-
     engine.deinit();
 }
 

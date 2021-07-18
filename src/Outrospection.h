@@ -105,7 +105,6 @@ private:
 
     Framebuffer defaultFramebuffer;
     Framebuffer crtFramebuffer;
-    GLuint textureColorbuffer;
     GLuint crtVAO;
 
     // camera stuff

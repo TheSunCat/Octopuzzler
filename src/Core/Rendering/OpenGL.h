@@ -83,24 +83,10 @@ public:
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), nullptr);
         
         framebuffer = Framebuffer(640, 480);
-        
-        // create a renderbuffer object for depth and stencil attachment (we won't be sampling these)
-        GLuint RBO;
-        glGenRenderbuffers(1, &RBO);
-        glBindRenderbuffer(GL_RENDERBUFFER, RBO);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 256, 192);
-        // use a single renderbuffer object for both a depth AND stencil buffer.
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO);
-        // now actually attach it
-        // now that we actually created the framebuffer and added all attachments we want to check if it is complete
-        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-            LOG_ERROR("Framebuffer is not complete!");
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
     GLuint crtVAO = 0;
     Framebuffer framebuffer;
-    GLuint textureColorbuffer = 0;
     GLFWwindow* gameWindow{};
 
     DISALLOW_COPY_AND_ASSIGN(OpenGL)

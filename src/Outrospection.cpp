@@ -30,7 +30,6 @@ Outrospection::Outrospection()
     gameWindow = opengl.gameWindow;
     crtVAO = opengl.crtVAO;
     crtFramebuffer = opengl.framebuffer;
-    textureColorbuffer = opengl.textureColorbuffer;
 
     fontCharacters = freetype.loadedCharacters;
 
@@ -230,7 +229,7 @@ void Outrospection::runGameLoop()
         glClearColor(0.3725, 0.4667, 0.5529f, 1.0f); // clear screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-        // draw stuff here
+        // TODO draw stuff here
         if(!won)
             scene->draw();
 
@@ -248,14 +247,14 @@ void Outrospection::runGameLoop()
         crtShader.setFloat("time", float(currentTimeMillis % 1000000) / 1000000);
         
         glBindVertexArray(crtVAO);
-        glBindTexture(GL_TEXTURE_2D, textureColorbuffer);    // use the color attachment texture as the texture of the quad plane
+        crtFramebuffer.bindTexture();
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
         screenShader.use();
         // draw UI
         for (const auto& layer : layerStack)
         {
-            if (layer->handleManually)
+            if (layer->handleManually) // TODO this is jank
                 continue;
             
             layer->draw();
