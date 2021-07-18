@@ -5,8 +5,9 @@
 #include "Outrospection.h"
 #include "Util.h"
 
-UITransform::UITransform(int posX, int posY, int sizeX, int sizeY, UIAlign _alignment)
-    : pos(posX, posY), size(sizeX, sizeY), alignment(_alignment)
+UITransform::UITransform(int posX, int posY, int sizeX, int sizeY,
+                         const glm::vec2& fbRes, UIAlign _alignment)
+    : pos(posX, posY), size(sizeX, sizeY), defaultRes(fbRes), alignment(_alignment)
 {
     switch(alignment)
     {
@@ -133,8 +134,8 @@ void UIComponent::setScale(int x, int y)
 
 void UIComponent::draw(Shader& shader, const Shader& glyphShader) const
 {
-    if (hidden)
-        return;
+    //if (hidden)
+        //return;
 
     shader.use();
     glm::mat4 model = glm::mat4(1.0f);

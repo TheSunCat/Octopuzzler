@@ -9,12 +9,12 @@
 // this is the constructor (ctor for short).
 // it only takes care of copying the level data to store it here for now
 GUIScene::GUIScene() : GUILayer("Scene", false),
-                    floor("floor", animatedTexture({ "UI/floor/", "empty" }, 8, 17, GL_NEAREST), UITransform(0, 0, 100, 100)),
+                    floor("floor", animatedTexture({ "UI/floor/", "empty" }, 8, 17, GL_NEAREST), UITransform(0, 0, 100, 100, {640, 480})),
                     ink("hole", GL_NEAREST, UITransform(0, 0, 100, 100)),
-                    flag("flag", animatedTexture({"UI/flag/", "default"}, 16, 2, GL_NEAREST), UITransform(0, 0, 0, 0)),
-                    background("background", animatedTexture({"UI/background/", "default"}, 8, 17, GL_NEAREST), UITransform(0, 0, 0, 0)),
-                    playerSprite("player", animatedTexture({ "UI/player/", "default" }, 16, 2, GL_NEAREST), UITransform(0, 0, 0.1, 0.1)),
-                    ghostSprite("ghost", animatedTexture({ "UI/ghost/", "default" }, 16, 2, GL_NEAREST), UITransform(0, 0, 0.1, 0.1))
+                    flag("flag", animatedTexture({"UI/flag/", "default"}, 16, 2, GL_NEAREST), UITransform(0, 0, 0, 0, {640, 480})),
+                    background("background", animatedTexture({"UI/background/", "default"}, 8, 17, GL_NEAREST), UITransform(0, 0, 0, 0, {640, 480})),
+                    playerSprite("player", animatedTexture({ "UI/player/", "default" }, 16, 2, GL_NEAREST), UITransform(0, 0, 0.1, 0.1, {640, 480})),
+                    ghostSprite("ghost", animatedTexture({ "UI/ghost/", "default" }, 16, 2, GL_NEAREST), UITransform(0, 0, 0.1, 0.1, {640, 480}))
 
 {
     handleManually = true;
@@ -64,18 +64,27 @@ void GUIScene::tick()
 
 void GUIScene::draw() const
 {
-    if (Outrospection::get().won) // don't draw the level if we won
-        return;
+    background.hidden = false;
+
+    background.setPosition(0, 0);
+    background.setScale(1920, 1080);
+
+
+    /*if (Outrospection::get().won) // don't draw the level if we won
+        return;*/
 
     Shader& spriteShader = Outrospection::get().spriteShader;
     Shader& glyphShader = Outrospection::get().glyphShader;
+
+    background.draw(spriteShader, glyphShader);
+    //return;
 
     int rowLength = level.rowLength;
     int colLength = int(level.data.size() / level.rowLength);
 
     int largestLength = std::max(rowLength, colLength);
 
-    float spriteScale = 4.f / largestLength;
+    float spriteScale = 1080 / largestLength;
 
     playerSprite.setScale(spriteScale, spriteScale);
     ghostSprite.setScale(spriteScale, spriteScale);

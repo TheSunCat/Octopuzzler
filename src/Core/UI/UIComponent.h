@@ -25,7 +25,8 @@ class UITransform
     glm::vec2 size;
 public:
     // units are in 1080p pixels
-    UITransform(int posX, int posY, int sizeX, int sizeY, UIAlign _alignment = UIAlign::TOP_LEFT);
+    UITransform(int posX, int posY, int sizeX, int sizeY,
+                const glm::vec2& fbRes = {1920, 1080}, UIAlign _alignment = UIAlign::TOP_LEFT);
 
     glm::vec2 getPos() const;
     glm::vec2 getSize() const;

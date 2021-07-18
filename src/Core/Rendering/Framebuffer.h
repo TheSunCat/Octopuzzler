@@ -11,11 +11,13 @@
 class Framebuffer
 {
     GLuint id = 0;
+    GLuint texId = 0;
 public:
     Framebuffer() = default;
     Framebuffer(int width, int height);
 
     void bind();
+    void bindTexture();
 
     glm::vec2 resolution = glm::vec2(1920, 1080);
 
