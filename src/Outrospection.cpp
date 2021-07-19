@@ -386,14 +386,6 @@ void Outrospection::setResolution(int x, int y)
     glViewport(0, 0, x, y);
     curWindowResolution = glm::ivec2(x, y);
 
-    const glm::mat4 projection = glm::ortho(0.0f, float(x), float(y),
-                                            0.0f, -1.0f, 1.0f);
-    spriteShader.use();
-    spriteShader.setMat4("projection", projection);
-
-    glyphShader.use();
-    glyphShader.setMat4("projection", projection);
-
     for(auto& pair : framebuffers)
     {
         glm::vec2 scaleFactor = curWindowResolution / glm::vec2(1920, 1080);
