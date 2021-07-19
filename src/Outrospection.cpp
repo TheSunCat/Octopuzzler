@@ -70,7 +70,7 @@ Outrospection::Outrospection()
     pushOverlay(guideOverlay);
     pushOverlay(controlsOverlay);
 
-    audioManager.play("totallyNotABossBattle", 1);
+    audioManager.play("totallyNotABossBattle", 1, true);
 }
 
 Outrospection::~Outrospection()
