@@ -35,14 +35,14 @@ UITransform::UITransform(int posX, int posY, int sizeX, int sizeY,
 
 glm::vec2 UITransform::getPos() const
 {
-    glm::vec2 multiplier = (Outrospection::get().getResolution() / defaultRes);
+    glm::vec2 multiplier = (*Outrospection::get().curFbResolution / defaultRes);
 
     return pos * glm::vec2(multiplier);
 }
 
 glm::vec2 UITransform::getSize() const
 {
-    return size * (Outrospection::get().getResolution() / defaultRes);
+    return size * (*Outrospection::get().curFbResolution / defaultRes);
 }
 
 void UITransform::setPos(int x, int y)

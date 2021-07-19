@@ -63,9 +63,11 @@ public:
 
     void setResolution(glm::vec2 res);
     void setResolution(int x, int y);
-    glm::vec2 getResolution();
+    glm::vec2 getWindowResolution();
 
-    glm::vec2 lastMousePos = glm::vec2(curResolution / 2);
+    glm::ivec2* curFbResolution = &curWindowResolution;
+
+    glm::vec2 lastMousePos = glm::vec2(curWindowResolution / 2);
 
     TextureManager textureManager;
     AudioManager audioManager;
@@ -87,7 +89,6 @@ public:
     bool won = false;
 
     time_t currentTimeMillis = 0;
-    glm::ivec2 curResolution = glm::ivec2(1920, 1080);
 	
     DISALLOW_COPY_AND_ASSIGN(Outrospection)
 private:
@@ -104,14 +105,14 @@ private:
 
     GLFWwindow* gameWindow;
 
-    Framebuffer defaultFramebuffer;
-    Framebuffer crtFramebuffer;
+    std::unordered_map<std::string, Framebuffer> framebuffers;
     GLuint crtVAO;
 
     // camera stuff
     //Camera camera = Camera(glm::vec3(0.0f, 0.0f, 3.0f));
     bool firstMouse = true;
 
+    glm::ivec2 curWindowResolution = glm::ivec2(1920, 1080);
 
 
     bool onWindowClose(WindowCloseEvent& e);

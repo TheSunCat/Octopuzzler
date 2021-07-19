@@ -24,12 +24,16 @@ Outrospection::Outrospection()
 {
     instance = this;
 
+    loggerThread.start();
+    // TODO consoleThread.start();
+
     preInit = PreInitialization();
     audioManager.init();
 
     gameWindow = opengl.gameWindow;
     crtVAO = opengl.crtVAO;
-    crtFramebuffer = opengl.framebuffer;
+    framebuffers.insert(std::make_pair("default", Framebuffer()));
+    framebuffers.insert(std::make_pair("crt", opengl.framebuffer));
 
     fontCharacters = freetype.loadedCharacters;
 
@@ -78,9 +82,6 @@ void Outrospection::run()
     using namespace std::chrono_literals;
 
     running = true;
-    
-    loggerThread.start();
-    // TODO consoleThread.start();
 
     lastFrame = Util::currentTimeMillis();
     deltaTime = 1.0f / 60.0f; 
@@ -225,7 +226,7 @@ void Outrospection::runGameLoop()
     {
         glDisable(GL_DEPTH_TEST); // disable depth test so stuff near camera isn't clipped
         
-        crtFramebuffer.bind();
+        framebuffers["crt"].bind();
         glClearColor(0.3725, 0.4667, 0.5529f, 1.0f); // clear screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
@@ -235,7 +236,7 @@ void Outrospection::runGameLoop()
 
 
         // bind to default framebuffer and draw custom one over that
-        defaultFramebuffer.bind();
+        framebuffers["default"].bind();
         
         // clear all relevant buffers
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -247,7 +248,7 @@ void Outrospection::runGameLoop()
         crtShader.setFloat("time", float(currentTimeMillis % 1000000) / 1000000);
         
         glBindVertexArray(crtVAO);
-        crtFramebuffer.bindTexture();
+        framebuffers["crt"].bindTexture();
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
         screenShader.use();
@@ -333,7 +334,7 @@ void Outrospection::createShaders()
     glyphShader           = Shader("sprite"   , "glyph"          );
 
     // set up 2d shader
-    setResolution(getResolution());
+    setResolution(getWindowResolution());
 }
 
 void Outrospection::createCursors()
@@ -383,7 +384,7 @@ void Outrospection::setResolution(glm::vec2 res)
 void Outrospection::setResolution(int x, int y)
 {
     glViewport(0, 0, x, y);
-    curResolution = glm::ivec2(x, y);
+    curWindowResolution = glm::ivec2(x, y);
 
     const glm::mat4 projection = glm::ortho(0.0f, float(x), float(y),
                                             0.0f, -1.0f, 1.0f);
@@ -393,12 +394,19 @@ void Outrospection::setResolution(int x, int y)
     glyphShader.use();
     glyphShader.setMat4("projection", projection);
 
+    for(auto& pair : framebuffers)
+    {
+        glm::vec2 scaleFactor = curWindowResolution / glm::vec2(1920, 1080);
+
+        pair.second.scaleResolution(scaleFactor);
+    }
+
     LOG_INFO("res is now %i, %i", x, y);
 }
 
-glm::vec2 Outrospection::getResolution()
+glm::vec2 Outrospection::getWindowResolution()
 {
-    return glm::vec2(curResolution);
+    return glm::vec2(curWindowResolution);
 }
 
 bool Outrospection::onWindowClose(WindowCloseEvent& e)
