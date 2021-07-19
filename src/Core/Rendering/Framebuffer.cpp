@@ -35,7 +35,17 @@ void Framebuffer::bind()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, id);
 
-    Outrospection::get().curFbResolution = &resolution;
+    auto& o = Outrospection::get();
+    
+    o.curFbResolution = &resolution;
+
+    const glm::mat4 projection = glm::ortho(0.0f, float(resolution.x), float(resolution.y),
+                                            0.0f, -1.0f, 1.0f);
+    o.spriteShader.use();
+    o.spriteShader.setMat4("projection", projection);
+
+    o.glyphShader.use();
+    o.glyphShader.setMat4("projection", projection);
 }
 
 void Framebuffer::bindTexture()

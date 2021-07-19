@@ -75,7 +75,7 @@ void GUIScene::draw() const
 
     int largestLength = std::max(rowLength, colLength);
 
-    float spriteScale = (Util::currentTimeMillis() % 1000) / largestLength;
+    float spriteScale = 640 / largestLength;
 
     playerSprite.setScale(spriteScale, spriteScale);
     ghostSprite.setScale(spriteScale, spriteScale);
