@@ -19,7 +19,10 @@ public:
     void bind();
     void bindTexture();
 
-    glm::vec2 resolution = glm::vec2(1920, 1080);
+    void scaleResolution(const glm::vec2& scale);
+
+    glm::ivec2 defaultResolution = glm::ivec2(1920, 1080);
+    glm::ivec2 resolution = glm::ivec2(1920, 1080);
 
     //DISALLOW_COPY_AND_ASSIGN(Framebuffer)
 };

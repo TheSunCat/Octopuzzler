@@ -3,7 +3,8 @@
 #include "Outrospection.h"
 #include "Util.h"
 
-Framebuffer::Framebuffer(int width, int height) : resolution(width, height)
+Framebuffer::Framebuffer(int width, int height)
+    : defaultResolution(width, height), resolution(width, height)
 {
     glGenFramebuffers(1, &id);
     glBindFramebuffer(GL_FRAMEBUFFER, id);
@@ -34,10 +35,16 @@ void Framebuffer::bind()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, id);
 
-    Outrospection::get().curResolution = glm::vec2(resolution.x, resolution.y);
+    Outrospection::get().curFbResolution = &resolution;
 }
 
 void Framebuffer::bindTexture()
 {
     glBindTexture(GL_TEXTURE_2D, texId);
+}
+
+void Framebuffer::scaleResolution(const glm::vec2& scale)
+{
+    resolution.x = float(defaultResolution.x) * scale.x;
+    resolution.y = float(defaultResolution.y) * scale.y;
 }
