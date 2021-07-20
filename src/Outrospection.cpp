@@ -42,8 +42,6 @@ Outrospection::Outrospection() : curWindowResolution()
     createCursors();
     createIcon();
 
-    // TODO check if we can access files, if not warn the user
-
     glfwSetCursor(gameWindow, cursorNone);
     
     octopusOverlay = new GUIOctopusOverlay();
