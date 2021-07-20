@@ -35,9 +35,7 @@ UITransform::UITransform(int posX, int posY, int sizeX, int sizeY,
 
 glm::vec2 UITransform::getPos() const
 {
-    glm::vec2 multiplier = (*Outrospection::get().curFbResolution / defaultRes);
-
-    return pos * glm::vec2(multiplier);
+    return pos * glm::vec2(*Outrospection::get().curFbResolution / defaultRes);
 }
 
 glm::vec2 UITransform::getSize() const

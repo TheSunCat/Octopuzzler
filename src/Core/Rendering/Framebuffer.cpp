@@ -3,8 +3,8 @@
 #include "Outrospection.h"
 #include "Util.h"
 
-Framebuffer::Framebuffer(int width, int height)
-    : defaultResolution(width, height), resolution(width, height)
+Framebuffer::Framebuffer(int width, int height) : isDefaultFramebuffer(false),
+    defaultResolution(width, height), resolution(width, height)
 {
     glGenFramebuffers(1, &id);
     glBindFramebuffer(GL_FRAMEBUFFER, id);
@@ -12,13 +12,12 @@ Framebuffer::Framebuffer(int width, int height)
     // create a color attachment texture
     glGenTextures(1, &texId);
     glBindTexture(GL_TEXTURE_2D, texId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texId, 0);
     
     // create a renderbuffer object for depth and stencil attachment (we won't be sampling these)
-    unsigned int rbo;
     glGenRenderbuffers(1, &rbo);
     glBindRenderbuffer(GL_RENDERBUFFER, rbo);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height); // use a single renderbuffer object for both a depth AND stencil buffer.
@@ -58,4 +57,18 @@ void Framebuffer::scaleResolution(const glm::vec2& scale)
 {
     resolution.x = float(defaultResolution.x) * scale.x;
     resolution.y = float(defaultResolution.y) * scale.y;
+
+    // only update texture and stuff if it's a custom fb
+    if(isDefaultFramebuffer)
+        return;
+    
+    // resize color attachment
+    glBindTexture(GL_TEXTURE_2D, texId);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, resolution.x, resolution.y, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    // resize depth attachment
+    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, resolution.x, resolution.y);
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
 }

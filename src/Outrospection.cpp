@@ -230,22 +230,16 @@ void Outrospection::runGameLoop()
         glClearColor(0.3725, 0.4667, 0.5529f, 1.0f); // clear screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-        // TODO draw stuff here
         if(!won)
             scene->draw();
 
 
-        // bind to default framebuffer and draw custom one over that
         framebuffers["default"].bind();
-        
-        // clear all relevant buffers
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // apply CRT effect
+        // draw CRT with shader effect
         crtShader.use();
-        //crtShader.setVec2("resolution", CRT_WIDTH, CRT_HEIGHT);
-        crtShader.setFloat("time", float(currentTimeMillis % 1000000) / 1000000);
         
         glBindVertexArray(crtVAO);
         framebuffers["crt"].bindTexture();

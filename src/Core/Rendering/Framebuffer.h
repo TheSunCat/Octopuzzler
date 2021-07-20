@@ -10,8 +10,11 @@
 
 class Framebuffer
 {
+    bool isDefaultFramebuffer = true;
+
     GLuint id = 0;
     GLuint texId = 0;
+    GLuint rbo = 0;
 public:
     Framebuffer() = default;
     Framebuffer(int width, int height);
