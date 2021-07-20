@@ -34,6 +34,7 @@ Framebuffer::Framebuffer(int width, int height)
 void Framebuffer::bind()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, id);
+    glViewport(0, 0, resolution.x, resolution.y);
 
     auto& o = Outrospection::get();
     

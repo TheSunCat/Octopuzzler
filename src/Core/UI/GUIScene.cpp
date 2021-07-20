@@ -75,7 +75,7 @@ void GUIScene::draw() const
 
     int largestLength = std::max(rowLength, colLength);
 
-    float spriteScale = 640.f / largestLength;
+    float spriteScale = 480.f / largestLength; // fill leftmost 480x480 area with actual level
 
     playerSprite.setScale(spriteScale, spriteScale);
     ghostSprite.setScale(spriteScale, spriteScale);
@@ -84,7 +84,7 @@ void GUIScene::draw() const
     flag.setScale(spriteScale, spriteScale);
     background.setScale(spriteScale, spriteScale);
 
-    for(int x = 0; x < largestLength + 5; x++) // TODO dirty hack to draw further right
+    for(int x = 0; x < largestLength + 5; x++) // TODO dirty hack to cover further right with bg tiles
     {
         for(int y = 0; y < largestLength; y++)
         {
