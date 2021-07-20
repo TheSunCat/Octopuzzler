@@ -12,9 +12,9 @@ GUIScene::GUIScene() : GUILayer("Scene", false),
                     floor("floor", animatedTexture({ "UI/floor/", "empty" }, 8, 17, GL_NEAREST), UITransform(0, 0, 100, 100, {640, 480})),
                     ink("hole", GL_NEAREST, UITransform(0, 0, 100, 100)),
                     flag("flag", animatedTexture({"UI/flag/", "default"}, 16, 2, GL_NEAREST), UITransform(0, 0, 0, 0, {640, 480})),
-                    background("background", animatedTexture({"UI/background/", "default"}, 8, 17, GL_NEAREST), UITransform(0, 0, 0, 0, {640, 480})),
-                    playerSprite("player", animatedTexture({ "UI/player/", "default" }, 16, 2, GL_NEAREST), UITransform(0, 0, 0.1, 0.1, {640, 480})),
-                    ghostSprite("ghost", animatedTexture({ "UI/ghost/", "default" }, 16, 2, GL_NEAREST), UITransform(0, 0, 0.1, 0.1, {640, 480}))
+                    background("background", animatedTexture({"UI/background/", "default"}, 8, 17, GL_NEAREST), UITransform(0, 0, 10, 10, {640, 480})),
+                    playerSprite("player", animatedTexture({ "UI/player/", "default" }, 16, 2, GL_NEAREST), UITransform(0, 0, 10, 10, {640, 480})),
+                    ghostSprite("ghost", animatedTexture({ "UI/ghost/", "default" }, 16, 2, GL_NEAREST), UITransform(0, 0, 10, 10, {640, 480}))
 
 {
     handleManually = true;
@@ -75,7 +75,7 @@ void GUIScene::draw() const
 
     int largestLength = std::max(rowLength, colLength);
 
-    float spriteScale = 640 / largestLength;
+    float spriteScale = 640.f / largestLength;
 
     playerSprite.setScale(spriteScale, spriteScale);
     ghostSprite.setScale(spriteScale, spriteScale);

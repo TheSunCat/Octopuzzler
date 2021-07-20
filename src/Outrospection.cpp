@@ -20,7 +20,7 @@
 
 Outrospection* Outrospection::instance = nullptr;
 
-Outrospection::Outrospection()
+Outrospection::Outrospection() : curWindowResolution()
 {
     instance = this;
 
