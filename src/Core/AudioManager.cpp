@@ -8,7 +8,7 @@ void AudioManager::init()
                 0U, // aBackend
                 0U, // aSampleRate
                 0U, // aBufferSize
-                2U);// aChannels
+                1U);// aChannels
 }
 
 AudioManager::~AudioManager()
