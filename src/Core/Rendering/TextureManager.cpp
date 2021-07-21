@@ -1,7 +1,7 @@
 #include "TextureManager.h"
 
-#include <sstream>
 #include <stb_image.h>
+#include <string>
 
 #include "Core/Rendering/TickableTexture.h"
 
@@ -69,11 +69,7 @@ SimpleTexture& TextureManager::loadAnimatedTexture(const Resource& r, unsigned i
 
     for (unsigned int i = 0; i < textureFrameCount; i++)
     {
-        std::stringstream ss;
-        ss << path << i << ".png";
-        std::string currentPath = ss.str();
-
-        GLuint currentTextureId = textureFromFile(currentPath, filter);
+        GLuint currentTextureId = textureFromFile(path + std::to_string(i) + ".png", filter);
 
         if (currentTextureId != INT_MAX)
         {
@@ -82,7 +78,7 @@ SimpleTexture& TextureManager::loadAnimatedTexture(const Resource& r, unsigned i
         else
         {
             LOG_ERROR("Failed to generate texture ID for animated texture frame %i at %s", textureFrameCount,
-                      currentPath);
+                      path + std::to_string(i) + ".png");
 
             textureIds.push_back(MissingTexture.texId);
         }
@@ -142,7 +138,9 @@ void TextureManager::createTexture(const GLuint& texId, const unsigned char* dat
 {
     glBindTexture(GL_TEXTURE_2D, texId);
     glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-    glGenerateMipmap(GL_TEXTURE_2D);
+    
+    // TODO make this an option
+    //glGenerateMipmap(GL_TEXTURE_2D);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
