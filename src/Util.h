@@ -9,6 +9,12 @@ glm::vec3 operator*(const int& lhs, const glm::vec3& vec);
 glm::vec2 operator*(int i, const glm::vec2& vec);
 glm::vec2 operator*(const glm::vec2& vec, int i);
 
+glm::vec2 operator/(const glm::vec2& left, const glm::ivec2& right);
+glm::vec2 operator/(const glm::ivec2& left, const glm::vec2& right);
+
+glm::vec2 operator*(const glm::vec2& left, const glm::ivec2& right);
+glm::vec2 operator*(const glm::ivec2& left, const glm::vec2& right);
+
 std::string operator+(const std::string& str, int i);
 std::string operator+(int i, const std::string& str);
 
@@ -84,7 +90,7 @@ namespace Util
     };
 
     void doLater(std::function<void()> func, time_t waitTime);
-
+    
     constexpr std::size_t hashBytes(const char* data, std::size_t length)
     {
 #define get16bits(d) ((((uint32_t)(((const uint8_t *)(d))[1])) << 8) +(uint32_t)(((const uint8_t *)(d))[0]))
@@ -140,6 +146,7 @@ namespace Util
     glm::vec3 rotToVec3(float yaw, float pitch = 0);
 
     std::string vecToStr(const glm::vec3& vec);
+    std::string vecToStr(const glm::vec2& vec);
 
     unsigned char* dataFromFile(const char* path, const std::string& directory, int* widthOut, int* heightOut);
 

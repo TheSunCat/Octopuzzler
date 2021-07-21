@@ -14,6 +14,7 @@
 #include "Core/Registry.h"
 #include "Core/AudioManager.h"
 #include "Core/Rendering/FreeType.h"
+#include "Core/Rendering/Framebuffer.h"
 #include "Core/Rendering/OpenGL.h"
 #include "Core/Rendering/Shader.h"
 #include "Core/Rendering/TextureManager.h"
@@ -32,6 +33,7 @@ class Outrospection
     OpenGL opengl; // defined at the beginning so nothing gets initialized before this
     FreeType freetype;
 
+    glm::ivec2 curWindowResolution = glm::ivec2(1920, 1080);
 public:
     static Outrospection& get()
     {
@@ -60,7 +62,13 @@ public:
 
     void scheduleWorldTick(); // tick world NOW
 
-    glm::vec2 lastMousePos = glm::vec2(SCR_HEIGHT / 2.0f, SCR_WIDTH / 2.0f);
+    void setResolution(glm::vec2 res);
+    void setResolution(int x, int y);
+    glm::vec2 getWindowResolution();
+
+    glm::ivec2* curFbResolution = &curWindowResolution;
+
+    glm::vec2 lastMousePos = glm::vec2(curWindowResolution / 2);
 
     TextureManager textureManager;
     AudioManager audioManager;
@@ -98,13 +106,13 @@ private:
 
     GLFWwindow* gameWindow;
 
-    GLuint crtFramebuffer, intermediateFBO = 0;
-    GLuint textureColorbuffer;
+    std::unordered_map<std::string, Framebuffer> framebuffers;
     GLuint crtVAO;
 
     // camera stuff
     //Camera camera = Camera(glm::vec3(0.0f, 0.0f, 3.0f));
     bool firstMouse = true;
+
 
 
     bool onWindowClose(WindowCloseEvent& e);

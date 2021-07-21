@@ -3,6 +3,8 @@
 #include <vector>
 #include <glm/vec2.hpp>
 
+#include "UIComponent.h"
+
 enum class BoundsShape
 {
 	None = 0,
@@ -13,7 +15,7 @@ enum class BoundsShape
 class Bounds
 {
 public:
-	Bounds(BoundsShape _shape, const std::vector<float>& boundsArgs);
+	Bounds(const UITransform& transform, BoundsShape _shape = BoundsShape::AABB);
 
 	// assume default bounds
 	Bounds();
@@ -22,7 +24,5 @@ public:
 	
 	BoundsShape shape;
 
-	glm::vec2 pos;
-	glm::vec2 size{};
-	float radius2{};
+	UITransform transform;
 };
