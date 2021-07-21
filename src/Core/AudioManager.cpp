@@ -4,10 +4,10 @@
 
 void AudioManager::init()
 {
-    engine.init(1U, // aFlags
+    engine.init(0U, // aFlags
                 0U, // aBackend
                 0U, // aSampleRate
-                1024U, // aBufferSize
+                0U, // aBufferSize
                 2U);// aChannels
 }
 

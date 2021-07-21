@@ -56,7 +56,7 @@ Outrospection::Outrospection()
     pushOverlay(guideOverlay);
     pushOverlay(controlsOverlay);
 
-    audioManager.play("totallyNotABossBattle", 1);
+    audioManager.play("totallyNotABossBattle", 1, true);
 
     // for good measure, redo UI here
     int width = 0, height = 0;
@@ -339,22 +339,22 @@ void Outrospection::createCursors()
     GLFWimage cursorImage;
     int width = 10, height = 10;
 
-    unsigned char* data = TextureManager::readImageBytes("./res/ObjectData/Textures/mouse.png", width, height);
+    unsigned char* data = TextureManager::readImageBytes("res/ObjectData/Textures/mouse.png", width, height);
     cursorImage.pixels = data; cursorImage.width = width; cursorImage.height = height;
     cursorNone = glfwCreateCursor(&cursorImage, 0, 0);
     TextureManager::free(data);
 
-    data = TextureManager::readImageBytes("./res/ObjectData/Textures/circleMouse.png", width, height);
+    data = TextureManager::readImageBytes("res/ObjectData/Textures/circleMouse.png", width, height);
     cursorImage.pixels = data; cursorImage.width = width; cursorImage.height = height;
     cursorCircle = glfwCreateCursor(&cursorImage, 0, 0);
     TextureManager::free(data);
 
-    data = TextureManager::readImageBytes("./res/ObjectData/Textures/squareMouse.png", width, height);
+    data = TextureManager::readImageBytes("res/ObjectData/Textures/squareMouse.png", width, height);
     cursorImage.pixels = data; cursorImage.width = width; cursorImage.height = height;
     cursorSquare = glfwCreateCursor(&cursorImage, 0, 0);
     TextureManager::free(data);
 
-    data = TextureManager::readImageBytes("./res/ObjectData/Textures/triangleMouse.png", width, height);
+    data = TextureManager::readImageBytes("res/ObjectData/Textures/triangleMouse.png", width, height);
     cursorImage.pixels = data; cursorImage.width = width; cursorImage.height = height;
     cursorTriangle = glfwCreateCursor(&cursorImage, 0, 0);
     TextureManager::free(data);
@@ -365,7 +365,7 @@ void Outrospection::createIcon() const
     GLFWimage image;
     int width = 10, height = 10;
 
-    unsigned char* data = TextureManager::readImageBytes("./res/ObjectData/icon.png", width, height);
+    unsigned char* data = TextureManager::readImageBytes("res/ObjectData/icon.png", width, height);
     image.pixels = data; image.width = width; image.height = height;
 
     glfwSetWindowIcon(gameWindow, 1, &image);
