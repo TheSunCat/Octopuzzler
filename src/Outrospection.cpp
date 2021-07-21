@@ -320,13 +320,15 @@ void Outrospection::registerCallbacks() const
 
 void Outrospection::createShaders()
 {
+    LOG_INFO("Setting up shaders...");
+
     screenShader          = Shader("screen"   , "screen"         );
     crtShader             = Shader("crt"      , "crt"            );
     spriteShader          = Shader("sprite"   , "sprite"         );
     glyphShader           = Shader("sprite"   , "glyph"          );
 
     // set up 2d shader
-    setResolution(getWindowResolution());
+    //setResolution(getWindowResolution());
 }
 
 void Outrospection::createCursors()
@@ -385,7 +387,7 @@ void Outrospection::setResolution(int x, int y)
         pair.second.scaleResolution(scaleFactor);
     }
 
-    LOG_INFO("res is now %i, %i", x, y);
+    LOG_INFO("setResolution(%i, %i)", x, y);
 }
 
 glm::vec2 Outrospection::getWindowResolution()
