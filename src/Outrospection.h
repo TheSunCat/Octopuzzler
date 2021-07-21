@@ -33,6 +33,7 @@ class Outrospection
     OpenGL opengl; // defined at the beginning so nothing gets initialized before this
     FreeType freetype;
 
+    glm::ivec2 curWindowResolution = glm::ivec2(1920, 1080);
 public:
     static Outrospection& get()
     {
@@ -112,7 +113,6 @@ private:
     //Camera camera = Camera(glm::vec3(0.0f, 0.0f, 3.0f));
     bool firstMouse = true;
 
-    glm::ivec2 curWindowResolution = glm::ivec2(1920, 1080);
 
 
     bool onWindowClose(WindowCloseEvent& e);
