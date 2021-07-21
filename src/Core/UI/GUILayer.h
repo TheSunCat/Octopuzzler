@@ -11,7 +11,7 @@ class MouseButtonPressedEvent;
 class GUILayer : public Layer
 {
 public:
-    explicit GUILayer(std::string _name, bool _captureMouse = true);
+    explicit GUILayer(const std::string& _name, bool _captureMouse = true);
 
     void onAttach() override;
     void onDetach() override;
