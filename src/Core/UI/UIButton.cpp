@@ -4,34 +4,28 @@
 
 #include "Outrospection.h"
 
-UIButton::UIButton(const std::string& _texName, const GLint& texFilter, const float posXPercent,
-                   const float posYPercent,
-                   const float widthPercent,
-                   const float heightPercent, Bounds bounds, ButtonCallback clickCallback)
-    : UIComponent(_texName, texFilter,
-                  posXPercent, posYPercent,
-                  widthPercent, heightPercent),
-      onClick(std::move(clickCallback)), buttonBounds(bounds)
+UIButton::UIButton(const std::string& _texName, const GLint& texFilter, const UITransform& _transform, Bounds bounds, ButtonCallback clickCallback)
+    : UIComponent(_texName, texFilter, _transform),
+      onClick(std::move(clickCallback)),
+      buttonBounds(bounds)
 {
     // assume default bounds
     if (buttonBounds.shape == BoundsShape::None)
     {
-        buttonBounds = Bounds(BoundsShape::AABB, {posXPercent, posYPercent, widthPercent, heightPercent});
+        buttonBounds = Bounds(transform);
     }
 }
 
-UIButton::UIButton(const std::string& _name, SimpleTexture& tex, const float posXPercent, const float posYPercent,
-                   const float widthPercent, const float heightPercent,
+UIButton::UIButton(const std::string& _name, SimpleTexture& tex, const UITransform& _transform,
                    Bounds bounds, ButtonCallback clickCallback)
-    : UIComponent(_name, tex,
-                  glm::vec2(SCR_WIDTH * posXPercent, SCR_HEIGHT * posYPercent),
-                  glm::vec2(SCR_WIDTH * widthPercent, SCR_HEIGHT * heightPercent)),
-      onClick(std::move(clickCallback)), buttonBounds(bounds)
+    : UIComponent(_name, tex, _transform),
+      onClick(std::move(clickCallback)),
+      buttonBounds(bounds)
 {
     // assume default bounds
     if (buttonBounds.shape == BoundsShape::None)
     {
-        buttonBounds = Bounds(BoundsShape::AABB, {posXPercent, posYPercent, widthPercent, heightPercent});
+        buttonBounds = Bounds(transform);
     }
 }
 

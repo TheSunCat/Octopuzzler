@@ -30,6 +30,26 @@ glm::vec2 operator*(const glm::vec2& vec, int i)
     return i * vec;
 }
 
+glm::vec2 operator/(const glm::vec2& left, const glm::ivec2& right)
+{
+    return left / glm::vec2(right);
+}
+
+glm::vec2 operator/(const glm::ivec2& left, const glm::vec2& right)
+{
+    return glm::vec2(left) / right;
+}
+
+glm::vec2 operator*(const glm::vec2& left, const glm::ivec2& right)
+{
+    return left * glm::vec2(right);
+}
+
+glm::vec2 operator*(const glm::ivec2& left, const glm::vec2& right)
+{
+    return glm::vec2(left) * right;
+}
+
 std::string operator+(const std::string& str, int i)
 {
     return str + std::to_string(i);
@@ -149,6 +169,11 @@ glm::vec3 Util::rotToVec3(const float yaw, const float pitch)
 std::string Util::vecToStr(const glm::vec3& vec)
 {
     return std::to_string(vec.x) + ", " + std::to_string(vec.y) + ", " + std::to_string(vec.z);
+}
+
+std::string Util::vecToStr(const glm::vec2& vec)
+{
+    return std::to_string(vec.x) + ", " + std::to_string(vec.y);
 }
 
 unsigned char* Util::dataFromFile(const char* path, const std::string& directory, int* widthOut, int* heightOut)

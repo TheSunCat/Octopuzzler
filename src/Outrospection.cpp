@@ -3,6 +3,7 @@
 #include <csignal>
 #include <glm/ext/matrix_clip_space.hpp>
 
+#include "GLFW/glfw3.h"
 #include "Util.h"
 #include "Core/Layer.h"
 #include "Core/UI/GUIControlsOverlay.h"
@@ -18,35 +19,22 @@
 #include "Events/MouseEvent.h"
 #include "Events/WindowEvent.h"
 
-
-int WINDOW_WIDTH = 1920 / 1.5;
-int WINDOW_HEIGHT = 1080 / 1.5;
-
-int CRT_WIDTH = 256;
-int CRT_HEIGHT = 192;
-
-int SCR_WIDTH = WINDOW_WIDTH;
-int SCR_HEIGHT = WINDOW_HEIGHT;
-
-void updateRes()
-{
-    SCR_WIDTH = WINDOW_WIDTH;
-    SCR_HEIGHT = WINDOW_HEIGHT;
-}
-
 Outrospection* Outrospection::instance = nullptr;
 
 Outrospection::Outrospection()
 {
     instance = this;
 
+    loggerThread.start();
+    // TODO consoleThread.start();
+
     preInit = PreInitialization();
     audioManager.init();
 
     gameWindow = opengl.gameWindow;
     crtVAO = opengl.crtVAO;
-    crtFramebuffer = opengl.framebuffer;
-    textureColorbuffer = opengl.textureColorbuffer;
+    framebuffers.insert(std::make_pair("default", Framebuffer()));
+    framebuffers.insert(std::make_pair("crt", opengl.framebuffer));
 
     fontCharacters = freetype.loadedCharacters;
 
@@ -54,8 +42,6 @@ Outrospection::Outrospection()
     createShaders();
     createCursors();
     createIcon();
-
-    // TODO check if we can access files, if not warn the user
 
     glfwSetCursor(gameWindow, cursorNone);
     
@@ -71,6 +57,11 @@ Outrospection::Outrospection()
     pushOverlay(controlsOverlay);
 
     audioManager.play("totallyNotABossBattle", 1, true);
+
+    // for good measure, redo UI here
+    int width = 0, height = 0;
+    glfwGetFramebufferSize(gameWindow, &width, &height);
+    setResolution(width, height);
 }
 
 Outrospection::~Outrospection()
@@ -95,9 +86,6 @@ void Outrospection::run()
     using namespace std::chrono_literals;
 
     running = true;
-    
-    loggerThread.start();
-    // TODO consoleThread.start();
 
     lastFrame = Util::currentTimeMillis();
     deltaTime = 1.0f / 60.0f; 
@@ -241,42 +229,31 @@ void Outrospection::runGameLoop()
     // Draw the frame!
     {
         glDisable(GL_DEPTH_TEST); // disable depth test so stuff near camera isn't clipped
-
         
-        glBindFramebuffer(GL_FRAMEBUFFER, crtFramebuffer);
-        SCR_WIDTH = CRT_WIDTH; SCR_HEIGHT = CRT_HEIGHT;
-        glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+        framebuffers["crt"].bind();
         glClearColor(0.3725, 0.4667, 0.5529f, 1.0f); // clear screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-        // draw stuff here
         if(!won)
             scene->draw();
 
 
-        // bind to default framebuffer and draw custom one over that
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        SCR_WIDTH = WINDOW_WIDTH; SCR_HEIGHT = WINDOW_HEIGHT;
-        glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
-        
-        // clear all relevant buffers
+        framebuffers["default"].bind();
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // apply CRT effect
+        // draw CRT with shader effect
         crtShader.use();
-        crtShader.setVec2("resolution", CRT_WIDTH, CRT_HEIGHT);
-        crtShader.setFloat("time", float(currentTimeMillis % 1000000) / 1000000);
         
         glBindVertexArray(crtVAO);
-        glBindTexture(GL_TEXTURE_2D, textureColorbuffer);    // use the color attachment texture as the texture of the quad plane
+        framebuffers["crt"].bindTexture();
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
         screenShader.use();
         // draw UI
         for (const auto& layer : layerStack)
         {
-            if (layer->handleManually)
+            if (layer->handleManually) // TODO this is jank
                 continue;
             
             layer->draw();
@@ -307,9 +284,9 @@ void Outrospection::registerCallbacks() const
     // Register OpenGL events
     glfwSetFramebufferSizeCallback(gameWindow, [](GLFWwindow*, const int width, const int height)
     {
-        SCR_WIDTH = width; SCR_HEIGHT = height;
-        updateRes();
-        glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+        LOG("Framebuffer size changed to %i, %i", width, height);
+
+        Outrospection::get().setResolution(width, height);
     });
 
     glfwSetCursorPosCallback(gameWindow, [](GLFWwindow* window, const double xPosD, const double yPosD)
@@ -349,19 +326,12 @@ void Outrospection::registerCallbacks() const
 
 void Outrospection::createShaders()
 {
+    LOG_INFO("Setting up shaders...");
+
     screenShader          = Shader("screen"   , "screen"         );
     crtShader             = Shader("crt"      , "crt"            );
     spriteShader          = Shader("sprite"   , "sprite"         );
     glyphShader           = Shader("sprite"   , "glyph"          );
-
-    // set up 2d shader
-    const glm::mat4 projection = glm::ortho(0.0f, float(SCR_WIDTH),
-                                            float(SCR_HEIGHT), 0.0f, -1.0f, 1.0f);
-    spriteShader.use();
-    spriteShader.setMat4("projection", projection);
-
-    glyphShader.use();
-    glyphShader.setMat4("projection", projection);
 }
 
 void Outrospection::createCursors()
@@ -401,6 +371,31 @@ void Outrospection::createIcon() const
     glfwSetWindowIcon(gameWindow, 1, &image);
 
     TextureManager::free(data);
+}
+
+void Outrospection::setResolution(glm::vec2 res)
+{
+    setResolution(res.x, res.y);
+}
+
+void Outrospection::setResolution(int x, int y)
+{
+    glViewport(0, 0, x, y);
+    curWindowResolution = glm::ivec2(x, y);
+
+    for(auto& pair : framebuffers)
+    {
+        glm::vec2 scaleFactor = curWindowResolution / glm::vec2(1920, 1080);
+
+        pair.second.scaleResolution(scaleFactor);
+    }
+
+    LOG_INFO("setResolution(%i, %i)", x, y);
+}
+
+glm::vec2 Outrospection::getWindowResolution()
+{
+    return glm::vec2(curWindowResolution);
 }
 
 bool Outrospection::onWindowClose(WindowCloseEvent& e)

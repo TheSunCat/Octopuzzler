@@ -9,12 +9,12 @@
 // this is the constructor (ctor for short).
 // it only takes care of copying the level data to store it here for now
 GUIScene::GUIScene() : GUILayer("Scene", false),
-                    floor("floor", animatedTexture({ "UI/floor/", "empty" }, 8, 17, GL_NEAREST), { 0, 0 }, { 0.1, 0.1 }),
-                    ink("hole", GL_NEAREST, 0, 0, 0.1, 0.1),
-                    flag("flag", animatedTexture({"UI/flag/", "default"}, 16, 2, GL_NEAREST), {0, 0}, {0, 0}),
-                    background("background", animatedTexture({"UI/background/", "default"}, 8, 17, GL_NEAREST), {0, 0}, {0, 0}),
-                    playerSprite("player", animatedTexture({ "UI/player/", "default" }, 16, 2, GL_NEAREST), { 0, 0 }, { 0.1, 0.1 }),
-                    ghostSprite("ghost", animatedTexture({ "UI/ghost/", "default" }, 16, 2, GL_NEAREST), { 0, 0 }, { 0.1, 0.1 })
+                    floor("floor", animatedTexture({ "UI/floor/", "empty" }, 8, 17, GL_NEAREST), UITransform(0, 0, 100, 100, {640, 480})),
+                    ink("hole", GL_NEAREST, UITransform(0, 0, 100, 100)),
+                    flag("flag", animatedTexture({"UI/flag/", "default"}, 16, 2, GL_NEAREST), UITransform(0, 0, 0, 0, {640, 480})),
+                    background("background", animatedTexture({"UI/background/", "default"}, 8, 17, GL_NEAREST), UITransform(0, 0, 10, 10, {640, 480})),
+                    playerSprite("player", animatedTexture({ "UI/player/", "default" }, 16, 2, GL_NEAREST), UITransform(0, 0, 10, 10, {640, 480})),
+                    ghostSprite("ghost", animatedTexture({ "UI/ghost/", "default" }, 16, 2, GL_NEAREST), UITransform(0, 0, 10, 10, {640, 480}))
 
 {
     handleManually = true;
@@ -75,16 +75,16 @@ void GUIScene::draw() const
 
     int largestLength = std::max(rowLength, colLength);
 
-    float spriteScale = 4.f / largestLength;
+    float spriteScale = 480.f / largestLength; // fill leftmost 480x480 area with actual level
 
     playerSprite.setScale(spriteScale, spriteScale);
     ghostSprite.setScale(spriteScale, spriteScale);
-    floor.setScale(spriteScale + 0.01, spriteScale + 0.01); // adjust for floating point imprecision (I think?)
-    ink.setScale(spriteScale, spriteScale + 0.01);   // else we get weird horizontal lines between some tiles
-    flag.setScale(spriteScale, spriteScale);         // TODO looks like this isn't working. too bad.
-    background.setScale(spriteScale + 0.01, spriteScale + 0.01);         
+    floor.setScale(spriteScale, spriteScale);
+    ink.setScale(spriteScale, spriteScale);
+    flag.setScale(spriteScale, spriteScale);
+    background.setScale(spriteScale, spriteScale);
 
-    for(int x = 0; x < largestLength + 5; x++) // TODO dirty hack
+    for(int x = 0; x < largestLength + 5; x++) // TODO dirty hack to cover further right with bg tiles
     {
         for(int y = 0; y < largestLength; y++)
         {

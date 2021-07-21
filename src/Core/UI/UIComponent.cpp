@@ -5,35 +5,63 @@
 #include "Outrospection.h"
 #include "Util.h"
 
+UITransform::UITransform(int posX, int posY, int sizeX, int sizeY,
+                         const glm::vec2& fbRes, UIAlign _alignment)
+    : pos(posX, posY), size(sizeX, sizeY), defaultRes(fbRes), alignment(_alignment)
+{
+    switch(alignment)
+    {
+    case UIAlign::CENTER:
+        pos -= size / 2.f;
+        break;
+
+    case UIAlign::TOP_LEFT:
+
+        break;
+
+    case UIAlign::TOP_RIGHT:
+        pos.x -= size.x;
+        break;
+
+    case UIAlign::BOT_LEFT:
+        pos.y -= size.y;
+        break;
+
+    case UIAlign::BOT_RIGHT:
+        pos -= size;
+        break;
+    }
+}
+
+glm::vec2 UITransform::getPos() const
+{
+    return pos * glm::vec2(*Outrospection::get().curFbResolution / defaultRes);
+}
+
+glm::vec2 UITransform::getSize() const
+{
+    return size * (*Outrospection::get().curFbResolution / defaultRes);
+}
+
+void UITransform::setPos(int x, int y)
+{
+    pos = glm::vec2(x, y);
+}
+
+void UITransform::setSize(int x, int y)
+{
+    size = glm::vec2(x, y);
+}
+
 GLuint UIComponent::quadVAO = 0;
 
-UIComponent::UIComponent(const std::string& _texName, const GLint& texFilter, const float posXPercent,
-                         const float posYPercent,
-                         const float widthPercent, const float heightPercent)
-    : UIComponent(_texName, texFilter, glm::vec2(SCR_WIDTH * posXPercent, SCR_HEIGHT * posYPercent),
-                  glm::vec2(widthPercent * SCR_WIDTH, heightPercent * SCR_HEIGHT))
+UIComponent::UIComponent(const std::string& _texName, const GLint& texFilter, const UITransform& _transform)
+    : UIComponent(_texName, simpleTexture({"UI/", _texName}, texFilter), _transform)
 {
 }
 
-UIComponent::UIComponent(const std::string& _name, SimpleTexture& _tex,
-                         const float posXPercent, const float posYPercent,
-                         const float widthPercent, const float heightPercent)
-    : UIComponent(_name, _tex, glm::vec2(SCR_WIDTH * posXPercent, SCR_HEIGHT * posYPercent),
-                  glm::vec2(widthPercent * SCR_WIDTH, heightPercent * SCR_HEIGHT))
-{
-}
-
-UIComponent::UIComponent(const std::string& _texName, const GLint& texFilter, const glm::vec2& _position,
-                         const glm::vec2& dimensions)
-    : UIComponent(_texName, simpleTexture({"UI/", _texName}, texFilter), _position, dimensions)
-{
-}
-
-UIComponent::UIComponent(const std::string& _name, SimpleTexture& _tex, const glm::vec2& _position,
-                         const glm::vec2& dimensions)
-    : name(_name), textOffset(0.0f, dimensions.y / 2), textColor(0.0f), position(_position),
-      width(dimensions.x),
-      height(dimensions.y)
+UIComponent::UIComponent(std::string _name, SimpleTexture& _tex, const UITransform& _transform)
+    : name(std::move(_name)), textOffset(0.0f, _transform.getSize().y / 2), textColor(0.0f), transform(_transform)
 {
     animations.insert(std::make_pair("default", &_tex));
 
@@ -92,29 +120,14 @@ void UIComponent::setAnimation(const std::string& anim)
     animations.at(curAnimation)->shouldTick = true;
 }
 
-void UIComponent::setPosition(float xPercent, float yPercent)
+void UIComponent::setPosition(int x, int y)
 {
-    setPositionPx(xPercent * SCR_WIDTH, yPercent * SCR_HEIGHT);
+    transform.setPos(x, y);
 }
 
-void UIComponent::setScale(float xPercent, float yPercent)
+void UIComponent::setScale(int x, int y)
 {
-    setScalePx(xPercent * SCR_WIDTH, yPercent * SCR_HEIGHT);
-}
-
-void UIComponent::setPositionPx(int x, int y)
-{
-    position = glm::vec2(x, y);
-}
-
-void UIComponent::setScalePx(int scale)
-{
-    setScalePx(scale, scale);
-}
-
-void UIComponent::setScalePx(int _width, int _height)
-{
-    width = _width, height = _height;
+    transform.setSize(x, y);
 }
 
 void UIComponent::draw(Shader& shader, const Shader& glyphShader) const
@@ -124,14 +137,8 @@ void UIComponent::draw(Shader& shader, const Shader& glyphShader) const
 
     shader.use();
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(position, 0.0f));
-
-    // rotation, no need to worry about this for now
-    //model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f));
-    //model = glm::rotate(model, glm::radians(rotate), glm::vec3(0.0f, 0.0f, 1.0f));
-    //model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f));
-
-    model = glm::scale(model, glm::vec3(width, height, 0));
+    model = glm::translate(model, glm::vec3(transform.getPos(), 0));
+    model = glm::scale(model, glm::vec3(transform.getSize(), 0));
 
     shader.setMat4("model", model);
 
@@ -157,8 +164,8 @@ void UIComponent::drawText(const std::string& text, const Shader& glyphShader) c
 
     float textScale = 1.0f;
 
-    float textX = position.x + textOffset.x;
-    float textY = position.y + textOffset.y;
+    float textX = transform.getPos().x + textOffset.x;
+    float textY = transform.getPos().y + textOffset.y;
 
     for (char c : text)
     {
