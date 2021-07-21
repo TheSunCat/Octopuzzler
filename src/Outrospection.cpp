@@ -3,6 +3,7 @@
 #include <csignal>
 #include <glm/ext/matrix_clip_space.hpp>
 
+#include "GLFW/glfw3.h"
 #include "Util.h"
 #include "Core/Layer.h"
 #include "Core/UI/GUIControlsOverlay.h"
@@ -20,7 +21,7 @@
 
 Outrospection* Outrospection::instance = nullptr;
 
-Outrospection::Outrospection() : curWindowResolution()
+Outrospection::Outrospection()
 {
     instance = this;
 
@@ -56,6 +57,11 @@ Outrospection::Outrospection() : curWindowResolution()
     pushOverlay(controlsOverlay);
 
     audioManager.play("totallyNotABossBattle", 1);
+
+    // for good measure, redo UI here
+    int width = 0, height = 0;
+    glfwGetFramebufferSize(gameWindow, &width, &height);
+    setResolution(width, height);
 }
 
 Outrospection::~Outrospection()
@@ -326,9 +332,6 @@ void Outrospection::createShaders()
     crtShader             = Shader("crt"      , "crt"            );
     spriteShader          = Shader("sprite"   , "sprite"         );
     glyphShader           = Shader("sprite"   , "glyph"          );
-
-    // set up 2d shader
-    //setResolution(getWindowResolution());
 }
 
 void Outrospection::createCursors()
