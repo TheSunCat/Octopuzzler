@@ -125,6 +125,11 @@ void UIComponent::setPosition(int x, int y)
     transform.setPos(x, y);
 }
 
+void UIComponent::setScale(int px)
+{
+    transform.setSize(px, px);
+}
+
 void UIComponent::setScale(int x, int y)
 {
     transform.setSize(x, y);
