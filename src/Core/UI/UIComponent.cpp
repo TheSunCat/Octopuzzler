@@ -35,12 +35,17 @@ UITransform::UITransform(int posX, int posY, int sizeX, int sizeY,
 
 glm::vec2 UITransform::getPos() const
 {
-    return pos * glm::vec2(*Outrospection::get().curFbResolution / defaultRes);
+    return pos * getSizeRatio();
 }
 
 glm::vec2 UITransform::getSize() const
 {
-    return size * (*Outrospection::get().curFbResolution / defaultRes);
+    return size * getSizeRatio();
+}
+
+glm::vec2 UITransform::getSizeRatio() const
+{
+    return *Outrospection::get().curFbResolution / defaultRes;
 }
 
 void UITransform::setPos(int x, int y)
@@ -61,7 +66,7 @@ UIComponent::UIComponent(const std::string& _texName, const GLint& texFilter, co
 }
 
 UIComponent::UIComponent(std::string _name, SimpleTexture& _tex, const UITransform& _transform)
-    : name(std::move(_name)), textOffset(0.0f, _transform.getSize().y / 2), textColor(0.0f), transform(_transform)
+    : name(std::move(_name)), textColor(0.0f), transform(_transform)
 {
     animations.insert(std::make_pair("default", &_tex));
 
@@ -167,16 +172,19 @@ void UIComponent::drawText(const std::string& text, const Shader& glyphShader) c
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(quadVAO);
 
-    float textScale = 1.0f;
+    glm::vec2 textScale = transform.getSizeRatio() * 2;
 
-    float textX = transform.getPos().x + textOffset.x;
-    float textY = transform.getPos().y + textOffset.y;
+    glm::vec2 textPos = transform.getPos();
+    textPos.y += transform.getSize().y;
 
+    // add an artificial space at the beginning
+    textPos.x += textScale.x * 10;
+    
     for (char c : text)
     {
         if (c <= '\0' || c == ' ')
         {
-            textX += 10;
+            textPos.x += textScale.x * 10;
             continue;
         }
 
@@ -190,13 +198,14 @@ void UIComponent::drawText(const std::string& text, const Shader& glyphShader) c
         // calculate model matrix
         glm::mat4 charModel = glm::mat4(1.0f);
 
-        float xPos = textX + fontCharacter.bearing.x * textScale + 10;
-        float yPos = textY - fontCharacter.bearing.y * textScale + 10; // TODO these +s at the end shouldn't be needed
-        charModel = glm::translate(charModel, glm::vec3(xPos, yPos, 0.0f));
+        glm::vec2 charPos = textPos;// + 10; // TODO this + at the end shouldn't be needed
+        charPos.x += fontCharacter.bearing.x * textScale.x;
+        charPos.y -= fontCharacter.bearing.y * textScale.y;
 
-        float width = (fontCharacter.size.x) * textScale;
-        float height = (fontCharacter.size.y) * textScale;
-        charModel = glm::scale(charModel, glm::vec3(width, height, 1.0f));
+        charModel = glm::translate(charModel, glm::vec3(charPos, 0.0f));
+
+        glm::vec2 charSize = fontCharacter.size * textScale;
+        charModel = glm::scale(charModel, glm::vec3(charSize, 1.0f));
 
         // TODO not hardcode this lol
         if (c == 'C' || c == 'S' || c == 'T')
@@ -209,7 +218,7 @@ void UIComponent::drawText(const std::string& text, const Shader& glyphShader) c
 
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
-        textX += (fontCharacter.advance >> 6) * textScale;
+        textPos.x += (fontCharacter.advance >> 6) * textScale.x;
     }
 
     glBindVertexArray(0);

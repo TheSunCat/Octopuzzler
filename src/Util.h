@@ -200,6 +200,7 @@ namespace Util
     float sumAbsV3(const glm::vec3& v);
 
     float major(const glm::vec3& v);
+    float major(const glm::vec2& v);
 
     float angleBetweenV3(glm::vec3 a, glm::vec3 b);
 
