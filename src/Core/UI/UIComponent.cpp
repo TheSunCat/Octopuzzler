@@ -172,10 +172,10 @@ void UIComponent::drawText(const std::string& text, const Shader& glyphShader) c
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(quadVAO);
 
-    glm::vec2 textScale = transform.getSizeRatio() * 1.75f; // TODO sketchy scale?
+    glm::vec2 textScale = transform.getSizeRatio() * 1.5f; // TODO sketchy scale?
 
     glm::vec2 textPos = transform.getPos();
-    textPos.y += transform.getSize().y;
+    textPos.y += (transform.getSize().y) / 2 + (10 * textScale.y);
 
     // add an artificial space at the beginning
     textPos.x += textScale.x * 10;
