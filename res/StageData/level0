@@ -4,6 +4,6 @@
 		"WS  GW",
 		"WWWWWW"],
 	"controls" : "R", 
-	"guideLeft" : "moving",
-	"guideRight" : "bind"
+	"guideLeft" : "bind",
+	"guideRight" : "moving"
 }
