@@ -168,11 +168,11 @@ void UIComponent::draw(Shader& shader, const Shader& glyphShader) const
 void UIComponent::drawText(const std::string& text, const Shader& glyphShader) const
 {
     glyphShader.use();
-    glyphShader.setVec3("textColor", textColor); // temp set color to black
+    glyphShader.setVec3("textColor", textColor); // TODO temp set color to black
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(quadVAO);
 
-    glm::vec2 textScale = transform.getSizeRatio() * 2;
+    glm::vec2 textScale = transform.getSizeRatio() * 1.75f; // TODO sketchy scale?
 
     glm::vec2 textPos = transform.getPos();
     textPos.y += transform.getSize().y;

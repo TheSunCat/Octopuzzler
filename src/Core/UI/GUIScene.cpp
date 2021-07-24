@@ -34,6 +34,15 @@ void GUIScene::setLevel(const std::string& lvlName, int lvlID)
     nlohmann::json jason = nlohmann::json::parse(levelData);
     level = jason.get<Level>();
     
+    if(Outrospection::get().isSpeedrun())
+    {
+        level.controls = "UDLR^V<>"; // unlock all controls
+
+        // disable guides
+        level.guideLeft = "default";
+        level.guideRight = "default";
+    }
+
     playerPosInt = level.start;
     ghostSprite.hidden = true;
 
@@ -251,7 +260,15 @@ void GUIScene::tryMovePlayer(Control input)
                 playerSprite.setAnimation("fail");
 
             Util::doLater([this] { this->canMove = false; }, 100);
-            Util::doLater([this] { this->reset(); }, 1500);
+            Util::doLater([this] {
+                if(Outrospection::get().isSpeedrun())
+                    this->reset();
+                else {
+                    LOG_INFO("Resetting entire game...");
+                    levelID = 0;
+                    setLevel("", levelID);
+                }
+            }, 1500);
 
             return;
         }

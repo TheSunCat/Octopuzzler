@@ -15,7 +15,7 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
     //std::cout << "test";
 #else
-int main() {
+int main(int argc, char** argv) {
 #endif
 
     // check if we can read the filesystem
@@ -27,7 +27,25 @@ int main() {
         return -1;
     }
 
+    bool speedrun = false;
+
+    if(argc >= 2)
+    {
+        if(strcmp(argv[1], "--speedrun") == 0)
+        {
+            speedrun = true;
+        } else {
+            std::cout << "Unknown argument \"" << argv[1] << "\"! Options are:\n"
+                      << "--speedrun" << std::endl;
+            return -1;
+        }
+    }
+
+    auto outrospection = Outrospection(speedrun);
+
+    
+
     // run the game!
-    Outrospection().run();
+    outrospection.run();
     return 0;
 }
