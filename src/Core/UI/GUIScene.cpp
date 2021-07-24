@@ -77,12 +77,13 @@ void GUIScene::draw() const
 
     float spriteScale = 480.f / largestLength; // fill leftmost 480x480 area with actual level
 
-    playerSprite.setScale(spriteScale, spriteScale);
-    ghostSprite.setScale(spriteScale, spriteScale);
-    floor.setScale(spriteScale, spriteScale);
-    ink.setScale(spriteScale, spriteScale);
-    flag.setScale(spriteScale, spriteScale);
-    background.setScale(spriteScale, spriteScale);
+    // adding 1 to prevent lines between sprites when scaled down
+    playerSprite.setScale(spriteScale + 1);
+    ghostSprite.setScale(spriteScale + 1);
+    floor.setScale(spriteScale + 1);
+    ink.setScale(spriteScale + 1);
+    flag.setScale(spriteScale + 1);
+    background.setScale(spriteScale + 1);
 
     for(int x = 0; x < largestLength + 5; x++) // TODO dirty hack to cover further right with bg tiles
     {

@@ -51,6 +51,7 @@ public:
     void setAnimation(const std::string& anim);
 
     void setPosition(int x, int y);
+    void setScale(int px);
     void setScale(int x, int y);
 
     std::string name;
