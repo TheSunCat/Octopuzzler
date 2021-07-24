@@ -8,13 +8,16 @@ GUIGuide::GUIGuide() : GUILayer("Guides", false),
                            guideLeft("guideLeft", TextureManager::None, UITransform(69, 458, 405, 405)),
                            guideRight("guideRight", TextureManager::None, UITransform(1411, 513, 405, 405))
 {
-    guideLeft.addAnimation("bind", animatedTexture({"UI/guide/", "bind"}, 4, 29, GL_LINEAR));
-    guideLeft.addAnimation("multibind", animatedTexture({"UI/guide/", "multibind"}, 4, 34, GL_LINEAR));
-    guideLeft.addAnimation("moving", animatedTexture({"UI/guide/", "moving"}, 4, 18, GL_LINEAR));
+    if(!Outrospection::get().isSpeedrun())
+    {
+        guideLeft.addAnimation("bind", animatedTexture({"UI/guide/", "bind"}, 4, 29, GL_LINEAR));
+        guideLeft.addAnimation("multibind", animatedTexture({"UI/guide/", "multibind"}, 4, 34, GL_LINEAR));
+        guideLeft.addAnimation("moving", animatedTexture({"UI/guide/", "moving"}, 4, 18, GL_LINEAR));
 
-    guideRight.addAnimation("bind", animatedTexture({"UI/guide/", "bind"}, 4, 29, GL_LINEAR));
-    guideRight.addAnimation("multibind", animatedTexture({"UI/guide/", "multibind"}, 4, 34, GL_LINEAR));
-    guideRight.addAnimation("moving", animatedTexture({"UI/guide/", "moving"}, 4, 18, GL_LINEAR));
+        guideRight.addAnimation("bind", Outrospection::get().textureManager.get({"UI/guide/", "bind"}));
+        guideRight.addAnimation("multibind", Outrospection::get().textureManager.get({"UI/guide/", "multibind"}));
+        guideRight.addAnimation("moving", Outrospection::get().textureManager.get({"UI/guide/", "moving"}));
+    }
 }
 
 void GUIGuide::tick()

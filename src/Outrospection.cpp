@@ -21,12 +21,15 @@
 
 Outrospection* Outrospection::instance = nullptr;
 
-Outrospection::Outrospection()
+Outrospection::Outrospection(bool speedrun)
 {
     instance = this;
 
     loggerThread.start();
     // TODO consoleThread.start();
+
+    if(speedrun)
+        setSpeedrun();
 
     preInit = PreInitialization();
     audioManager.init();
@@ -74,6 +77,18 @@ Outrospection::~Outrospection()
     loggerThread.stop();
 
     std::cout << "Terminated the termination of the engine." << std::endl;
+}
+
+void Outrospection::setSpeedrun()
+{
+    speedrunMode = true;
+    
+    LOG_INFO("Speedrun mode enabled.");
+}
+
+bool Outrospection::isSpeedrun()
+{
+    return speedrunMode;
 }
 
 void Outrospection::stop()

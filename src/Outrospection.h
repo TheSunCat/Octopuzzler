@@ -40,8 +40,11 @@ public:
         return *instance;
     }
 
-    Outrospection();
+    Outrospection(bool speedrun = false);
     ~Outrospection();
+
+    void setSpeedrun();
+    bool isSpeedrun();
 
     void stop();
 
@@ -100,6 +103,8 @@ private:
     // set to false when the game loop shouldn't run
     bool running = false;
 
+    bool speedrunMode = false;
+
     // timing
     float deltaTime = 0; // Time between current frame and last frame
     time_t lastFrame = 0; // Time of last frame
@@ -112,7 +117,6 @@ private:
     // camera stuff
     //Camera camera = Camera(glm::vec3(0.0f, 0.0f, 3.0f));
     bool firstMouse = true;
-
 
 
     bool onWindowClose(WindowCloseEvent& e);
