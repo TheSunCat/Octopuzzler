@@ -30,6 +30,7 @@ public:
 
     glm::vec2 getPos() const;
     glm::vec2 getSize() const;
+    glm::vec2 getSizeRatio() const;
 
     void setPos(int x, int y);
     void setSize(int x, int y);
@@ -56,7 +57,6 @@ public:
 
     std::string name;
 
-    glm::vec2 textOffset; // vector to offset text by
     bool showText = false;
     Color textColor;
 

@@ -667,6 +667,11 @@ float Util::major(const glm::vec3& v)
     return std::max(std::max(v.x, v.y), v.z);
 }
 
+float Util::major(const glm::vec2& v)
+{
+    return std::max(v.x, v.y);
+}
+
 float Util::angleBetweenV3(const glm::vec3 a, const glm::vec3 b)
 {
     float angle = glm::dot(a, b);      // dot = length(a) * length(b) * cos(angle)
