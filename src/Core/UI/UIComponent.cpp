@@ -179,7 +179,7 @@ void UIComponent::drawText(const std::string& text, const Shader& glyphShader) c
 
     // add an artificial space at the beginning
     textPos.x += textScale.x * 10;
-    
+
     for (char c : text)
     {
         if (c <= '\0' || c == ' ')
@@ -190,6 +190,9 @@ void UIComponent::drawText(const std::string& text, const Shader& glyphShader) c
 
         if (!Outrospection::get().fontCharacters.contains(c)) {
             LOG_ERROR("Character %c not found!", c);
+
+            // assume a space
+            textPos.x += textScale.x * 10;
             continue;
         }
 
@@ -198,7 +201,7 @@ void UIComponent::drawText(const std::string& text, const Shader& glyphShader) c
         // calculate model matrix
         glm::mat4 charModel = glm::mat4(1.0f);
 
-        glm::vec2 charPos = textPos;// + 10; // TODO this + at the end shouldn't be needed
+        glm::vec2 charPos = textPos;
         charPos.x += fontCharacter.bearing.x * textScale.x;
         charPos.y -= fontCharacter.bearing.y * textScale.y;
 

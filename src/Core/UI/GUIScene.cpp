@@ -84,7 +84,7 @@ void GUIScene::draw() const
     ink.setScale(spriteScale + 1);
     flag.setScale(spriteScale + 1);
     background.setScale(spriteScale + 1);
-    
+
     for(int x = 0; x < largestLength + 5; x++) // dirty hack to cover further right with bg tiles
     {
         for(int y = 0; y < largestLength; y++)
@@ -96,8 +96,8 @@ void GUIScene::draw() const
             background.draw(spriteShader, glyphShader);
 
             if (x < (largestLength - rowLength) / 2 || x >= rowLength + (largestLength - rowLength) / 2 ||
-                y < (largestLength - colLength) / 2 || y >= colLength + (largestLength - colLength) / 2) // tile not in level
-                continue;
+                y < (largestLength - colLength) / 2 || y >= colLength + (largestLength - colLength) / 2)
+                continue;  // tile not in level
 
             char tile = level.data[(x - (largestLength - rowLength) / 2) + (y - (largestLength - colLength) / 2) * rowLength];
 
