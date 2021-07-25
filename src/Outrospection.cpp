@@ -1,5 +1,6 @@
 ﻿#include "Outrospection.h"
 
+#include <chrono>
 #include <csignal>
 #include <glm/ext/matrix_clip_space.hpp>
 
@@ -102,22 +103,32 @@ void Outrospection::run()
 
     running = true;
 
-    lastFrame = Util::currentTimeMillis();
+    lastFrame = Util::currentTimeMillis(); // I miss java
     deltaTime = 1.0f / 60.0f; 
     while (running)
     {
         currentTimeMillis = Util::currentTimeMillis();
-
-        const auto currentFrame = currentTimeMillis;
-        deltaTime = float(currentFrame - lastFrame) / 1000.0f;
-        lastFrame = currentFrame;
+        deltaTime = float(currentTimeMillis - lastFrame) / 1000.0f;
+        lastFrame = currentTimeMillis;
 
         runGameLoop();
 
         if (glfwWindowShouldClose(gameWindow))
             running = false;
 
-        std::this_thread::sleep_for(1ms);
+
+
+        currentTimeMillis = Util::currentTimeMillis();
+        time_t frameTime = currentTimeMillis - lastFrame;
+
+        // sleep for any extra time we have
+        auto extraTime = 16 - frameTime;
+        //LOG("%i", extraTime);
+
+        if(extraTime > 0) {
+            auto m = std::chrono::milliseconds(extraTime - 1);
+            std::this_thread::sleep_for(m);
+        }
     }
 }
 
