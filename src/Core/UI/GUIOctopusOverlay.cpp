@@ -66,6 +66,23 @@ void undo(UIButton&, int)
     }, 100);
 }
 
+void muteOrUnmute(UIButton& muteButton, int)
+{
+    static bool muted = false;
+
+    if(muted) // unmute
+    {
+        muted = false;
+        Outrospection::get().audioManager.setGlobalVolume(1.0);
+        muteButton.setAnimation("mute");
+    } else
+    {
+        muted = true;
+        Outrospection::get().audioManager.setGlobalVolume(0.0);
+        muteButton.setAnimation("unmute");
+    }
+}
+
 GUIOctopusOverlay::GUIOctopusOverlay() : GUILayer("Octopus Overlay", false),
                                          background("overlay/background", GL_LINEAR, UITransform(0, 0, 1920, 1080)),
                                          octopus("octopus", animatedTexture({ "UI/overlay/", "octopus" },
@@ -92,6 +109,9 @@ GUIOctopusOverlay::GUIOctopusOverlay() : GUILayer("Octopus Overlay", false),
     buttons.emplace_back(std::make_unique<UIButton>("showWelcome", GL_NEAREST, UITransform(1805, 983, 96, 96), Bounds(), showWelcome));
     buttons.emplace_back(std::make_unique<UIButton>("reset", GL_NEAREST, UITransform(1685, 983, 96, 96), Bounds(), reset));
     buttons.emplace_back(std::make_unique<UIButton>("undo", GL_NEAREST, UITransform(1565, 983, 96, 96), Bounds(), undo));
+
+    auto& bMute = buttons.emplace_back(std::make_unique<UIButton>("mute", GL_NEAREST, UITransform(1445, 983, 96, 96), Bounds(), muteOrUnmute));
+    bMute->addAnimation("unmute", simpleTexture({"UI/", "unmute"}, GL_NEAREST));
 }
 void GUIOctopusOverlay::tick()
 {

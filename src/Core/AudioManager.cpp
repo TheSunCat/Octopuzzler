@@ -33,3 +33,8 @@ void AudioManager::play(const std::string& soundName, float vol, bool loop)
     LOG("Playing sound %s", soundName);
     engine.play(*wave, vol);
 }
+
+void AudioManager::setGlobalVolume(float vol)
+{
+    engine.setGlobalVolume(vol);
+}
