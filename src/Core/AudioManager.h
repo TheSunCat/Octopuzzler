@@ -23,4 +23,6 @@ public:
 
     void init();
     void play(const std::string& soundName, float vol = 1.0f, bool loop = false);
+
+    void setGlobalVolume(float vol);
 };
