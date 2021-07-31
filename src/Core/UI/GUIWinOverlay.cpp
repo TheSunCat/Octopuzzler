@@ -4,9 +4,9 @@
 #include "UIButton.h"
 
 GUIWinOverlay::GUIWinOverlay() : GUILayer("Win", false),
-                                 window("winWindow", GL_LINEAR, UITransform(480, 162, 480, 480))
+                                 window("winWindow", GL_LINEAR, UITransform(560, 220, 800, 640))
 {
-    buttons.emplace_back(std::make_unique<UIButton>("closeButton", TextureManager::None, UITransform(1344, 162, 96, 65), Bounds(),
+    buttons.emplace_back(std::make_unique<UIButton>("closeButton", TextureManager::None, UITransform(1264, 220, 96, 65), Bounds(),
     [&] (UIButton&, int) -> void {
         Outrospection::get().stop();
     }));

@@ -196,8 +196,6 @@ void GUIScene::tryMovePlayer(Control input)
         return;
     }
 
-    pastPositions.emplace_back(playerPosInt);
-
     auto deltas = controlToDeltas(input);
 
     glm::vec2 totalDelta = glm::vec2();
@@ -261,7 +259,7 @@ void GUIScene::tryMovePlayer(Control input)
 
             Util::doLater([this] { this->canMove = false; }, 100);
             Util::doLater([this] {
-                if(Outrospection::get().isSpeedrun())
+                if(!Outrospection::get().isSpeedrun())
                     this->reset();
                 else {
                     LOG_INFO("Resetting entire game...");
@@ -341,6 +339,8 @@ bool GUIScene::controlBound(Control control)
 
 void GUIScene::doControl(Eye pokedEye)
 {
+    pastPositions.emplace_back(playerPosInt);
+
     Outrospection::get().scheduleWorldTick(); // do tick NOW
 
     for (KeyBinding& bind : keyBinds)
