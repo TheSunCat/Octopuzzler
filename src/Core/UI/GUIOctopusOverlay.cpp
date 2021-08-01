@@ -133,6 +133,4 @@ void GUIOctopusOverlay::draw() const
     {
         button->draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
     }
-
-    //LOG("default fb res %s", Util::vecToStr(*Outrospection::get().curFbResolution));
 }
