@@ -13,7 +13,8 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         freopen_s(&empty, "CONOUT$", "w", stderr);
     }
 
-    //std::cout << "test";
+    int argc = __argc;
+    auto argv = __argv;
 #else
 int main(int argc, char** argv) {
 #endif
