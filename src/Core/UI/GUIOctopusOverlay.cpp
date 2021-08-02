@@ -42,11 +42,6 @@ void eyeUnhover(UIButton& button, int)
     scene->ghostSprite.hidden = true;
 }
 
-void showWelcome(UIButton&, int)
-{
-    //Util::doLater([] { Outrospection::get().pushOverlay(Outrospection::get().guideOverlay); }, 100);
-}
-
 void reset(UIButton&, int)
 {
     Util::doLater([]
@@ -106,11 +101,11 @@ GUIOctopusOverlay::GUIOctopusOverlay() : GUILayer("Octopus Overlay", false),
     bTriangle->onHover = eyeHover;
     bTriangle->onUnhover = eyeUnhover;
 
-    buttons.emplace_back(std::make_unique<UIButton>("showWelcome", GL_NEAREST, UITransform(1805, 983, 96, 96), Bounds(), showWelcome));
-    buttons.emplace_back(std::make_unique<UIButton>("reset", GL_NEAREST, UITransform(1685, 983, 96, 96), Bounds(), reset));
-    buttons.emplace_back(std::make_unique<UIButton>("undo", GL_NEAREST, UITransform(1565, 983, 96, 96), Bounds(), undo));
+    // gap of 26 px between buttons
+    buttons.emplace_back(std::make_unique<UIButton>("reset", GL_NEAREST, UITransform(1811, 970, 96, 96), Bounds(), reset));
+    buttons.emplace_back(std::make_unique<UIButton>("undo", GL_NEAREST, UITransform(1691, 970, 96, 96), Bounds(), undo));
 
-    auto& bMute = buttons.emplace_back(std::make_unique<UIButton>("mute", GL_NEAREST, UITransform(1445, 983, 96, 96), Bounds(), muteOrUnmute));
+    auto& bMute = buttons.emplace_back(std::make_unique<UIButton>("mute", GL_NEAREST, UITransform(1571, 970, 96, 96), Bounds(), muteOrUnmute));
     bMute->addAnimation("unmute", simpleTexture({"UI/", "unmute"}, GL_NEAREST));
 }
 void GUIOctopusOverlay::tick()
