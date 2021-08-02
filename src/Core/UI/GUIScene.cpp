@@ -31,8 +31,8 @@ void GUIScene::setLevel(const std::string& lvlName, int lvlID)
     // parse level
     std::string levelData = Util::readAllBytes("StageData/level" + lvlName + lvlID);
     
-    nlohmann::json jason = nlohmann::json::parse(levelData);
-    level = jason.get<Level>();
+    nlohmann::json jason = nlohmann::json::parse(levelData); // this is a joke
+    level = jason.get<Level>();                                 // please laugh
     
     if(Outrospection::get().isSpeedrun())
     {
@@ -176,6 +176,15 @@ void GUIScene::worldTick()
     // increment so we move to the next input
     curGhostMove++;
 
+    if(inputQueue.empty()) // player is not currently moving
+    {
+        if(!ghostInputQueue.empty())
+            ghostSprite.hidden = false;
+    } else 
+    {
+        ghostSprite.hidden = true;
+    }
+
     if (curGhostMove == ghostInputQueue.size()) {
         curGhostMove = -10; // pause for tick
     }
@@ -216,7 +225,6 @@ void GUIScene::tryMovePlayer(Control input)
             Outrospection::get().audioManager.play("Flag_Get");
 
             flag.hidden = true;
-            ghostSprite.hidden = true;
             playerSprite.setAnimation("win");
             Util::doLater([this] { this->canMove = false; }, 100);
 
@@ -279,6 +287,7 @@ void GUIScene::tryMovePlayer(Control input)
     playerPosInt += totalDelta;
     ghostPosInt = playerPosInt;
     ghostSprite.hidden = true;
+    //curGhostMove = -5;
 }
 
 void GUIScene::moveGhost(Control input)
