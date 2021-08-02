@@ -65,7 +65,7 @@ Outrospection::Outrospection(bool speedrun)
     // for good measure, redo UI here
     int width = 0, height = 0;
     glfwGetFramebufferSize(gameWindow, &width, &height);
-    setResolution(width, height);
+    updateResolution(width, height);
 }
 
 Outrospection::~Outrospection()
@@ -87,7 +87,7 @@ void Outrospection::setSpeedrun()
     LOG_INFO("Speedrun mode enabled.");
 }
 
-bool Outrospection::isSpeedrun()
+bool Outrospection::isSpeedrun() const
 {
     return speedrunMode;
 }
@@ -216,6 +216,35 @@ void Outrospection::scheduleWorldTick()
     lastTick = Util::currentTimeMillis() - 5000;
 }
 
+void Outrospection::toggleFullscreen()
+{
+    auto monitor = glfwGetPrimaryMonitor();
+
+    const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+
+    if (isFullscreen)
+    { // exit fullscreen TODO not working
+        int w = mode->width;
+        int h = mode->height;
+
+        int windowWidth = (w / 3) * 2;
+        int windowHeight = (h / 3) * 2;
+
+        glfwSetWindowMonitor(gameWindow, monitor,
+            w - windowWidth / 2, h - windowHeight / 2,
+            windowWidth, windowHeight, mode->refreshRate);
+        updateResolution(windowWidth, windowHeight);
+    } else
+    { // enter fullscreen
+        
+        glfwSetWindowMonitor(gameWindow, monitor, 0, 0,
+            mode->width, mode->height, mode->refreshRate);
+        updateResolution(mode->width, mode->height);
+    }
+
+    isFullscreen = !isFullscreen;
+}
+
 void Outrospection::runGameLoop()
 {
     // Update game world
@@ -312,7 +341,7 @@ void Outrospection::registerCallbacks() const
     {
         LOG("Framebuffer size changed to %i, %i", width, height);
 
-        Outrospection::get().setResolution(width, height);
+        Outrospection::get().updateResolution(width, height);
     });
 
     glfwSetCursorPosCallback(gameWindow, [](GLFWwindow* window, const double xPosD, const double yPosD)
@@ -401,10 +430,10 @@ void Outrospection::createIcon() const
 
 void Outrospection::setResolution(glm::vec2 res)
 {
-    setResolution(res.x, res.y);
+    updateResolution(res.x, res.y);
 }
 
-void Outrospection::setResolution(int x, int y)
+void Outrospection::updateResolution(int x, int y)
 {
     glViewport(0, 0, x, y);
     curWindowResolution = glm::ivec2(x, y);
@@ -478,6 +507,9 @@ void Outrospection::key_callback(GLFWwindow* window, int key, int scancode, int 
             break;
         case GLFW_KEY_ESCAPE:
             Outrospection::get().running = false;
+            break;
+        case GLFW_KEY_F11:
+            Outrospection::get().toggleFullscreen();
             break;
         }
     }
