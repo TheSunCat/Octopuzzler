@@ -56,6 +56,18 @@ void GUIScene::tick()
 {
     playerPos = Util::lerp(playerPos, playerPosInt, 0.2);
 
+    if (!canMove || inputQueue.empty()) // player is not currently moving
+    {
+        if (!ghostInputQueue.empty())
+            ghostSprite.hidden = false;
+        else
+            ghostSprite.hidden = true;
+    }
+    else
+    {
+        ghostSprite.hidden = true;
+    }
+
     if(ghostSprite.hidden)
     {
         ghostPosInt = playerPosInt; ghostPos = ghostPosInt;
@@ -176,15 +188,6 @@ void GUIScene::worldTick()
     // increment so we move to the next input
     curGhostMove++;
 
-    if(inputQueue.empty()) // player is not currently moving
-    {
-        if(!ghostInputQueue.empty())
-            ghostSprite.hidden = false;
-    } else 
-    {
-        ghostSprite.hidden = true;
-    }
-
     if (curGhostMove == ghostInputQueue.size()) {
         curGhostMove = -10; // pause for tick
     }
@@ -257,7 +260,7 @@ void GUIScene::tryMovePlayer(Control input)
         if (tile != ' ' && !((tile == 'H' || tile == 'G') && i == 0 && deltas.size() == 2))
         {
             LOG_INFO("Player died!");
-
+            canMove = false;
             playerPosInt = ghostPlayerPos;
 
             if(tile == 'H')
