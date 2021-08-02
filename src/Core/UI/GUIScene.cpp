@@ -59,7 +59,7 @@ void GUIScene::tick()
     if(ghostSprite.hidden)
     {
         ghostPosInt = playerPosInt; ghostPos = ghostPosInt;
-        curGhostMove = 0;
+        curGhostMove = -3;
     } else
     {
         ghostPos = Util::lerp(ghostPos, ghostPosInt, 0.2);
@@ -354,8 +354,6 @@ void GUIScene::doControl(Eye pokedEye)
 
 void GUIScene::doGhostControl(Eye hoveredEye)
 {
-    //Outrospection::get().scheduleWorldTick(); // do tick NOW
-
     for (KeyBinding& bind : keyBinds)
     {
         if (bind.m_eye == hoveredEye)
