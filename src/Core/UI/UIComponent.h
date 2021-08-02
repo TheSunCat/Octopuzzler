@@ -60,7 +60,7 @@ public:
     bool showText = false;
     Color textColor;
 
-    bool hidden = false;
+    bool visible = true;
 
     virtual ~UIComponent() = default;
 protected:

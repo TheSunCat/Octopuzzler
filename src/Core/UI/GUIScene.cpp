@@ -44,7 +44,7 @@ void GUIScene::setLevel(const std::string& lvlName, int lvlID)
     }
 
     playerPosInt = level.start;
-    ghostSprite.hidden = true;
+    ghostSprite.visible = false;
 
     Util::doLater([this]
     {
@@ -59,16 +59,16 @@ void GUIScene::tick()
     if (!canMove || inputQueue.empty()) // player is not currently moving
     {
         if (!ghostInputQueue.empty())
-            ghostSprite.hidden = false;
+            ghostSprite.visible = true; // ghost is moving
         else
-            ghostSprite.hidden = true;
+            ghostSprite.visible = false; // ghost is stopped
     }
     else
     {
-        ghostSprite.hidden = true;
+        ghostSprite.visible = false;
     }
 
-    if(ghostSprite.hidden)
+    if(!ghostSprite.visible)
     {
         ghostPosInt = playerPosInt; ghostPos = ghostPosInt;
         curGhostMove = -3;
@@ -227,7 +227,7 @@ void GUIScene::tryMovePlayer(Control input)
 
             Outrospection::get().audioManager.play("Flag_Get");
 
-            flag.hidden = true;
+            flag.visible = false;
             playerSprite.setAnimation("win");
             Util::doLater([this] { this->canMove = false; }, 100);
 
@@ -289,7 +289,7 @@ void GUIScene::tryMovePlayer(Control input)
 
     playerPosInt += totalDelta;
     ghostPosInt = playerPosInt;
-    ghostSprite.hidden = true;
+    ghostSprite.visible = false;
     //curGhostMove = -5;
 }
 
@@ -320,9 +320,9 @@ void GUIScene::reset()
     playerPosInt = level.start;
     canMove = true;
     playerSprite.setAnimation("default");
-    flag.hidden = false;
+    flag.visible = true;
 
-    ghostSprite.hidden = true;
+    ghostSprite.visible = false;
     ghostPosInt = playerPosInt; ghostPos = ghostPosInt;
     ghostInputQueue.clear();
 

@@ -142,7 +142,7 @@ void UIComponent::setScale(int x, int y)
 
 void UIComponent::draw(Shader& shader, const Shader& glyphShader) const
 {
-    if (hidden)
+    if (!visible)
         return;
 
     shader.use();

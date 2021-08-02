@@ -30,7 +30,7 @@ void eyeHover(UIButton& button, int)
 
     auto pokedEye = (Eye)button.name[8];
     scene->ghostInputQueue.clear();
-    scene->ghostSprite.hidden = false;
+    scene->ghostSprite.visible = true;
     scene->doGhostControl(pokedEye);
 }
 
@@ -39,7 +39,7 @@ void eyeUnhover(UIButton& button, int)
     auto scene = (GUIScene*)Outrospection::get().scene;
 
     scene->ghostInputQueue.clear();
-    scene->ghostSprite.hidden = true;
+    scene->ghostSprite.visible = false;
 }
 
 void reset(UIButton&, int)
