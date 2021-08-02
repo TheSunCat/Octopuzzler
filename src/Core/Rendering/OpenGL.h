@@ -10,6 +10,37 @@
 class OpenGL
 {
 public:
+    GLFWwindow* createGameWindow(int width, int height, const std::string& name, GLFWmonitor* monitor, GLFWwindow* windowShare)
+    {
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+#ifdef __APPLE__
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // add on Mac bc Apple is big dumb :(
+#endif
+
+        // Window init
+        auto window = glfwCreateWindow(width, height, name.c_str(), monitor, windowShare);
+        if (window == nullptr)
+        {
+            LOG_ERROR("Failed to create GLFW window!");
+            glfwTerminate();
+            return nullptr;
+        }
+
+        glfwMakeContextCurrent(window);
+
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
+        glfwSetWindowUserPointer(window, reinterpret_cast<void*>(this));
+
+        // turn on VSync so we don't run at about a kjghpillion fps
+        glfwSwapInterval(1);
+
+        return window;
+    }
+
     OpenGL()
     {
         if (!glfwInit())
@@ -19,32 +50,7 @@ public:
             return;
         }
 
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        //glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-
-#ifdef __APPLE__
-        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // add on Mac bc Apple is big dumb :(
-#endif
-
-        // Window init
-        gameWindow = glfwCreateWindow(1280, 720, "Octopuzzler", nullptr, nullptr);
-        if (gameWindow == nullptr)
-        {
-            LOG_ERROR("Failed to create GLFW window!");
-            glfwTerminate();
-            return;
-        }
-
-        glfwMakeContextCurrent(gameWindow);
-
-        glfwSetInputMode(gameWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-
-        glfwSetWindowUserPointer(gameWindow, reinterpret_cast<void*>(this));
-
-        // turn on VSync so we don't run at about a kjghpillion fps
-        glfwSwapInterval(1);
+        gameWindow = createGameWindow(1280, 720, "Octopuzzler", nullptr, nullptr);
 
         // load OGL function pointers
         if (!gladLoadGLLoader(GLADloadproc(glfwGetProcAddress)))

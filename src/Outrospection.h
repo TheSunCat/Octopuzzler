@@ -44,7 +44,7 @@ public:
     ~Outrospection();
 
     void setSpeedrun();
-    bool isSpeedrun();
+    bool isSpeedrun() const;
 
     void stop();
 
@@ -65,8 +65,10 @@ public:
 
     void scheduleWorldTick(); // tick world NOW
 
+    void toggleFullscreen();
+
     void setResolution(glm::vec2 res);
-    void setResolution(int x, int y);
+    void updateResolution(int x, int y);
     glm::vec2 getWindowResolution();
 
     glm::ivec2* curFbResolution = &curWindowResolution;
@@ -110,6 +112,7 @@ private:
     time_t lastFrame = 0; // Time of last frame
 
     GLFWwindow* gameWindow;
+    bool isFullscreen = false;
 
     std::unordered_map<std::string, Framebuffer> framebuffers;
     GLuint crtVAO;
