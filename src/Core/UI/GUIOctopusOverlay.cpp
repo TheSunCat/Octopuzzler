@@ -102,10 +102,10 @@ GUIOctopusOverlay::GUIOctopusOverlay() : GUILayer("Octopus Overlay", false),
     bTriangle->onUnhover = eyeUnhover;
 
     // gap of 26 px between buttons
-    buttons.emplace_back(std::make_unique<UIButton>("reset", GL_NEAREST, UITransform(1811, 970, 96, 96), Bounds(), reset));
-    buttons.emplace_back(std::make_unique<UIButton>("undo", GL_NEAREST, UITransform(1691, 970, 96, 96), Bounds(), undo));
+    buttons.emplace_back(std::make_unique<UIButton>("reset", GL_NEAREST, UITransform(1798, 958, 96, 96), Bounds(), reset));
+    buttons.emplace_back(std::make_unique<UIButton>("undo", GL_NEAREST, UITransform(1676, 958, 96, 96), Bounds(), undo));
 
-    auto& bMute = buttons.emplace_back(std::make_unique<UIButton>("mute", GL_NEAREST, UITransform(1571, 970, 96, 96), Bounds(), muteOrUnmute));
+    auto& bMute = buttons.emplace_back(std::make_unique<UIButton>("mute", GL_NEAREST, UITransform(1554, 958, 96, 96), Bounds(), muteOrUnmute));
     bMute->addAnimation("unmute", simpleTexture({"UI/", "unmute"}, GL_NEAREST));
 }
 void GUIOctopusOverlay::tick()
