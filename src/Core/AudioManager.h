@@ -21,7 +21,7 @@ public:
     AudioManager() = default;
     ~AudioManager();
 
-    void init();
+    void init(const std::vector<std::string>& sounds = std::vector<std::string>());
     void play(const std::string& soundName, float vol = 1.0f, bool loop = false);
 
     void setGlobalVolume(float vol);

@@ -33,7 +33,7 @@ Outrospection::Outrospection(bool speedrun)
         setSpeedrun();
 
     preInit = PreInitialization();
-    audioManager.init();
+    audioManager.init({ "Control_Select", "Eye_Poke_0", "Eye_Poke_1", "Eye_Poke_2", "Flag_Get", "Mic_Off", "Mic_On", "Movement", "totallyNotABossBattle", "Waffle_Get" });
 
     gameWindow = opengl.gameWindow;
     crtVAO = opengl.crtVAO;
