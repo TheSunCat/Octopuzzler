@@ -16,8 +16,6 @@ void AudioManager::init(const std::vector<std::string>& sounds)
     {
         auto& [key, wave] = *waves.try_emplace(sound).first;
         if (!wave) {
-            LOG_ERROR("Sound was played without being pre-loaded! Please add its name to the init call.");
-
             wave = std::make_unique<SoLoud::Wav>();
 
             std::string file = "res/SoundData/" + sound + ".ogg";
