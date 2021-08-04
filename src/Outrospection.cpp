@@ -227,11 +227,11 @@ void Outrospection::toggleFullscreen()
         int w = mode->width;
         int h = mode->height;
 
-        int windowWidth = (w / 3) * 2;
-        int windowHeight = (h / 3) * 2;
+        int windowWidth = w / 2;
+        int windowHeight = h / 2;
 
-        glfwSetWindowMonitor(gameWindow, monitor,
-            w - windowWidth / 2, h - windowHeight / 2,
+        glfwSetWindowMonitor(gameWindow, nullptr,
+            (w - windowWidth) / 2, (h - windowHeight) / 2,
             windowWidth, windowHeight, mode->refreshRate);
         updateResolution(windowWidth, windowHeight);
     } else
