@@ -12,7 +12,7 @@ void AudioManager::init(const std::vector<std::string>& sounds)
 
     // TODO make this not dumb
     // also code duplication
-    for(auto sound : sounds)
+    for(const std::string& sound : sounds)
     {
         auto& [key, wave] = *waves.try_emplace(sound).first;
         if (!wave) {
