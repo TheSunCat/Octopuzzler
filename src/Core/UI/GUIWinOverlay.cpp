@@ -4,6 +4,7 @@
 #include "UIButton.h"
 
 GUIWinOverlay::GUIWinOverlay() : GUILayer("Win", false),
+                                 floppy("floppy", GL_LINEAR, UITransform(0, 0, 1920, 1080)),
                                  window("winWindow", GL_LINEAR, UITransform(560, 220, 800, 640))
 {
     buttons.emplace_back(std::make_unique<UIButton>("closeButton", TextureManager::None, UITransform(1264, 220, 96, 65), Bounds(),
@@ -15,6 +16,7 @@ GUIWinOverlay::GUIWinOverlay() : GUILayer("Win", false),
 
 void GUIWinOverlay::tick()
 {
+    floppy.tick();
     window.tick();
 
     for (auto& button : buttons)
@@ -25,6 +27,7 @@ void GUIWinOverlay::tick()
 
 void GUIWinOverlay::draw() const
 {
+    floppy.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
     window.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
 
     for (auto& button : buttons)

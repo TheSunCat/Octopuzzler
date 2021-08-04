@@ -13,5 +13,6 @@ public:
 
     DISALLOW_COPY_AND_ASSIGN(GUIWinOverlay)
 private:
+    UIComponent floppy;
     UIComponent window;
 };

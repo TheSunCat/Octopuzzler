@@ -496,15 +496,6 @@ void Outrospection::key_callback(GLFWwindow* window, int key, int scancode, int 
 
         switch(key)
         {
-        case GLFW_KEY_Z:
-            LOG("Pressed CIRCLE");
-            break;
-        case GLFW_KEY_X:
-            LOG("Pressed SQUARE");
-            break;
-        case GLFW_KEY_C:
-            LOG("Pressed TRIANGLE");
-            break;
         case GLFW_KEY_ESCAPE:
             Outrospection::get().running = false;
             break;
