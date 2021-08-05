@@ -5,8 +5,8 @@
 #include "UIButton.h"
 
 GUIGuide::GUIGuide() : GUILayer("Guides", false),
-                           guideLeft("guideLeft", TextureManager::None, UITransform(69, 458, 405, 405)),
-                           guideRight("guideRight", TextureManager::None, UITransform(1411, 513, 405, 405))
+                           guideLeft("guideLeft", TextureManager::None, UITransform(69, 458, 400, 320)),
+                           guideRight("guideRight", TextureManager::None, UITransform(1411, 513, 400, 320))
 {
     if(!Outrospection::get().isSpeedrun())
     {
