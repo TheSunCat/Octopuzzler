@@ -61,7 +61,7 @@ list(APPEND Outrospection_SOURCES
 	"src/Core/UI/GUIGuide.cpp"
 	"src/Core/UI/GUILayer.cpp"
 	"src/Core/UI/GUIOctopusOverlay.cpp"
-	"src/Core/UI/GUIPause.cpp"
+	"src/Core/UI/GUIProgressBar.cpp"
 	"src/Core/UI/GUIScene.cpp"
 	"src/Core/UI/GUIWinOverlay.cpp"
 	"src/Core/UI/UIButton.cpp"

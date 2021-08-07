@@ -1,5 +1,6 @@
 #include "GUIScene.h"
 #include <json.hpp>
+#include <Core/UI/GUIProgressBar.h>
 
 #include "Outrospection.h"
 #include "UIButton.h"
@@ -45,6 +46,9 @@ void GUIScene::setLevel(const std::string& lvlName, int lvlID)
 
     playerPosInt = level.start;
     ghostSprite.visible = false;
+
+    // TODO add way to calc how many levels there are
+    ((GUIProgressBar*)Outrospection::get().progressBarOverlay)->setProgress(float(levelID) / 15.f);
 
     Util::doLater([this]
     {
