@@ -56,9 +56,9 @@ void GUIScene::tick()
 {
     playerPos = Util::lerp(playerPos, playerPosInt, 0.2);
 
-    if (!canMove || inputQueue.empty()) // player is not currently moving
+    if (!canMove || (canMove && inputQueue.empty() && playerPos != playerPosInt)) // player is not currently moving
     {
-        if (!ghostInputQueue.empty())
+        if (!ghostInputQueue.empty() && !Outrospection::get().won)
             ghostSprite.visible = true; // ghost is moving
         else
             ghostSprite.visible = false; // ghost is stopped
@@ -229,7 +229,7 @@ void GUIScene::tryMovePlayer(Control input)
 
             flag.visible = false;
             playerSprite.setAnimation("win");
-            Util::doLater([this] { this->canMove = false; }, 100);
+            canMove = false;
 
             levelID++;
 
@@ -290,7 +290,6 @@ void GUIScene::tryMovePlayer(Control input)
     playerPosInt += totalDelta;
     ghostPosInt = playerPosInt;
     ghostSprite.visible = false;
-    //curGhostMove = -5;
 }
 
 void GUIScene::moveGhost(Control input)
