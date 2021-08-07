@@ -496,9 +496,11 @@ void Outrospection::key_callback(GLFWwindow* window, int key, int scancode, int 
 
         switch(key)
         {
+#ifdef _DEBUG
         case GLFW_KEY_ESCAPE:
             Outrospection::get().running = false;
             break;
+#endif
         case GLFW_KEY_F11:
             Outrospection::get().toggleFullscreen();
             break;
