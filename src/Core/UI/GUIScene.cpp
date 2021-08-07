@@ -290,6 +290,7 @@ void GUIScene::tryMovePlayer(Control input)
     playerPosInt += totalDelta;
     ghostPosInt = playerPosInt;
     ghostSprite.visible = false;
+    curGhostMove = -3;
 }
 
 void GUIScene::moveGhost(Control input)
