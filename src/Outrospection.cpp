@@ -11,7 +11,7 @@
 
 #include "Core/UI/GUILayer.h"
 #include "Core/UI/GUIOctopusOverlay.h"
-#include "Core/UI/GUIPause.h"
+#include "Core/UI/GUIProgressBar.h"
 #include "Core/UI/GUIScene.h"
 #include "Core/UI/GUIGuide.h"
 #include "Core/UI/GUIWinOverlay.h"
@@ -51,12 +51,14 @@ Outrospection::Outrospection(bool speedrun)
     
     octopusOverlay = new GUIOctopusOverlay();
     controlsOverlay = new GUIControlsOverlay();
+    progressBarOverlay = new GUIProgressBar();
     guideOverlay = new GUIGuide();
     winOverlay = new GUIWinOverlay();
     scene = new GUIScene();
 
     pushLayer(scene);
     pushOverlay(octopusOverlay);
+    pushOverlay(progressBarOverlay);
     pushOverlay(guideOverlay);
     pushOverlay(controlsOverlay);
 

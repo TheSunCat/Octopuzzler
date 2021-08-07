@@ -89,6 +89,7 @@ public:
     GUILayer* scene;
     GUILayer* octopusOverlay;
     GUILayer* controlsOverlay;
+    GUILayer* progressBarOverlay;
     GUILayer* guideOverlay;
     GUILayer* winOverlay;
 
