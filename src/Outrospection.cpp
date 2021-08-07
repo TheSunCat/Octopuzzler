@@ -223,7 +223,7 @@ void Outrospection::toggleFullscreen()
     const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 
     if (isFullscreen)
-    { // exit fullscreen TODO not working
+    { // exit fullscreen
         int w = mode->width;
         int h = mode->height;
 
