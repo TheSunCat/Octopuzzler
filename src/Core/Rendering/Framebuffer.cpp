@@ -25,6 +25,7 @@ void Framebuffer::bind()
 
     o.inkShader.use();
     o.inkShader.setMat4("projection", projection);
+    o.inkShader.setInt("viewportHeight", resolution.y);
 
     o.glyphShader.use();
     o.glyphShader.setMat4("projection", projection);
