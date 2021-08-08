@@ -79,23 +79,23 @@ void muteOrUnmute(UIButton& muteButton, int)
 }
 
 GUIOctopusOverlay::GUIOctopusOverlay() : GUILayer("Octopus Overlay", false),
-                                         background("overlay/background", GL_LINEAR, UITransform(0, 0, 1920, 1080)),
+                                         background("overlay/background", GL_NEAREST, UITransform(0, 0, 1920, 1080)),
                                          octopus("octopus", animatedTexture({ "UI/overlay/", "octopus" },
-                                             2, 21, GL_LINEAR), UITransform(0, 0, 1920, 1080))
+                                             2, 21, GL_NEAREST), UITransform(0, 0, 1920, 1080))
 {
-    auto &bCircle = buttons.emplace_back(std::make_unique<UIButton>("eyes/eyeCircle0", GL_LINEAR, UITransform(1270, 0, 256, 235),
+    auto &bCircle = buttons.emplace_back(std::make_unique<UIButton>("eyes/eyeCircle0", GL_NEAREST, UITransform(1270, 0, 256, 235),
                                             Bounds(UITransform(1401, 108, 134), BoundsShape::Circle), eyeClick));
     bCircle->addAnimation("blink", animatedTexture({"UI/eyes/", "eyeCircle"}, 1, 5, GL_LINEAR));
     bCircle->onHover = eyeHover;
     bCircle->onUnhover = eyeUnhover;
 
-    auto& bSquare = buttons.emplace_back(std::make_unique<UIButton>("eyes/eyeSquare0", GL_LINEAR, UITransform(1551, 0, 269, 166),
+    auto& bSquare = buttons.emplace_back(std::make_unique<UIButton>("eyes/eyeSquare0", GL_NEAREST, UITransform(1551, 0, 269, 166),
                                             Bounds(UITransform(1690, 40, 134), BoundsShape::Circle), eyeClick));
     bSquare->addAnimation("blink", animatedTexture({"UI/eyes/", "eyeSquare"}, 1, 5, GL_LINEAR));
     bSquare->onHover = eyeHover;
     bSquare->onUnhover = eyeUnhover;
 
-    auto& bTriangle = buttons.emplace_back(std::make_unique<UIButton>("eyes/eyeTriangle0", GL_LINEAR, UITransform(1648, 180, 272, 262),
+    auto& bTriangle = buttons.emplace_back(std::make_unique<UIButton>("eyes/eyeTriangle0", GL_NEAREST, UITransform(1648, 180, 272, 262),
                                             Bounds(UITransform(1786, 300, 134), BoundsShape::Circle), eyeClick));
     bTriangle->addAnimation("blink", animatedTexture({"UI/eyes/", "eyeTriangle"}, 1, 5, GL_LINEAR));
     bTriangle->onHover = eyeHover;
