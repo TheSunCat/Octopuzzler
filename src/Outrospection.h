@@ -84,6 +84,7 @@ public:
     Shader screenShader;
     Shader crtShader;
     Shader spriteShader;
+    Shader inkShader;
     Shader glyphShader;
 
     GUILayer* scene;

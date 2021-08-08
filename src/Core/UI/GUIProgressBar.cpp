@@ -24,9 +24,9 @@ void GUIProgressBar::tick()
 
 void GUIProgressBar::draw() const
 {
-    leftInk.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
-    middleInk.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
-    rightInk.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
+    leftInk.draw(Outrospection::get().inkShader, Outrospection::get().glyphShader);
+    middleInk.draw(Outrospection::get().inkShader, Outrospection::get().glyphShader);
+    rightInk.draw(Outrospection::get().inkShader, Outrospection::get().glyphShader);
 }
 
 void GUIProgressBar::setProgress(float _progress)

@@ -23,6 +23,9 @@ void Framebuffer::bind()
     o.spriteShader.use();
     o.spriteShader.setMat4("projection", projection);
 
+    o.inkShader.use();
+    o.inkShader.setMat4("projection", projection);
+
     o.glyphShader.use();
     o.glyphShader.setMat4("projection", projection);
 }

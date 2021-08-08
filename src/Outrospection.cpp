@@ -385,10 +385,11 @@ void Outrospection::createShaders()
 {
     LOG_INFO("Setting up shaders...");
 
-    screenShader          = Shader("screen"   , "screen"         );
-    crtShader             = Shader("crt"      , "crt"            );
-    spriteShader          = Shader("sprite"   , "sprite"         );
-    glyphShader           = Shader("sprite"   , "glyph"          );
+    screenShader = Shader("screen", "screen");
+    crtShader    = Shader("crt"   , "crt"   );
+    spriteShader = Shader("sprite", "sprite");
+    inkShader    = Shader("sprite", "ink"   );
+    glyphShader  = Shader("sprite", "glyph" );
 }
 
 void Outrospection::createCursors()
