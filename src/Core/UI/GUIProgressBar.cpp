@@ -17,9 +17,9 @@ void GUIProgressBar::tick()
 
     curProgress = Util::lerp(curProgress, progress, 0.1);
 
-    leftInk.setPosition(0, 1080.f * curProgress - 800);
-    middleInk.setPosition(0, 1080.f * curProgress - 800);
-    rightInk.setPosition(0, 1080.f * curProgress - 800);
+    leftInk.setPosition(0, 270 * curProgress - 760);
+    middleInk.setPosition(0, 300 * curProgress - 760);
+    rightInk.setPosition(0, 200 * curProgress - 760);
 }
 
 void GUIProgressBar::draw() const
