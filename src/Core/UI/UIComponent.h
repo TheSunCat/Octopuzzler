@@ -28,6 +28,10 @@ public:
     UITransform(int posX, int posY, int sizeX, int sizeY,
                 const glm::vec2& fbRes = {1920, 1080}, UIAlign _alignment = UIAlign::TOP_LEFT);
 
+    // convenience function for Bounds ctor. Make sure to specify BoundsShape::Circle!
+    UITransform(int posX, int posY, int radius,
+                const glm::vec2& fbRes = {1920, 1080}, UIAlign _alignment = UIAlign::TOP_LEFT);
+
     glm::vec2 getPos() const;
     glm::vec2 getSize() const;
     glm::vec2 getSizeRatio() const;

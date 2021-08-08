@@ -5,11 +5,12 @@
 #include "Outrospection.h"
 #include "Util.h"
 
+
 UITransform::UITransform(int posX, int posY, int sizeX, int sizeY,
                          const glm::vec2& fbRes, UIAlign _alignment)
-    : pos(posX, posY), size(sizeX, sizeY), defaultRes(fbRes), alignment(_alignment)
+    : defaultRes(fbRes), pos(posX, posY), size(sizeX, sizeY), alignment(_alignment)
 {
-    switch(alignment)
+    switch(alignment) // TODO no idea if this works, never used it
     {
     case UIAlign::CENTER:
         pos -= size / 2.f;
@@ -32,6 +33,10 @@ UITransform::UITransform(int posX, int posY, int sizeX, int sizeY,
         break;
     }
 }
+
+UITransform::UITransform(int posX, int posY, int radius,
+    const glm::vec2& fbRes, UIAlign _alignment) : UITransform(posX, posY, radius, 0, fbRes, _alignment)
+{}
 
 glm::vec2 UITransform::getPos() const
 {
