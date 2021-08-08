@@ -90,7 +90,7 @@ GUIOctopusOverlay::GUIOctopusOverlay() : GUILayer("Octopus Overlay", false),
     bCircle->onUnhover = eyeUnhover;
 
     auto& bSquare = buttons.emplace_back(std::make_unique<UIButton>("eyes/eyeSquare0", GL_LINEAR, UITransform(0, 0, 1920, 1080),
-                                            Bounds(UITransform(1690, 54, 134, 0), BoundsShape::Circle), eyeClick));
+                                            Bounds(UITransform(1690, 40, 134, 0), BoundsShape::Circle), eyeClick));
     bSquare->addAnimation("blink", animatedTexture({"UI/eyes/", "eyeSquare"}, 1, 5, GL_LINEAR));
     bSquare->onHover = eyeHover;
     bSquare->onUnhover = eyeUnhover;
