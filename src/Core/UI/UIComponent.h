@@ -3,6 +3,7 @@
 
 #include <glm/vec2.hpp>
 
+#include "Outrospection.h"
 #include "Core/Rendering/SimpleTexture.h"
 #include "Core/Rendering/TextureManager.h"
 
