@@ -88,9 +88,10 @@ public:
     Shader glyphShader;
 
     GUILayer* scene;
+    GUILayer* background;
+    GUILayer* progressBarOverlay;
     GUILayer* octopusOverlay;
     GUILayer* controlsOverlay;
-    GUILayer* progressBarOverlay;
     GUILayer* guideOverlay;
     GUILayer* winOverlay;
 

@@ -79,7 +79,6 @@ void muteOrUnmute(UIButton& muteButton, int)
 }
 
 GUIOctopusOverlay::GUIOctopusOverlay() : GUILayer("Octopus Overlay", false),
-                                         background("overlay/background", GL_NEAREST, UITransform(0, 0, 1920, 1080)),
                                          octopus("octopus", animatedTexture({ "UI/overlay/", "octopus" },
                                              2, 21, GL_NEAREST), UITransform(0, 0, 1920, 1080))
 {
@@ -110,7 +109,6 @@ GUIOctopusOverlay::GUIOctopusOverlay() : GUILayer("Octopus Overlay", false),
 }
 void GUIOctopusOverlay::tick()
 {
-    background.tick();
     octopus.tick();
 
     for (auto& button : buttons)
@@ -121,7 +119,6 @@ void GUIOctopusOverlay::tick()
 
 void GUIOctopusOverlay::draw() const
 {
-    background.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
     octopus.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
 
     for (auto& button : buttons)

@@ -57,6 +57,7 @@ list(APPEND Outrospection_SOURCES
 	"src/Core/Rendering/TextureManager.cpp"
 	"src/Core/Rendering/TickableTexture.cpp"
 	"src/Core/UI/Bounds.cpp"
+	"src/Core/UI/GUIBackground.cpp"
 	"src/Core/UI/GUIControlsOverlay.cpp"
 	"src/Core/UI/GUIGuide.cpp"
 	"src/Core/UI/GUILayer.cpp"
