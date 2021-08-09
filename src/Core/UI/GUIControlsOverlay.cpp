@@ -6,11 +6,11 @@
 
 void controlClick(UIButton& button, int)
 {
-    LOG("You pressed button %s", button.name);
+    LOG("You pressed button %s", button.text);
 
     auto scene = (GUIScene*)Outrospection::get().scene;
 
-    auto clickedControl = (Control)button.name[0]; // beauty of enum classes yay
+    auto clickedControl = (Control)button.text[0]; // beauty of enum classes yay
 
     // change the keybind
     if (clickedControl != Control::NONE && !scene->controlBound(clickedControl)) // can't rebind controls!
@@ -19,7 +19,7 @@ void controlClick(UIButton& button, int)
 
         scene->keyBinds.emplace_back(Outrospection::get().getEye(), clickedControl);
 
-        button.name[button.name.length() - 1] = char(Outrospection::get().getEye());
+        button.text[button.text.length() - 1] = char(Outrospection::get().getEye());
 
         scene->pastPositions.clear(); // clear undo history
     }

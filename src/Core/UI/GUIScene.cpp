@@ -10,12 +10,13 @@
 // this is the constructor (ctor for short).
 // it only takes care of copying the level data to store it here for now
 GUIScene::GUIScene() : GUILayer("Scene", false),
+                    ghostSprite("ghost", animatedTexture({ "UI/ghost/", "default" }, 16, 2, GL_NEAREST), UITransform(0, 0, 10, 10, {640, 480})),
                     floor("floor", animatedTexture({ "UI/floor/", "empty" }, 8, 17, GL_NEAREST), UITransform(0, 0, 100, 100, {640, 480})),
                     ink("hole", GL_NEAREST, UITransform(0, 0, 100, 100, {640, 480})),
                     flag("flag", animatedTexture({"UI/flag/", "default"}, 16, 2, GL_NEAREST), UITransform(0, 0, 0, 0, {640, 480})),
                     background("background", animatedTexture({"UI/background/", "default"}, 8, 17, GL_NEAREST), UITransform(0, 0, 10, 10, {640, 480})),
                     playerSprite("player", animatedTexture({ "UI/player/", "default" }, 16, 2, GL_NEAREST), UITransform(0, 0, 10, 10, {640, 480})),
-                    ghostSprite("ghost", animatedTexture({ "UI/ghost/", "default" }, 16, 2, GL_NEAREST), UITransform(0, 0, 10, 10, {640, 480}))
+                    levelProgress("levelProgress", TextureManager::None, UITransform(50, 50, 30, 30, {640, 480}))
 
 {
     handleManually = true;
@@ -23,6 +24,8 @@ GUIScene::GUIScene() : GUILayer("Scene", false),
     playerSprite.addAnimation("fail", simpleTexture({"UI/player/", "fail"}, GL_NEAREST));
     playerSprite.addAnimation("failInk", simpleTexture({"UI/player/", "failInk"}, GL_NEAREST));
     playerSprite.addAnimation("win", simpleTexture({"UI/player/", "win"}, GL_NEAREST));
+
+    levelProgress.showText = true;
 
     setLevel("", levelID);
 }
@@ -49,6 +52,7 @@ void GUIScene::setLevel(const std::string& lvlName, int lvlID)
 
     // TODO add way to calc how many levels there are
     ((GUIProgressBar*)Outrospection::get().progressBarOverlay)->setProgress(float(levelID) / 15.f);
+    levelProgress.text = std::to_string(levelID) + '/' + std::to_string(13);
 
     Util::doLater([this]
     {
@@ -85,6 +89,8 @@ void GUIScene::tick()
     ink.tick();
 
     playerSprite.tick();
+
+    levelProgress.tick();
 }
 
 void GUIScene::draw() const
@@ -114,8 +120,8 @@ void GUIScene::draw() const
     {
         for(int y = 0; y < largestLength; y++)
         {
-            float xSpritePos = x * spriteScale;
-            float ySpritePos = y * spriteScale;
+            int xSpritePos = x * spriteScale;
+            int ySpritePos = y * spriteScale;
 
             background.setPosition(xSpritePos, ySpritePos);
             background.draw(spriteShader, glyphShader);
@@ -147,8 +153,8 @@ void GUIScene::draw() const
         }
     }
 
-    float xFlagPos = (level.goal.x + (largestLength - rowLength) / 2) * spriteScale;
-    float yFlagPos = (level.goal.y + (largestLength - colLength) / 2) * spriteScale;
+    int xFlagPos = (level.goal.x + (largestLength - rowLength) / 2) * spriteScale;
+    int yFlagPos = (level.goal.y + (largestLength - colLength) / 2) * spriteScale;
 
     flag.setPosition(xFlagPos, yFlagPos);
     flag.draw(spriteShader, glyphShader);
@@ -161,11 +167,13 @@ void GUIScene::draw() const
         ghostSprite.draw(spriteShader, glyphShader);
     }
 
-    float xPlayerPos = (playerPos.x + (largestLength - rowLength) / 2) * spriteScale;
-    float yPlayerPos = (playerPos.y + (largestLength - colLength) / 2) * spriteScale;
+    int xPlayerPos = (playerPos.x + (largestLength - rowLength) / 2) * spriteScale;
+    int yPlayerPos = (playerPos.y + (largestLength - colLength) / 2) * spriteScale;
 
     playerSprite.setPosition(xPlayerPos, yPlayerPos);
     playerSprite.draw(spriteShader, glyphShader);
+
+    levelProgress.draw(spriteShader, glyphShader);
 }
 
 void GUIScene::worldTick()
