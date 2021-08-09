@@ -22,17 +22,17 @@ Eye getEye(char c)
     return theEye;
 }
 
-void eyeClick(UIButton& button, int mouseButton)
+void eyeClick(UIButton& eyeButton, int mouseButton)
 {
     // play a random Eye_Poke sound
     int index = rand() / (RAND_MAX / 3);
     Outrospection::get().audioManager.play("Eye_Poke_" + std::to_string(index));
 
-    button.setAnimation("blink");
-    Util::doLater([&button]() { button.setAnimation("default"); }, 100);
+    eyeButton.setAnimation("blink");
+    Util::doLater([&eyeButton]() { eyeButton.setAnimation("default"); }, 100);
 
     // ugh
-    Eye pokedEye = getEye(button.name[8]);
+    Eye pokedEye = getEye(eyeButton.name[8]);
     
     if (mouseButton == GLFW_MOUSE_BUTTON_RIGHT)
     {
@@ -44,17 +44,17 @@ void eyeClick(UIButton& button, int mouseButton)
     }
 }
 
-void eyeHover(UIButton& button, int)
+void eyeHover(UIButton& eyeButton, int)
 {
     auto scene = (GUIScene*)Outrospection::get().scene;
 
-    auto pokedEye = getEye(button.name[8]);
+    auto pokedEye = getEye(eyeButton.name[8]);
     scene->ghostInputQueue.clear();
     scene->ghostSprite.visible = true;
     scene->doGhostControl(pokedEye);
 }
 
-void eyeUnhover(UIButton& button, int)
+void eyeUnhover(UIButton& eyeButton, int)
 {
     auto scene = (GUIScene*)Outrospection::get().scene;
 
