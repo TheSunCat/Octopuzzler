@@ -2,6 +2,7 @@
 
 #include <chrono>
 #include <csignal>
+#include <Core/UI/GUIBackground.h>
 #include <glm/ext/matrix_clip_space.hpp>
 
 #include "GLFW/glfw3.h"
@@ -49,16 +50,18 @@ Outrospection::Outrospection(bool speedrun)
 
     glfwSetCursor(gameWindow, cursorNone);
     
+    background = new GUIBackground();
+    progressBarOverlay = new GUIProgressBar();
     octopusOverlay = new GUIOctopusOverlay();
     controlsOverlay = new GUIControlsOverlay();
-    progressBarOverlay = new GUIProgressBar();
     guideOverlay = new GUIGuide();
     winOverlay = new GUIWinOverlay();
     scene = new GUIScene();
 
     pushLayer(scene);
-    pushOverlay(octopusOverlay);
+    pushOverlay(background);
     pushOverlay(progressBarOverlay);
+    pushOverlay(octopusOverlay);
     pushOverlay(guideOverlay);
     pushOverlay(controlsOverlay);
 

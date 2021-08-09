@@ -2,17 +2,17 @@
 #include "GUILayer.h"
 #include "Core/UI/UIButton.h"
 
-class GUIOctopusOverlay :
+class GUIBackground :
     public GUILayer
 {
 public:
-    GUIOctopusOverlay();
+    GUIBackground();
 
     void tick() override;
 
     void draw() const override;
 
-    DISALLOW_COPY_AND_ASSIGN(GUIOctopusOverlay)
+    DISALLOW_COPY_AND_ASSIGN(GUIBackground)
 private:
-    UIComponent octopus;
+    UIComponent background;
 };
