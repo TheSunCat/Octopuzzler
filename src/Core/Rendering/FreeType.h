@@ -69,11 +69,13 @@ public:
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // disable byte-alignment restriction
 
         for (unsigned char c = 'a'; c < 'a' + 26; c++)
-        {
             loadChar(face, c);
-        }
+
+        for (unsigned char c = '0'; c < '9'; c++) // haha
+            loadChar(face, c);
 
         loadChar(face, ' ');
+        loadChar(face, '/');
 
         // arrows
         loadChar(face, '*'); // up

@@ -71,7 +71,7 @@ UIComponent::UIComponent(const std::string& _texName, const GLint& texFilter, co
 }
 
 UIComponent::UIComponent(std::string _name, SimpleTexture& _tex, const UITransform& _transform)
-    : name(std::move(_name)), textColor(0.0f), transform(_transform)
+    : text(std::move(_name)), textColor(0.0f), transform(_transform)
 {
     animations.insert(std::make_pair("default", &_tex));
 
@@ -166,9 +166,9 @@ void UIComponent::draw(Shader& shader, const Shader& glyphShader) const
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
 
-    if (showText && !name.empty()) // TODO make a proper text class
+    if (showText && !text.empty()) // TODO make a proper text class
     {
-        drawText(name, glyphShader);
+        drawText(text, glyphShader);
     }
 }
 

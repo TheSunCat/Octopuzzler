@@ -32,7 +32,7 @@ void eyeClick(UIButton& eyeButton, int mouseButton)
     Util::doLater([&eyeButton]() { eyeButton.setAnimation("default"); }, 100);
 
     // ugh
-    Eye pokedEye = getEye(eyeButton.name[8]);
+    Eye pokedEye = getEye(eyeButton.text[8]);
     
     if (mouseButton == GLFW_MOUSE_BUTTON_RIGHT)
     {
@@ -48,7 +48,7 @@ void eyeHover(UIButton& eyeButton, int)
 {
     auto scene = (GUIScene*)Outrospection::get().scene;
 
-    auto pokedEye = getEye(eyeButton.name[8]);
+    auto pokedEye = getEye(eyeButton.text[8]);
     scene->ghostInputQueue.clear();
     scene->ghostSprite.visible = true;
     scene->doGhostControl(pokedEye);

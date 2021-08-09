@@ -59,7 +59,7 @@ public:
     void setScale(int px);
     void setScale(int x, int y);
 
-    std::string name;
+    std::string text;
 
     bool showText = false;
     Color textColor;

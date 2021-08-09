@@ -53,5 +53,7 @@ private:
 
     mutable UIComponent playerSprite;
 
+    mutable UIComponent levelProgress;
+
     mutable int levelID = 0;
 };
