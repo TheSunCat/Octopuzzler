@@ -151,6 +151,8 @@ void UIComponent::draw(Shader& shader, const Shader& glyphShader) const
         return;
 
     shader.use();
+
+    // TODO maybe we should cache this
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(transform.getPos(), 0));
     model = glm::scale(model, glm::vec3(transform.getSize(), 0));
@@ -164,7 +166,7 @@ void UIComponent::draw(Shader& shader, const Shader& glyphShader) const
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
 
-    if (showText && !name.empty()) // TODO text class
+    if (showText && !name.empty()) // TODO make a proper text class
     {
         drawText(name, glyphShader);
     }
