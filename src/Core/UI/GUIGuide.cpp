@@ -33,12 +33,12 @@ void GUIGuide::tick()
 
 void GUIGuide::draw() const
 {
-    guideLeft.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
-    guideRight.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
+    guideLeft.draw();
+    guideRight.draw();
 
     for (auto& button : buttons)
     {
-        button->draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
+        button->draw();
     }
 }
 

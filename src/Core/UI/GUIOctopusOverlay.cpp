@@ -139,10 +139,10 @@ void GUIOctopusOverlay::tick()
 
 void GUIOctopusOverlay::draw() const
 {
-    octopus.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
+    octopus.draw();
 
     for (auto& button : buttons)
     {
-        button->draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
+        button->draw();
     }
 }

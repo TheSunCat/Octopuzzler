@@ -46,13 +46,13 @@ void GUIControlsOverlay::tick()
 
 void GUIControlsOverlay::draw() const
 {
-    windowTitle.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
-    windowBody.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
-    windowBottom.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
+    windowTitle.draw();
+    windowBody.draw();
+    windowBottom.draw();
 
     for (auto& button : buttons)
     {
-        button->draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
+        button->draw();
     }
 }
 

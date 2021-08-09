@@ -27,11 +27,11 @@ void GUIWinOverlay::tick()
 
 void GUIWinOverlay::draw() const
 {
-    floppy.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
-    window.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
+    floppy.draw();
+    window.draw();
 
     for (auto& button : buttons)
     {
-        button->draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
+        button->draw();
     }
 }
