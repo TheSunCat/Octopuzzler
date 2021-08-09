@@ -48,7 +48,7 @@ public:
 
     UIComponent(std::string _name, SimpleTexture& _tex, const UITransform& transform);
 
-    virtual void draw(Shader& shader, const Shader& glyphShader) const;
+    virtual void draw(Shader& shader = Outrospection::get().spriteShader, const Shader& glyphShader = Outrospection::get().glyphShader) const;
 
     virtual void tick();
 

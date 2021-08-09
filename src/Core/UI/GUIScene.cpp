@@ -98,9 +98,6 @@ void GUIScene::draw() const
     if (Outrospection::get().won) // don't draw the level if we won
         return;
 
-    Shader& spriteShader = Outrospection::get().spriteShader;
-    Shader& glyphShader = Outrospection::get().glyphShader;
-
     int rowLength = level.rowLength;
     int colLength = int(level.data.size() / level.rowLength);
 
@@ -124,7 +121,7 @@ void GUIScene::draw() const
             int ySpritePos = y * spriteScale;
 
             background.setPosition(xSpritePos, ySpritePos);
-            background.draw(spriteShader, glyphShader);
+            background.draw();
 
             if (x < (largestLength - rowLength) / 2 || x >= rowLength + (largestLength - rowLength) / 2 ||
                 y < (largestLength - colLength) / 2 || y >= colLength + (largestLength - colLength) / 2)
@@ -136,7 +133,7 @@ void GUIScene::draw() const
             {
             case ' ': // floor
                 floor.setPosition(xSpritePos, ySpritePos);
-                floor.draw(spriteShader, glyphShader);
+                floor.draw();
                 break;
 
             case 'W': // wall
@@ -144,10 +141,10 @@ void GUIScene::draw() const
 
             case 'H': // ink
                 floor.setPosition(xSpritePos, ySpritePos);
-                floor.draw(spriteShader, glyphShader);
+                floor.draw();
 
                 ink.setPosition(xSpritePos, ySpritePos);
-                ink.draw(spriteShader, glyphShader);
+                ink.draw();
                 break;
             }
         }
@@ -157,23 +154,23 @@ void GUIScene::draw() const
     int yFlagPos = (level.goal.y + (largestLength - colLength) / 2) * spriteScale;
 
     flag.setPosition(xFlagPos, yFlagPos);
-    flag.draw(spriteShader, glyphShader);
+    flag.draw();
 
     if (canMove) {
         float xGhostPos = (ghostPos.x + (largestLength - rowLength) / 2) * spriteScale;
         float yGhostPos = (ghostPos.y + (largestLength - colLength) / 2) * spriteScale;
 
         ghostSprite.setPosition(xGhostPos, yGhostPos);
-        ghostSprite.draw(spriteShader, glyphShader);
+        ghostSprite.draw();
     }
 
     int xPlayerPos = (playerPos.x + (largestLength - rowLength) / 2) * spriteScale;
     int yPlayerPos = (playerPos.y + (largestLength - colLength) / 2) * spriteScale;
 
     playerSprite.setPosition(xPlayerPos, yPlayerPos);
-    playerSprite.draw(spriteShader, glyphShader);
+    playerSprite.draw();
 
-    levelProgress.draw(spriteShader, glyphShader);
+    levelProgress.draw();
 }
 
 void GUIScene::worldTick()

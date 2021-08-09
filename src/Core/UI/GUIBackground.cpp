@@ -14,5 +14,5 @@ void GUIBackground::tick()
 
 void GUIBackground::draw() const
 {
-    background.draw(Outrospection::get().spriteShader, Outrospection::get().glyphShader);
+    background.draw();
 }
