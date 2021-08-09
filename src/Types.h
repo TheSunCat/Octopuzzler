@@ -29,21 +29,8 @@ inline void from_json(const nlohmann::json& j, Level& lvl)
 
     j["controls"].get_to(lvl.controls);
 
-    if(j.find("guideRight") != j.end())
-    {
-        lvl.guideRight = j["guideRight"].get<std::string>();
-    } else 
-    {
-        lvl.guideRight = "default";
-    }
-
-    if(j.find("guideLeft") != j.end())
-    {
-        lvl.guideLeft = j["guideLeft"].get<std::string>();
-    } else 
-    {
-        lvl.guideLeft = "default";
-    }
+    lvl.guideLeft = j.value("guideLeft", "default");
+    lvl.guideRight = j.value("guideRight", "default");
 
     int startIndex = lvl.data.find('S'); lvl.data[startIndex] = ' ';
     lvl.start = glm::vec2(startIndex % lvl.rowLength, int(startIndex / lvl.rowLength));
@@ -55,12 +42,12 @@ inline void from_json(const nlohmann::json& j, Level& lvl)
 enum class Control
 {
     NONE = ' ',
-    MOVE_UP = 'U',
-    MOVE_DOWN = 'D',
-    MOVE_LEFT = 'L',
-    MOVE_RIGHT = 'R',
+    MOVE_UP = '*',
+    MOVE_DOWN = ',',
+    MOVE_LEFT = '(',
+    MOVE_RIGHT = ')',
     DASH_UP = '^',
-    DASH_DOWN = 'V',
+    DASH_DOWN = '_',
     DASH_LEFT = '<',
     DASH_RIGHT = '>'
 };
@@ -68,9 +55,9 @@ enum class Control
 enum class Eye
 {
     NONE = ' ',
-    CIRCLE = 'C',
-    SQUARE = 'S',
-    TRIANGLE = 'T'
+    CIRCLE = '$',
+    SQUARE = '%',
+    TRIANGLE = '&'
 };
 
 struct Transform

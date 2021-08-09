@@ -2,6 +2,25 @@
 #include "Outrospection.h"
 #include "Core/UI/GUIScene.h"
 
+// ugh
+Eye getEye(char c)
+{
+    Eye theEye = Eye::NONE;
+    switch (c)
+    {
+    case 'C':
+        theEye = Eye::CIRCLE;
+        break;
+    case 'S':
+        theEye = Eye::SQUARE;
+        break;
+    case 'T':
+        theEye = Eye::TRIANGLE;
+        break;
+    }
+
+    return theEye;
+}
 
 void eyeClick(UIButton& button, int mouseButton)
 {
@@ -12,7 +31,8 @@ void eyeClick(UIButton& button, int mouseButton)
     button.setAnimation("blink");
     Util::doLater([&button]() { button.setAnimation("default"); }, 100);
 
-    auto pokedEye = (Eye)button.name[8];
+    // ugh
+    Eye pokedEye = getEye(button.name[8]);
     
     if (mouseButton == GLFW_MOUSE_BUTTON_RIGHT)
     {
@@ -28,7 +48,7 @@ void eyeHover(UIButton& button, int)
 {
     auto scene = (GUIScene*)Outrospection::get().scene;
 
-    auto pokedEye = (Eye)button.name[8];
+    auto pokedEye = getEye(button.name[8]);
     scene->ghostInputQueue.clear();
     scene->ghostSprite.visible = true;
     scene->doGhostControl(pokedEye);

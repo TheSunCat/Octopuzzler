@@ -6,7 +6,7 @@
 		"WW WWW",
 		"WW  GW",
 		"WWWWWW"],
-	"controls" : "DLR",
+	"controls" : ",()",
 	"guideLeft" : "bind",
 	"guideRight" : "moving"
 }

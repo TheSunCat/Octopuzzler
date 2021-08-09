@@ -218,7 +218,7 @@ void UIComponent::drawText(const std::string& text, const Shader& glyphShader) c
         charModel = glm::scale(charModel, glm::vec3(charSize, 1.0f));
 
         // TODO not hardcode this lol
-        if (c == 'C' || c == 'S' || c == 'T')
+        if (c == '$' || c == '%' || c == '&')
             glyphShader.setVec3("textColor", glm::vec3(0.0549f, 0.0902f, 0.1725f)); //0x0E172C
         else
             glyphShader.setVec3("textColor", glm::vec3(0.8941f, 0.2039f, 0.4314f)); //0xE4346E

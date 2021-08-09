@@ -7,5 +7,5 @@
 		"W WG  W",
 		"WSWWWWW",
 		"WWWWWWW"],
-	"controls" : "UDLR"
+	"controls" : "*,()"
 }
