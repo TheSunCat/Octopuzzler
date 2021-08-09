@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <ft2build.h>
 
@@ -58,9 +58,9 @@ public:
         }
 
         FT_Face face;
-        if (FT_New_Face(ft, "res/ObjectData/UI/jamminTooSlow.otf", 0, &face))
+        if (FT_New_Face(ft, "res/ObjectData/UI/octopuzzlerType.otf", 0, &face))
         {
-            LOG_ERROR("Failed to load res/ObjectData/UI/jamminTooSlow.otf!");
+            LOG_ERROR("Failed to load res/ObjectData/UI/octopuzzlerType.otf!");
             return;
         }
 
@@ -74,22 +74,23 @@ public:
         }
 
         loadChar(face, ' ');
-        loadChar(face, '^');
-        loadChar(face, 'V');
-        loadChar(face, '<');
-        loadChar(face, '>');
 
         // arrows
-        loadChar(face, 'U'); // up
-        loadChar(face, 'D'); // down
-        loadChar(face, 'L'); // left
-        loadChar(face, 'R'); // right
+        loadChar(face, '*'); // up
+        loadChar(face, ','); // down
+        loadChar(face, '('); // left
+        loadChar(face, ')'); // right
+        loadChar(face, '^'); // dash up
+        loadChar(face, '_'); // dash down
+        loadChar(face, '<'); // dash left
+        loadChar(face, '>'); // dash right
+
+        loadChar(face, '#'); // empty box
 
         // eyes
-        loadChar(face, 'N'); // none
-        loadChar(face, 'C'); // circle
-        loadChar(face, 'S'); // square
-        loadChar(face, 'T'); // triangle
+        loadChar(face, '$'); // circle
+        loadChar(face, '%'); // square
+        loadChar(face, '&'); // triangle
     }
 
     std::unordered_map<char, FontCharacter> loadedCharacters;

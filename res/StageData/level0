@@ -3,7 +3,7 @@
 		"WWWWWW",
 		"WS  GW",
 		"WWWWWW"],
-	"controls" : "R", 
+	"controls" : ")", 
 	"guideLeft" : "bind",
 	"guideRight" : "moving"
 }

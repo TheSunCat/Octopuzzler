@@ -10,5 +10,5 @@
         "W   GW",
         "WW WWW",
         "WWWWWW"],
-  "controls" : "UDLR<>"
+  "controls" : "*,()<>"
 }

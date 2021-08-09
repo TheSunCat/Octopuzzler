@@ -1,4 +1,4 @@
-#include "GUIControlsOverlay.h"
+﻿#include "GUIControlsOverlay.h"
 #include "Outrospection.h"
 #include "UIButton.h"
 #include "GUIScene.h"
@@ -58,39 +58,44 @@ void GUIControlsOverlay::draw() const
 
 void GUIControlsOverlay::setControls(const std::string& controlsStr)
 {
-    buttons.clear(); // TODO memory leak? need to free textures maybe?
+    buttons.clear();
     ((GUIScene*)Outrospection::get().scene)->keyBinds.clear();
 
     std::vector<std::string> buttonNames;
 
     for (char c : controlsStr)
     {
-        switch (c)
+        switch (Control(c))
         {
-        case 'U':
-            buttonNames.emplace_back("U up N ");
+        case Control::MOVE_UP:
+            buttonNames.emplace_back("* up # ");
             break;
-        case 'D':
-            buttonNames.emplace_back("D down N ");
+        case Control::MOVE_DOWN:
+            buttonNames.emplace_back(", down # ");
             break;
-        case 'L':
-            buttonNames.emplace_back("L left N ");
+        case Control::MOVE_LEFT:
+            buttonNames.emplace_back("( left # ");
             break;
-        case 'R':
-            buttonNames.emplace_back("R right N ");
+        case Control::MOVE_RIGHT:
+            buttonNames.emplace_back(") right # ");
             break;
-        case '^':
-            buttonNames.emplace_back("^ dash up N ");
+        case Control::DASH_UP:
+            buttonNames.emplace_back("^ dash up # ");
             break;
-        case 'V':
-            buttonNames.emplace_back("V dash down N ");
+        case Control::DASH_DOWN:
+            buttonNames.emplace_back("_ dash down # ");
             break;
-        case '<':
-            buttonNames.emplace_back("< dash left N ");
+        case Control::DASH_LEFT:
+            buttonNames.emplace_back("< dash left # ");
             break;
-        case '>':
-            buttonNames.emplace_back("> dash right N ");
+        case Control::DASH_RIGHT:
+            buttonNames.emplace_back("> dash right # ");
             break;
+        case Control::NONE:
+            LOG_ERROR("Tried to set Control::NONE!");
+            break;
+        default:
+            LOG_ERROR("Unknown Control: %i", int(c));
         }
     }
 
