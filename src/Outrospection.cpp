@@ -291,7 +291,6 @@ void Outrospection::runGameLoop()
         glDisable(GL_DEPTH_TEST); // disable depth test so stuff near camera isn't clipped
         
         framebuffers["crt"].bind();
-        glClearColor(0.3725, 0.4667, 0.5529f, 1.0f); // clear screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         if(!won)
@@ -299,7 +298,6 @@ void Outrospection::runGameLoop()
 
 
         framebuffers["default"].bind();
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         // draw CRT with shader effect
@@ -441,7 +439,6 @@ void Outrospection::setResolution(glm::vec2 res)
 
 void Outrospection::updateResolution(int x, int y)
 {
-    glViewport(0, 0, x, y);
     curWindowResolution = glm::ivec2(x, y);
 
     for(auto& pair : framebuffers)
@@ -451,7 +448,7 @@ void Outrospection::updateResolution(int x, int y)
         pair.second.scaleResolution(scaleFactor);
     }
 
-    LOG_INFO("setResolution(%i, %i)", x, y);
+    LOG_INFO("updateResolution(%i, %i)", x, y);
 }
 
 glm::vec2 Outrospection::getWindowResolution()
