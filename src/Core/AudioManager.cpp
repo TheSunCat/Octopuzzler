@@ -2,6 +2,18 @@
 
 #include "Util.h"
 
+void AudioManager::loadSound(const std::string& soundName)
+{
+    auto& [key, wave] = *waves.try_emplace(soundName).first;
+    if (!wave) {
+        wave = std::make_unique<SoLoud::Wav>();
+
+        std::string file = "res/SoundData/" + soundName + ".ogg";
+
+        wave->load(file.c_str()); // load the file
+    }
+}
+
 void AudioManager::init(const std::vector<std::string>& sounds)
 {
     engine.init(0U, // aFlags
@@ -10,19 +22,8 @@ void AudioManager::init(const std::vector<std::string>& sounds)
                 0U, // aBufferSize
                 1U);// aChannels
 
-    // TODO make this not dumb
-    // also code duplication
     for(const std::string& sound : sounds)
-    {
-        auto& [key, wave] = *waves.try_emplace(sound).first;
-        if (!wave) {
-            wave = std::make_unique<SoLoud::Wav>();
-
-            std::string file = "res/SoundData/" + sound + ".ogg";
-
-            wave->load(file.c_str()); // load the file
-        }
-    }
+        loadSound(sound);
 }
 
 AudioManager::~AudioManager()
@@ -48,6 +49,12 @@ void AudioManager::play(const std::string& soundName, float vol, bool loop)
 
     LOG("Playing sound %s", soundName);
     engine.play(*wave, vol);
+}
+
+void AudioManager::setSoundVolume(const std::string& sound, float vol)
+{
+    engine.stopAudioSource(*waves.at(sound));
+    engine.play(*waves.at(sound), vol);
 }
 
 void AudioManager::setGlobalVolume(float vol)
