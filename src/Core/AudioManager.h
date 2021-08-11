@@ -17,6 +17,8 @@ class AudioManager
 private:
     SoLoud::Soloud engine;
     std::unordered_map<std::string, std::unique_ptr<SoLoud::Wav>> waves;
+
+    void loadSound(const std::string& soundName);
 public:
     AudioManager() = default;
     ~AudioManager();
@@ -24,5 +26,6 @@ public:
     void init(const std::vector<std::string>& sounds = std::vector<std::string>());
     void play(const std::string& soundName, float vol = 1.0f, bool loop = false);
 
+    void setSoundVolume(const std::string& sound, float vol);
     void setGlobalVolume(float vol);
 };
