@@ -52,7 +52,7 @@ void AudioManager::play(const std::string& soundName, float vol, bool loop)
 
 void AudioManager::setSoundVolume(const std::string& sound, float vol)
 {
-    auto f = handles.find("test"); // <- I'm getting the error here
+    auto f = handles.find(sound); // <- I'm getting the error here
     if (f == handles.end()) {
         LOG_ERROR("Tried to change volume of nonexistent sound \"%s\"!", sound);
         return;
