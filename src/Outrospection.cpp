@@ -347,6 +347,8 @@ void Outrospection::registerCallbacks() const
 
     glfwSetCursorPosCallback(gameWindow, [](GLFWwindow* window, const double xPosD, const double yPosD)
     {
+        LOG("Raw mouse pos: %f, %f", xPosD, yPosD);
+
         glm::ivec2 windowRes = Outrospection::get().getWindowResolution();
         float targetAspectRatio = 1920 / 1080.f;
 
