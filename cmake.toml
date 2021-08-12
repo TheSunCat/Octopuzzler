@@ -3,7 +3,7 @@ include-before = ["vcpkg_config.cmake"]
 name = "Outrospection"
 
 [vcpkg]
-version = "2021.05.12"
+#version = "2021.05.12"
 packages = [
     "glad",
     "glfw3",
