@@ -342,8 +342,6 @@ void Outrospection::registerCallbacks() const
     // Register OpenGL events
     glfwSetFramebufferSizeCallback(gameWindow, [](GLFWwindow*, const int width, const int height)
     {
-        LOG("Framebuffer size changed to %i, %i", width, height);
-
         Outrospection::get().updateResolution(width, height);
     });
 
@@ -366,13 +364,13 @@ void Outrospection::registerCallbacks() const
         float xPos = float(xPosD) - (windowRes.x - width) / 2;
         float yPos = float(yPosD) - (windowRes.y - height) / 2;
 
-        LOG_DEBUG("Window mouse pos: %f, %f", xPos, yPos);
+        LOG("Window mouse pos: %f, %f", xPos, yPos);
 
         float scaleFactor = width / 1920.f;
         float scaledX = xPos * (1/scaleFactor);
         float scaledY = yPos * (1/scaleFactor);
 
-        LOG_DEBUG("SF = %f", scaleFactor);
+        LOG("SF = %f", scaleFactor);
 
         MouseMovedEvent event(scaledX, scaledY);
         Outrospection::get().onEvent(event);
