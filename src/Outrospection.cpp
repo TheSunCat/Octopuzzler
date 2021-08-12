@@ -352,7 +352,7 @@ void Outrospection::registerCallbacks() const
         // TODO put this in init code, user won't upgrade monitors while game is running
         // support for HiDPI
         float xDPI = 0, yDPI = 0;
-        glfwGetMonitorContentScale(glfwGetWindowMonitor(window), &xDPI, &yDPI);
+        glfwGetMonitorContentScale(glfwGetPrimaryMonitor(), &xDPI, &yDPI);
 
         LOG("Monitor DPI: %f, %f", xDPI, yDPI);
 
