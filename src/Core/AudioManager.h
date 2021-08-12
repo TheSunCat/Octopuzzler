@@ -5,8 +5,8 @@
 #include <memory>
 #include <list>
 #include <thread>
+#include <vector>
 
-//#define WITH_MINIAUDIO
 #include "soloud.h"
 #include "soloud_wav.h"
 
@@ -17,6 +17,7 @@ class AudioManager
 private:
     SoLoud::Soloud engine;
     std::unordered_map<std::string, std::unique_ptr<SoLoud::Wav>> waves;
+    std::unordered_map<std::string, SoLoud::handle> handles;
 
     void loadSound(const std::string& soundName);
 public:

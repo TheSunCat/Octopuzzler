@@ -43,18 +43,22 @@ void AudioManager::play(const std::string& soundName, float vol, bool loop)
 
         wave->load(file.c_str()); // load the file
     }
-
-    //wave->setVolume(vol);
+    
     wave->setLooping(loop);
 
     LOG("Playing sound %s", soundName);
-    engine.play(*wave, vol);
+    handles.insert_or_assign(soundName, engine.play(*wave, vol));
 }
 
 void AudioManager::setSoundVolume(const std::string& sound, float vol)
 {
-    engine.stopAudioSource(*waves.at(sound));
-    engine.play(*waves.at(sound), vol);
+    auto f = handles.find("test"); // <- I'm getting the error here
+    if (f == handles.end()) {
+        LOG_ERROR("Tried to change volume of nonexistent sound \"%s\"!", sound);
+        return;
+    }
+
+    engine.setVolume(f->second, vol);
 }
 
 void AudioManager::setGlobalVolume(float vol)
