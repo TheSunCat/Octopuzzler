@@ -349,6 +349,14 @@ void Outrospection::registerCallbacks() const
     {
         LOG("Raw mouse pos: %f, %f", xPosD, yPosD);
 
+        // TODO put this in init code, user won't upgrade monitors while game is running
+        // support for HiDPI
+        float xDPI = 0, yDPI = 0;
+        glfwGetMonitorContentScale(glfwGetWindowMonitor(window), &xDPI, &yDPI);
+
+        LOG("Monitor DPI: %f, %f", xDPI, yDPI);
+
+
         glm::ivec2 windowRes = Outrospection::get().getWindowResolution();
         float targetAspectRatio = 1920 / 1080.f;
 
