@@ -380,6 +380,9 @@ void Outrospection::registerCallbacks() const
         float scaledX = xPos * (1/scaleFactor);
         float scaledY = yPos * (1/scaleFactor);
 
+        scaledX *= xDPI;
+        scaledY *= yDPI;
+
         LOG("SF = %f", scaleFactor);
 
         MouseMovedEvent event(scaledX, scaledY);
