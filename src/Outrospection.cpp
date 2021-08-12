@@ -377,8 +377,8 @@ void Outrospection::registerCallbacks() const
         LOG("Window mouse pos: %f, %f", xPos, yPos);
 
         float scaleFactor = width / 1920.f;
-        float scaledX = xPos * (1/scaleFactor);
-        float scaledY = yPos * (1/scaleFactor);
+        float scaledX = xPos * pow(1/scaleFactor, xDPI);
+        float scaledY = yPos * pow(1/scaleFactor, yDPI);
 
         scaledX *= xDPI;
         scaledY *= yDPI;
