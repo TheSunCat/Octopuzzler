@@ -6,7 +6,7 @@
 Framebuffer::Framebuffer(int width, int height) : isDefaultFramebuffer(false),
     defaultResolution(width, height), resolution(width, height)
 {
-    scaleResolution(glm::vec2(1.0));
+    scaleResolution(1.0);
 }
 
 void Framebuffer::bind()
@@ -15,7 +15,7 @@ void Framebuffer::bind()
 
 
     auto& o = Outrospection::get();
-    if (isDefaultFramebuffer) // default fb handled separately
+    if (isDefaultFramebuffer) // default fb letterboxing
     {
         glm::ivec2 windowRes = o.getWindowResolution();
         float targetAspectRatio = 1920 / 1080.f;
@@ -25,16 +25,16 @@ void Framebuffer::bind()
 
         if (height > windowRes.y)
         {
-            //It doesn't fit our height, we must switch to pillarbox then
+            // it doesn't fit our height, we must switch to pillarbox
             height = windowRes.y;
             width = (int)(height * targetAspectRatio + 0.5f);
         }
 
-        // set up the new viewport centered in the backbuffer
+        // centered viewport in the backbuffer
         int vp_x = (windowRes.x / 2) - (width / 2);
         int vp_y = (windowRes.y / 2) - (height / 2);
 
-        // Since OpenGL considers X=0,Y=0 the Lower left Corner of the Screen
+        // OpenGL considers 0,0 the lower left corner of the screen
         glViewport(vp_x, windowRes.y - (vp_y + height), width, height);
 
     } else
@@ -63,10 +63,10 @@ void Framebuffer::bindTexture()
     glBindTexture(GL_TEXTURE_2D, texId);
 }
 
-void Framebuffer::scaleResolution(const glm::vec2& scale)
+void Framebuffer::scaleResolution(float scale)
 {
-    resolution.x = float(defaultResolution.x) * scale.x;
-    resolution.y = float(defaultResolution.y) * scale.y;
+    resolution.x = float(defaultResolution.x) * scale;
+    resolution.y = float(defaultResolution.y) * scale;
 
     // only update texture and stuff if it's a custom fb
     if(isDefaultFramebuffer)

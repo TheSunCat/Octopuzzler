@@ -21,7 +21,7 @@ bool Bounds::contains(const glm::vec2& point) const
     case BoundsShape::AABB:
         return (point.x > pos.x && point.x < pos.x + size.x) && (point.y > pos.y && point.y < pos.y + size.y);
     case BoundsShape::Circle:
-        return Util::dist2(pos, point) < pow(size.x, 2);
+        return Util::dist2(pos, point) < (size.x * size.x);
     }
 
     LOG_ERROR("Invalid bound shape?");

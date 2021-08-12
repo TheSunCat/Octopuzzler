@@ -349,7 +349,32 @@ void Outrospection::registerCallbacks() const
 
     glfwSetCursorPosCallback(gameWindow, [](GLFWwindow* window, const double xPosD, const double yPosD)
     {
-        MouseMovedEvent event(xPosD, yPosD);
+        glm::ivec2 windowRes = Outrospection::get().getWindowResolution();
+        float targetAspectRatio = 1920 / 1080.f;
+
+        float width = windowRes.x;
+        float height = (width / targetAspectRatio + 0.5f);
+
+        if (height > windowRes.y) // pillarbox
+        {
+            height = windowRes.y;
+            width = (height * targetAspectRatio + 0.5f);
+        }
+
+
+        // center
+        float xPos = float(xPosD) - (windowRes.x - width) / 2;
+        float yPos = float(yPosD) - (windowRes.y - height) / 2;
+
+        LOG_DEBUG("Window mouse pos: %f, %f", xPos, yPos);
+
+        float scaleFactor = width / 1920.f;
+        float scaledX = xPos * (1/scaleFactor);
+        float scaledY = yPos * (1/scaleFactor);
+
+        LOG_DEBUG("SF = %f", scaleFactor);
+
+        MouseMovedEvent event(scaledX, scaledY);
         Outrospection::get().onEvent(event);
     });
 
@@ -441,12 +466,8 @@ void Outrospection::updateResolution(int x, int y)
 {
     curWindowResolution = glm::ivec2(x, y);
 
-    for(auto& pair : framebuffers)
-    {
-        glm::vec2 scaleFactor = curWindowResolution / glm::vec2(1920, 1080);
-
-        pair.second.scaleResolution(scaleFactor);
-    }
+    /*for (auto& pair : framebuffers)
+        pair.second.scaleResolution(scaleFactor);*/
 
     LOG_INFO("updateResolution(%i, %i)", x, y);
 }
