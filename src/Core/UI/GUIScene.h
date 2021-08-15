@@ -55,5 +55,6 @@ private:
 
     mutable UIComponent levelProgress;
 
+    std::string levelPackName = "level"; // default
     mutable int levelID = 0;
 };

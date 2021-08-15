@@ -29,13 +29,22 @@ GUIScene::GUIScene() : GUILayer("Scene", false),
 
     levelID = Outrospection::loadSave();
 
-    setLevel("", levelID);
+    setLevel(levelPackName, levelID);
 }
 
 void GUIScene::setLevel(const std::string& lvlName, int lvlID)
 {
+    if(!Util::fileExists("res/StageData/" + lvlName + lvlID))
+    {
+        LOG_ERROR("File res/StageData/%s%i does not exist! Defaulting to level0...", lvlName, lvlID);
+
+        levelID = 0;
+        setLevel("level", levelID);
+        return;
+    }
+
     // parse level
-    std::string levelData = Util::readAllBytes("res/StageData/level" + lvlName + lvlID);
+    std::string levelData = Util::readAllBytes("res/StageData/" + lvlName + lvlID);
     
     nlohmann::json jason = nlohmann::json::parse(levelData); // this is a joke
     level = jason.get<Level>();                                 // please laugh
@@ -260,7 +269,7 @@ void GUIScene::tryMovePlayer(Control input)
                 {
                     playerSprite.setAnimation("default");
 
-                    setLevel("", this->levelID);
+                    setLevel(levelPackName, this->levelID);
 
                     LOG_INFO("Advancing to level %i...", this->levelID);
                 }
