@@ -217,4 +217,8 @@ private:
             std::this_thread::sleep_for(1ms);
         }
     };
+
+public:
+    static int loadSave();
+    static void writeSave(int number);
 };

@@ -71,7 +71,7 @@ public:
         for (unsigned char c = 'a'; c < 'a' + 26; c++)
             loadChar(face, c);
 
-        for (unsigned char c = '0'; c < '9'; c++) // haha
+        for (unsigned char c = '0'; c <= '9'; c++) // haha
             loadChar(face, c);
 
         loadChar(face, ' ');

@@ -16,8 +16,8 @@ Shader::Shader(const GLchar* vertexName, const GLchar* fragmentName)
     std::string fragmentPath("ShaderData/" + fName + ".frag");
 
     // read shader code from file
-    std::string vertexCode = Util::readAllBytes(vertexPath);
-    std::string fragmentCode = Util::readAllBytes(fragmentPath);
+    std::string vertexCode = Util::readAllBytes("res/" + vertexPath);
+    std::string fragmentCode = Util::readAllBytes("res/" + fragmentPath);
 
     const char* vCode = vertexCode.c_str();
     const char* fCode = fragmentCode.c_str();

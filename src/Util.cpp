@@ -119,7 +119,7 @@ void Util::doLater(std::function<void()> func, time_t waitTime)
 
 bool Util::fileExists(const std::string& file)
 {
-    std::string fullPath("res/" + file);
+    std::string fullPath(file);
 
     LOG("Checking file %s", fullPath);
     
@@ -128,7 +128,7 @@ bool Util::fileExists(const std::string& file)
 
 std::string Util::readAllBytes(const std::string& file)
 {
-    std::string fullPath("res/" + file);
+    std::string fullPath(file);
     
     std::ifstream fileStream;
 
@@ -176,7 +176,7 @@ std::string Util::vecToStr(const glm::vec2& vec)
     return std::to_string(vec.x) + ", " + std::to_string(vec.y);
 }
 
-unsigned char* Util::dataFromFile(const char* path, const std::string& directory, int* widthOut, int* heightOut)
+unsigned char* Util::imageDataFromFile(const char* path, const std::string& directory, int* widthOut, int* heightOut)
 {
     std::string filename = std::string(path);
     filename = directory + '/' + filename;
