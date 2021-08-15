@@ -29,6 +29,12 @@ GUIScene::GUIScene() : GUILayer("Scene", false),
 
     levelID = Outrospection::loadSave();
 
+    if(Util::fileExists("res/ModdedStageData"))
+    {
+        auto files = Util::listFiles("res/ModdedStageData");
+
+    }
+
     setLevel(levelPackName, levelID);
 }
 
@@ -47,7 +53,7 @@ void GUIScene::setLevel(const std::string& lvlName, int lvlID)
     std::string levelData = Util::readAllBytes("res/StageData/" + lvlName + lvlID);
     
     nlohmann::json jason = nlohmann::json::parse(levelData); // this is a joke
-    level = jason.get<Level>();                                 // please laugh
+    level = jason.get<Level>();                                // please laugh
     
     if(Outrospection::get().isSpeedrun())
     {

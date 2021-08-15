@@ -126,6 +126,16 @@ bool Util::fileExists(const std::string& file)
     return std::filesystem::exists(fullPath);
 }
 
+std::vector<std::string> Util::listFiles(const std::string& dir)
+{
+    std::vector<std::string> ret;
+
+    for (const auto& entry : std::filesystem::directory_iterator(dir))
+        ret.emplace_back(entry.path());
+
+    return ret;
+}
+
 std::string Util::readAllBytes(const std::string& file)
 {
     std::string fullPath(file);
