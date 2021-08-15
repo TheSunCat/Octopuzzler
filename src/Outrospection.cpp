@@ -347,14 +347,9 @@ void Outrospection::registerCallbacks() const
 
     glfwSetCursorPosCallback(gameWindow, [](GLFWwindow* window, const double xPosD, const double yPosD)
     {
-        LOG("Raw mouse pos: %f, %f", xPosD, yPosD);
-
-        // TODO put this in init code, user won't upgrade monitors while game is running
         // support for HiDPI
         float xDPI = 0, yDPI = 0;
-        glfwGetMonitorContentScale(glfwGetPrimaryMonitor(), &xDPI, &yDPI);
-
-        LOG("Monitor DPI: %f, %f", xDPI, yDPI);
+        glfwGetWindowContentScale(window, &xDPI, &yDPI);
 
 
         glm::ivec2 windowRes = Outrospection::get().getWindowResolution();
@@ -369,12 +364,9 @@ void Outrospection::registerCallbacks() const
             width = (height * targetAspectRatio + 0.5f);
         }
 
-
         // center
         float xPos = float(xPosD) - (windowRes.x - width) / 2;
         float yPos = float(yPosD) - (windowRes.y - height) / 2;
-
-        LOG("Window mouse pos: %f, %f", xPos, yPos);
 
         float scaleFactor = width / 1920.f;
         float scaledX = xPos * (1/scaleFactor);
@@ -382,8 +374,6 @@ void Outrospection::registerCallbacks() const
 
         scaledX *= xDPI;
         scaledY *= yDPI;
-
-        LOG("SF = %f", scaleFactor);
 
         MouseMovedEvent event(scaledX, scaledY);
         Outrospection::get().onEvent(event);
