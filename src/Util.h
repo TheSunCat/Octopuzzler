@@ -148,7 +148,7 @@ namespace Util
     std::string vecToStr(const glm::vec3& vec);
     std::string vecToStr(const glm::vec2& vec);
 
-    unsigned char* dataFromFile(const char* path, const std::string& directory, int* widthOut, int* heightOut);
+    unsigned char* imageDataFromFile(const char* path, const std::string& directory, int* widthOut, int* heightOut);
 
     Collision rayCast(
         const Ray& ray,

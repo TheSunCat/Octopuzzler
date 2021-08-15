@@ -27,13 +27,15 @@ GUIScene::GUIScene() : GUILayer("Scene", false),
 
     levelProgress.showText = true;
 
+    levelID = Outrospection::loadSave();
+
     setLevel("", levelID);
 }
 
 void GUIScene::setLevel(const std::string& lvlName, int lvlID)
 {
     // parse level
-    std::string levelData = Util::readAllBytes("StageData/level" + lvlName + lvlID);
+    std::string levelData = Util::readAllBytes("res/StageData/level" + lvlName + lvlID);
     
     nlohmann::json jason = nlohmann::json::parse(levelData); // this is a joke
     level = jason.get<Level>();                                 // please laugh
@@ -52,7 +54,7 @@ void GUIScene::setLevel(const std::string& lvlName, int lvlID)
 
     // TODO add way to calc how many levels there are
     ((GUIProgressBar*)Outrospection::get().progressBarOverlay)->setProgress(float(levelID) / 15.f);
-    levelProgress.text = std::to_string(levelID) + '/' + std::to_string(13);
+    levelProgress.text = std::to_string(levelID) + '/' + std::to_string(15);
 
     Util::doLater([this]
     {
@@ -242,9 +244,12 @@ void GUIScene::tryMovePlayer(Control input)
 
             levelID++;
 
+            if(!Outrospection::get().isSpeedrun())
+                Outrospection::writeSave(levelID);
+
             Util::doLater([this]
             {
-                if (!Util::fileExists("StageData/level" + std::to_string(this->levelID))) // no more levels
+                if (!Util::fileExists("res/StageData/level" + std::to_string(this->levelID))) // no more levels
                 {
                     auto& o = Outrospection::get();
 

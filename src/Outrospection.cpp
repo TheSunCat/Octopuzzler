@@ -1,5 +1,7 @@
 ﻿#include "Outrospection.h"
 
+#include <iostream>
+#include <fstream>
 #include <chrono>
 #include <csignal>
 #include <Core/UI/GUIBackground.h>
@@ -541,4 +543,35 @@ void Outrospection::error_callback(const int errorcode, const char* description)
 void Outrospection::updateInput()
 {
     
+}
+
+int Outrospection::loadSave()
+{
+    if(Util::fileExists("save"))
+    {
+        std::string saveData = Util::readAllBytes("save");
+
+        if(!saveData.starts_with("OSAV"))
+        {
+            LOG_ERROR("Save file signature invalid!");
+            return 0;
+        }
+
+        saveData = saveData.substr(4);
+        return Util::stoi(saveData);
+    }
+
+    return 0;
+}
+
+void Outrospection::writeSave(int number)
+{
+    if(Util::fileExists("save"))
+    {
+        std::remove("save");
+    }
+
+    std::ofstream saveFile("save");
+    saveFile << "OSAV" << number;
+    saveFile.close();
 }
