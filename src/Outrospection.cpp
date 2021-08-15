@@ -547,6 +547,10 @@ void Outrospection::updateInput()
 
 int Outrospection::loadSave()
 {
+#ifdef _DEBUG // don't load save data on Debug mode
+    return 0;
+#endif
+
     if(Util::fileExists("save"))
     {
         std::string saveData = Util::readAllBytes("save");
@@ -566,6 +570,10 @@ int Outrospection::loadSave()
 
 void Outrospection::writeSave(int number)
 {
+#ifdef _DEBUG
+    return;
+#endif
+
     if(Util::fileExists("save"))
     {
         std::remove("save");

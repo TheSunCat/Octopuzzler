@@ -11,8 +11,8 @@ public:
 
     void draw() const override;
 
-    void setLeftGuide(std::string& name);
-    void setRightGuide(std::string& name);
+    void setLeftGuide(const std::string& name);
+    void setRightGuide(const std::string& name);
 
     DISALLOW_COPY_AND_ASSIGN(GUIGuide)
 private:
