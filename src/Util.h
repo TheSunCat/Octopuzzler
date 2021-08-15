@@ -141,6 +141,7 @@ namespace Util
     }
 
     bool fileExists(const std::string& file);
+    std::vector<std::string> listFiles(const std::string& dir);
     std::string readAllBytes(const std::string& file);
 
     glm::vec3 rotToVec3(float yaw, float pitch = 0);
