@@ -88,12 +88,12 @@ void muteOrUnmute(UIButton& muteButton, int)
     if(muted) // unmute
     {
         muted = false;
-        Outrospection::get().audioManager.setSoundVolume("totallyNotABossBattle", 1.0);
+        Outrospection::get().audioManager.setGlobalVolume(1.0);
         muteButton.setAnimation("mute");
     } else
     {
         muted = true;
-        Outrospection::get().audioManager.setSoundVolume("totallyNotABossBattle", 0.0);
+        Outrospection::get().audioManager.setGlobalVolume(0.0);
         muteButton.setAnimation("unmute");
     }
 }
