@@ -131,7 +131,7 @@ std::vector<std::string> Util::listFiles(const std::string& dir)
     std::vector<std::string> ret;
 
     for (const auto& entry : std::filesystem::directory_iterator(dir))
-        ret.emplace_back(entry.path());
+        ret.emplace_back(entry.path().string());
 
     return ret;
 }
