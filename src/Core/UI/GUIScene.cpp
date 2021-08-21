@@ -69,7 +69,7 @@ void GUIScene::setLevel(const std::string& lvlName, int lvlID)
 
     // TODO add way to calc how many levels there are
     ((GUIProgressBar*)Outrospection::get().progressBarOverlay)->setProgress(float(levelID) / 15.f);
-    levelProgress.text = std::to_string(levelID) + '/' + std::to_string(15);
+    levelProgress.text = std::to_string(levelID + 1) + '/' + std::to_string(15);
 
     Util::doLater([this]
     {
@@ -267,6 +267,7 @@ void GUIScene::tryMovePlayer(Control input)
                 if (!Util::fileExists("res/StageData/level" + std::to_string(this->levelID))) // no more levels
                 {
                     auto& o = Outrospection::get();
+                    ((GUIProgressBar*)o.progressBarOverlay)->setProgress(float(levelID) / 15.f);
 
                     o.won = true;
                     o.pushOverlay(o.winOverlay);
