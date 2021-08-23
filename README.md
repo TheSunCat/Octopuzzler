@@ -1,5 +1,5 @@
 
-Welcome to Octopuzzler!
+# Welcome to Octopuzzler!
 
 — PREMISE —
 Your goal is to solve all of the puzzles and move your files to the floppy disk
@@ -18,10 +18,11 @@ controls in later levels, refer back to the GIFs located in the "guides" folder.
 Borderless fullscreen can be toggled with the F11 key!
 
 — SPEEDRUN MODE —
-To run the game in Speedrun Mode, you will need to open your game folder in the
-Command Prompt (Windows) or Terminal (MacOS or Linux) and type:
-	Octopuzzler.exe --speedrun
-Doing this will launch your game in speedrun mode, unlocking all controls always
+To run the game in Speedrun Mode:
+On Windows, you can run "Start in speedrun mode.bat".
+On other platforms, open the Terminal and start the game with the --speedrun switch:
+    ./octopuzzler --speedrun
+Doing this will launch your game in Speedrun Mode, unlocking all controls always
 and causing the game to reset completely on death.
 
 — CUSTOM CONTENT —
@@ -34,6 +35,7 @@ Custom levels should follow the following format:
 	"controls" : ")", 
 	"guideLeft" : "bind",
 	"guideRight" : "moving"
+	"author" : ""
 }
 
 The grid can be any width or height but should have rows of equal length.
@@ -56,17 +58,12 @@ control unlocked, "*,()^_<>" should be in place of the example's ")".
 - < is for Dash Left.
 - > is for Dash Right.
 
-The game has two spots available for Guides: one on the left ("guideLeft") and
-one on the right ("guideRight"). Within res/ObjectData/UI of your game folder,
-are the png files that compose the animations for the game's three Guides,
-"bind", "moving", and "multibind". When a guide is displayed in-game, it will
-start on 0th image of that animation and run to the final image of the animation
-before restarting. In order to add a custom Guide, name each frame of your Guide
-with your Guide's name followed by the number for that frame from zero. The frames
-will be played in sequential order. You can add a Guide to a level by putting the
-name of the Guide in quotations where "bind" or "moving" is present in the example.
-To omit guides from your level, simply remove the field(s) "guideLeft" and/or
-"guideRight".
+To claim ownership of your levels, put your name between the quotation marks after
+the "author" field. If you leave this field as "", your level will be by Anonymous.
+
+The game has two spots available for Guides: one on the left ("guideLeft") and one
+on the right ("guideRight"). Available guides include "bind", "moving", or "multibind"
+is present in the example. To omit guides from your level, simply remove the field(s) "guideLeft" and/or "guideRight".
 
 The order that levels are given in follows similar naming conventions to that of
 animations. Levels are named "level" followed directly by the number in the
@@ -75,6 +72,8 @@ the levels folder, res/StageData of the game folder. The base game has 15 levels
 numbered from 00 to 14. Take note that these levels do not have a suffix such as
 "txt", denoting a text document. Instead of "level00.txt", the example level is
 simply "level00".
+
+Incorrectly formatted levels will crash on load. Glhf!
 
 
 
