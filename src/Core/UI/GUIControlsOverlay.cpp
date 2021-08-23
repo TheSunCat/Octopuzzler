@@ -38,9 +38,15 @@ void GUIControlsOverlay::tick()
     windowBody.tick();
     windowBottom.tick();
 
-    for (auto& button : buttons)
-    {
-        button->tick();
+    currentBodyHeight = Util::lerp(currentBodyHeight, bodyHeight, 0.5);
+    windowBody.setScale(384, currentBodyHeight);
+    windowBottom.setPosition(38, 216 + currentBodyHeight);
+
+    if (bodyHeight != 0) {
+        for (auto& button : buttons)
+        {
+            button->tick();
+        }
     }
 }
 
@@ -50,9 +56,11 @@ void GUIControlsOverlay::draw() const
     windowBody.draw();
     windowBottom.draw();
 
-    for (auto& button : buttons)
-    {
-        button->draw();
+    if (bodyHeight != 0) {
+        for (auto& button : buttons)
+        {
+            button->draw();
+        }
     }
 }
 
@@ -109,7 +117,19 @@ void GUIControlsOverlay::setControls(const std::string& controlsStr)
         buttons[i]->showText = true;
     }
 
-    int bodyHeight = 54 * buttons.size() + 22;
+    bodyHeight = 54 * buttons.size() + 22;
     windowBody.setScale(384, bodyHeight);
     windowBottom.setPosition(38, 216 + bodyHeight);
+}
+
+void GUIControlsOverlay::roll()
+{
+    LOG("Retracting!");
+    bodyHeight = 0;
+}
+
+void GUIControlsOverlay::unroll()
+{
+    LOG("Expanding!");
+    bodyHeight = 54 * buttons.size() + 22;
 }
