@@ -469,9 +469,6 @@ void Outrospection::updateResolution(int x, int y)
 {
     curWindowResolution = glm::ivec2(x, y);
 
-    /*for (auto& pair : framebuffers)
-        pair.second.scaleResolution(scaleFactor);*/
-
     LOG_INFO("updateResolution(%i, %i)", x, y);
 }
 
