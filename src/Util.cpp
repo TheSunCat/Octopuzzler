@@ -130,8 +130,12 @@ std::vector<std::string> Util::listFiles(const std::string& dir)
 {
     std::vector<std::string> ret;
 
-    for (const auto& entry : std::filesystem::directory_iterator(dir))
-        ret.emplace_back(entry.path().string());
+    for (const auto& entry : std::filesystem::directory_iterator(dir)) {
+        auto str = entry.path().string();
+        std::replace(str.begin(), str.end(), '\\', '/');
+
+        ret.emplace_back(str);
+    }
 
     return ret;
 }

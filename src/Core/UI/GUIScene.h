@@ -7,7 +7,7 @@ class GUIScene : public GUILayer
 {
 public:
     GUIScene();
-    void setLevel(const std::string& lvlName, int lvlID);
+    void setLevel(int lvlID);
 
     void tick() override;
 
@@ -55,6 +55,6 @@ private:
 
     mutable UIComponent levelProgress;
 
-    std::string levelPackName = "level"; // default
+    std::vector<std::string> levelFiles;
     mutable int levelID = 0;
 };

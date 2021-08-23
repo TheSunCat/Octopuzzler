@@ -29,35 +29,38 @@ GUIScene::GUIScene() : GUILayer("Scene", false),
 
     levelID = Outrospection::loadSave();
 
-    if(Util::fileExists("res/ModdedStageData"))
-    {
-        auto files = Util::listFiles("res/ModdedStageData");
+    if(Util::fileExists("res/CustomLevels"))
+        levelFiles = Util::listFiles("res/CustomLevels");
+    else
+        levelFiles = Util::listFiles("res/StageData");
 
-    }
+    std::sort(levelFiles.begin(), levelFiles.end());
 
-    setLevel(levelPackName, levelID);
+    setLevel(levelID);
 }
 
-void GUIScene::setLevel(const std::string& lvlName, int lvlID)
+void GUIScene::setLevel(int lvlID)
 {
-    if(!Util::fileExists("res/StageData/" + lvlName + lvlID))
+    std::string levelName = levelFiles[lvlID];
+
+    if(!Util::fileExists(levelName))
     {
-        LOG_ERROR("File res/StageData/%s%i does not exist! Defaulting to level0...", lvlName, lvlID);
+        LOG_ERROR("File %s does not exist! Defaulting to level0...", levelName);
 
         levelID = 0;
-        setLevel("level", levelID);
+        setLevel(levelID);
         return;
     }
 
     // parse level
-    std::string levelData = Util::readAllBytes("res/StageData/" + lvlName + lvlID);
+    std::string levelData = Util::readAllBytes(levelName);
     
     nlohmann::json jason = nlohmann::json::parse(levelData); // this is a joke
     level = jason.get<Level>();                                // please laugh
     
     if(Outrospection::get().isSpeedrun())
     {
-        level.controls = "UDLR^V<>"; // unlock all controls
+        level.controls = "*,()^_<>"; // unlock all controls
 
         // disable guides
         level.guideLeft = "default";
@@ -68,8 +71,8 @@ void GUIScene::setLevel(const std::string& lvlName, int lvlID)
     ghostSprite.visible = false;
 
     // TODO add way to calc how many levels there are
-    ((GUIProgressBar*)Outrospection::get().progressBarOverlay)->setProgress(float(levelID) / 15.f);
-    levelProgress.text = std::to_string(levelID + 1) + '/' + std::to_string(15);
+    ((GUIProgressBar*)Outrospection::get().progressBarOverlay)->setProgress(float(levelID) / levelFiles.size());
+    levelProgress.text = std::to_string(levelID + 1) + '/' + std::to_string(levelFiles.size());
 
     Util::doLater([this]
     {
@@ -265,10 +268,10 @@ void GUIScene::tryMovePlayer(Control input)
 
             Util::doLater([this]
             {
-                if (!Util::fileExists("res/StageData/level" + std::to_string(this->levelID))) // no more levels
+                if (levelID >= levelFiles.size()) // no more levels
                 {
                     auto& o = Outrospection::get();
-                    ((GUIProgressBar*)o.progressBarOverlay)->setProgress(float(levelID) / 15.f);
+                    ((GUIProgressBar*)o.progressBarOverlay)->setProgress(float(levelID) / levelFiles.size());
 
                     o.won = true;
                     o.pushOverlay(o.winOverlay);
@@ -277,7 +280,7 @@ void GUIScene::tryMovePlayer(Control input)
                 {
                     playerSprite.setAnimation("default");
 
-                    setLevel(levelPackName, this->levelID);
+                    setLevel(this->levelID);
 
                     LOG_INFO("Advancing to level %i...", this->levelID);
                 }
@@ -306,7 +309,7 @@ void GUIScene::tryMovePlayer(Control input)
                 else {
                     LOG_INFO("Resetting entire game...");
                     levelID = 0;
-                    setLevel("", levelID);
+                    setLevel(levelID);
                 }
             }, 1500);
 
