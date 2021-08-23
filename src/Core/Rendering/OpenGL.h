@@ -50,7 +50,17 @@ public:
             return;
         }
 
-        gameWindow = createGameWindow(1280, 720, "Octopuzzler", nullptr, nullptr);
+        auto monitor = glfwGetPrimaryMonitor();
+        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+
+        int w = mode->width;
+        int h = mode->height;
+
+        int windowWidth = w / 2;
+        int windowHeight = h / 2;
+
+        gameWindow = createGameWindow(windowWidth, windowHeight, "Octopuzzler", nullptr, nullptr);
+        glfwSetWindowPos(gameWindow, (w - windowWidth) / 2, (h - windowHeight) / 2);
 
         // load OGL function pointers
         if (!gladLoadGLLoader(GLADloadproc(glfwGetProcAddress)))
