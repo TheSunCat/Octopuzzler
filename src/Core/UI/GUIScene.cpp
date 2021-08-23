@@ -29,7 +29,7 @@ GUIScene::GUIScene() : GUILayer("Scene", false),
 
     levelID = Outrospection::loadSave();
 
-    if(Util::fileExists("res/CustomLevels"))
+    if(Util::fileExists("res/CustomLevels") && !Util::listFiles("res/CustomLevels").empty())
         levelFiles = Util::listFiles("res/CustomLevels");
     else
         levelFiles = Util::listFiles("res/StageData");
