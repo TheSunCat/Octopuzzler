@@ -19,6 +19,8 @@ struct Level
 
     std::string guideRight;
     std::string guideLeft;
+
+    std::string author;
 };
 
 inline void from_json(const nlohmann::json& j, Level& lvl)
@@ -37,6 +39,8 @@ inline void from_json(const nlohmann::json& j, Level& lvl)
 
     int goalIndex = lvl.data.find('G'); lvl.data[goalIndex] = ' ';
     lvl.goal = glm::vec2(goalIndex % lvl.rowLength, int(goalIndex / lvl.rowLength));
+
+    lvl.author = j.value("author", "Anonymous");
 }
 
 enum class Control

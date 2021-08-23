@@ -74,6 +74,9 @@ void GUIScene::setLevel(int lvlID)
     ((GUIProgressBar*)Outrospection::get().progressBarOverlay)->setProgress(float(levelID) / levelFiles.size());
     levelProgress.text = std::to_string(levelID + 1) + '/' + std::to_string(levelFiles.size());
 
+    if(levelName.starts_with("res/CustomLevels"))
+        Outrospection::get().setWindowText("Level by " + level.author);
+
     Util::doLater([this]
     {
         this->reset();

@@ -475,9 +475,14 @@ void Outrospection::updateResolution(int x, int y)
     LOG_INFO("updateResolution(%i, %i)", x, y);
 }
 
-glm::vec2 Outrospection::getWindowResolution()
+glm::vec2 Outrospection::getWindowResolution() const
 {
     return glm::vec2(curWindowResolution);
+}
+
+void Outrospection::setWindowText(const std::string& text) const
+{
+    glfwSetWindowTitle(gameWindow, ("Octopuzzler | " + text).c_str());
 }
 
 bool Outrospection::onWindowClose(WindowCloseEvent& e)
