@@ -69,7 +69,9 @@ public:
 
     void setResolution(glm::vec2 res);
     void updateResolution(int x, int y);
-    glm::vec2 getWindowResolution();
+    glm::vec2 getWindowResolution() const;
+
+    void setWindowText(const std::string& text) const;
 
     glm::ivec2* curFbResolution = &curWindowResolution;
 
