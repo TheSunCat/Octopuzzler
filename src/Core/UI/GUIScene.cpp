@@ -256,6 +256,7 @@ void GUIScene::tryMovePlayer(Control input)
             flag.visible = false;
             playerSprite.setAnimation("win");
             canMove = false;
+            ((GUIControlsOverlay*)Outrospection::get().controlsOverlay)->roll();
 
             levelID++;
 
@@ -363,6 +364,8 @@ void GUIScene::reset()
 
     ((GUIGuide*)Outrospection::get().guideOverlay)->setRightGuide(level.guideRight);
     ((GUIGuide*)Outrospection::get().guideOverlay)->setLeftGuide(level.guideLeft);
+
+    ((GUIControlsOverlay*)Outrospection::get().controlsOverlay)->unroll();
 }
 
 bool GUIScene::controlBound(Control control)
