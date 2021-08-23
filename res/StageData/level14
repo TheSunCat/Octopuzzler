@@ -1,10 +1,9 @@
 {
 	"level" : [
-        "WWWWWWWWWWWW",
-        "W H WWWWWWWW",
-        "WHS WW H WGW",
-        "W H H H  WHW",
-        "WWWWWW H H W",
-        "WWWWWWWWWWWW"],
-  "controls" : "*)^_<>"
+        "WWWWWWW",
+        "WWW G W",
+        "WWWHWWW",
+        "WSH WWW",
+        "WWWWWWW"],
+  "controls" : "(^<>"
 }

@@ -1,11 +1,13 @@
 {
 	"level" : [
 		"WWWWWWW",
-		"W   WWW",
+		"W WWWWW",
+		"W GWWWW",
+		"W WWWWW",
+		"W W   W",
+		"W W WSW",
 		"W W  WW",
-		"W WW  W",
-		"W WG  W",
-		"WSWWWWW",
+		"W     W",
 		"WWWWWWW"],
 	"controls" : "*,()"
 }
