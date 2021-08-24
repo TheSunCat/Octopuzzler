@@ -366,16 +366,24 @@ void Outrospection::registerCallbacks() const
             width = (height * targetAspectRatio + 0.5f);
         }
 
+#ifdef PLATFORM_MACOS
+        // weird center on apple because what
+        float xPos = float(xPosD) - (windowRes.x - width) / (2 * xDPI);
+        float yPos = float(yPosD) - (windowRes.y - height) / (2 * yDPI);
+#else
         // center
         float xPos = float(xPosD) - (windowRes.x - width) / 2;
         float yPos = float(yPosD) - (windowRes.y - height) / 2;
+#endif
 
         float scaleFactor = width / 1920.f;
         float scaledX = xPos * (1/scaleFactor);
         float scaledY = yPos * (1/scaleFactor);
 
+#ifdef PLATFORM_MACOS
         scaledX *= xDPI;
         scaledY *= yDPI;
+#endif
 
         MouseMovedEvent event(scaledX, scaledY);
         Outrospection::get().onEvent(event);

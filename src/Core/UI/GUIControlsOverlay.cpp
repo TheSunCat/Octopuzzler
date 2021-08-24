@@ -1,4 +1,5 @@
 ﻿#include "GUIControlsOverlay.h"
+#include "Core/UI/UIComponent.h"
 #include "Outrospection.h"
 #include "UIButton.h"
 #include "GUIScene.h"
