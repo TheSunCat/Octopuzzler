@@ -19,6 +19,8 @@ public:
 
     DISALLOW_COPY_AND_ASSIGN(GUIControlsOverlay)
 private:
+    UIComponent mouse;
+
     UIComponent windowTitle;
     UIComponent windowBody;
     UIComponent windowBottom;
