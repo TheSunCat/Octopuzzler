@@ -21,7 +21,7 @@ Borderless fullscreen can be toggled with the F11 key!
 To run the game in Speedrun Mode:
 On Windows, you can run "Start in speedrun mode.bat".
 On other platforms, open the Terminal and start the game with the --speedrun switch:
-    ./octopuzzler --speedrun
+    ./Octopuzzler --speedrun
 Doing this will launch your game in Speedrun Mode, unlocking all controls always
 and causing the game to reset completely on death.
 
@@ -34,7 +34,7 @@ Custom levels should follow the following format:
 		"WWWWWW"],
 	"controls" : ")", 
 	"guideLeft" : "bind",
-	"guideRight" : "moving"
+	"guideRight" : "moving",
 	"author" : ""
 }
 
@@ -62,18 +62,17 @@ To claim ownership of your levels, put your name between the quotation marks aft
 the "author" field. If you leave this field as "", your level will be by Anonymous.
 
 The game has two spots available for Guides: one on the left ("guideLeft") and one
-on the right ("guideRight"). Available guides include "bind", "moving", or "multibind"
-is present in the example. To omit guides from your level, simply remove the field(s) "guideLeft" and/or "guideRight".
+on the right ("guideRight"). Available guides include "bind", "moving", or "multibind".
+To omit guides from your level, simply remove the field(s) "guideLeft" and/or "guideRight".
 
-The order that levels are given in follows similar naming conventions to that of
-animations. Levels are named "level" followed directly by the number in the
+Levels are named "level" followed directly by the number in the
 sequence that they appear in. The example level shown above is called "level00" in
 the levels folder, res/StageData of the game folder. The base game has 15 levels,
 numbered from 00 to 14. Take note that these levels do not have a suffix such as
 "txt", denoting a text document. Instead of "level00.txt", the example level is
 simply "level00".
 
-Incorrectly formatted levels will crash on load. Glhf!
+Incorrectly formatted levels will crash on load. Check the commas at the end of each line! GLHF!
 
 
 
