@@ -368,8 +368,8 @@ void Outrospection::registerCallbacks() const
 
 #ifdef PLATFORM_APPLE
         // weird center on apple because what
-        float xPos = float(xPosD) - (windowRes.x - width);
-        float yPos = float(yPosD) - (windowRes.y - height);
+        float xPos = float(xPosD) - ((windowRes.x - width) * 2);
+        float yPos = float(yPosD) - ((windowRes.y - height) * 2);
 #else
         // center
         float xPos = float(xPosD) - (windowRes.x - width) / 2;
