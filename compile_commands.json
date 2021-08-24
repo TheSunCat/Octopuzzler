@@ -1,0 +1,472 @@
+[
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/Controller.cpp.o -c /home/apm/OutrospectionGame/src/Controller.cpp",
+  "file": "/home/apm/OutrospectionGame/src/Controller.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/Core/AudioManager.cpp.o -c /home/apm/OutrospectionGame/src/Core/AudioManager.cpp",
+  "file": "/home/apm/OutrospectionGame/src/Core/AudioManager.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/Core/LayerStack.cpp.o -c /home/apm/OutrospectionGame/src/Core/LayerStack.cpp",
+  "file": "/home/apm/OutrospectionGame/src/Core/LayerStack.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/Core/Rendering/Framebuffer.cpp.o -c /home/apm/OutrospectionGame/src/Core/Rendering/Framebuffer.cpp",
+  "file": "/home/apm/OutrospectionGame/src/Core/Rendering/Framebuffer.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/Core/Rendering/Resource.cpp.o -c /home/apm/OutrospectionGame/src/Core/Rendering/Resource.cpp",
+  "file": "/home/apm/OutrospectionGame/src/Core/Rendering/Resource.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/Core/Rendering/Shader.cpp.o -c /home/apm/OutrospectionGame/src/Core/Rendering/Shader.cpp",
+  "file": "/home/apm/OutrospectionGame/src/Core/Rendering/Shader.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/Core/Rendering/SimpleTexture.cpp.o -c /home/apm/OutrospectionGame/src/Core/Rendering/SimpleTexture.cpp",
+  "file": "/home/apm/OutrospectionGame/src/Core/Rendering/SimpleTexture.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/Core/Rendering/TextureManager.cpp.o -c /home/apm/OutrospectionGame/src/Core/Rendering/TextureManager.cpp",
+  "file": "/home/apm/OutrospectionGame/src/Core/Rendering/TextureManager.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/Core/Rendering/TickableTexture.cpp.o -c /home/apm/OutrospectionGame/src/Core/Rendering/TickableTexture.cpp",
+  "file": "/home/apm/OutrospectionGame/src/Core/Rendering/TickableTexture.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/Core/UI/Bounds.cpp.o -c /home/apm/OutrospectionGame/src/Core/UI/Bounds.cpp",
+  "file": "/home/apm/OutrospectionGame/src/Core/UI/Bounds.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/Core/UI/GUIBackground.cpp.o -c /home/apm/OutrospectionGame/src/Core/UI/GUIBackground.cpp",
+  "file": "/home/apm/OutrospectionGame/src/Core/UI/GUIBackground.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/Core/UI/GUIControlsOverlay.cpp.o -c /home/apm/OutrospectionGame/src/Core/UI/GUIControlsOverlay.cpp",
+  "file": "/home/apm/OutrospectionGame/src/Core/UI/GUIControlsOverlay.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/Core/UI/GUIGuide.cpp.o -c /home/apm/OutrospectionGame/src/Core/UI/GUIGuide.cpp",
+  "file": "/home/apm/OutrospectionGame/src/Core/UI/GUIGuide.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/Core/UI/GUILayer.cpp.o -c /home/apm/OutrospectionGame/src/Core/UI/GUILayer.cpp",
+  "file": "/home/apm/OutrospectionGame/src/Core/UI/GUILayer.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/Core/UI/GUIOctopusOverlay.cpp.o -c /home/apm/OutrospectionGame/src/Core/UI/GUIOctopusOverlay.cpp",
+  "file": "/home/apm/OutrospectionGame/src/Core/UI/GUIOctopusOverlay.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/Core/UI/GUIProgressBar.cpp.o -c /home/apm/OutrospectionGame/src/Core/UI/GUIProgressBar.cpp",
+  "file": "/home/apm/OutrospectionGame/src/Core/UI/GUIProgressBar.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/Core/UI/GUIScene.cpp.o -c /home/apm/OutrospectionGame/src/Core/UI/GUIScene.cpp",
+  "file": "/home/apm/OutrospectionGame/src/Core/UI/GUIScene.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/Core/UI/GUIWinOverlay.cpp.o -c /home/apm/OutrospectionGame/src/Core/UI/GUIWinOverlay.cpp",
+  "file": "/home/apm/OutrospectionGame/src/Core/UI/GUIWinOverlay.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/Core/UI/UIButton.cpp.o -c /home/apm/OutrospectionGame/src/Core/UI/UIButton.cpp",
+  "file": "/home/apm/OutrospectionGame/src/Core/UI/UIButton.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/Core/UI/UIComponent.cpp.o -c /home/apm/OutrospectionGame/src/Core/UI/UIComponent.cpp",
+  "file": "/home/apm/OutrospectionGame/src/Core/UI/UIComponent.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/Core/jthread.cpp.o -c /home/apm/OutrospectionGame/src/Core/jthread.cpp",
+  "file": "/home/apm/OutrospectionGame/src/Core/jthread.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/audiosource/monotone/soloud_monotone.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/audiosource/monotone/soloud_monotone.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/audiosource/monotone/soloud_monotone.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/audiosource/noise/soloud_noise.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/audiosource/noise/soloud_noise.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/audiosource/noise/soloud_noise.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/audiosource/sfxr/soloud_sfxr.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/audiosource/sfxr/soloud_sfxr.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/audiosource/sfxr/soloud_sfxr.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/audiosource/speech/darray.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/audiosource/speech/darray.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/audiosource/speech/darray.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/audiosource/speech/klatt.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/audiosource/speech/klatt.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/audiosource/speech/klatt.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/audiosource/speech/resonator.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/audiosource/speech/resonator.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/audiosource/speech/resonator.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/audiosource/speech/tts.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/audiosource/speech/tts.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/audiosource/speech/tts.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/audiosource/tedsid/sid.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/audiosource/tedsid/sid.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/audiosource/tedsid/sid.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/audiosource/tedsid/soloud_tedsid.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/audiosource/tedsid/soloud_tedsid.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/audiosource/tedsid/soloud_tedsid.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/audiosource/tedsid/ted.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/audiosource/tedsid/ted.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/audiosource/tedsid/ted.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/audiosource/vic/soloud_vic.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/audiosource/vic/soloud_vic.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/audiosource/vic/soloud_vic.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/audiosource/vizsn/soloud_vizsn.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/audiosource/vizsn/soloud_vizsn.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/audiosource/vizsn/soloud_vizsn.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/audiosource/wav/dr_impl.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/audiosource/wav/dr_impl.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/audiosource/wav/dr_impl.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/audiosource/wav/soloud_wav.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/audiosource/wav/soloud_wav.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/audiosource/wav/soloud_wav.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/audiosource/wav/soloud_wavstream.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/audiosource/wav/soloud_wavstream.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/audiosource/wav/soloud_wavstream.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/backend/alsa/soloud_alsa.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/backend/alsa/soloud_alsa.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/backend/alsa/soloud_alsa.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/backend/coreaudio/soloud_coreaudio.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/backend/coreaudio/soloud_coreaudio.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/backend/coreaudio/soloud_coreaudio.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/backend/jack/soloud_jack.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/backend/jack/soloud_jack.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/backend/jack/soloud_jack.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/backend/miniaudio/soloud_miniaudio.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/backend/miniaudio/soloud_miniaudio.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/backend/miniaudio/soloud_miniaudio.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/backend/nosound/soloud_nosound.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/backend/nosound/soloud_nosound.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/backend/nosound/soloud_nosound.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/backend/null/soloud_null.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/backend/null/soloud_null.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/backend/null/soloud_null.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/backend/openal/soloud_openal.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/backend/openal/soloud_openal.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/backend/openal/soloud_openal.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/backend/opensles/soloud_opensles.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/backend/opensles/soloud_opensles.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/backend/opensles/soloud_opensles.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/backend/oss/soloud_oss.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/backend/oss/soloud_oss.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/backend/oss/soloud_oss.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/backend/portaudio/soloud_portaudio.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/backend/portaudio/soloud_portaudio.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/backend/portaudio/soloud_portaudio.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/backend/sdl/soloud_sdl1.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/backend/sdl/soloud_sdl1.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/backend/sdl/soloud_sdl1.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/backend/sdl/soloud_sdl2.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/backend/sdl/soloud_sdl2.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/backend/sdl/soloud_sdl2.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/backend/sdl2_static/soloud_sdl2_static.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/backend/sdl2_static/soloud_sdl2_static.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/backend/sdl2_static/soloud_sdl2_static.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/backend/sdl_static/soloud_sdl_static.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/backend/sdl_static/soloud_sdl_static.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/backend/sdl_static/soloud_sdl_static.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/backend/wasapi/soloud_wasapi.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/backend/wasapi/soloud_wasapi.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/backend/wasapi/soloud_wasapi.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/backend/winmm/soloud_winmm.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/backend/winmm/soloud_winmm.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/backend/winmm/soloud_winmm.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/backend/xaudio2/soloud_xaudio2.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/backend/xaudio2/soloud_xaudio2.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/backend/xaudio2/soloud_xaudio2.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/c_api/soloud_c.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/c_api/soloud_c.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/c_api/soloud_c.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/core/soloud.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/core/soloud.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/core/soloud.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/core/soloud_audiosource.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/core/soloud_audiosource.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/core/soloud_audiosource.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/core/soloud_bus.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/core/soloud_bus.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/core/soloud_bus.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/core/soloud_core_3d.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/core/soloud_core_3d.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/core/soloud_core_3d.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/core/soloud_core_basicops.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/core/soloud_core_basicops.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/core/soloud_core_basicops.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/core/soloud_core_faderops.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/core/soloud_core_faderops.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/core/soloud_core_faderops.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/core/soloud_core_filterops.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/core/soloud_core_filterops.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/core/soloud_core_filterops.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/core/soloud_core_getters.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/core/soloud_core_getters.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/core/soloud_core_getters.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/core/soloud_core_setters.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/core/soloud_core_setters.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/core/soloud_core_setters.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/core/soloud_core_voicegroup.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/core/soloud_core_voicegroup.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/core/soloud_core_voicegroup.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/core/soloud_core_voiceops.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/core/soloud_core_voiceops.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/core/soloud_core_voiceops.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/core/soloud_fader.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/core/soloud_fader.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/core/soloud_fader.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/core/soloud_fft.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/core/soloud_fft.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/core/soloud_fft.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/core/soloud_fft_lut.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/core/soloud_fft_lut.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/core/soloud_fft_lut.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/core/soloud_file.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/core/soloud_file.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/core/soloud_file.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/core/soloud_filter.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/core/soloud_filter.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/core/soloud_filter.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/core/soloud_misc.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/core/soloud_misc.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/core/soloud_misc.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/core/soloud_queue.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/core/soloud_queue.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/core/soloud_queue.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/core/soloud_thread.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/core/soloud_thread.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/core/soloud_thread.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/filter/soloud_bassboostfilter.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/filter/soloud_bassboostfilter.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/filter/soloud_bassboostfilter.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/filter/soloud_biquadresonantfilter.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/filter/soloud_biquadresonantfilter.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/filter/soloud_biquadresonantfilter.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/filter/soloud_dcremovalfilter.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/filter/soloud_dcremovalfilter.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/filter/soloud_dcremovalfilter.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/filter/soloud_echofilter.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/filter/soloud_echofilter.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/filter/soloud_echofilter.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/filter/soloud_fftfilter.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/filter/soloud_fftfilter.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/filter/soloud_fftfilter.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/filter/soloud_flangerfilter.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/filter/soloud_flangerfilter.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/filter/soloud_flangerfilter.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/filter/soloud_freeverbfilter.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/filter/soloud_freeverbfilter.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/filter/soloud_freeverbfilter.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/filter/soloud_lofifilter.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/filter/soloud_lofifilter.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/filter/soloud_lofifilter.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/filter/soloud_robotizefilter.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/filter/soloud_robotizefilter.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/filter/soloud_robotizefilter.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/soloud/filter/soloud_waveshaperfilter.cpp.o -c /home/apm/OutrospectionGame/src/External/soloud/filter/soloud_waveshaperfilter.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/filter/soloud_waveshaperfilter.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/External/stb_image.cpp.o -c /home/apm/OutrospectionGame/src/External/stb_image.cpp",
+  "file": "/home/apm/OutrospectionGame/src/External/stb_image.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/KeyBinding.cpp.o -c /home/apm/OutrospectionGame/src/KeyBinding.cpp",
+  "file": "/home/apm/OutrospectionGame/src/KeyBinding.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/Outrospection.cpp.o -c /home/apm/OutrospectionGame/src/Outrospection.cpp",
+  "file": "/home/apm/OutrospectionGame/src/Outrospection.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/Source.cpp.o -c /home/apm/OutrospectionGame/src/Source.cpp",
+  "file": "/home/apm/OutrospectionGame/src/Source.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/c++ -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -std=gnu++20 -o CMakeFiles/Outrospection.dir/src/Util.cpp.o -c /home/apm/OutrospectionGame/src/Util.cpp",
+  "file": "/home/apm/OutrospectionGame/src/Util.cpp"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/cc -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -o CMakeFiles/Outrospection.dir/src/External/soloud/audiosource/wav/stb_vorbis.c.o -c /home/apm/OutrospectionGame/src/External/soloud/audiosource/wav/stb_vorbis.c",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/audiosource/wav/stb_vorbis.c"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/cc -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -o CMakeFiles/Outrospection.dir/src/External/soloud/backend/openal/soloud_openal_dll.c.o -c /home/apm/OutrospectionGame/src/External/soloud/backend/openal/soloud_openal_dll.c",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/backend/openal/soloud_openal_dll.c"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/cc -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -o CMakeFiles/Outrospection.dir/src/External/soloud/backend/portaudio/soloud_portaudio_dll.c.o -c /home/apm/OutrospectionGame/src/External/soloud/backend/portaudio/soloud_portaudio_dll.c",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/backend/portaudio/soloud_portaudio_dll.c"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/cc -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -o CMakeFiles/Outrospection.dir/src/External/soloud/backend/sdl/soloud_sdl1_dll.c.o -c /home/apm/OutrospectionGame/src/External/soloud/backend/sdl/soloud_sdl1_dll.c",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/backend/sdl/soloud_sdl1_dll.c"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/cc -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -o CMakeFiles/Outrospection.dir/src/External/soloud/backend/sdl/soloud_sdl2_dll.c.o -c /home/apm/OutrospectionGame/src/External/soloud/backend/sdl/soloud_sdl2_dll.c",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/backend/sdl/soloud_sdl2_dll.c"
+},
+{
+  "directory": "/home/apm/OutrospectionGame/build",
+  "command": "/usr/bin/cc -DWITH_MINIAUDIO -I/home/apm/OutrospectionGame/src -I/home/apm/OutrospectionGame/Libraries/include -isystem /home/apm/OutrospectionGame/build/vcpkg_installed/x64-linux/include -g -Wno-volatile -O2 -o CMakeFiles/Outrospection.dir/src/External/soloud/tools/resamplerlab/stb_image_write.c.o -c /home/apm/OutrospectionGame/src/External/soloud/tools/resamplerlab/stb_image_write.c",
+  "file": "/home/apm/OutrospectionGame/src/External/soloud/tools/resamplerlab/stb_image_write.c"
+}
+]
