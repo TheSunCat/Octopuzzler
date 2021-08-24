@@ -29,8 +29,7 @@ void controlClick(UIButton& button, int)
 GUIControlsOverlay::GUIControlsOverlay() : GUILayer("Controls Overlay", false),
                                            windowTitle("windowTitle", GL_LINEAR, UITransform(38, 162, 384, 54)),
                                            windowBody("windowBody", GL_LINEAR, UITransform(38, 216, 384, 65)),
-                                           windowBottom("windowBottom", GL_LINEAR, UITransform(38, 281, 384, 7)),
-                                           mouse("undo", GL_LINEAR, UITransform(0, 0, 10, 10))
+                                           windowBottom("windowBottom", GL_LINEAR, UITransform(38, 281, 384, 7))
 {
 }
 
@@ -39,8 +38,6 @@ void GUIControlsOverlay::tick()
     windowTitle.tick();
     windowBody.tick();
     windowBottom.tick();
-
-    mouse.setPosition(Outrospection::get().lastMousePos.x, Outrospection::get().lastMousePos.y);
 
     currentBodyHeight = Util::lerp(currentBodyHeight, bodyHeight, 0.5);
     windowBody.setScale(384, currentBodyHeight);
@@ -59,7 +56,6 @@ void GUIControlsOverlay::draw() const
     windowTitle.draw();
     windowBody.draw();
     windowBottom.draw();
-    mouse.draw();
 
     if (bodyHeight != 0) {
         for (auto& button : buttons)
