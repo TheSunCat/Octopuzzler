@@ -56,7 +56,7 @@ void GUIScene::setLevel(int lvlID)
     std::string levelData = Util::readAllBytes(levelName);
     
     nlohmann::json jason = nlohmann::json::parse(levelData); // this is a joke
-    level = jason.get<Level>();                                // please laugh
+    level = jason.get<Level>();                                 // please laugh
     
     if(Outrospection::get().isSpeedrun())
     {
@@ -69,8 +69,7 @@ void GUIScene::setLevel(int lvlID)
 
     playerPosInt = level.start;
     ghostSprite.visible = false;
-
-    // TODO add way to calc how many levels there are
+    
     ((GUIProgressBar*)Outrospection::get().progressBarOverlay)->setProgress(float(levelID) / levelFiles.size());
     levelProgress.text = std::to_string(levelID + 1) + '/' + std::to_string(levelFiles.size());
 

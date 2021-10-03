@@ -4,7 +4,13 @@
 #include <map>
 #include <sstream>
 #include <fstream>
+#ifndef PLATFORM_XP
 #include <filesystem>
+#else
+#include <Shlwapi.h>
+#pragma comment(lib, "Shlwapi.lib")
+#include <strsafe.h>
+#endif
 
 #include <GLAD/glad.h>
 #include <glm/common.hpp>
@@ -122,20 +128,55 @@ bool Util::fileExists(const std::string& file)
     std::string fullPath(file);
 
     LOG("Checking file %s", fullPath);
-    
+
+#ifndef PLATFORM_XP
     return std::filesystem::exists(fullPath);
+#else
+    return PathFileExistsA(fullPath.c_str());
+#endif
 }
 
 std::vector<std::string> Util::listFiles(const std::string& dir)
 {
     std::vector<std::string> ret;
 
+#ifndef PLATFORM_XP
     for (const auto& entry : std::filesystem::directory_iterator(dir)) {
         auto str = entry.path().string();
         std::replace(str.begin(), str.end(), '\\', '/');
 
         ret.emplace_back(str);
     }
+#else
+
+    WIN32_FIND_DATA ffd;
+    LARGE_INTEGER filesize;
+    TCHAR szDir[MAX_PATH];
+    HANDLE hFind = INVALID_HANDLE_VALUE;
+    DWORD dwError = 0;
+
+    // Prepare string for use with FindFile functions.  First, copy the
+    // string to a buffer, then append '\*' to the directory name.
+    StringCchCopy(szDir, MAX_PATH, dir.c_str());
+    StringCchCat(szDir, MAX_PATH, TEXT("\\*"));
+
+    // Find the first file in the directory.
+    hFind = FindFirstFile(szDir, &ffd);
+
+    if (INVALID_HANDLE_VALUE == hFind)
+    {
+        LOG_ERROR("FindFirstFile");
+        return ret;
+    }
+
+    do
+    {
+        if (!(ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+        {
+            ret.emplace_back(ffd.cFileName);
+        }
+    } while (FindNextFile(hFind, &ffd) != 0);
+#endif
 
     return ret;
 }
@@ -448,83 +489,6 @@ bool Util::inTriangle(const glm::vec3& point, const Triangle& tri)
         return true;
     else
         return false;
-}
-
-bool Util::intersectTriangleSphere(const glm::vec3& spherePos, float sphereRadius, const Triangle& tri, glm::vec3& intersectPoint, float& pointToPlaneDist)
-{
-    glm::vec3 v0 = tri.verts[0];
-    glm::vec3 v1 = tri.verts[1];
-    glm::vec3 v2 = tri.verts[2];
-
-    v0 = v0 - spherePos;
-    v1 = v1 - spherePos;
-    v2 = v2 - spherePos;
-    float sphereRadiusSquare = sphereRadius * sphereRadius;
-
-    // Check if sphere collides with infinite triangle plane
-
-    float d = abs(glm::dot(v0, tri.n));
-    bool outsideOfPlane = d > sphereRadius;
-
-    if (outsideOfPlane)
-        return false;
-
-    pointToPlaneDist = d;
-
-
-    // Test if sphere is outside of each vert of the triangle
-
-    float v0dotv0 = glm::dot(v0, v0);
-    float v0dotv1 = glm::dot(v0, v1);
-    float v0dotv2 = glm::dot(v0, v2);
-    float v1dotv1 = glm::dot(v1, v1);
-    float v1dotv2 = glm::dot(v1, v2);
-    float v2dotv2 = glm::dot(v2, v2);
-
-
-    bool outOfVert0 = (v0dotv0 > sphereRadiusSquare) && (v0dotv1 > v0dotv0) && (v0dotv2 > v0dotv0);
-    bool outOfVert1 = (v1dotv1 > sphereRadiusSquare) && (v0dotv1 > v1dotv1) && (v1dotv2 > v1dotv1);
-    bool outOfVert2 = (v2dotv2 > sphereRadiusSquare) && (v0dotv2 > v2dotv2) && (v1dotv2 > v2dotv2);
-
-    bool outsideOfVerts = outOfVert0 && outOfVert1 && outOfVert2;
-
-    if (outsideOfVerts)
-        return false;
-
-
-    // build 3 rays (line segments) so we can do plane projection later
-    glm::vec3 v1v0 = v1 - v0;
-    glm::vec3 v2v1 = v2 - v1;
-    glm::vec3 v0v2 = v0 - v2;
-
-    // TODO fix this
-    //float d1 = v0dotv1 - v0dotv0;
-    //float d2 = v1dotv2 - v1dotv1;
-    //float d3 = v0dotv2 - v2dotv2;
-
-    //float e1 = glm::dot(v1v0, v1v0);
-    //float e2 = glm::dot(v2v1, v2v1);
-    //float e3 = glm::dot(v0v2, v0v2);
-    //glm::vec3 Q1 = v0 * e1 - d1 * v1v0;
-    //glm::vec3 Q2 = v1 * e2 - d2 * v2v1;
-    //glm::vec3 Q3 = v2 * e3 - d3 * v0v2;
-    //glm::vec3 QC = v2 * e1 - Q1;
-    //glm::vec3 QA = v0 * e2 - Q2;
-    //glm::vec3 QB = v1 * e3 - Q3;
-
-    //bool outOfEdge0 = (glm::dot(Q1, Q1) > sphereRadiusSquare * e1 * e1) && (glm::dot(Q1, QC) > 0);
-    //bool outOfEdge1 = (glm::dot(Q2, Q2) > sphereRadiusSquare * e2 * e2) && (glm::dot(Q2, QA) > 0);
-    //bool outOfEdge2 = (glm::dot(Q3, Q3) > sphereRadiusSquare * e3 * e3) && (glm::dot(Q3, QB) > 0);
-
-    bool outOfEdge0 = Util::intersectRaySegmentSphere(Ray{ v0, v1v0 }, spherePos, sphereRadiusSquare, intersectPoint);
-    bool outOfEdge1 = Util::intersectRaySegmentSphere(Ray{ v1, v2v1 }, spherePos, sphereRadiusSquare, intersectPoint);
-    bool outOfEdge2 = Util::intersectRaySegmentSphere(Ray{ v2, v0v2 }, spherePos, sphereRadiusSquare, intersectPoint);
-
-    bool outsideOfEdges = outOfEdge0 && outOfEdge1 && outOfEdge2;
-
-    bool separated = outsideOfPlane || outsideOfVerts || outsideOfEdges;
-
-    return !separated; // together ♥
 }
 
 bool Util::sameSide(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& a, const glm::vec3& b)

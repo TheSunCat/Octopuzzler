@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Core.h"
 
 #include <glm/vec2.hpp>
@@ -110,6 +111,7 @@ private:
     // set to false when the game loop shouldn't run
     bool running = false;
 
+    // this being on makes it less "true to the game" but allows for cooler strats so I'm keeping it
     bool speedrunMode = false;
 
     // timing

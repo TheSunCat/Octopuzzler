@@ -173,8 +173,6 @@ namespace Util
 
     bool inTriangle(const glm::vec3& point, const Triangle& tri);
 
-    bool intersectTriangleSphere(const glm::vec3& spherePos, float sphereRadius, const Triangle& tri, glm::vec3& intersectPoint, float& pointToPlaneDist);
-
     // A test to see if P1 is on the same side as P2 of a line segment ab
     bool sameSide(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& a, const glm::vec3& b);
 

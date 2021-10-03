@@ -15,6 +15,9 @@
         #error "x86 not supported"
     #endif
 
+    /* If you REALLY want to...*/
+    //#define PLATFORM_XP
+
 #elif defined(__APPLE__) || defined(__MACH__)
     #include <TargetConditionals.h>
     #if TARGET_OS_IPHONE == 1

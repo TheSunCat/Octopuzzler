@@ -47,13 +47,13 @@ bool GUILayer::onMousePressed(MouseButtonPressedEvent& event)
     {
         if (button->hovered)
         {
-            button->onClick(*button, event.getMouseButton()); // TODO feed mouse coords
+            button->onClick(*button, event.getMouseButton()); // TODO feed mouse coords maybe
 
             return true; // handled
         }
     }
 
-    // TODO this is bad
+    // TODO this should be elsewhere. where?
     Outrospection::get().setEye(Eye::NONE);
 
     return false;
