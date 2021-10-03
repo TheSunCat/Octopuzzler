@@ -27,6 +27,7 @@ and causing the game to reset completely on death.
 
 — CUSTOM CONTENT —
 Custom levels should follow the following format:
+```
 {
 	"level" : [
 		"WWWWWW",
@@ -37,6 +38,7 @@ Custom levels should follow the following format:
 	"guideRight" : "moving",
 	"author" : ""
 }
+```
 
 The grid can be any width or height but should have rows of equal length.
 - W's represent Walls, spaces that cannot be moved into.
@@ -49,6 +51,7 @@ The grid can be any width or height but should have rows of equal length.
 Where the "R" is present in the example are the control options for this level.
 Each desired control should be present within the quotation marks. To have every
 control unlocked, "*,()^_<>" should be in place of the example's ")".
+```
 - * is for Up.
 - , is for Down.
 - ( is for Left.
@@ -57,6 +60,7 @@ control unlocked, "*,()^_<>" should be in place of the example's ")".
 - _ is for Dash Down.
 - < is for Dash Left.
 - > is for Dash Right.
+```
 
 To claim ownership of your levels, put your name between the quotation marks after
 the "author" field. If you leave this field as "", your level will be by Anonymous.
