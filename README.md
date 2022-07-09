@@ -1,31 +1,33 @@
 
 # Welcome to Octopuzzler!
 
-— PREMISE —
+### — PREMISE —
 Your goal is to solve all of the puzzles and move your files to the floppy disk
 before the octopus gets ink all over your computer. It will take guts. It will
 take tenacity. But most of all, it will take a hunger for the waffles you DESERVE.
 
 From start to finish, the game should take around half an hour to complete.
 
-— CONTROLS —
+### — CONTROLS —
 This game can be played entirely with the mouse! As the controls have proved
 difficult to explain through text in our playtests, we have elected to present
 them as animated guides throughout certain levels. If you are confused by the
 controls in later levels, refer back to the GIFs located in the "guides" folder.
 
-— BORDERLESS FULLSCREEN —
+### — BORDERLESS FULLSCREEN —
 Borderless fullscreen can be toggled with the F11 key!
 
-— SPEEDRUN MODE —
+### — SPEEDRUN MODE —
 To run the game in Speedrun Mode:
 On Windows, you can run "Start in speedrun mode.bat".
-On other platforms, open the Terminal and start the game with the --speedrun switch:
-    ./Octopuzzler --speedrun
+On other platforms, open the Terminal and start the game with the `--speedrun` switch:
+```
+./Octopuzzler --speedrun
+```
 Doing this will launch your game in Speedrun Mode, unlocking all controls always
 and causing the game to reset completely on death.
 
-— CUSTOM CONTENT —
+### — CUSTOM CONTENT —
 Custom levels should follow the following format:
 ```
 {
