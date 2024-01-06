@@ -20,8 +20,8 @@ else()
     target_link_libraries(${PROJECT_NAME} -sLEGACY_GL_EMULATION=1 -sGL_UNSAFE_OPTS=1)
 endif()
 
-target_compile_options(${PROJECT_NAME} PUBLIC -gsource-map -sUSE_SDL=2 -sUSE_SDL_IMAGE=2 -sUSE_SDL_TTF=2 -sUSE_SDL_MIXER=2 -g -Wno-switch)
-target_link_libraries(${PROJECT_NAME} -sERROR_ON_UNDEFINED_SYMBOLS=0 -sUSE_SDL=2 -sUSE_SDL_IMAGE=2 -sUSE_SDL_TTF=2 -sUSE_SDL_MIXER=2)
+target_compile_options(${PROJECT_NAME} PUBLIC -gsource-map -g -Wno-switch -sUSE_FREETYPE=1)
+target_link_libraries(${PROJECT_NAME} -sERROR_ON_UNDEFINED_SYMBOLS=0 -sUSE_GLFW=3 -sGL_ENABLE_GET_PROC_ADDRESS -sUSE_FREETYPE=1)
 
 SET(CMAKE_EXECUTABLE_SUFFIX ".html")
 
@@ -106,4 +106,4 @@ endif()
 file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/shell.html.in "${EMSCRIPTEN_SHELL_HTML}")
 
 
-set_target_properties("${PROJECT_NAME}" PROPERTIES LINK_FLAGS "-s ASSERTIONS -s GL_DEBUG -s DEMANGLE_SUPPORT=1 -s OFFSCREEN_FRAMEBUFFER=1 -s ALLOW_MEMORY_GROWTH -s EXIT_RUNTIME=1 -s SDL2_IMAGE_FORMATS='[\"png\"]' --preload-file \"${CMAKE_SOURCE_DIR}/resources\"@resources --shell-file \"${CMAKE_CURRENT_BINARY_DIR}/shell.html.in\"")
+set_target_properties("${PROJECT_NAME}" PROPERTIES LINK_FLAGS "-s ASSERTIONS -s GL_DEBUG -s DEMANGLE_SUPPORT=1 -s OFFSCREEN_FRAMEBUFFER=1 -s ALLOW_MEMORY_GROWTH -s USE_FREETYPE=2 -s EXIT_RUNTIME=1 -s --preload-file \"${CMAKE_SOURCE_DIR}/res\"@res --shell-file \"${CMAKE_CURRENT_BINARY_DIR}/shell.html.in\"")

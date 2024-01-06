@@ -1,17 +1,20 @@
 ﻿#pragma once
 #include <string>
+#include <vector>
+#include <memory>
 
 #include "Core/Layer.h"
 
-class UIButton;
 class KeyPressedEvent;
 class KeyReleasedEvent;
 class MouseButtonPressedEvent;
+class UIButton;
 
 class GUILayer : public Layer
 {
 public:
     explicit GUILayer(const std::string& _name, bool _captureMouse = true);
+    virtual ~GUILayer();
 
     void onAttach() override;
     void onDetach() override;

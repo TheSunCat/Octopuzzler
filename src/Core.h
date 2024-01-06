@@ -36,6 +36,9 @@
 #elif defined(__linux__)
     #define PLATFORM_LINUX
 
+#elif defined(__EMSCRIPTEN__)
+    #define PLATFORM_WEB
+
 #else
     #error "Unknown platform!"
 #endif // End of platform detection
