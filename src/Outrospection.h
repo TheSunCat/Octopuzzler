@@ -151,76 +151,7 @@ private:
 
     static Outrospection* instance;
 
-    jthread loggerThread{
-        [&] {
-            using namespace std::chrono_literals;
-
-            while (!loggerQueue.empty())
-            {
-                const auto& log = loggerQueue.pop();
-                if (log != nullptr)
-                {
-                    log();
-                    std::putchar('\n');
-                }
-            }
-
-            std::this_thread::sleep_for(1ms);
-        }
-    };
-    
-    jthread consoleThread{
-        [&] {
-            using namespace std::chrono_literals;
-
-            char input[512];
-
-            std::cin.getline(input, sizeof(input));
-
-            size_t size = strlen(input);
-
-            if (size > 0)
-            {
-                char start = input[0];
-                if (start == '/') // is a command
-                {
-                    std::string_view rawCommand = &input[1];
-
-                    std::vector<std::string_view> args;
-
-                    size_t spaceIndex = 0;// rawCommand.find(' ');
-                    while ((spaceIndex = rawCommand.find(' ', spaceIndex + 1)) != std::string::npos)
-                    {
-                        args.push_back(rawCommand.substr(spaceIndex + 1, rawCommand.find_first_of(' ', spaceIndex + 1)));
-                    }
-
-                    std::string_view command = rawCommand.substr(0, rawCommand.find(' '));
-
-
-
-                    if (command == "hello")
-                    {
-                        LOG_INFO("Hi!!!!");
-                    }
-                    else if (command == "help")
-                    {
-                        LOG_INFO("Here is a list of commands:");
-                        LOG_INFO("/hello");
-                    }
-                    else {
-                        LOG_ERROR("Unknown command %s! Try /help", input);
-                    }
-
-                }
-                else // is a chat message
-                {
-                    LOG("<John> %s", input);
-                }
-            }
-
-            std::this_thread::sleep_for(1ms);
-        }
-    };
+    friend void LoopCallback(void* arg);
 
 public:
     static int loadSave();

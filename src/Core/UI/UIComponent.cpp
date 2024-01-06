@@ -120,7 +120,7 @@ void UIComponent::setAnimation(const std::string& anim)
 
     if(animations.find(anim) == animations.end())
     {
-        LOG_ERROR("Animation %s has not been loaded!", anim);
+        LOG_ERROR("Animation %s has not been loaded!", anim.c_str());
         curAnimation = "default";
     } else {
         curAnimation = anim;

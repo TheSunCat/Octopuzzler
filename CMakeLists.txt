@@ -24,7 +24,7 @@ set(CMAKE_CXX_FLAGS "-g -fPIC")
 set(CMAKE_CXX_STANDARD 20)
 
 # enable leak checking
-if(LEAK_CHECK)
+if(LEAK_CHECK AND NOT EMSCRIPTEN)
     add_compile_options(-fno-omit-frame-pointer -fsanitize=address)
     add_link_options(-fno-omit-frame-pointer -fsanitize=address)
 endif()
@@ -42,7 +42,8 @@ add_executable("${PROJECT_NAME}" ${DIR_SRC} ${SOLOUD_SRC} ${SOLOUD_SRC_C})
 
 # soloud backend
 target_compile_definitions(${PROJECT_NAME} PRIVATE
-	WITH_MINIAUDIO
+    #WITH_MINIAUDIO
+    WITH_SDL2_STATIC # emscripten
 )
 
 if(EMSCRIPTEN)

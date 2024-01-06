@@ -14,7 +14,7 @@
 
 #include <glad/glad.h>
 #include <glm/common.hpp>
-#include <stb_image.h>
+#include "stbimg.h"
 #include <fast_float.h>
 
 #include "Types.h"
@@ -127,7 +127,7 @@ bool Util::fileExists(const std::string& file)
 {
     std::string fullPath(file);
 
-    LOG("Checking file %s", fullPath);
+    LOG("Checking file %s", fullPath.c_str());
 
 #ifndef PLATFORM_XP
     return std::filesystem::exists(fullPath);
@@ -207,7 +207,7 @@ std::string Util::readAllBytes(const std::string& file)
     }
     catch (std::ifstream::failure& e)
     {
-        LOG_ERROR("Failed to read file \"%s\"! errno %s", fullPath, e.what());
+        LOG_ERROR("Failed to read file \"%s\"! errno %s", fullPath.c_str(), e.what());
         return "ERROR: NO FILE";
     }
 }
@@ -244,7 +244,7 @@ unsigned char* Util::imageDataFromFile(const char* path, const std::string& dire
     }
     else
     {
-        LOG_ERROR("Texture data failed to load at path: %s", filename);
+        LOG_ERROR("Texture data failed to load at path: %s", filename.c_str());
         stbi_image_free(data);
     }
 

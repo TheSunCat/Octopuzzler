@@ -7,6 +7,10 @@
 #include <Core/UI/GUIBackground.h>
 #include <glm/ext/matrix_clip_space.hpp>
 
+#ifdef __EMSCRIPTEN__
+#include "emscripten.h"
+#endif
+
 #include "GLFW/glfw3.h"
 #include "Util.h"
 #include "Core/Layer.h"
@@ -28,9 +32,6 @@ Outrospection* Outrospection::instance = nullptr;
 Outrospection::Outrospection(bool speedrun)
 {
     instance = this;
-
-    loggerThread.start();
-    // TODO consoleThread.start();
 
     if(speedrun)
         setSpeedrun();
@@ -81,9 +82,6 @@ Outrospection::~Outrospection()
 
     glfwTerminate();
 
-    //consoleThread.stop();
-    loggerThread.stop();
-
     std::cout << "Terminated the termination of the engine." << std::endl;
 }
 
@@ -104,6 +102,11 @@ void Outrospection::stop()
     running = false;
 }
 
+void LoopCallback(void* arg)
+{
+    static_cast<Outrospection*>(arg)->runGameLoop();
+}
+
 void Outrospection::run()
 {
     using namespace std::chrono_literals;
@@ -113,31 +116,14 @@ void Outrospection::run()
     lastFrame = Util::currentTimeMillis(); // I miss java
     deltaTime = 1.0f / 60.0f;
 
+#ifdef __EMSCRIPTEN__
+    emscripten_set_main_loop_arg(&LoopCallback, this, 0, true);
+#else
     while (running)
     {
-        currentTimeMillis = Util::currentTimeMillis();
-        deltaTime = float(currentTimeMillis - lastFrame) / 1000.0f;
-        lastFrame = currentTimeMillis;
-
         runGameLoop();
-
-        if (glfwWindowShouldClose(gameWindow))
-            running = false;
-
-
-
-        currentTimeMillis = Util::currentTimeMillis();
-        time_t frameTime = currentTimeMillis - lastFrame;
-
-        // sleep for any extra time we have
-        auto extraTime = 16 - frameTime;
-        //LOG("%i", extraTime);
-
-        if(extraTime > 0) {
-            auto m = std::chrono::milliseconds(extraTime - 1);
-            std::this_thread::sleep_for(m);
-        }
     }
+#endif
 }
 
 void Outrospection::onEvent(Event& e)
@@ -255,6 +241,10 @@ void Outrospection::toggleFullscreen()
 
 void Outrospection::runGameLoop()
 {
+    currentTimeMillis = Util::currentTimeMillis();
+    deltaTime = float(currentTimeMillis - lastFrame) / 1000.0f;
+    lastFrame = currentTimeMillis;
+
     // Update game world
     {
         // fetch input into simplified controller class
@@ -328,6 +318,24 @@ void Outrospection::runGameLoop()
     // -------------------------------
     glfwSwapBuffers(gameWindow);
     glfwPollEvents();
+
+
+
+    if (glfwWindowShouldClose(gameWindow))
+        running = false;
+
+    currentTimeMillis = Util::currentTimeMillis();
+    time_t frameTime = currentTimeMillis - lastFrame;
+
+    // sleep for any extra time we have
+    auto extraTime = 16 - frameTime;
+    //LOG("%i", extraTime);
+
+    if(extraTime > 0) {
+        auto m = std::chrono::milliseconds(extraTime - 1);
+        std::this_thread::sleep_for(m);
+    }
+
 }
 
 void Outrospection::runTick()

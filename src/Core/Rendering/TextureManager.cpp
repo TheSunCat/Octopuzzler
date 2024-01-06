@@ -1,6 +1,11 @@
 #include "TextureManager.h"
+#include <cstdint>
 
-#include <stb_image.h>
+#ifdef __EMSCRIPTEN__
+
+#endif
+
+#include "stbimg.h"
 #include <string>
 
 #include "Core/Rendering/TickableTexture.h"
@@ -54,7 +59,7 @@ SimpleTexture& TextureManager::loadTexture(const Resource& r, const GLint& filte
     }
     else
     {
-        LOG_ERROR("Failed to generate texture ID for %s", path);
+        LOG_ERROR("Failed to generate texture ID for %s", path.c_str());
 
         return MissingTexture;
     }
@@ -78,7 +83,7 @@ SimpleTexture& TextureManager::loadAnimatedTexture(const Resource& r, unsigned i
         else
         {
             LOG_ERROR("Failed to generate texture ID for animated texture frame %i at %s", textureFrameCount,
-                      path + std::to_string(i) + ".png");
+                      (path + std::to_string(i) + ".png").c_str());
 
             textureIds.push_back(MissingTexture.texId);
         }
@@ -104,7 +109,7 @@ SimpleTexture& TextureManager::get(const Resource& r)
     if (f == textures.end())
     {
         // resource not found in already existing storage, needs to be loaded
-        LOG_ERROR("Texture %s was not loaded before fetching! Loading now as fallback...", r.getResourcePath());
+        LOG_ERROR("Texture %s was not loaded before fetching! Loading now as fallback...", r.getResourcePath().c_str());
         return loadTexture(r, GL_LINEAR);
     }
     else
@@ -175,7 +180,7 @@ GLuint TextureManager::textureFromFile(const std::string& filename, const GLint&
     }
     else
     {
-        LOG_ERROR("Texture failed to load at path: %s", filename);
+        LOG_ERROR("Texture failed to load at path: %s", filename.c_str());
         LOG_ERROR("stbi_failure_reason: %s", stbi_failure_reason());
         stbi_image_free(data);
 

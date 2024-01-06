@@ -20,13 +20,13 @@ GUILayer::~GUILayer()
 void GUILayer::onAttach()
 {
     Outrospection::get().captureMouse(captureMouse);
-    LOG("Attached %s", name);
+    LOG("Attached %s", name.c_str());
 }
 
 void GUILayer::onDetach()
 {
     Outrospection::get().captureMouse(!captureMouse);
-    LOG("Detached %s", name);
+    LOG("Detached %s", name.c_str());
 }
 
 void GUILayer::onEvent(Event& event)

@@ -23,6 +23,7 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 int main(int argc, char** argv) {
 #endif
 
+
     // check if we can read the filesystem
     bool canReadFiles = Util::fileExists("res/ShaderData/crt.vert");
     if(!canReadFiles)
@@ -60,8 +61,6 @@ int main(int argc, char** argv) {
     }
 
     auto outrospection = Outrospection(speedrun);
-
-    
 
     // run the game!
     outrospection.run();

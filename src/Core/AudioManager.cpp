@@ -46,7 +46,7 @@ void AudioManager::play(const std::string& soundName, float vol, bool loop)
     
     wave->setLooping(loop);
 
-    LOG("Playing sound %s", soundName);
+    LOG("Playing sound %s", soundName.c_str());
     handles.insert_or_assign(soundName, engine.play(*wave, vol));
 }
 
@@ -54,7 +54,7 @@ void AudioManager::setSoundVolume(const std::string& sound, float vol)
 {
     auto f = handles.find(sound); // <- I'm getting the error here
     if (f == handles.end()) {
-        LOG_ERROR("Tried to change volume of nonexistent sound \"%s\"!", sound);
+        LOG_ERROR("Tried to change volume of nonexistent sound \"%s\"!", sound.c_str());
         return;
     }
 

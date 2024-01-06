@@ -34,7 +34,7 @@ Shader::Shader(const GLchar* vertexName, const GLchar* fragmentName)
     if (!success)
     {
         glGetShaderInfoLog(vertex, 512, nullptr, errorLog);
-        LOG_ERROR("Vertex shader %s failed to compile, error log:\n%s", vertexPath, errorLog);
+        LOG_ERROR("Vertex shader %s failed to compile, error log:\n%s", vertexPath.c_str(), errorLog);
     }
 
     // fragment shader
@@ -46,7 +46,7 @@ Shader::Shader(const GLchar* vertexName, const GLchar* fragmentName)
     if (!success)
     {
         glGetShaderInfoLog(fragment, 512, nullptr, errorLog);
-        LOG_ERROR("Fragment shader %s failed to compile, error log:\n%s", fragmentPath, errorLog);
+        LOG_ERROR("Fragment shader %s failed to compile, error log:\n%s", fragmentPath.c_str(), errorLog);
     }
 
     // shader program
@@ -60,7 +60,7 @@ Shader::Shader(const GLchar* vertexName, const GLchar* fragmentName)
     if (!success)
     {
         glGetProgramInfoLog(ID, 512, nullptr, errorLog);
-        LOG_ERROR("Failed to link shader programs %s and %s, error log:\n%s", vertexPath, fragmentPath, errorLog);
+        LOG_ERROR("Failed to link shader programs %s and %s, error log:\n%s", vertexPath.c_str(), fragmentPath.c_str(), errorLog);
     }
 
     // delete the shaders as they're linked into our program now and no longer necessary
@@ -178,7 +178,7 @@ void Shader::checkCompileErrors(const GLuint shader, const std::string& type)
         if (!success)
         {
             glGetShaderInfoLog(shader, 1024, nullptr, infoLog);
-            LOG_ERROR("Shader compilation error! Type: %s\n%s", type, infoLog);
+            LOG_ERROR("Shader compilation error! Type: %s\n%s", type.c_str(), infoLog);
         }
     }
     else
@@ -187,7 +187,7 @@ void Shader::checkCompileErrors(const GLuint shader, const std::string& type)
         if (!success)
         {
             glGetProgramInfoLog(shader, 1024, nullptr, infoLog);
-            LOG_ERROR("Shader linking error! Type: %s\n%s", type, infoLog);
+            LOG_ERROR("Shader linking error! Type: %s\n%s", type.c_str(), infoLog);
         }
     }
 }

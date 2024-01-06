@@ -14,14 +14,14 @@ target_link_libraries(${PROJECT_NAME} glm::glm)
 include_directories(${glm_SOURCE_DIR})
 
 if(GL_COMPAT)
-    target_link_libraries(${PROJECT_NAME} -sWASM=1 -sFULL_ES3=1 -sMAX_WEBGL_VERSION=2 -sMIN_WEBGL_VERSION=2)
+    target_link_libraries(${PROJECT_NAME} -sWASM=1 -sFULL_ES3=1 -sMAX_WEBGL_VERSION=2 -sMIN_WEBGL_VERSION=2 -sUSE_SDL=2)
 else()
     # we're using legacy fixed function GL2
-    target_link_libraries(${PROJECT_NAME} -sLEGACY_GL_EMULATION=1 -sGL_UNSAFE_OPTS=1)
+    target_link_libraries(${PROJECT_NAME} -sLEGACY_GL_EMULATION=1 -sGL_UNSAFE_OPTS=1 -sUSE_SDL=2)
 endif()
 
-target_compile_options(${PROJECT_NAME} PUBLIC -gsource-map -g -Wno-switch -sUSE_FREETYPE=1)
-target_link_libraries(${PROJECT_NAME} -sERROR_ON_UNDEFINED_SYMBOLS=0 -sUSE_GLFW=3 -sGL_ENABLE_GET_PROC_ADDRESS -sUSE_FREETYPE=1)
+target_compile_options(${PROJECT_NAME} PUBLIC -O2 -gsource-map -g -Wno-switch -sUSE_FREETYPE=1 -sUSE_SDL=2)
+target_link_libraries(${PROJECT_NAME} -O2 -sERROR_ON_UNDEFINED_SYMBOLS=0 -sUSE_GLFW=3 -sGL_ENABLE_GET_PROC_ADDRESS -sUSE_FREETYPE=1 -sUSE_SDL=2)
 
 SET(CMAKE_EXECUTABLE_SUFFIX ".html")
 
@@ -106,4 +106,4 @@ endif()
 file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/shell.html.in "${EMSCRIPTEN_SHELL_HTML}")
 
 
-set_target_properties("${PROJECT_NAME}" PROPERTIES LINK_FLAGS "-s ASSERTIONS -s GL_DEBUG -s DEMANGLE_SUPPORT=1 -s OFFSCREEN_FRAMEBUFFER=1 -s ALLOW_MEMORY_GROWTH -s USE_FREETYPE=2 -s EXIT_RUNTIME=1 -s --preload-file \"${CMAKE_SOURCE_DIR}/res\"@res --shell-file \"${CMAKE_CURRENT_BINARY_DIR}/shell.html.in\"")
+set_target_properties("${PROJECT_NAME}" PROPERTIES LINK_FLAGS "-O2 -s USE_SDL=2 -s ASSERTIONS -s SAFE_HEAP=1 -s GL_DEBUG -s DEMANGLE_SUPPORT=1 -s OFFSCREEN_FRAMEBUFFER=1 -s ALLOW_MEMORY_GROWTH -s USE_FREETYPE=2 -s EXIT_RUNTIME=1 -s STACK_SIZE=524288 -s --preload-file \"${CMAKE_SOURCE_DIR}/res\"@res --shell-file \"${CMAKE_CURRENT_BINARY_DIR}/shell.html.in\"")

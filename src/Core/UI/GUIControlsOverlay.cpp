@@ -7,7 +7,7 @@
 
 void controlClick(UIButton& button, int)
 {
-    LOG("You pressed button %s", button.text);
+    LOG("You pressed button %s", button.text.c_str());
 
     auto scene = (GUIScene*)Outrospection::get().scene;
 

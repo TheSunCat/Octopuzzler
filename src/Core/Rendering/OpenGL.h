@@ -1,7 +1,10 @@
 #pragma once
 
+#include "Platform.h"
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <iostream>
 
 #include "Constants.h"
 #include "Util.h"
@@ -35,8 +38,10 @@ public:
 
         glfwSetWindowUserPointer(window, reinterpret_cast<void*>(this));
 
+#ifndef PLATFORM_WEB
         // turn on VSync so we don't run at about a kjghpillion fps
         glfwSwapInterval(1);
+#endif
 
         return window;
     }
@@ -50,17 +55,17 @@ public:
             return;
         }
 
-        auto monitor = glfwGetPrimaryMonitor();
-        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+        // auto monitor = glfwGetPrimaryMonitor();
+        // const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+        //
+        // int w = mode->width;
+        // int h = mode->height;
+        //
+        // int windowWidth = w / 2;
+        // int windowHeight = h / 2;
 
-        int w = mode->width;
-        int h = mode->height;
-
-        int windowWidth = w / 2;
-        int windowHeight = h / 2;
-
-        gameWindow = createGameWindow(windowWidth, windowHeight, "Octopuzzler", nullptr, nullptr);
-        glfwSetWindowPos(gameWindow, (w - windowWidth) / 2, (h - windowHeight) / 2);
+        gameWindow = createGameWindow(960, 540, "Octopuzzler", nullptr, nullptr);
+        // glfwSetWindowPos(gameWindow, (w - windowWidth) / 2, (h - windowHeight) / 2);
 
         // load OGL function pointers
         if (!gladLoadGLLoader(GLADloadproc(glfwGetProcAddress)))

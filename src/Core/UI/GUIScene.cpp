@@ -45,7 +45,7 @@ void GUIScene::setLevel(int lvlID)
 
     if(!Util::fileExists(levelName))
     {
-        LOG_ERROR("File %s does not exist! Defaulting to level0...", levelName);
+        LOG_ERROR("File %s does not exist! Defaulting to level0...", levelName.c_str());
 
         levelID = 0;
         setLevel(levelID);
