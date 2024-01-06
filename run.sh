@@ -1,8 +1,9 @@
 #!/bin/bash
-mkdir build
-cd build
-cmake .. || exit 1
-make || exit 1
-mv Outrospection ..
+
+set -e
+
+mkdir -p build && cd build
+cmake .. && make -j15
+
 cd ..
-./Outrospection
+build/Octopuzzler

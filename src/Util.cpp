@@ -12,7 +12,7 @@
 #include <strsafe.h>
 #endif
 
-#include <GLAD/glad.h>
+#include <glad/glad.h>
 #include <glm/common.hpp>
 #include <stb_image.h>
 #include <fast_float.h>

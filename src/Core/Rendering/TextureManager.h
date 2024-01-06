@@ -4,7 +4,7 @@
 #include <unordered_map>
 //#include <unordered_set>
 
-#include <GLAD/glad.h>
+#include <glad/glad.h>
 
 #include "Resource.h"
 #include "Types.h"

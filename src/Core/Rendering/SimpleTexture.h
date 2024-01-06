@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include <GLAD/glad.h>
+#include <glad/glad.h>
 
 class SimpleTexture
 {

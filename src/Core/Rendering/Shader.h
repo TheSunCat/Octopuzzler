@@ -3,7 +3,7 @@
 #include <unordered_map>
 #include <string>
 
-#include <GLAD/glad.h>
+#include <glad/glad.h>
 #include <glm/glm.hpp>
 
 class Camera;
