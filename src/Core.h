@@ -57,7 +57,11 @@ inline void win_change_attributes(const int foreground)
 }
 
 #define CHANGE_COLOR(col) win_change_attributes((col) == 0 ? -1 : (col));
+
+#elif defined(PLATFORM_WEB)
+#define CHANGE_COLOR(col) // no colors on web!
 #else
+
 #define CHANGE_COLOR(col) printf("\033[%im", (col))
 #endif
 

@@ -9,7 +9,7 @@ set(GL_COMPAT ON CACHE BOOL "Run with OpenGL 3.3 (and support legacy fixed funct
 set(LEAK_CHECK ON CACHE BOOL "Check memory leaks (must be OFF for debugging)")
 
 # Web options
-set(ASPECT_RATIO "4/3" CACHE STRING "Aspect ratio")
+set(ASPECT_RATIO "16/9" CACHE STRING "Aspect ratio")
 set(CLICK_TO_START ON CACHE BOOL "A click is required to activate sound on web")
 
 # --------------------------------------
@@ -18,7 +18,9 @@ set(CLICK_TO_START ON CACHE BOOL "A click is required to activate sound on web")
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-set(CMAKE_CXX_FLAGS "-g -fPIC")
+if(NOT EMSCRIPTEN)
+    set(CMAKE_CXX_FLAGS "-g -fPIC")
+endif()
 
 # enable C++20
 set(CMAKE_CXX_STANDARD 20)
@@ -41,10 +43,12 @@ file(GLOB_RECURSE SOLOUD_SRC_C lib/soloud/*.c) # bit of a hack but eh
 add_executable("${PROJECT_NAME}" ${DIR_SRC} ${SOLOUD_SRC} ${SOLOUD_SRC_C})
 
 # soloud backend
-target_compile_definitions(${PROJECT_NAME} PRIVATE
-    #WITH_MINIAUDIO
-    WITH_SDL2_STATIC # emscripten
-)
+if(EMSCRIPTEN)
+    # miniaudio has bugs on emscripten, so we have to use SDL :(
+    target_compile_definitions(${PROJECT_NAME} PRIVATE WITH_SDL2_STATIC)
+else()
+    target_compile_definitions(${PROJECT_NAME} PRIVATE WITH_MINIAUDIO)
+endif()
 
 if(EMSCRIPTEN)
     include(Emscripten)

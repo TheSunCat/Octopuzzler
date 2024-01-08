@@ -9,6 +9,7 @@
 
 #ifdef __EMSCRIPTEN__
 #include "emscripten.h"
+#include "External/emscripten_browser_cursor.h"
 #endif
 
 #include "GLFW/glfw3.h"
@@ -39,6 +40,9 @@ Outrospection::Outrospection(bool speedrun)
     preInit = PreInitialization();
     audioManager.init({ "Control_Select", "Eye_Poke_0", "Eye_Poke_1", "Eye_Poke_2", "Flag_Get", "Mic_Off", "Mic_On", "Movement", "totallyNotABossBattle", "Waffle_Get" });
 
+    Util::glError();
+    LOG_INFO("AudioManager init DONE!");
+
     gameWindow = opengl.gameWindow;
     crtVAO = opengl.crtVAO;
     framebuffers.insert(std::make_pair("default", Framebuffer()));
@@ -50,8 +54,16 @@ Outrospection::Outrospection(bool speedrun)
     createShaders();
     createCursors();
     createIcon();
+    
+    Util::glError();
+    LOG_INFO("Engine init DONE!");
 
+#ifdef PLATFORM_WEB
+    emscripten_browser_cursor::set("url('mouse.png'), progress");
+#else
     glfwSetCursor(gameWindow, cursorNone);
+#endif
+
     
     background = new GUIBackground();
     progressBarOverlay = new GUIProgressBar();
@@ -60,6 +72,9 @@ Outrospection::Outrospection(bool speedrun)
     guideOverlay = new GUIGuide();
     winOverlay = new GUIWinOverlay();
     scene = new GUIScene();
+
+    Util::glError();
+    LOG_INFO("Overlays init DONE!");
 
     pushLayer(scene);
     pushOverlay(background);
@@ -70,10 +85,18 @@ Outrospection::Outrospection(bool speedrun)
 
     audioManager.play("totallyNotABossBattle", 1, true);
 
+#ifndef __EMSCRIPTEN__
     // for good measure, redo UI here
-    int width = 0, height = 0;
+    int width = 1920, height = 1080;
     glfwGetFramebufferSize(gameWindow, &width, &height);
     updateResolution(width, height);
+#else
+    emscripten_run_script("canvas.width = 1920;");
+    emscripten_run_script("canvas.height = 1080;");
+#endif
+
+    Util::glError();
+    LOG_INFO("Init DONE!");
 }
 
 Outrospection::~Outrospection()
@@ -185,16 +208,35 @@ void Outrospection::setEye(Eye letter)
     switch(eye)
     {
     case Eye::NONE:
+#ifdef PLATFORM_WEB
+        emscripten_browser_cursor::set("url('mouse.png'), progress");
+#else
         glfwSetCursor(gameWindow, cursorNone);
+#endif
         break;
+
     case Eye::CIRCLE:
+#ifdef PLATFORM_WEB
+        emscripten_browser_cursor::set("url('circleMouse.png'), progress");
+#else
         glfwSetCursor(gameWindow, cursorCircle);
+#endif
         break;
+
     case Eye::SQUARE:
+#ifdef PLATFORM_WEB
+        emscripten_browser_cursor::set("url('squareMouse.png'), progress");
+#else
         glfwSetCursor(gameWindow, cursorSquare);
+#endif
         break;
+
     case Eye::TRIANGLE:
+#ifdef PLATFORM_WEB
+        emscripten_browser_cursor::set("url('triangleMouse.png'), progress");
+#else
         glfwSetCursor(gameWindow, cursorTriangle);
+#endif
         break;
     }
     
@@ -348,6 +390,16 @@ void Outrospection::runTick()
     ((GUIScene*)scene)->worldTick();
 }
 
+#ifdef PLATFORM_WEB
+EM_JS(int, canvas_get_width, (), {
+  return canvas.getBoundingClientRect().width;
+});
+
+EM_JS(int, canvas_get_height, (), {
+  return canvas.getBoundingClientRect().height;
+});
+#endif
+
 void Outrospection::registerCallbacks() const
 {
     // Register OpenGL events
@@ -358,12 +410,24 @@ void Outrospection::registerCallbacks() const
 
     glfwSetCursorPosCallback(gameWindow, [](GLFWwindow* window, const double xPosD, const double yPosD)
     {
+
+        glm::ivec2 windowRes = Outrospection::get().getWindowResolution();
+
+#ifdef PLATFORM_WEB
+        int width = canvas_get_width();
+        int height = canvas_get_height();
+
+        float scaledX = static_cast<float>(xPosD) / width * 1920;
+        float scaledY = static_cast<float>(yPosD) / height * 1080;
+
+        std::cout << "Canvas size: " << width << ", " << height << std::endl;
+        std::cout << "Returned pos: " << xPosD << ", " << yPosD << std::endl;
+
+#else
         // support for HiDPI
         float xDPI = 0, yDPI = 0;
         glfwGetWindowContentScale(window, &xDPI, &yDPI);
 
-
-        glm::ivec2 windowRes = Outrospection::get().getWindowResolution();
         float targetAspectRatio = 1920 / 1080.f;
 
         float width = windowRes.x;
@@ -380,11 +444,12 @@ void Outrospection::registerCallbacks() const
         float yPos = float(yPosD) - (windowRes.y - height) / (2 * yDPI);
 
         float scaleFactor = width / 1920.f;
-        float scaledX = xPos * (1/scaleFactor);
-        float scaledY = yPos * (1/scaleFactor);
+        float scaledX = xPos / scaleFactor;
+        float scaledY = yPos / scaleFactor;
 
         scaledX *= xDPI;
         scaledY *= yDPI;
+#endif
 
         MouseMovedEvent event(scaledX, scaledY);
         Outrospection::get().onEvent(event);

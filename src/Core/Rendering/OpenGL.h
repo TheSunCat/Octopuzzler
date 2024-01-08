@@ -55,17 +55,7 @@ public:
             return;
         }
 
-        // auto monitor = glfwGetPrimaryMonitor();
-        // const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-        //
-        // int w = mode->width;
-        // int h = mode->height;
-        //
-        // int windowWidth = w / 2;
-        // int windowHeight = h / 2;
-
         gameWindow = createGameWindow(960, 540, "Octopuzzler", nullptr, nullptr);
-        // glfwSetWindowPos(gameWindow, (w - windowWidth) / 2, (h - windowHeight) / 2);
 
         // load OGL function pointers
         if (!gladLoadGLLoader(GLADloadproc(glfwGetProcAddress)))
@@ -102,8 +92,12 @@ public:
         glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), nullptr);
+
         
         framebuffer = Framebuffer(640, 480);
+        
+        Util::glError();
+        LOG_INFO("OpenGL init DONE!");
     }
 
     GLuint crtVAO = 0;

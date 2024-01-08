@@ -10,9 +10,14 @@
 Shader::Shader(const GLchar* vertexName, const GLchar* fragmentName)
 {
     std::string vName(vertexName);
-    std::string vertexPath("ShaderData/" + vName + ".vert");
-
     std::string fName(fragmentName);
+
+#ifdef PLATFORM_WEB
+    vName = "ES_" + vName;
+    fName = "ES_" + fName;
+#endif
+
+    std::string vertexPath("ShaderData/" + vName + ".vert");
     std::string fragmentPath("ShaderData/" + fName + ".frag");
 
     // read shader code from file
